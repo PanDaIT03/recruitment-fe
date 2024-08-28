@@ -1,15 +1,11 @@
-import { Space } from 'antd';
-import { Counter } from './pages/Counter';
-import { WebSocketDemo } from './websocket/Websocket';
+import { AuthProvider } from './contexts/auth';
+import AppRouter from './routes/AppRouter';
 
 function App() {
   return (
-    <>
-      <Space direction="vertical" size={'large'}>
-        <Counter />
-        <WebSocketDemo />
-      </Space>
-    </>
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
   );
 }
 
