@@ -1,8 +1,14 @@
-import NotificationComponent from '~/components/Notification/Notification';
+import { Button } from 'antd';
+import toast from '~/utils/functions/toast';
+
 const Header = () => {
+  const handleNotify = () => {
+    toast.success('Ok!');
+  };
+
   return (
     <div className="p-5">
-      <NotificationComponent userRole="user" />
+      <Button onClick={handleNotify}>Click me!</Button>
     </div>
   );
 };
