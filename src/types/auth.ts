@@ -1,6 +1,7 @@
 export interface IUser {
   userName: string;
   password: string;
+  role: string;
 }
 
 export interface IAuthContext {
