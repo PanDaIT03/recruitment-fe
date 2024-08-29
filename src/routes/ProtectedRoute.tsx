@@ -1,14 +1,21 @@
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '~/hooks/useAuth';
 
-const ProtectedRoute = () => {
+interface ProtectedRouteProps {
+  allowedRoles: string[];
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { user } = useAuth();
 
-  // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
-  if (!user) return <Navigate to="/login" />;
+  const userRole = user?.role || 'user';
 
-  // Nếu đã đăng nhập, render nội dung của route
-  return <Outlet />;
+  return allowedRoles.includes(userRole) ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/" replace />
+  );
 };
 
 export default ProtectedRoute;
