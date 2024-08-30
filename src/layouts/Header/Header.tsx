@@ -1,15 +1,20 @@
-import { Button } from 'antd';
-import toast from '~/utils/functions/toast';
+import { Col, Divider, Row } from 'antd';
+import Button from '~/components/Button/Button';
 
 const Header = () => {
-  const handleNotify = () => {
-    toast.success('Ok!');
-  };
-
   return (
-    <div className="p-5">
-      <Button onClick={handleNotify}>Click me!</Button>
-    </div>
+    <Row
+      align={'middle'}
+      justify={'space-between'}
+      className="bg-white h-16 px-8"
+    >
+      <Col>Logo</Col>
+      <Col className="flex gap-3">
+        <Button title="Đăng ký / Đăng nhập" />
+        <Divider type="vertical" />
+        <Button fill title="Nhà tuyển dụng" />
+      </Col>
+    </Row>
   );
 };
 
