@@ -1,6 +1,9 @@
-export interface IUser {
+export interface IBaseUser {
   userName: string;
   password: string;
+}
+
+export interface IUser extends IBaseUser {
   role: string;
 }
 

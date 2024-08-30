@@ -36,12 +36,12 @@ const Header = () => {
             className="max-w-[139px] h-full object-cover cursor-pointer"
             onClick={() => navigate(PATH.ROOT)}
           />
-          <div className="flex text-white text-sm gap-x-4">
+          <div className="flex text-main text-sm gap-x-4">
             {menuItems.map((item, index) => (
               <Link
                 key={index}
                 to={item.href}
-                className="p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-white"
+                className="p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main"
               >
                 {item.label}
               </Link>
@@ -51,8 +51,8 @@ const Header = () => {
         <Col className="flex gap-3 justify-between items-center relative">
           <Button
             displayType="text"
-            customClass="hover:bg-header-bgHover"
-            handleOnclick={() => navigate(PATH.SIGIN)}
+            className="hover:bg-header-bgHover"
+            onClick={() => navigate(PATH.SIGIN)}
             title={
               <div className="flex flex-col text-start">
                 <span className="text-xs">Người tìm việc</span>
@@ -60,7 +60,7 @@ const Header = () => {
               </div>
             }
           />
-          <hr className="border-l-[1px]	border-white h-7" />
+          <hr className="border-l-[1px]	border-main h-7" />
           <Button fill title="Nhà tuyển dụng" />
         </Col>
       </Row>

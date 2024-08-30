@@ -87,6 +87,11 @@ export default {
         'on-background': '#1B1D1F', // neutral-10
         'on-surface': '#1B1E1F', // neutral-10
       },
+      textColor: {
+        main: '#fff',
+        sub: '#78726de6',
+        third: '#f15224',
+      },
       backgroundColor: {
         main: '#f7f6f2',
         'header-bgHover': '#461A53',
