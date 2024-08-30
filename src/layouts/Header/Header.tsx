@@ -6,7 +6,7 @@ const Header = () => {
     <Row
       align={'middle'}
       justify={'space-between'}
-      className="bg-white h-16 px-8"
+      className="bg-[#692474] h-16 px-8"
     >
       <Col>Logo</Col>
       <Col className="flex gap-3">

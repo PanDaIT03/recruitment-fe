@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 :root {
+  --header-bgColor: rgba(105 31 116 / 1);
+
   --button-primary-bg: rgba(241 82 36 / 1);
   --button-primary-color: rgba(241 82 36 / 1);
   --button-primary-bgHover: rgba(217 74 32 / 1);
