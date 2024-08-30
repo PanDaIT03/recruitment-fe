@@ -89,6 +89,7 @@ export default {
       },
       backgroundColor: {
         main: '#f7f6f2',
+        'header-bgHover': '#461A53',
       },
     },
   },
