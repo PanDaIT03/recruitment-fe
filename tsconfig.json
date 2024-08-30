@@ -3,7 +3,8 @@
     "baseUrl": "./src",
     "paths": {
       "~/*": ["./*"]
-    }
+    },
+    "types": ["vite-plugin-svgr/client"]
   },
   "files": [],
   "references": [
