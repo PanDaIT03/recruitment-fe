@@ -8,7 +8,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
     <Layout className="min-h-screen">
       <Header />
-      {children}
+      <div className="bg-main">{children}</div>
       <Footer />
     </Layout>
   );

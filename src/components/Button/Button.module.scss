@@ -1,0 +1,47 @@
+.button {
+  display: flex;
+  padding: 8px 14px;
+  border-radius: 6px;
+  height: max-content;
+  align-items: center;
+  justify-content: center;
+}
+
+.button:disabled {
+  color: white;
+  background-color: #c2c2c2;
+  border-color: transparent;
+  cursor: not-allowed;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.error {
+  background-color: #dc362e;
+}
+
+.approve {
+  background-color: #038f00;
+}
+
+.primary {
+  color: var(--button-primary-color);
+  border: 1px solid var(--button-primary-border-color);
+}
+
+.text {
+  color: white;
+  background-color: transparent;
+}
+
+.fill {
+  color: white;
+  border: none;
+  background-color: var(--button-primary-bg);
+
+  &:hover {
+    background: var(--button-primary-bgHover);
+  }
+}
