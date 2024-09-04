@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import FormWrapper from '~/components/FormWrapper/FormWrapper';
 import InputForm from '~/components/Input/Input';
+import { emailRegex, passwordRegex } from '~/utils/constant';
 import PATH from '~/utils/path';
 
 interface IProps {
@@ -18,14 +19,23 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
         <Form.Item
           name="userName"
           label="Địa chỉ email"
-          rules={[{ required: true, message: 'Hãy nhập email' }]}
+          rules={[
+            { required: true, message: 'Hãy nhập email' },
+            { pattern: emailRegex, message: 'Email không hợp lệ' },
+          ]}
         >
           <InputForm name="userName" placeholder="abc@example.com" />
         </Form.Item>
         <Form.Item
           name="password"
           label="Mật khẩu"
-          rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
+          rules={[
+            { required: true, message: 'Hãy nhập mật khẩu' },
+            {
+              pattern: passwordRegex,
+              message: 'Mật khẩu phải có ít nhất 8 ký tự',
+            },
+          ]}
         >
           <InputForm name="password" placeholder="Nhập mật khẩu" />
         </Form.Item>

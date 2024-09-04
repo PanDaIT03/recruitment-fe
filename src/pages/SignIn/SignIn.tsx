@@ -1,15 +1,17 @@
-import { Col, Divider, Image, Layout, Row, Typography } from 'antd';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { Col, Divider, Layout, Row, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { GOOGLE_LOGO } from '~/assets/img';
+import { jwtDecode } from 'jwt-decode';
 import Button from '~/components/Button/Button';
-import { useAppDispatch } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { IBaseUser } from '~/types/Auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import FormSignIn from './FormSignIn';
-import { signInWithGoogle } from '~/store/thunk/auth';
+import { signIn, signInWithGoogle } from '~/store/thunk/auth';
 
 const { ArrowLeftOutlined } = icons;
 const { Title, Paragraph } = Typography;
@@ -20,12 +22,27 @@ const SignIn = () => {
 
   const [form] = useForm<IBaseUser>();
 
+  // const user = useAppSelector((state) => state.auth);
+
+  // useEffect(() => {
+  //   console.log(user);
+  // }, [user]);
+
   const handleSignIn = async (values: any) => {
-    console.log('finish', values);
+    const { userName, password } = values;
+    dispatch(signIn({ userName: userName, password: password }));
   };
 
-  const handleSignInWithGoogle = () => {
-    dispatch(signInWithGoogle({ navigate }));
+  const handleSignInWithGoogleSuccess = (response: CredentialResponse) => {
+    try {
+      const token = response.credential;
+      if (!token) return;
+
+      const decodedToken: any = jwtDecode(token);
+      dispatch(signInWithGoogle(decodedToken));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -52,24 +69,8 @@ const SignIn = () => {
                 Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục
               </p>
             </div>
-            <div className="w-full">
-              <Button
-                iconBefore={
-                  <Image
-                    width={24}
-                    height={24}
-                    preview={false}
-                    src={GOOGLE_LOGO}
-                  />
-                }
-                title={
-                  <p className="text-sm text-[#0a0a0a] font-medium">
-                    Đăng nhập với Google
-                  </p>
-                }
-                className="w-full border-[#ebe8e8] hover:border-[#f15224] hover:bg-[#FEEEE9]"
-                onClick={handleSignInWithGoogle}
-              />
+            <div className="flex w-full justify-center">
+              <GoogleLogin onSuccess={handleSignInWithGoogleSuccess} />
             </div>
             <Divider className="!my-0">
               <p className="text-sub text-sm">hoặc</p>

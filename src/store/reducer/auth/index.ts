@@ -25,7 +25,7 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signIn.fulfilled, (state, action) => {
-        console.log(action);
+        console.log('reducer', action);
         state.loading = false;
         state.status = 'loggin successfully';
       })
