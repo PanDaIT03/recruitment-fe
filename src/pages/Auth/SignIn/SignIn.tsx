@@ -1,9 +1,8 @@
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import { Divider } from 'antd';
+import { Col, Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { jwtDecode } from 'jwt-decode';
 
-import AuthWrapper from '~/components/AuthWrapper/AuthWrapper';
 import { useAppDispatch } from '~/hooks/useStore';
 import { signIn, signInWithGoogle } from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
@@ -38,18 +37,26 @@ const SignIn = () => {
   };
 
   return (
-    <AuthWrapper
-      title="Đăng nhập cho Người tìm việc"
-      subTitle="Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục"
-    >
-      <div className="flex w-full justify-center">
-        <GoogleLogin onSuccess={handleSignInWithGoogleSuccess} />
+    <Col>
+      <div className="flex flex-col gap-y-6 bg-white p-6 border rounded-xl shadow-md">
+        <div className="w-full">
+          <h1 className="text-base font-semibold">
+            Đăng nhập cho Người tìm việc
+          </h1>
+          <p className="text-sm text-sub mt-1">
+            Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục
+          </p>
+        </div>
+        <div className="flex w-full justify-center">
+          <GoogleLogin onSuccess={handleSignInWithGoogleSuccess} />
+        </div>
+        <Divider className="!my-0">
+          <p className="text-sub text-sm">hoặc</p>
+        </Divider>
+        <FormSignIn form={form} onFinish={handleSignIn} />
       </div>
-      <Divider className="!my-0">
-        <p className="text-sub text-sm">hoặc</p>
-      </Divider>
-      <FormSignIn form={form} onFinish={handleSignIn} />
-    </AuthWrapper>
+    </Col>
+
     // <Layout className="w-full min-h-[100vh] px-8 justify-center items-center">
     //   <Row justify={'center'} align={'middle'} className="flex gap-x-32">
     //     <Col className="flex flex-col justify-center items-start max-w-md">

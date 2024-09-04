@@ -1,7 +1,6 @@
-import { Form } from 'antd';
+import { Col, Form } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 
-import AuthWrapper from '~/components/AuthWrapper/AuthWrapper';
 import FormWrapper from '~/components/FormWrapper/FormWrapper';
 import InputForm from '~/components/Input/Input';
 import { emailRegex } from '~/utils/constant';
@@ -14,10 +13,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <AuthWrapper
-      title="Đặt lại mật khẩu"
-      subTitle="Chúng tôi sẽ gửi đường dẫn để bạn đặt lại mật khẩu"
-    >
+    <Col>
       <FormWrapper
         form={form}
         submitTitle="Gửi đường dẫn"
@@ -34,7 +30,7 @@ const ForgotPassword = () => {
           <InputForm name="email" placeholder="abc@example.com" />
         </Form.Item>
       </FormWrapper>
-    </AuthWrapper>
+    </Col>
   );
 };
 
