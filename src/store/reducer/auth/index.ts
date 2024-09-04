@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { login } from '~/store/thunk/auth';
+import { signIn, signInWithGoogle } from '~/store/thunk/auth';
 import { IUser } from '~/types/Auth/index';
 
 interface InitType {
@@ -21,15 +21,27 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(login.pending, (state) => {
+      .addCase(signIn.pending, (state) => {
         state.loading = true;
       })
-      .addCase(login.fulfilled, (state, action) => {
-        console.log(action);
+      .addCase(signIn.fulfilled, (state, action) => {
+        console.log('reducer', action);
         state.loading = false;
         state.status = 'loggin successfully';
       })
-      .addCase(login.rejected, (state) => {
+      .addCase(signIn.rejected, (state) => {
+        state.loading = false;
+        state.status = 'loggin failed';
+      })
+      .addCase(signInWithGoogle.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(signInWithGoogle.fulfilled, (state, action) => {
+        console.log('reducer', action);
+        state.loading = false;
+        state.status = 'loggin successfully';
+      })
+      .addCase(signInWithGoogle.rejected, (state) => {
         state.loading = false;
         state.status = 'loggin failed';
       });

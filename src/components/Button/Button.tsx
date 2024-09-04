@@ -38,8 +38,6 @@ const Button = ({
     [displayType]: displayType,
   });
 
-  console.log(iconBefore);
-
   return (
     <button type={type} disabled={disabled} className={clasess} {...props}>
       {iconBefore && <span className="flex mr-2">{iconBefore}</span>}
