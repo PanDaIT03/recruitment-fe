@@ -10,6 +10,7 @@ import userRoutes from '~/routes/userRoutes';
 import Home from '~/pages/Home/Home';
 import NotFound from '~/pages/NotFound/NotFound';
 import SignIn from '~/pages/SignIn/SignIn';
+import SignUp from '~/pages/SignUp/SignUp';
 
 const routesConfig: RouteObject[] = [
   {
@@ -20,7 +21,8 @@ const routesConfig: RouteObject[] = [
   adminRoutes,
   employerRoutes,
   userRoutes,
-  { path: PATH.SIGIN, element: <SignIn /> },
+  { path: PATH.SIGNIN, element: <SignIn /> },
+  { path: PATH.SIGNUP, element: <SignUp /> },
   { path: PATH.NOTFOUND, element: <NotFound /> },
 ];
 

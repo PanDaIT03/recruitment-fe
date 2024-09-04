@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import { checkLogin } from '~/api/auth/auth';
 import { IBaseUser, IUserSignInWithGoogle } from '~/types/Auth/index';
 
 export const signInWithGoogle = createAsyncThunk(
