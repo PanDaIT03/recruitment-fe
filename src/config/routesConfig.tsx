@@ -7,10 +7,11 @@ import employerRoutes from '~/routes/employerRoutes';
 import PublicRoute from '~/routes/PublicRoute';
 import userRoutes from '~/routes/userRoutes';
 
+import ForgotPassword from '~/pages/Auth/ForgotPassword/ForgotPassword';
+import SignIn from '~/pages/Auth/SignIn/SignIn';
+import SignUp from '~/pages/Auth/SignUp/SignUp';
 import Home from '~/pages/Home/Home';
 import NotFound from '~/pages/NotFound/NotFound';
-import SignIn from '~/pages/SignIn/SignIn';
-import SignUp from '~/pages/SignUp/SignUp';
 
 const routesConfig: RouteObject[] = [
   {
@@ -21,9 +22,10 @@ const routesConfig: RouteObject[] = [
   adminRoutes,
   employerRoutes,
   userRoutes,
-  { path: PATH.SIGNIN, element: <SignIn /> },
-  { path: PATH.SIGNUP, element: <SignUp /> },
-  { path: PATH.NOTFOUND, element: <NotFound /> },
+  { path: PATH.SIGN_IN, element: <SignIn /> },
+  { path: PATH.SIGN_UP, element: <SignUp /> },
+  { path: PATH.FORGOT_PASSWORD, element: <ForgotPassword /> },
+  { path: PATH.NOT_FOUND, element: <NotFound /> },
 ];
 
 export default routesConfig;
