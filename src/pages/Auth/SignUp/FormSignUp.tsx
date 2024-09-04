@@ -15,7 +15,7 @@ interface IProps {
 const FormSignUp = ({ form, onFinish }: IProps) => {
   return (
     <>
-      <FormWrapper form={form} submitTitle="Đăng nhập" onFinish={onFinish}>
+      <FormWrapper form={form} submitTitle="Đăng ký" onFinish={onFinish}>
         <Form.Item
           name="userName"
           label="Chúng tôi nên gọi bạn là gì?"
