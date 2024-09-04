@@ -52,7 +52,7 @@ const Header = () => {
           <Button
             displayType="text"
             className="hover:bg-header-bgHover"
-            onClick={() => navigate(PATH.SIGIN)}
+            onClick={() => navigate(PATH.SIGNIN)}
             title={
               <div className="flex flex-col text-start">
                 <span className="text-xs">Người tìm việc</span>
