@@ -4,16 +4,20 @@ import { useNavigate } from 'react-router-dom';
 
 import { GOOGLE_LOGO } from '~/assets/img';
 import Button from '~/components/Button/Button';
+import { useAppDispatch } from '~/hooks/useStore';
 import { IBaseUser } from '~/types/Auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import FormSignIn from './FormSignIn';
+import { signInWithGoogle } from '~/store/thunk/auth';
 
 const { ArrowLeftOutlined } = icons;
 const { Title, Paragraph } = Typography;
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const [form] = useForm<IBaseUser>();
 
   const handleSignIn = async (values: any) => {
@@ -21,7 +25,7 @@ const SignIn = () => {
   };
 
   const handleSignInWithGoogle = () => {
-    console.log('google sign in');
+    dispatch(signInWithGoogle({ navigate }));
   };
 
   return (
