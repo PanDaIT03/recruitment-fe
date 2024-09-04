@@ -30,7 +30,7 @@ const Header = () => {
 
   return (
     <div className="bg-[#692474] px-8">
-      <Row align={'middle'} justify={'space-between'} className="h-16  mx-12">
+      <Row align={'middle'} justify={'space-between'} className="h-16 mx-12">
         <Col className="flex justify-between gap-x-12">
           <HeaderLogo
             className="max-w-[139px] h-full object-cover cursor-pointer"

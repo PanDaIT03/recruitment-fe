@@ -1,7 +1,5 @@
 import { Form, FormInstance } from 'antd';
-import { memo } from 'react';
 import { Link } from 'react-router-dom';
-
 import FormWrapper from '~/components/FormWrapper/FormWrapper';
 import InputForm from '~/components/Input/Input';
 import { emailRegex, passwordRegex } from '~/utils/constant';
@@ -12,10 +10,17 @@ interface IProps {
   onFinish(values: any): void;
 }
 
-const FormSignIn = ({ form, onFinish }: IProps) => {
+const FormSignUp = ({ form, onFinish }: IProps) => {
   return (
     <>
       <FormWrapper form={form} submitTitle="Đăng nhập" onFinish={onFinish}>
+        <Form.Item
+          name="userName"
+          label="Chúng tôi nên gọi bạn là gì?"
+          rules={[{ required: true, message: 'Họ và tên không được để trống' }]}
+        >
+          <InputForm name="userName" placeholder="Nguyễn Văn A" />
+        </Form.Item>
         <Form.Item
           name="email"
           label="Địa chỉ email"
@@ -47,16 +52,16 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
         </Link>
       </FormWrapper>
       <div className="flex gap-x-1">
-        <span>Chưa có tài khoản?</span>
+        <span>Đã có tài khoản?</span>
         <Link
-          to={PATH.SIGNUP}
+          to={PATH.SIGNIN}
           className="font-semibold text-end text-[#2563eb] hover:underline hover:text-[#2563eb]"
         >
-          Đăng ký tại đây.
+          Đăng nhập tại đây.
         </Link>
       </div>
     </>
   );
 };
 
-export default memo(FormSignIn);
+export default FormSignUp;
