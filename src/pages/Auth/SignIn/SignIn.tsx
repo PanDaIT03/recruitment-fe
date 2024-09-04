@@ -1,21 +1,14 @@
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
-import { Col, Divider, Layout, Row, Typography } from 'antd';
+import { Col, Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useNavigate } from 'react-router-dom';
-
 import { jwtDecode } from 'jwt-decode';
-import Button from '~/components/Button/Button';
+
 import { useAppDispatch } from '~/hooks/useStore';
 import { signIn, signInWithGoogle } from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
-import icons from '~/utils/icons';
-import PATH from '~/utils/path';
 import FormSignIn from './FormSignIn';
 
-const { ArrowLeftOutlined } = icons;
-
 const SignIn = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [form] = useForm<IBaseUser>();
@@ -62,16 +55,8 @@ const SignIn = () => {
         </Divider>
         <FormSignIn form={form} onFinish={handleSignIn} />
       </div>
-      <div className="w-full flex justify-center mt-6">
-        <Button
-          displayType="text"
-          title="Quay lại trang chủ"
-          iconBefore={<ArrowLeftOutlined />}
-          className="text-[#2563eb] hover:underline hover:text-[#2563eb]"
-          onClick={() => navigate(PATH.ROOT)}
-        />
-      </div>
     </Col>
+
     // <Layout className="w-full min-h-[100vh] px-8 justify-center items-center">
     //   <Row justify={'center'} align={'middle'} className="flex gap-x-32">
     //     <Col className="flex flex-col justify-center items-start max-w-md">

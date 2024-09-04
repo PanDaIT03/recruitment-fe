@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import FormWrapper from '~/components/FormWrapper/FormWrapper';
 import InputForm from '~/components/Input/Input';
+import InputPassword from '~/components/Input/InputPassword';
 import { emailRegex, passwordRegex } from '~/utils/constant';
 import PATH from '~/utils/path';
 
@@ -37,10 +38,10 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
             },
           ]}
         >
-          <InputForm name="password" placeholder="Nhập mật khẩu" />
+          <InputPassword name="password" placeholder="Nhập mật khẩu" />
         </Form.Item>
         <Link
-          to={PATH.SIGNIN}
+          to={PATH.FORGOT_PASSWORD}
           className="block w-full font-semibold text-end text-[#2563eb] mb-6 hover:underline hover:text-[#2563eb]"
         >
           Quên mật khẩu
@@ -49,7 +50,7 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
       <div className="flex gap-x-1">
         <span>Chưa có tài khoản?</span>
         <Link
-          to={PATH.SIGNUP}
+          to={PATH.SIGN_UP}
           className="font-semibold text-end text-[#2563eb] hover:underline hover:text-[#2563eb]"
         >
           Đăng ký tại đây.

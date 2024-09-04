@@ -3,18 +3,19 @@ import PATH from '~/utils/path';
 
 import ProtectedRoute from '~/routes/ProtectedRoute';
 import { lazy } from 'react';
+import ForgotPassword from '~/pages/Auth/ForgotPassword/ForgotPassword';
 
+const AuthLayout = lazy(() => import('~/layouts/AuthLayout'));
 const Home = lazy(() => import('~/pages/Home/Home'));
+const SignIn = lazy(() => import('~/pages/Auth/SignIn/SignIn'));
+const SignUp = lazy(() => import('~/pages/Auth/SignUp/SignUp'));
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
-const SignIn = lazy(() => import('~/pages/SignIn/SignIn'));
-const SignUp = lazy(() => import('~/pages/SignUp/SignUp'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
 const EmployerDashboard = lazy(
   () => import('~/pages/EmployerDashboard/EmployerDashboard')
 );
 const UserProfile = lazy(() => import('~/pages/User/UserProfile'));
 const MainLayout = lazy(() => import('~/layouts/MainLayout'));
-const AuthLayout = lazy(() => import('~/layouts/AuthLayout'));
 
 type CustomRouteObject = (IndexRouteObject | NonIndexRouteObject) & {
   layout?: React.ComponentType<{ children: React.ReactNode }>;
@@ -57,17 +58,23 @@ const routesConfig: CustomRouteObject[] = [
   employerRoutes,
   userRoutes,
   {
-    path: PATH.SIGNIN,
+    path: PATH.SIGN_IN,
     element: <SignIn />,
     layout: AuthLayout,
   },
   {
-    path: PATH.SIGNUP,
+    path: PATH.SIGN_UP,
     element: <SignUp />,
     layout: AuthLayout,
   },
   {
-    path: PATH.NOTFOUND,
+    path: PATH.FORGOT_PASSWORD,
+    element: <ForgotPassword />,
+    layout: AuthLayout,
+  },
+
+  {
+    path: PATH.NOT_FOUND,
     element: <NotFound />,
   },
 ];
