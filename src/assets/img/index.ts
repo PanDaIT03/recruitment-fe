@@ -1,0 +1,1 @@
+export { default as GOOGLE_LOGO } from './logo_google.png';

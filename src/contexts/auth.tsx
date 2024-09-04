@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useState } from 'react';
-import { IAuthContext, IUser } from '~/types/auth';
+import { IAuthContext, IUser } from '~/types/Auth/index';
 
 export const AuthContext = createContext<IAuthContext>(undefined as never);
 

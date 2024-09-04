@@ -1,11 +1,15 @@
 import { RouteObject } from 'react-router-dom';
-import Home from '~/pages/Home/Home';
-import NotFound from '~/pages/NotFound/NotFound';
+
+import PATH from '~/utils/path';
+
 import adminRoutes from '~/routes/adminRoutes';
 import employerRoutes from '~/routes/employerRoutes';
 import PublicRoute from '~/routes/PublicRoute';
 import userRoutes from '~/routes/userRoutes';
-import PATH from '~/utils/path';
+
+import Home from '~/pages/Home/Home';
+import NotFound from '~/pages/NotFound/NotFound';
+import SignIn from '~/pages/SignIn/SignIn';
 
 const routesConfig: RouteObject[] = [
   {
@@ -16,6 +20,7 @@ const routesConfig: RouteObject[] = [
   adminRoutes,
   employerRoutes,
   userRoutes,
+  { path: PATH.SIGIN, element: <SignIn /> },
   { path: PATH.NOTFOUND, element: <NotFound /> },
 ];
 

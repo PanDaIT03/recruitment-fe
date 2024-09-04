@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { login } from '~/store/thunk/auth';
-import { IUser } from '~/types/auth';
+import { IUser } from '~/types/Auth/index';
 
 interface InitType {
   currentUser: IUser;
