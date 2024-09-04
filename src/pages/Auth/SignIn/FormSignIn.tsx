@@ -1,7 +1,10 @@
 import { Form, FormInstance } from 'antd';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
+
 import FormWrapper from '~/components/FormWrapper/FormWrapper';
 import InputForm from '~/components/Input/Input';
+import InputPassword from '~/components/Input/InputPassword';
 import { emailRegex, passwordRegex } from '~/utils/constant';
 import PATH from '~/utils/path';
 
@@ -10,17 +13,10 @@ interface IProps {
   onFinish(values: any): void;
 }
 
-const FormSignUp = ({ form, onFinish }: IProps) => {
+const FormSignIn = ({ form, onFinish }: IProps) => {
   return (
     <>
       <FormWrapper form={form} submitTitle="Đăng nhập" onFinish={onFinish}>
-        <Form.Item
-          name="userName"
-          label="Chúng tôi nên gọi bạn là gì?"
-          rules={[{ required: true, message: 'Họ và tên không được để trống' }]}
-        >
-          <InputForm name="userName" placeholder="Nguyễn Văn A" />
-        </Form.Item>
         <Form.Item
           name="email"
           label="Địa chỉ email"
@@ -42,26 +38,26 @@ const FormSignUp = ({ form, onFinish }: IProps) => {
             },
           ]}
         >
-          <InputForm name="password" placeholder="Nhập mật khẩu" />
+          <InputPassword name="password" placeholder="Nhập mật khẩu" />
         </Form.Item>
         <Link
-          to={PATH.SIGNIN}
+          to={PATH.FORGOT_PASSWORD}
           className="block w-full font-semibold text-end text-[#2563eb] mb-6 hover:underline hover:text-[#2563eb]"
         >
           Quên mật khẩu
         </Link>
       </FormWrapper>
       <div className="flex gap-x-1">
-        <span>Đã có tài khoản?</span>
+        <span>Chưa có tài khoản?</span>
         <Link
-          to={PATH.SIGNIN}
+          to={PATH.SIGN_UP}
           className="font-semibold text-end text-[#2563eb] hover:underline hover:text-[#2563eb]"
         >
-          Đăng nhập tại đây.
+          Đăng ký tại đây.
         </Link>
       </div>
     </>
   );
 };
 
-export default FormSignUp;
+export default memo(FormSignIn);
