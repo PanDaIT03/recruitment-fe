@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Loading from '~/components/Loading/Loading';
 import routesConfig from '~/config/routesConfig';
 
 const wrapWithLayout = (
@@ -21,7 +22,7 @@ const AppRouter = () => {
   );
 
   return (
-    <React.Suspense>
+    <React.Suspense fallback={<Loading />}>
       <RouterProvider router={routes} />
     </React.Suspense>
   );
