@@ -1,8 +1,8 @@
-import { IndexRouteObject, NonIndexRouteObject } from 'react-router-dom';
+import { Outlet, RouteObject } from 'react-router-dom';
 import PATH from '~/utils/path';
 
 import ProtectedRoute from '~/routes/ProtectedRoute';
-import { lazy } from 'react';
+import { ComponentType, lazy, ReactNode } from 'react';
 import ForgotPassword from '~/pages/Auth/ForgotPassword/ForgotPassword';
 
 const AuthLayout = lazy(() => import('~/layouts/AuthLayout'));
@@ -17,66 +17,95 @@ const EmployerDashboard = lazy(
 const UserProfile = lazy(() => import('~/pages/User/UserProfile'));
 const MainLayout = lazy(() => import('~/layouts/MainLayout'));
 
-type CustomRouteObject = (IndexRouteObject | NonIndexRouteObject) & {
+type CustomRouteObject = RouteObject & {
   layout?: React.ComponentType<{ children: React.ReactNode }>;
 };
 
-const adminRoutes: CustomRouteObject = {
-  path: '/admin',
-  element: <ProtectedRoute allowedRoles={['admin']} />,
-  children: [
-    { index: true, element: <AdminDashboard /> },
-    { path: PATH.ADMIN_DASHBOARD, element: <AdminDashboard /> },
-  ],
+const createRoute = (
+  pathOrRoute: string | Partial<CustomRouteObject>,
+  element?: React.ReactNode,
+  layout?: React.ComponentType<{ children: React.ReactNode }>,
+  children?: CustomRouteObject[]
+): CustomRouteObject => {
+  const baseRoute: Partial<CustomRouteObject> =
+    typeof pathOrRoute === 'string' ? { path: pathOrRoute } : pathOrRoute;
+
+  return {
+    ...baseRoute,
+    ...(element !== undefined && { element }),
+    ...(layout !== undefined && { layout }),
+    ...(children !== undefined && { children }),
+  } as CustomRouteObject;
 };
 
-const employerRoutes: CustomRouteObject = {
-  path: '/employer',
-  element: <ProtectedRoute allowedRoles={['employer']} />,
-  children: [
-    { index: true, element: <EmployerDashboard /> },
-    { path: PATH.EMPLOYER_DASHBOARD, element: <EmployerDashboard /> },
-  ],
-};
+const createRoutes = (
+  Layout: ComponentType<{ children: ReactNode }>,
+  ...routes: (string | Partial<CustomRouteObject>)[]
+): CustomRouteObject => ({
+  element: (
+    <Layout>
+      <Outlet />
+    </Layout>
+  ),
+  children: routes.map((route) =>
+    typeof route === 'string' ? createRoute(route) : createRoute(route)
+  ),
+});
 
-const userRoutes: CustomRouteObject = {
-  path: '/user',
-  element: <ProtectedRoute allowedRoles={['user']} />,
-  children: [
-    { index: true, element: <UserProfile /> },
-    { path: PATH.USER_PROFILE, element: <UserProfile /> },
-  ],
-};
+const createProtectedRoute = (
+  path: string,
+  allowedRoles: string[],
+  layout?: React.ComponentType<{ children: React.ReactNode }>,
+  ...children: (string | Partial<CustomRouteObject>)[]
+): CustomRouteObject => ({
+  path,
+  element: <ProtectedRoute allowedRoles={allowedRoles} />,
+  ...(layout !== undefined && { layout }),
+  children: children.map((child) =>
+    typeof child === 'string' ? createRoute(child) : createRoute(child)
+  ),
+});
 
 const routesConfig: CustomRouteObject[] = [
-  {
-    path: PATH.ROOT,
-    element: <Home />,
-    layout: MainLayout,
-  },
-  adminRoutes,
-  employerRoutes,
-  userRoutes,
-  {
-    path: PATH.SIGN_IN,
-    element: <SignIn />,
-    layout: AuthLayout,
-  },
-  {
-    path: PATH.SIGN_UP,
-    element: <SignUp />,
-    layout: AuthLayout,
-  },
-  {
-    path: PATH.FORGOT_PASSWORD,
-    element: <ForgotPassword />,
-    layout: AuthLayout,
-  },
+  createRoute(PATH.ROOT, <Home />, MainLayout),
 
-  {
-    path: PATH.NOT_FOUND,
-    element: <NotFound />,
-  },
+  // Admin
+  createProtectedRoute(
+    '/admin',
+    ['admin'],
+    undefined,
+    { index: true, element: <AdminDashboard /> },
+    createRoute(PATH.ADMIN_DASHBOARD, <AdminDashboard />)
+  ),
+
+  // Employer
+  createProtectedRoute(
+    '/employer',
+    ['employer'],
+    undefined,
+    { index: true, element: <EmployerDashboard /> },
+    createRoute(PATH.EMPLOYER_DASHBOARD, <EmployerDashboard />)
+  ),
+
+  // User
+  createProtectedRoute(
+    '/user',
+    ['user'],
+    undefined,
+    { index: true, element: <UserProfile /> },
+    createRoute(PATH.USER_PROFILE, <UserProfile />)
+  ),
+
+  // Auth
+  createRoutes(
+    AuthLayout,
+    createRoute(PATH.SIGN_IN, <SignIn />),
+    createRoute(PATH.SIGN_UP, <SignUp />),
+    createRoute(PATH.FORGOT_PASSWORD, <ForgotPassword />)
+  ),
+
+  // Not Found
+  createRoute(PATH.NOT_FOUND, <NotFound />),
 ];
 
 export default routesConfig;
