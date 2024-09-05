@@ -1,9 +1,9 @@
+import { lazy } from 'react';
 import { IndexRouteObject, NonIndexRouteObject } from 'react-router-dom';
 import PATH from '~/utils/path';
 
-import ProtectedRoute from '~/routes/ProtectedRoute';
-import { lazy } from 'react';
 import ForgotPassword from '~/pages/Auth/ForgotPassword/ForgotPassword';
+import ProtectedRoute from '~/routes/ProtectedRoute';
 
 const AuthLayout = lazy(() => import('~/layouts/AuthLayout'));
 const Home = lazy(() => import('~/pages/Home/Home'));
@@ -11,11 +11,11 @@ const SignIn = lazy(() => import('~/pages/Auth/SignIn/SignIn'));
 const SignUp = lazy(() => import('~/pages/Auth/SignUp/SignUp'));
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
+const UserProfile = lazy(() => import('~/pages/User/UserProfile'));
+const MainLayout = lazy(() => import('~/layouts/MainLayout'));
 const EmployerDashboard = lazy(
   () => import('~/pages/EmployerDashboard/EmployerDashboard')
 );
-const UserProfile = lazy(() => import('~/pages/User/UserProfile'));
-const MainLayout = lazy(() => import('~/layouts/MainLayout'));
 
 type CustomRouteObject = (IndexRouteObject | NonIndexRouteObject) & {
   layout?: React.ComponentType<{ children: React.ReactNode }>;
@@ -72,7 +72,11 @@ const routesConfig: CustomRouteObject[] = [
     element: <ForgotPassword />,
     layout: AuthLayout,
   },
-
+  // {
+  //   path: PATH.RESET_PASSWORD,
+  //   element: <ResetPassword />,
+  //   layout: AuthLayout,
+  // },
   {
     path: PATH.NOT_FOUND,
     element: <NotFound />,

@@ -28,25 +28,21 @@ const SignUp = () => {
   };
 
   return (
-    <Col>
-      <div className="flex flex-col gap-y-6 bg-white p-6 border rounded-xl shadow-md">
-        <div className="w-full">
-          <h1 className="text-base font-semibold">
-            Đăng ký cho Người tìm việc
-          </h1>
-          <p className="text-sm text-sub mt-1">
-            Kết nối cộng đồng Người tìm việc và Doanh nghiệp miễn phí
-          </p>
-        </div>
-        <div className="flex w-full justify-center">
-          <GoogleLogin onSuccess={handleSignInWithGoogleSuccess} />
-        </div>
-        <Divider className="!my-0">
-          <p className="text-sub text-sm">hoặc</p>
-        </Divider>
-        <FormSignUp form={form} onFinish={handleFinish} />
+    <>
+      <div className="w-full">
+        <h1 className="text-base font-semibold">Đăng ký cho Người tìm việc</h1>
+        <p className="text-sm text-sub mt-1">
+          Kết nối cộng đồng Người tìm việc và Doanh nghiệp miễn phí
+        </p>
       </div>
-    </Col>
+      <div className="flex w-full justify-center">
+        <GoogleLogin onSuccess={handleSignInWithGoogleSuccess} />
+      </div>
+      <Divider className="!my-0">
+        <p className="text-sub text-sm">hoặc</p>
+      </Divider>
+      <FormSignUp form={form} onFinish={handleFinish} />
+    </>
   );
 };
 
