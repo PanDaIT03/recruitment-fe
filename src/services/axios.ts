@@ -5,6 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 // import { store } from "~/store/store";
+
 const instance: AxiosInstance = axios.create({
   baseURL: 'http://localhost:8080/',
   headers: {

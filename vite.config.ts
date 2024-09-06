@@ -28,12 +28,9 @@ export default defineConfig({
       },
     },
   },
-  // server: {
-  //   open: true,
-  //   host: true,
-  //   port: 3000,
-  //   watch: {
-  //     usePolling: true,
-  //   },
-  // },
+  server: {
+    hmr: {
+      overlay: false,
+    },
+  },
 });
