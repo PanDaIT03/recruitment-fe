@@ -40,7 +40,7 @@ const Button = ({
 
   return (
     <button type={type} disabled={disabled} className={clasess} {...props}>
-      {iconBefore && <span className="flex mr-2">{iconBefore}</span>}
+      {iconBefore && <span className="flex mr-3">{iconBefore}</span>}
       <b>{title}</b>
     </button>
   );
