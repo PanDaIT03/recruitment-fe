@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
 import Loading from '~/components/Loading/Loading';
 import routesConfig from '~/config/routesConfig';
 
@@ -7,9 +8,8 @@ const wrapWithLayout = (
   element: React.ReactNode,
   Layout?: React.ComponentType<{ children: React.ReactNode }>
 ) => {
-  if (Layout) {
-    return <Layout>{element}</Layout>;
-  }
+  if (Layout) return <Layout>{element}</Layout>;
+
   return element;
 };
 

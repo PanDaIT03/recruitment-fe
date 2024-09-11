@@ -4,24 +4,25 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-// import { store } from "~/store/store";
+
 const instance: AxiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
+    Accept: 'application/json',
   },
   timeout: 10000,
+  withCredentials: true,
 });
 
-instance.defaults.headers.common['Content-Type'] = 'application/json';
 // Add a request interceptor
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    // const accessToken = store.getState()?.user?.account?.access_token;
+    const accessToken = localStorage.getItem('accessToken');
 
-    // if (accessToen && config.headers) {
-    //   config.headers.Authorization = `Bearer ${accessToken}`
-    // }
+    if (accessToken && config.headers) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
 
     return config;
   },
@@ -32,20 +33,111 @@ instance.interceptors.request.use(
 
 // Add a response interceptor
 instance.interceptors.response.use(
-  function (response: AxiosResponse) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response && response.data ? response.data : response;
+  (response: AxiosResponse): any => {
+    return response.data;
   },
-
-  function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    console.log(error.response);
-    return error && error.response && error.response.data
-      ? error.response.data
-      : Promise.reject(error);
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        const response = await instance.post<{ accessToken: string }>(
+          '/auth/refresh-token',
+          {
+            refreshToken,
+          }
+        );
+        const { accessToken } = response.data;
+        localStorage.setItem('accessToken', accessToken);
+        if (originalRequest.headers) {
+          originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+        }
+        return instance(originalRequest);
+      } catch (refreshError) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        // Redirect to login page or dispatch a logout action
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
   }
 );
 
-export default instance;
+const retryRequest = async <T>(
+  config: InternalAxiosRequestConfig,
+  retries = 3,
+  delay = 3000
+): Promise<T> => {
+  try {
+    const response = await instance(config);
+    return response as T;
+  } catch (error) {
+    if (
+      axios.isAxiosError(error) &&
+      !error.response &&
+      error.code === 'ECONNABORTED'
+    ) {
+      if (retries === 0) {
+        return Promise.reject(error);
+      }
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return retryRequest<T>(config, retries - 1, delay * 2);
+    }
+    return Promise.reject(error);
+  }
+};
+
+const axiosApi = {
+  get: <T = any>(url: string, config?: InternalAxiosRequestConfig) =>
+    retryRequest<T>({
+      ...config,
+      method: 'get',
+      url,
+    } as InternalAxiosRequestConfig),
+  post: <T = any>(
+    url: string,
+    data?: any,
+    config?: InternalAxiosRequestConfig
+  ) =>
+    retryRequest<T>({
+      ...config,
+      method: 'post',
+      url,
+      data,
+    } as InternalAxiosRequestConfig),
+  put: <T = any>(
+    url: string,
+    data?: any,
+    config?: InternalAxiosRequestConfig
+  ) =>
+    retryRequest<T>({
+      ...config,
+      method: 'put',
+      url,
+      data,
+    } as InternalAxiosRequestConfig),
+  delete: <T = any>(url: string, config?: InternalAxiosRequestConfig) =>
+    retryRequest<T>({
+      ...config,
+      method: 'delete',
+      url,
+    } as InternalAxiosRequestConfig),
+  patch: <T = any>(
+    url: string,
+    data?: any,
+    config?: InternalAxiosRequestConfig
+  ) =>
+    retryRequest<T>({
+      ...config,
+      method: 'patch',
+      url,
+      data,
+    } as InternalAxiosRequestConfig),
+};
+
+export default axiosApi;
