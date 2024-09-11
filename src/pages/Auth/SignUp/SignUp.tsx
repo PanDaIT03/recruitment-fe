@@ -6,14 +6,33 @@ import { jwtDecode } from 'jwt-decode';
 import { useAppDispatch } from '~/hooks/useStore';
 import { signInWithGoogle } from '~/store/thunk/auth';
 import FormSignUp from './FormSignUp';
-import apiSignUp from '~/services/auth';
+import { apiSignUp } from '~/services/auth';
+import toast from '~/utils/functions/toast';
+import { IBaseUser } from '~/types/Auth';
+
+enum ROLE {
+  USER = 1,
+  EMPLOYER = 2,
+}
 
 const SignUp = () => {
   const dispatch = useAppDispatch();
   const [form] = useForm();
 
-  const handleFinish = (values: any) => {
-    apiSignUp(values);
+  const handleFinish = async (values: IBaseUser) => {
+    const payload = { ...values, roleId: ROLE.USER };
+    try {
+      const response = await apiSignUp(payload);
+      const message = response?.message;
+
+      response.statusCode === 200
+        ? toast.success(message)
+        : toast.error(message);
+
+      form.resetFields();
+    } catch (error: any) {
+      console.log('Unexpected error', error);
+    }
   };
 
   const handleSignInWithGoogleSuccess = (response: CredentialResponse) => {

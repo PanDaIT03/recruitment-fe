@@ -6,7 +6,7 @@ import axios, {
 } from 'axios';
 
 const instance: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_APP_API_BASE_URL,
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -34,7 +34,7 @@ instance.interceptors.request.use(
 // Add a response interceptor
 instance.interceptors.response.use(
   (response: AxiosResponse): any => {
-    return response && response.data ? response.data : response;
+    return response.data;
   },
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
@@ -44,9 +44,12 @@ instance.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const refreshToken = localStorage.getItem('refreshToken');
-        const response = await instance.post('/auth/refresh-token', {
-          refreshToken,
-        });
+        const response = await instance.post<{ accessToken: string }>(
+          '/auth/refresh-token',
+          {
+            refreshToken,
+          }
+        );
         const { accessToken } = response.data;
         localStorage.setItem('accessToken', accessToken);
         if (originalRequest.headers) {
@@ -65,52 +68,71 @@ instance.interceptors.response.use(
   }
 );
 
-// Retry logic
-const retryRequest = async (
+const retryRequest = async <T>(
   config: InternalAxiosRequestConfig,
   retries = 3,
-  delay = 1000
-): Promise<AxiosResponse> => {
+  delay = 3000
+): Promise<T> => {
   try {
-    return await instance(config);
+    const response = await instance(config);
+    return response as T;
   } catch (error) {
-    if (retries === 0) {
-      return Promise.reject(error);
+    if (
+      axios.isAxiosError(error) &&
+      !error.response &&
+      error.code === 'ECONNABORTED'
+    ) {
+      if (retries === 0) {
+        return Promise.reject(error);
+      }
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return retryRequest<T>(config, retries - 1, delay * 2);
     }
-    await new Promise((resolve) => setTimeout(resolve, delay));
-    return retryRequest(config, retries - 1, delay * 2);
+    return Promise.reject(error);
   }
 };
 
 const axiosApi = {
-  get: (url: string, config?: InternalAxiosRequestConfig) =>
-    retryRequest({
+  get: <T = any>(url: string, config?: InternalAxiosRequestConfig) =>
+    retryRequest<T>({
       ...config,
       method: 'get',
       url,
     } as InternalAxiosRequestConfig),
-  post: (url: string, data?: any, config?: InternalAxiosRequestConfig) =>
-    retryRequest({
+  post: <T = any>(
+    url: string,
+    data?: any,
+    config?: InternalAxiosRequestConfig
+  ) =>
+    retryRequest<T>({
       ...config,
       method: 'post',
       url,
       data,
     } as InternalAxiosRequestConfig),
-  put: (url: string, data?: any, config?: InternalAxiosRequestConfig) =>
-    retryRequest({
+  put: <T = any>(
+    url: string,
+    data?: any,
+    config?: InternalAxiosRequestConfig
+  ) =>
+    retryRequest<T>({
       ...config,
       method: 'put',
       url,
       data,
     } as InternalAxiosRequestConfig),
-  delete: (url: string, config?: InternalAxiosRequestConfig) =>
-    retryRequest({
+  delete: <T = any>(url: string, config?: InternalAxiosRequestConfig) =>
+    retryRequest<T>({
       ...config,
       method: 'delete',
       url,
     } as InternalAxiosRequestConfig),
-  patch: (url: string, data?: any, config?: InternalAxiosRequestConfig) =>
-    retryRequest({
+  patch: <T = any>(
+    url: string,
+    data?: any,
+    config?: InternalAxiosRequestConfig
+  ) =>
+    retryRequest<T>({
       ...config,
       method: 'patch',
       url,
