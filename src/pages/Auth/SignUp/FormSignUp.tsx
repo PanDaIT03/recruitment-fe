@@ -21,7 +21,7 @@ const FormSignUp = ({ form, onFinish }: IProps) => {
           label="Chúng tôi nên gọi bạn là gì?"
           rules={[{ required: true, message: 'Họ và tên không được để trống' }]}
         >
-          <InputForm name="userName" placeholder="Nguyễn Văn A" />
+          <InputForm name="fullName" placeholder="Nguyễn Văn A" />
         </Form.Item>
         <Form.Item
           name="email"
