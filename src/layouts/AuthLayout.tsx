@@ -1,23 +1,32 @@
 import { Col, Layout, Row, Typography } from 'antd';
-import { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { ReactNode, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import Button from '~/components/Button/Button';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
+const { ArrowLeftOutlined } = icons;
 const { Title, Paragraph } = Typography;
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate();
   const location = useLocation();
 
-  const isForgotPassword = location.pathname === PATH.FORGOT_PASSWORD;
+  const isLeftPanelVisible = useMemo(() => {
+    let isVisible = true;
+    const { pathname } = location;
+
+    if (pathname === (PATH.FORGOT_PASSWORD || pathname === PATH.RESET_PASSWORD))
+      isVisible = false;
+
+    return isVisible;
+  }, [location]);
 
   return (
-    <Layout className="w-full min-h-screen px-8 justify-center items-center">
-      <Row
-        justify={'center'}
-        align={'middle'}
-        className={`flex ${isForgotPassword ? 'gap-x-0' : 'gap-x-32'}`}
-      >
-        {!isForgotPassword && (
+    <Layout className="w-full min-h-screen p-8 justify-center items-center">
+      <Row justify={'center'} align={'middle'} className="flex gap-x-32">
+        {isLeftPanelVisible && (
           <Col className="flex flex-col justify-center items-start max-w-md">
             <Title level={2} className="text-gray-700 !mb-0">
               Chào mừng đến với
@@ -30,7 +39,20 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
             </Paragraph>
           </Col>
         )}
-        <Col>{children}</Col>
+        <Col className="max-w-sm">
+          <div className="flex flex-col gap-y-6 bg-white p-6 border rounded-xl shadow-md">
+            {children}
+          </div>
+          <div className="w-full flex justify-center mt-6">
+            <Button
+              displayType="text"
+              title="Quay lại trang chủ"
+              iconBefore={<ArrowLeftOutlined />}
+              className="text-[#2563eb] hover:underline hover:text-[#2563eb]"
+              onClick={() => navigate(PATH.ROOT)}
+            />
+          </div>
+        </Col>
       </Row>
     </Layout>
   );
