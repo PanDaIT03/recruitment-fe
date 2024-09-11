@@ -13,15 +13,15 @@ interface IMenuItems {
 const menuItems: IMenuItems[] = [
   {
     label: 'Danh sách ứng viên',
-    href: '',
+    href: '/',
   },
   {
     label: 'Tin tuyển dụng',
-    href: '',
+    href: '/',
   },
   {
     label: 'Blog',
-    href: '',
+    href: '/',
   },
 ];
 

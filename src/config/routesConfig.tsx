@@ -5,13 +5,13 @@ import MainLayout from '~/layouts/MainLayout';
 import ProtectedRoute from '~/routes/ProtectedRoute';
 import PATH from '~/utils/path';
 
-const AuthLayout = lazy(() => import('~/layouts/AuthLayout'));
 const Home = lazy(() => import('~/pages/Home/Home'));
+const AuthLayout = lazy(() => import('~/layouts/AuthLayout'));
 const SignIn = lazy(() => import('~/pages/Auth/SignIn/SignIn'));
 const SignUp = lazy(() => import('~/pages/Auth/SignUp/SignUp'));
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
-const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
 const UserProfile = lazy(() => import('~/pages/User/UserProfile'));
+const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
 const EmployerDashboard = lazy(
   () => import('~/pages/EmployerDashboard/EmployerDashboard')
 );
