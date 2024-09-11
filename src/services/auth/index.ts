@@ -1,15 +1,18 @@
-import axiosApi from '~/services/axios';
+import instance from '~/services/axios';
 import { IBaseUser } from '~/types/Auth';
 
-const apiSignUp = async (data: IBaseUser) => {
-  // try {
-  //   const response = await axiosApi.post('auth/register', data);
-  //   return response;
-  // } catch (error) {
-  //   console.error('Error in apiSignUp:', error);
-  //   throw error;
-  // }
-  console.log(data);
+interface MessageRespone {
+  message: string;
+  statusCode: number;
+  data: any;
+}
+
+const apiSignUp = (payload: IBaseUser): Promise<MessageRespone> => {
+  return instance.post('/auth/register', payload);
 };
 
-export default apiSignUp;
+const apiSignIn = (payload: IBaseUser): Promise<MessageRespone> => {
+  return instance.post('/auth/sign-in', payload);
+};
+
+export { apiSignUp, apiSignIn };

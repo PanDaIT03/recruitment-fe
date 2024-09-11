@@ -21,7 +21,7 @@ const FormSignUp = ({ form, onFinish }: IProps) => {
         onFinish={onFinish}
       >
         <Form.Item
-          name="userName"
+          name="fullName"
           label="Chúng tôi nên gọi bạn là gì?"
           rules={[{ required: true, message: 'Họ và tên không được để trống' }]}
         >
