@@ -90,7 +90,8 @@ export default {
       textColor: {
         main: '#fff',
         sub: '#78726de6',
-        third: '#f15224',
+        accent: '#f15224',
+        dark: '#0A0A0A'
       },
       backgroundColor: {
         main: '#f7f6f2',
