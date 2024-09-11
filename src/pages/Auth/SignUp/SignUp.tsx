@@ -1,33 +1,26 @@
-import { useGoogleLogin } from '@react-oauth/google';
 import { Divider, Image } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 
 import { GOOGLE_LOGO } from '~/assets/img';
 import Button from '~/components/Button/Button';
 import { useAppDispatch } from '~/hooks/useStore';
-<<<<<<< HEAD
-import { signInWithGoogle } from '~/store/thunk/auth';
 import FormSignUp from './FormSignUp';
 import { apiSignUp } from '~/services/auth';
 import toast from '~/utils/functions/toast';
 import { IBaseUser } from '~/types/Auth';
+import { useGoogleLogin } from '@react-oauth/google';
+import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
+import { signInWithGoogle } from '~/store/thunk/auth';
 
 enum ROLE {
   USER = 1,
   EMPLOYER = 2,
 }
-=======
-import apiSignUp from '~/services/auth';
-import { signInWithGoogle } from '~/store/thunk/auth';
-import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
-import FormSignUp from './FormSignUp';
->>>>>>> features
 
 const SignUp = () => {
   const dispatch = useAppDispatch();
   const [form] = useForm();
 
-<<<<<<< HEAD
   const handleFinish = async (values: IBaseUser) => {
     const payload = { ...values, roleId: ROLE.USER };
     try {
@@ -42,7 +35,8 @@ const SignUp = () => {
     } catch (error: any) {
       console.log('Unexpected error', error);
     }
-=======
+  };
+
   const handleSignUpWithGoogle = useGoogleLogin({
     onSuccess: async (response) => {
       try {
@@ -53,11 +47,6 @@ const SignUp = () => {
       }
     },
   });
-
-  const handleFinish = (values: any) => {
-    apiSignUp(values);
->>>>>>> features
-  };
 
   return (
     <>
