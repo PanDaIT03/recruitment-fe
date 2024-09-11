@@ -6,13 +6,14 @@ import { jwtDecode } from 'jwt-decode';
 import { useAppDispatch } from '~/hooks/useStore';
 import { signInWithGoogle } from '~/store/thunk/auth';
 import FormSignUp from './FormSignUp';
+import apiSignUp from '~/services/auth';
 
 const SignUp = () => {
   const dispatch = useAppDispatch();
   const [form] = useForm();
 
   const handleFinish = (values: any) => {
-    console.log(values);
+    apiSignUp(values);
   };
 
   const handleSignInWithGoogleSuccess = (response: CredentialResponse) => {
