@@ -4,13 +4,16 @@ import { useForm } from 'antd/es/form/Form';
 
 import { GOOGLE_LOGO } from '~/assets/img';
 import Button from '~/components/Button/Button';
-import { useAppDispatch } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signIn, signInWithGoogle } from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
 import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
 import FormSignIn from './FormSignIn';
+import { useNavigate } from 'react-router-dom';
+import toast from '~/utils/functions/toast';
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [form] = useForm<IBaseUser>();
 
@@ -29,7 +32,17 @@ const SignIn = () => {
 
   const handleSignIn = async (values: any) => {
     const { email, password } = values;
-    dispatch(signIn({ email: email, password: password }));
+    try {
+      const result = await dispatch(signIn({ email, password })).unwrap();
+      if (result && result.statusCode === 200) {
+        toast.success(result.message);
+        navigate('/');
+      } else {
+        toast.error(result?.message || 'Có lỗi xảy ra');
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

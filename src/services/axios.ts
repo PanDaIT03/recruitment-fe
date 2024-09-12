@@ -4,6 +4,8 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+import { setAccessToken } from '~/store/reducer/auth';
+import { store } from '~/store/store';
 
 const instance: AxiosInstance = axios.create({
   baseURL: '/api',
@@ -18,7 +20,7 @@ const instance: AxiosInstance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = store.getState().auth.accessToken;
 
     if (accessToken && config.headers) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -43,7 +45,7 @@ instance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
+        const refreshToken = store.getState().auth.refreshToken;
         const response = await instance.post<{ accessToken: string }>(
           '/auth/refresh-token',
           {
@@ -51,16 +53,14 @@ instance.interceptors.response.use(
           }
         );
         const { accessToken } = response.data;
-        localStorage.setItem('accessToken', accessToken);
+        store.dispatch(setAccessToken(accessToken));
         if (originalRequest.headers) {
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
         }
         return instance(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        // Redirect to login page or dispatch a logout action
-        window.location.href = '/login';
+        // store.dispatch(logout());
+        window.location.href = '/';
         return Promise.reject(refreshError);
       }
     }

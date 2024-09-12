@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { ReactNode, memo } from 'react';
-
+import { Spin } from 'antd';
 import styles from './Button.module.scss';
 
 type ButtonType = 'button' | 'submit' | 'reset';
@@ -12,6 +12,7 @@ interface IProps {
   title: ReactNode;
   type?: ButtonType;
   className?: string;
+  loading?: boolean;
   disabled?: boolean;
   iconBefore?: ReactNode;
   displayType?: DisplayType;
@@ -30,6 +31,7 @@ const Button = ({
   fill = false,
   className = '',
   displayType = 'primary',
+  loading = false,
   ...props
 }: IProps) => {
   const clasess = cx('button', 'rounded-md transition duration-300', {
@@ -39,9 +41,20 @@ const Button = ({
   });
 
   return (
-    <button type={type} disabled={disabled} className={clasess} {...props}>
-      {iconBefore && <span className="flex mr-3">{iconBefore}</span>}
-      <b>{title}</b>
+    <button
+      type={type}
+      disabled={disabled || loading}
+      className={clasess}
+      {...props}
+    >
+      {loading ? (
+        <Spin size="small" />
+      ) : (
+        <>
+          {iconBefore && <span className="flex mr-3">{iconBefore}</span>}
+          <b>{title}</b>
+        </>
+      )}
     </button>
   );
 };
