@@ -1,22 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { signIn, signInWithGoogle } from '~/store/thunk/auth';
-import { IUser, User } from '~/types/Auth/index';
+import { IUser } from '~/types/Auth/index';
 
 interface InitType {
-  currentUser: User | null;
   loading: boolean;
-  status: 'loggin successfully' | 'loggin failed' | '';
+  currentUser: IUser;
   accessToken: string | null;
   refreshToken: string | null;
 }
 
 const initialState: InitType = {
-  status: '',
   loading: false,
-  currentUser: {} as User,
   accessToken: null,
   refreshToken: null,
+  currentUser: {} as IUser,
 };
 
 const authSlice = createSlice({
@@ -34,17 +32,16 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signIn.fulfilled, (state, action) => {
-        state.currentUser = action.payload;
+        const { accessToken } = action.payload;
+
         state.loading = false;
-        state.status = 'loggin successfully';
-        if (action.payload && action.payload.accessToken) {
-          state.accessToken = action.payload.accessToken;
-          localStorage.setItem('accessToken', action.payload.accessToken);
-        }
+        state.accessToken = accessToken;
+        state.currentUser = action.payload;
+
+        localStorage.setItem('accessToken', accessToken);
       })
       .addCase(signIn.rejected, (state) => {
         state.loading = false;
-        state.status = 'loggin failed';
       })
       .addCase(signInWithGoogle.pending, (state) => {
         state.loading = true;
@@ -52,11 +49,9 @@ const authSlice = createSlice({
       .addCase(signInWithGoogle.fulfilled, (state, action) => {
         console.log('reducer', action);
         state.loading = false;
-        state.status = 'loggin successfully';
       })
       .addCase(signInWithGoogle.rejected, (state) => {
         state.loading = false;
-        state.status = 'loggin failed';
       });
   },
 });
