@@ -11,6 +11,7 @@ import { IBaseUser } from '~/types/Auth';
 import { useGoogleLogin } from '@react-oauth/google';
 import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
 import { signInWithGoogle } from '~/store/thunk/auth';
+import { useState } from 'react';
 
 enum ROLE {
   USER = 1,
@@ -20,18 +21,19 @@ enum ROLE {
 const SignUp = () => {
   const dispatch = useAppDispatch();
   const [form] = useForm();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleFinish = async (values: IBaseUser) => {
     const payload = { ...values, roleId: ROLE.USER };
+    setIsLoading(true);
     try {
       const response = await apiSignUp(payload);
-      const message = response?.message;
+      const { statusCode, message } = response;
 
-      response.statusCode === 200
-        ? toast.success(message)
-        : toast.error(message);
+      toast[statusCode === 200 ? 'success' : 'error'](message);
+      if (statusCode === 200) form.resetFields();
 
-      form.resetFields();
+      setIsLoading(false);
     } catch (error: any) {
       console.log('Unexpected error', error);
     }
@@ -69,7 +71,7 @@ const SignUp = () => {
       <Divider className="!my-0">
         <p className="text-sub text-sm">hoặc</p>
       </Divider>
-      <FormSignUp form={form} onFinish={handleFinish} />
+      <FormSignUp form={form} onFinish={handleFinish} loading={isLoading} />
     </>
   );
 };
