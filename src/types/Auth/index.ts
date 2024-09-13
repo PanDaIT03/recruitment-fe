@@ -4,34 +4,33 @@ export interface IBaseUser {
   password?: string;
 }
 
-export interface User {
+interface IPosition {
   id: number;
-  createBy: string | null;
-  createAt: string;
-  updateBy: string | null;
-  updateAt: string | null;
+  title: string;
+}
+
+export interface IUser {
+  id: string;
+  createBy?: string;
+  createAt?: string;
+  updateBy?: string;
+  updateAt?: string;
   fullName: string;
   phoneNumber: string;
   email: string;
-  avatarUrl: string | null;
+  avatarUrl?: string;
   companyName: string;
   companyUrl: string;
   isActive: boolean;
-  userSkills: Array<any>;
-  position: {
-    id: number;
-    title: string;
-  };
-  role: {
-    id: number;
-    title: string;
-  };
+  userSkills: any[];
+  position: IPosition;
+  role: IPosition;
   accessToken: string;
   message: string;
   statusCode: number;
 }
 
-export interface IUser extends IBaseUser {
+export interface IUserSignIn extends IBaseUser {
   role: string;
 }
 

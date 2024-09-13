@@ -1,6 +1,8 @@
 import { useGoogleLogin } from '@react-oauth/google';
 import { Divider, Image } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { GOOGLE_LOGO } from '~/assets/img';
 import Button from '~/components/Button/Button';
@@ -8,14 +10,25 @@ import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signIn, signInWithGoogle } from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
 import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
-import FormSignIn from './FormSignIn';
-import { useNavigate } from 'react-router-dom';
 import toast from '~/utils/functions/toast';
+import path from '~/utils/path';
+import FormSignIn from './FormSignIn';
 
 const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const [form] = useForm<IBaseUser>();
+
+  const { currentUser } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!Object.values(currentUser).length) return;
+
+    currentUser?.statusCode === 200
+      ? (toast.success(currentUser.message), navigate(path.ROOT))
+      : toast.error(currentUser?.message || 'Có lỗi xảy ra');
+  }, [currentUser]);
 
   const handleSignInWithGoogle = useGoogleLogin({
     onSuccess: async (response) => {
@@ -31,16 +44,9 @@ const SignIn = () => {
   });
 
   const handleSignIn = async (values: any) => {
-    const { email, password } = values;
     try {
-      const result = await dispatch(signIn({ email, password })).unwrap();
-      if (result && result.statusCode === 200) {
-        toast.success(result.message);
-        navigate('/');
-      } else {
-        toast.error(result?.message || 'Có lỗi xảy ra');
-      }
-    } catch (error) {
+      dispatch(signIn(values));
+    } catch (error: any) {
       console.log(error);
     }
   };
