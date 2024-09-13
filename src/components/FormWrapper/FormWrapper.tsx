@@ -1,7 +1,8 @@
 import { Col, Form, FormInstance, Row } from 'antd';
 import { memo, ReactNode } from 'react';
-import Button from '../Button/Button';
+
 import { useAppSelector } from '~/hooks/useStore';
+import Button from '../Button/Button';
 
 interface IProps {
   loading?: boolean;
@@ -16,17 +17,17 @@ interface IProps {
 }
 
 const FormWrapper = ({
-  loading = false,
   form,
   children,
   submitTitle,
+  loading = false,
   cancelTitle = 'Hủy',
   className = 'w-full',
   isCancel = false,
   onCancel,
   onFinish,
 }: IProps) => {
-  const isLoadingSignIn = useAppSelector((state) => state.auth.loading);
+  const { loading: isLoadingSignIn } = useAppSelector((state) => state.auth);
 
   const checkFormValidate = async () => {
     try {
@@ -61,9 +62,9 @@ const FormWrapper = ({
           <Col span={24}>
             <Button
               fill
-              title={submitTitle}
               type="submit"
               className="w-full"
+              title={submitTitle}
               loading={loading || isLoadingSignIn}
             />
           </Col>

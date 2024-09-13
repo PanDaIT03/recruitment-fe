@@ -1,5 +1,5 @@
 import { Form, FormInstance } from 'antd';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import FormWrapper from '~/components/FormWrapper/FormWrapper';
@@ -14,6 +14,13 @@ interface IProps {
 }
 
 const FormSignIn = ({ form, onFinish }: IProps) => {
+  useEffect(() => {
+    form.setFieldsValue({
+      email: 'daiphucduongvinh200331@gmail.com',
+      password: 'Duc@05102003',
+    });
+  }, []);
+
   return (
     <>
       <FormWrapper form={form} submitTitle="Đăng nhập" onFinish={onFinish}>

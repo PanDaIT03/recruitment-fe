@@ -1,17 +1,17 @@
+import { useGoogleLogin } from '@react-oauth/google';
 import { Divider, Image } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { useState } from 'react';
 
+import AuthAPI from '~/apis/auth';
 import { GOOGLE_LOGO } from '~/assets/img';
 import Button from '~/components/Button/Button';
 import { useAppDispatch } from '~/hooks/useStore';
-import FormSignUp from './FormSignUp';
-import { apiSignUp } from '~/services/auth';
-import toast from '~/utils/functions/toast';
-import { IBaseUser } from '~/types/Auth';
-import { useGoogleLogin } from '@react-oauth/google';
-import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
 import { signInWithGoogle } from '~/store/thunk/auth';
-import { useState } from 'react';
+import { IBaseUser } from '~/types/Auth';
+import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
+import toast from '~/utils/functions/toast';
+import FormSignUp from './FormSignUp';
 
 enum ROLE {
   USER = 1,
@@ -27,7 +27,7 @@ const SignUp = () => {
     const payload = { ...values, roleId: ROLE.USER };
     setIsLoading(true);
     try {
-      const response = await apiSignUp(payload);
+      const response = await AuthAPI.signUp(payload);
       const { statusCode, message } = response;
 
       toast[statusCode === 200 ? 'success' : 'error'](message);

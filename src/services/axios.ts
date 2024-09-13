@@ -4,13 +4,14 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+
 // import { setAccessToken, logout } from '~/store/reducer/auth';
 import { store } from '~/store/store';
 import toast from '~/utils/functions/toast';
 import PATH from '~/utils/path';
 
 const instance: AxiosInstance = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_APP_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -24,9 +25,8 @@ instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const accessToken = store.getState().auth.accessToken;
 
-    if (accessToken && config.headers) {
+    if (accessToken && config.headers)
       config.headers.Authorization = `Bearer ${accessToken}`;
-    }
 
     return config;
   },
@@ -57,9 +57,10 @@ instance.interceptors.response.use(
         const { accessToken } = response.data;
         console.log(accessToken);
         // store.dispatch(setAccessToken(accessToken));
-        if (originalRequest.headers) {
+
+        if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-        }
+
         return instance(originalRequest);
       } catch (refreshError) {
         // store.dispatch(logout());
@@ -85,13 +86,14 @@ const retryRequest = async <T>(
       !error.response &&
       error.code === 'ECONNABORTED'
     ) {
-      if (retries === 0) {
-        return Promise.reject(error);
-      }
+      if (retries === 0) return Promise.reject(error);
+
       await new Promise((resolve) => setTimeout(resolve, delay));
       toast.warning('Hết thời gian truy cập. Xin vui lòng thử lại.');
+
       return retryRequest<T>(config, retries - 1, delay * 2);
     }
+
     return Promise.reject(error);
   }
 };
