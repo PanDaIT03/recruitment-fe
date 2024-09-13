@@ -1,7 +1,11 @@
-import classNames from 'classnames/bind';
-import { ReactNode, memo } from 'react';
 import { Spin } from 'antd';
+import classNames from 'classnames/bind';
+import { ReactNode, memo, useMemo } from 'react';
+
+import icons from '~/utils/icons';
 import styles from './Button.module.scss';
+
+const { LoadingOutlined } = icons;
 
 type ButtonType = 'button' | 'submit' | 'reset';
 type DisplayType = 'error' | 'approve' | 'primary' | 'text';
@@ -34,21 +38,28 @@ const Button = ({
   loading = false,
   ...props
 }: IProps) => {
-  const clasess = cx('button', 'rounded-md transition duration-300', {
+  const classes = cx('button', 'rounded-md transition duration-300', {
     fill,
     [className]: className,
     [displayType]: displayType,
   });
 
+  const buttonState = useMemo(() => {
+    return {
+      loading: loading && displayType !== 'text',
+      disabled: (disabled || loading) && displayType !== 'text',
+    };
+  }, [loading, disabled]);
+
   return (
     <button
       type={type}
-      disabled={disabled || loading}
-      className={clasess}
+      className={classes}
+      disabled={buttonState.disabled}
       {...props}
     >
-      {loading ? (
-        <Spin size="small" />
+      {buttonState.loading ? (
+        <Spin indicator={<LoadingOutlined />} />
       ) : (
         <>
           {iconBefore && <span className="flex mr-3">{iconBefore}</span>}
