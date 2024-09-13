@@ -1,11 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { apiSignIn } from '~/services/auth';
 
-import { IBaseUser, IUserSignInWithGoogle, User } from '~/types/Auth/index';
+import AuthAPI from '~/apis/auth';
+import { IBaseUser, IUserSignInWithGoogle } from '~/types/Auth/index';
 
 enum TYPE_LOGIN {
   TYPE_SYSTEM = 'system',
-  TYPE_GOOGLE = 'goole',
+  TYPE_GOOGLE = 'google',
 }
 
 export const signInWithGoogle = createAsyncThunk(
@@ -24,12 +24,13 @@ export const signInWithGoogle = createAsyncThunk(
   }
 );
 
-export const signIn = createAsyncThunk<User | null, IBaseUser>(
+export const signIn = createAsyncThunk(
   'auth/signIn',
   async (data: IBaseUser, { rejectWithValue }) => {
     try {
       const payload = { ...data, type: TYPE_LOGIN.TYPE_SYSTEM };
-      const user = await apiSignIn(payload);
+      const user = await AuthAPI.signIn(payload);
+      
       return user;
     } catch (error) {
       return rejectWithValue(null);
