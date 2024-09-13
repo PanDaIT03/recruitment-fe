@@ -1,7 +1,4 @@
-import {
-  OverridableTokenClientConfig,
-  useGoogleLogin,
-} from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { Image } from 'antd';
 
 import { GOOGLE_LOGO } from '~/assets/img';
@@ -10,7 +7,7 @@ import Button from './Button';
 
 interface IProps {
   title?: string;
-  onClick: (overrideConfig?: OverridableTokenClientConfig) => void;
+  onClick: (value: any) => void;
 }
 
 const GoogleSignInButton = ({
