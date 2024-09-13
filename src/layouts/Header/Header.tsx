@@ -1,9 +1,10 @@
-import { Col, Row } from 'antd';
+import { Avatar, Col, Dropdown, MenuProps, Row } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { HeaderLogo } from '~/assets/svg';
-
+import { UserOutlined } from '@ant-design/icons';
 import Button from '~/components/Button/Button';
 import PATH from '~/utils/path';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 
 interface IMenuItems {
   label: string;
@@ -28,6 +29,27 @@ const menuItems: IMenuItems[] = [
 const Header = () => {
   const navigate = useNavigate();
 
+  const token = useAppSelector((state) => state.auth.accessToken);
+
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: 'Hồ sơ',
+      onClick: () => navigate(PATH.USER_PROFILE),
+    },
+    {
+      key: '2',
+      label: 'CV',
+      onClick: () => navigate(PATH.ROOT),
+    },
+    { type: 'divider' },
+    {
+      key: '3',
+      label: 'Đăng xuất',
+      onClick: () => console.log('logout'),
+    },
+  ];
+
   return (
     <div className="bg-[#692474] px-8">
       <Row align={'middle'} justify={'space-between'} className="h-16 mx-12">
@@ -48,21 +70,36 @@ const Header = () => {
             ))}
           </div>
         </Col>
-        <Col className="flex gap-3 justify-between items-center relative">
-          <Button
-            displayType="text"
-            className="hover:bg-header-bgHover"
-            onClick={() => navigate(PATH.SIGN_IN)}
-            title={
-              <div className="flex flex-col text-start">
-                <span className="text-xs">Người tìm việc</span>
-                <span className="text-sm">Đăng ký/ Đăng nhập</span>
-              </div>
-            }
-          />
-          <hr className="border-l-[1px]	border-main h-7" />
-          <Button fill title="Nhà tuyển dụng" />
-        </Col>
+        {token ? (
+          <>
+            <Col className="flex justify-center items-center gap-2">
+              {/* <NotificationComponent userRole="user" /> */}
+              <Dropdown menu={{ items }} trigger={['click']}>
+                <a onClick={(e) => e.preventDefault()}>
+                  <Avatar className="border-white" icon={<UserOutlined />} />
+                </a>
+              </Dropdown>
+            </Col>
+          </>
+        ) : (
+          <>
+            <Col className="flex gap-3 justify-between items-center relative">
+              <Button
+                displayType="text"
+                className="hover:bg-header-bgHover"
+                onClick={() => navigate(PATH.SIGN_IN)}
+                title={
+                  <div className="flex flex-col text-start">
+                    <span className="text-xs">Người tìm việc</span>
+                    <span className="text-sm">Đăng ký/ Đăng nhập</span>
+                  </div>
+                }
+              />
+              <hr className="border-l-[1px]	border-main h-7" />
+              <Button fill title="Nhà tuyển dụng" />
+            </Col>
+          </>
+        )}
       </Row>
     </div>
   );

@@ -4,6 +4,10 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+// import { setAccessToken, logout } from '~/store/reducer/auth';
+import { store } from '~/store/store';
+import toast from '~/utils/functions/toast';
+import PATH from '~/utils/path';
 
 const instance: AxiosInstance = axios.create({
   baseURL: '/api',
@@ -11,14 +15,14 @@ const instance: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },
-  timeout: 10000,
+  timeout: 3000,
   withCredentials: true,
 });
 
 // Add a request interceptor
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = store.getState().auth.accessToken;
 
     if (accessToken && config.headers) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -43,24 +47,23 @@ instance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
+        const refreshToken = store.getState().auth.refreshToken;
         const response = await instance.post<{ accessToken: string }>(
-          '/auth/refresh-token',
+          '/auth/sign-in',
           {
             refreshToken,
           }
         );
         const { accessToken } = response.data;
-        localStorage.setItem('accessToken', accessToken);
+        console.log(accessToken);
+        // store.dispatch(setAccessToken(accessToken));
         if (originalRequest.headers) {
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
         }
         return instance(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        // Redirect to login page or dispatch a logout action
-        window.location.href = '/login';
+        // store.dispatch(logout());
+        window.location.href = PATH.SIGN_IN;
         return Promise.reject(refreshError);
       }
     }
@@ -86,6 +89,7 @@ const retryRequest = async <T>(
         return Promise.reject(error);
       }
       await new Promise((resolve) => setTimeout(resolve, delay));
+      toast.warning('Hết thời gian truy cập. Xin vui lòng thử lại.');
       return retryRequest<T>(config, retries - 1, delay * 2);
     }
     return Promise.reject(error);

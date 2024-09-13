@@ -10,15 +10,17 @@ import PATH from '~/utils/path';
 interface IProps {
   form: FormInstance<any>;
   onFinish(values: any): void;
+  loading: boolean;
 }
 
-const FormSignUp = ({ form, onFinish }: IProps) => {
+const FormSignUp = ({ form, onFinish, loading }: IProps) => {
   return (
     <>
       <FormWrapper
         form={form}
         submitTitle="Đăng ký"
         onFinish={onFinish}
+        loading={loading}
       >
         <Form.Item
           name="fullName"
