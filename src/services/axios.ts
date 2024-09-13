@@ -4,8 +4,10 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-import { setAccessToken } from '~/store/reducer/auth';
+// import { setAccessToken, logout } from '~/store/reducer/auth';
 import { store } from '~/store/store';
+import toast from '~/utils/functions/toast';
+import PATH from '~/utils/path';
 
 const instance: AxiosInstance = axios.create({
   baseURL: '/api',
@@ -13,7 +15,7 @@ const instance: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },
-  timeout: 10000,
+  timeout: 3000,
   withCredentials: true,
 });
 
@@ -47,20 +49,21 @@ instance.interceptors.response.use(
       try {
         const refreshToken = store.getState().auth.refreshToken;
         const response = await instance.post<{ accessToken: string }>(
-          '/auth/refresh-token',
+          '/auth/sign-in',
           {
             refreshToken,
           }
         );
         const { accessToken } = response.data;
-        store.dispatch(setAccessToken(accessToken));
+        console.log(accessToken);
+        // store.dispatch(setAccessToken(accessToken));
         if (originalRequest.headers) {
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
         }
         return instance(originalRequest);
       } catch (refreshError) {
         // store.dispatch(logout());
-        window.location.href = '/';
+        window.location.href = PATH.SIGN_IN;
         return Promise.reject(refreshError);
       }
     }
@@ -86,6 +89,7 @@ const retryRequest = async <T>(
         return Promise.reject(error);
       }
       await new Promise((resolve) => setTimeout(resolve, delay));
+      toast.warning('Hết thời gian truy cập. Xin vui lòng thử lại.');
       return retryRequest<T>(config, retries - 1, delay * 2);
     }
     return Promise.reject(error);
