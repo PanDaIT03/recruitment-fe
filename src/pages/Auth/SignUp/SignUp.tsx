@@ -12,6 +12,7 @@ import { IBaseUser } from '~/types/Auth';
 import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
 import toast from '~/utils/functions/toast';
 import FormSignUp from './FormSignUp';
+import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
 
 enum ROLE {
   USER = 1,
@@ -39,17 +40,14 @@ const SignUp = () => {
     }
   };
 
-  const handleSignUpWithGoogle = useGoogleLogin({
-    onSuccess: async (response) => {
-      try {
-        const userInfo = await fetchGoogleUserInfo({ response });
-        dispatch(signInWithGoogle(userInfo));
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
-
+  const handleSignUpWithGoogle = (userInfo: any) => {
+    try {
+      dispatch(signInWithGoogle(userInfo));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
   return (
     <>
       <div className="w-full">
@@ -59,14 +57,7 @@ const SignUp = () => {
         </p>
       </div>
       <div className="w-full">
-        <Button
-          title="Tiếp tục với Google"
-          iconBefore={
-            <Image preview={false} src={GOOGLE_LOGO} width={24} height={24} />
-          }
-          className="w-full text-[#3c4043] border-[#dadce0] hover:border-[#d2e3fc] hover:bg-[#f7fafe]"
-          onClick={() => handleSignUpWithGoogle()}
-        />
+        <GoogleSignInButton onClick={handleSignUpWithGoogle}/>
       </div>
       <Divider className="!my-0">
         <p className="text-sub text-sm">hoặc</p>
