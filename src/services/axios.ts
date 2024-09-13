@@ -86,10 +86,14 @@ const retryRequest = async <T>(
       !error.response &&
       error.code === 'ECONNABORTED'
     ) {
+      if (retries === 1) {
+        toast.warning('Hết thời gian truy cập. Xin vui lòng thử lại.');
+        return Promise.reject(error);
+      }
+
       if (retries === 0) return Promise.reject(error);
 
       await new Promise((resolve) => setTimeout(resolve, delay));
-      toast.warning('Hết thời gian truy cập. Xin vui lòng thử lại.');
 
       return retryRequest<T>(config, retries - 1, delay * 2);
     }
