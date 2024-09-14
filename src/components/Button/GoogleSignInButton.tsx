@@ -1,5 +1,6 @@
 import { useGoogleLogin } from '@react-oauth/google';
 import { Image } from 'antd';
+import { memo } from 'react';
 
 import { GOOGLE_LOGO } from '~/assets/img';
 import { IUserSignInWithGoogle } from '~/types/Auth';
@@ -49,4 +50,4 @@ const GoogleSignInButton = ({
   );
 };
 
-export default GoogleSignInButton;
+export default memo(GoogleSignInButton);
