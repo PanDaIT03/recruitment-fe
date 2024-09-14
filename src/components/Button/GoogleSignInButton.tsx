@@ -21,7 +21,7 @@ const GoogleSignInButton = ({
       try {
         const userInfo = await fetchGoogleUserInfo({ response });
         if (!userInfo) {
-          toast.error('Đăng nhập thất bại!');
+          toast.error('Có lỗi xảy ra khi lấy thông tin từ Google!');
           return;
         }
 
