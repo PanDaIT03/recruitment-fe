@@ -2,7 +2,9 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { Image } from 'antd';
 
 import { GOOGLE_LOGO } from '~/assets/img';
+import { IUserSignInWithGoogle } from '~/types/Auth';
 import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
+import toast from '~/utils/functions/toast';
 import Button from './Button';
 
 interface IProps {
@@ -18,7 +20,17 @@ const GoogleSignInButton = ({
     onSuccess: async (response) => {
       try {
         const userInfo = await fetchGoogleUserInfo({ response });
-        onClick(userInfo);
+        if (!userInfo) {
+          toast.error('Đăng nhập thất bại!');
+          return;
+        }
+
+        const params: IUserSignInWithGoogle = {
+          email: userInfo.email,
+          fullName: userInfo.name,
+        };
+
+        onClick(params);
       } catch (error) {
         console.log(error);
       }
