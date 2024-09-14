@@ -4,6 +4,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+import { setAccessToken } from '~/store/reducer/auth';
 
 // import { setAccessToken, logout } from '~/store/reducer/auth';
 import { store } from '~/store/store';
@@ -56,14 +57,13 @@ instance.interceptors.response.use(
         );
         const { accessToken } = response.data;
         console.log(accessToken);
-        // store.dispatch(setAccessToken(accessToken));
+        store.dispatch(setAccessToken(accessToken));
 
         if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
         return instance(originalRequest);
       } catch (refreshError) {
-        // store.dispatch(logout());
         window.location.href = PATH.SIGN_IN;
         return Promise.reject(refreshError);
       }

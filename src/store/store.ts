@@ -10,9 +10,11 @@ import {
   loadState,
   localStorageMiddleware,
 } from './middlewares/localStorageMiddleware';
+import { jobReducer } from './reducer/job';
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  jobs: jobReducer,
 });
 
 const preloadedState = loadState();
