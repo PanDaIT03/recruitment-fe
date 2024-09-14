@@ -23,7 +23,6 @@ const authSlice = createSlice({
   reducers: {
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
-      localStorage.setItem('accessToken', action.payload);
     },
   },
   extraReducers(builder) {
@@ -37,8 +36,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.accessToken = accessToken;
         state.currentUser = action.payload;
-
-        localStorage.setItem('accessToken', accessToken);
       })
       .addCase(signIn.rejected, (state) => {
         state.loading = false;
