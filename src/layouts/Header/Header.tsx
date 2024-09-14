@@ -29,9 +29,11 @@ const menuItems: IMenuItems[] = [
 const Header = () => {
   const navigate = useNavigate();
 
+  const currentUser = useAppSelector((state) => state.auth.currentUser);
+
   const token = useAppSelector((state) => state.auth.accessToken);
 
-  const items: MenuProps['items'] = [
+  const menuUser: MenuProps['items'] = [
     {
       key: '1',
       label: 'Hồ sơ',
@@ -41,6 +43,25 @@ const Header = () => {
       key: '2',
       label: 'CV',
       onClick: () => navigate(PATH.ROOT),
+    },
+    { type: 'divider' },
+    {
+      key: '3',
+      label: 'Đăng xuất',
+      onClick: () => console.log('logout'),
+    },
+  ];
+
+  const menuEmployer: MenuProps['items'] = [
+    {
+      key: '1',
+      label: 'Dashboard',
+      onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
+    },
+    {
+      key: '2',
+      label: 'Đăng tin',
+      onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
     },
     { type: 'divider' },
     {
@@ -74,11 +95,29 @@ const Header = () => {
           <>
             <Col className="flex justify-center items-center gap-2">
               {/* <NotificationComponent userRole="user" /> */}
-              <Dropdown menu={{ items }} trigger={['click']}>
-                <a onClick={(e) => e.preventDefault()}>
-                  <Avatar className="border-white" icon={<UserOutlined />} />
-                </a>
-              </Dropdown>
+              {currentUser.role.id === 1 ? (
+                <>
+                  <Dropdown menu={{ items: menuUser }} trigger={['click']}>
+                    <a onClick={(e) => e.preventDefault()}>
+                      <Avatar
+                        className="border-white"
+                        icon={<UserOutlined />}
+                      />
+                    </a>
+                  </Dropdown>
+                </>
+              ) : (
+                <>
+                  <Dropdown menu={{ items: menuEmployer }} trigger={['click']}>
+                    <a onClick={(e) => e.preventDefault()}>
+                      <Avatar
+                        className="border-white"
+                        icon={<UserOutlined />}
+                      />
+                    </a>
+                  </Dropdown>
+                </>
+              )}
             </Col>
           </>
         ) : (
