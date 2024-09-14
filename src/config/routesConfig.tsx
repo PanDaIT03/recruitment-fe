@@ -10,7 +10,8 @@ const AuthLayout = lazy(() => import('~/layouts/AuthLayout'));
 const SignIn = lazy(() => import('~/pages/Auth/SignIn/SignIn'));
 const SignUp = lazy(() => import('~/pages/Auth/SignUp/SignUp'));
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
-const UserProfile = lazy(() => import('~/pages/User/UserProfile'));
+const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
+const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
 const EmployerDashboard = lazy(
   () => import('~/pages/EmployerDashboard/EmployerDashboard')
@@ -95,7 +96,8 @@ const routesConfig: CustomRouteObject[] = [
     ['user'],
     undefined,
     { index: true, element: <UserProfile /> },
-    createRoute(PATH.USER_PROFILE, <UserProfile />)
+    createRoute(PATH.USER_PROFILE, <UserProfile />),
+    createRoutes(MainLayout, createRoute(PATH.USER_ACCOUNT, <UserAccount />))
   ),
 
   // Auth

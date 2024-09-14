@@ -7,6 +7,7 @@ const PATH = {
   ADMIN_DASHBOARD: '/admin/dashboard',
   EMPLOYER_DASHBOARD: '/employer/dashboard',
   USER_PROFILE: '/user/profile',
+  USER_ACCOUNT: '/user/account',
   NOT_FOUND: '*',
 };
 
