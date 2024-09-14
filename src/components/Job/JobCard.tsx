@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import TestUI from '~/TestUI';
 
 const JobCard = () => {
@@ -8,4 +9,4 @@ const JobCard = () => {
   );
 };
 
-export default JobCard;
+export default memo(JobCard);

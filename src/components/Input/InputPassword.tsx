@@ -1,4 +1,6 @@
 import { Input, InputProps } from 'antd';
+import { memo } from 'react';
+
 import classNames from 'classnames';
 import icons from '~/utils/icons';
 
@@ -21,4 +23,4 @@ const InputPassword = (props: InputProps) => {
   );
 };
 
-export default InputPassword;
+export default memo(InputPassword);
