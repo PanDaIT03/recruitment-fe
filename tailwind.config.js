@@ -91,11 +91,13 @@ export default {
         main: '#fff',
         sub: '#78726de6',
         accent: '#f15224',
-        dark: '#0A0A0A'
+        dark: '#0A0A0A',
+        warning: '#DC2626',
       },
       backgroundColor: {
         main: '#f7f6f2',
         'header-bgHover': '#461A53',
+        'light-warning': '#fee2e2',
       },
     },
   },

@@ -1,5 +1,6 @@
 import { Input, InputProps } from 'antd';
 import classNames from 'classnames';
+import { memo } from 'react';
 
 const InputForm = (props: InputProps) => {
   const { allowClear = false } = props;
@@ -15,4 +16,4 @@ const InputForm = (props: InputProps) => {
   );
 };
 
-export default InputForm;
+export default memo(InputForm);

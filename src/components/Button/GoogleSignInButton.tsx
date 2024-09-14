@@ -1,5 +1,6 @@
 import { useGoogleLogin } from '@react-oauth/google';
 import { Image } from 'antd';
+import { memo } from 'react';
 
 import { GOOGLE_LOGO } from '~/assets/img';
 import { IUserSignInWithGoogle } from '~/types/Auth';
@@ -21,7 +22,7 @@ const GoogleSignInButton = ({
       try {
         const userInfo = await fetchGoogleUserInfo({ response });
         if (!userInfo) {
-          toast.error('Đăng nhập thất bại!');
+          toast.error('Có lỗi xảy ra khi lấy thông tin từ Google!');
           return;
         }
 
@@ -49,4 +50,4 @@ const GoogleSignInButton = ({
   );
 };
 
-export default GoogleSignInButton;
+export default memo(GoogleSignInButton);
