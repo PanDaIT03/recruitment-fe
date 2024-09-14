@@ -35,7 +35,17 @@ export interface IUserSignIn extends IBaseUser {
 }
 
 export interface IUserSignInWithGoogle {
-  userName: string;
   email: string;
-  pic: string;
+  fullName: string;
+  // pic: string;
+}
+
+export interface IGoogleUserInfo {
+  sub: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+  email: string;
+  email_verified: boolean;
 }

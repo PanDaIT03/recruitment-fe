@@ -1,16 +1,15 @@
-import { useGoogleLogin } from '@react-oauth/google';
-import { Divider, Image } from 'antd';
+import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import AuthAPI from '~/apis/auth';
-import { GOOGLE_LOGO } from '~/assets/img';
-import Button from '~/components/Button/Button';
-import { useAppDispatch } from '~/hooks/useStore';
+import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signInWithGoogle } from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
-import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
 import toast from '~/utils/functions/toast';
+import path from '~/utils/path';
 import FormSignUp from './FormSignUp';
 
 enum ROLE {
@@ -19,9 +18,21 @@ enum ROLE {
 }
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const [form] = useForm();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const { currentUser } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!Object.values(currentUser).length) return;
+
+    currentUser?.statusCode === 200
+      ? (toast.success(currentUser.message), navigate(path.ROOT))
+      : toast.error(currentUser?.message || 'Có lỗi xảy ra');
+  }, [currentUser]);
 
   const handleFinish = async (values: IBaseUser) => {
     const payload = { ...values, roleId: ROLE.USER };
@@ -39,16 +50,13 @@ const SignUp = () => {
     }
   };
 
-  const handleSignUpWithGoogle = useGoogleLogin({
-    onSuccess: async (response) => {
-      try {
-        const userInfo = await fetchGoogleUserInfo({ response });
-        dispatch(signInWithGoogle(userInfo));
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
+  const handleSignUpWithGoogle = (userInfo: any) => {
+    try {
+      dispatch(signInWithGoogle(userInfo));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -59,14 +67,7 @@ const SignUp = () => {
         </p>
       </div>
       <div className="w-full">
-        <Button
-          title="Tiếp tục với Google"
-          iconBefore={
-            <Image preview={false} src={GOOGLE_LOGO} width={24} height={24} />
-          }
-          className="w-full text-[#3c4043] border-[#dadce0] hover:border-[#d2e3fc] hover:bg-[#f7fafe]"
-          onClick={() => handleSignUpWithGoogle()}
-        />
+        <GoogleSignInButton onClick={handleSignUpWithGoogle} />
       </div>
       <Divider className="!my-0">
         <p className="text-sub text-sm">hoặc</p>

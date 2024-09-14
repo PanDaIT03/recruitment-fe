@@ -44,8 +44,13 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signInWithGoogle.fulfilled, (state, action) => {
-        console.log('reducer', action);
+        const { accessToken } = action.payload;
+
         state.loading = false;
+        state.accessToken = accessToken;
+        state.currentUser = action.payload;
+
+        localStorage.setItem('accessToken', accessToken);
       })
       .addCase(signInWithGoogle.rejected, (state) => {
         state.loading = false;

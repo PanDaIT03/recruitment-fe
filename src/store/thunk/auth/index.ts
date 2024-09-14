@@ -10,17 +10,15 @@ enum TYPE_LOGIN {
 
 export const signInWithGoogle = createAsyncThunk(
   'auth/signInWithGoogle',
-  async (data: any) => {
-    const userData: IUserSignInWithGoogle = {
-      email: data?.email,
-      pic: data?.picture,
-      userName: data?.name,
-    };
+  async (data: IUserSignInWithGoogle, { rejectWithValue }) => {
+    try {
+      const payload = { ...data, type: TYPE_LOGIN.TYPE_GOOGLE };
+      const user = await AuthAPI.signInWithGoogle(payload);
 
-    // const user = await checkLogin({ userName: userData.userName });
-    // return user;
-
-    return userData;
+      return user;
+    } catch (error: any) {
+      return rejectWithValue(error?.message || 'Có lỗi xảy ra');
+    }
   }
 );
 
@@ -30,10 +28,10 @@ export const signIn = createAsyncThunk(
     try {
       const payload = { ...data, type: TYPE_LOGIN.TYPE_SYSTEM };
       const user = await AuthAPI.signIn(payload);
-      
+
       return user;
-    } catch (error) {
-      return rejectWithValue(null);
+    } catch (error: any) {
+      return rejectWithValue(error?.message || 'Có lỗi xảy ra');
     }
   }
 );

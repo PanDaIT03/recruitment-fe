@@ -1,5 +1,5 @@
 import instance from '~/services/axios';
-import { IBaseUser, IUser } from '~/types/Auth/index';
+import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
 
 type Response = IBaseResponse<{
   data: IUser;
@@ -10,6 +10,9 @@ const AuthAPI = {
     return instance.post('/auth/register', payload);
   },
   signIn: (payload: IBaseUser): Promise<IUser> => {
+    return instance.post('/auth/sign-in', payload).then((response) => response);
+  },
+  signInWithGoogle: (payload: IUserSignInWithGoogle): Promise<IUser> => {
     return instance.post('/auth/sign-in', payload).then((response) => response);
   },
 };

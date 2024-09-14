@@ -1,9 +1,13 @@
 import {
   ArrowLeftOutlined,
+  CheckCircleTwoTone,
   EyeInvisibleOutlined,
   EyeTwoTone,
   LoadingOutlined,
-  CheckCircleTwoTone,
+  UserOutlined,
+  ProfileOutlined,
+  SnippetsOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -12,6 +16,10 @@ const icons = {
   EyeInvisibleOutlined,
   LoadingOutlined,
   CheckCircleTwoTone,
+  UserOutlined,
+  ProfileOutlined,
+  SnippetsOutlined,
+  LogoutOutlined,
 };
 
 export default icons;

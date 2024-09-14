@@ -1,15 +1,12 @@
-import { useGoogleLogin } from '@react-oauth/google';
-import { Divider, Image } from 'antd';
+import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { GOOGLE_LOGO } from '~/assets/img';
-import Button from '~/components/Button/Button';
+import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signIn, signInWithGoogle } from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
-import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
 import toast from '~/utils/functions/toast';
 import path from '~/utils/path';
 import FormSignIn from './FormSignIn';
@@ -30,18 +27,13 @@ const SignIn = () => {
       : toast.error(currentUser?.message || 'Có lỗi xảy ra');
   }, [currentUser]);
 
-  const handleSignInWithGoogle = useGoogleLogin({
-    onSuccess: async (response) => {
-      try {
-        const userInfo = await fetchGoogleUserInfo({ response });
-        console.log(userInfo);
-
-        dispatch(signInWithGoogle(userInfo));
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
+  const handleSignInWithGoogle = (userInfo: any) => {
+    try {
+      dispatch(signInWithGoogle(userInfo));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSignIn = async (values: any) => {
     try {
@@ -62,14 +54,7 @@ const SignIn = () => {
         </p>
       </div>
       <div className="w-full">
-        <Button
-          title="Tiếp tục với Google"
-          iconBefore={
-            <Image preview={false} src={GOOGLE_LOGO} width={24} height={24} />
-          }
-          className="w-full text-[#3c4043] border-[#dadce0] hover:border-[#d2e3fc] hover:bg-[#f7fafe]"
-          onClick={() => handleSignInWithGoogle()}
-        />
+        <GoogleSignInButton onClick={handleSignInWithGoogle} />
       </div>
       <Divider className="!my-0">
         <p className="text-sub text-sm">hoặc</p>
