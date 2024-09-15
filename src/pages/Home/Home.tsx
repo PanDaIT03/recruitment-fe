@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import JobListPage from '~/components/Job/JobList';
 import { useAppSelector } from '~/hooks/useStore';
 
 const Home = () => {
@@ -8,7 +9,11 @@ const Home = () => {
     console.log(currentUser);
   }, [currentUser]);
 
-  return <div>Home</div>;
+  return (
+    <div>
+      <JobListPage />
+    </div>
+  );
 };
 
 export default Home;
