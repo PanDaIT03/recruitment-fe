@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import JobCard from '~/components/Job/JobCard';
+import JobListPage from '~/components/Job/JobList';
 import { useAppSelector } from '~/hooks/useStore';
 
 const Home = () => {
@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <div>
-      <JobCard />
+      <JobListPage />
     </div>
   );
 };
