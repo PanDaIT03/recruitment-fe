@@ -94,10 +94,10 @@ const routesConfig: CustomRouteObject[] = [
   createProtectedRoute(
     '/user',
     ['user'],
-    undefined,
+    MainLayout,
     { index: true, element: <UserProfile /> },
     createRoute(PATH.USER_PROFILE, <UserProfile />),
-    createRoutes(MainLayout, createRoute(PATH.USER_ACCOUNT, <UserAccount />))
+    createRoute(PATH.USER_ACCOUNT, <UserAccount />)
   ),
 
   // Auth

@@ -1,13 +1,19 @@
 import {
+  AccountBookOutlined,
   ArrowLeftOutlined,
+  ArrowRightOutlined,
   CheckCircleTwoTone,
+  DollarOutlined,
+  EnvironmentOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone,
   LoadingOutlined,
-  UserOutlined,
-  ProfileOutlined,
-  SnippetsOutlined,
   LogoutOutlined,
+  ProfileOutlined,
+  ReconciliationOutlined,
+  SnippetsOutlined,
+  TeamOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -20,6 +26,12 @@ const icons = {
   ProfileOutlined,
   SnippetsOutlined,
   LogoutOutlined,
+  DollarOutlined,
+  EnvironmentOutlined,
+  TeamOutlined,
+  AccountBookOutlined,
+  ArrowRightOutlined,
+  ReconciliationOutlined,
 };
 
 export default icons;
