@@ -4,12 +4,10 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-import { setAccessToken } from '~/store/reducer/auth';
 
 // import { setAccessToken, logout } from '~/store/reducer/auth';
 import { store } from '~/store/store';
 import toast from '~/utils/functions/toast';
-import PATH from '~/utils/path';
 
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_BASE_URL,
