@@ -17,7 +17,7 @@ const instance: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },
-  timeout: 3000,
+  timeout: 5000,
   withCredentials: true,
 });
 
