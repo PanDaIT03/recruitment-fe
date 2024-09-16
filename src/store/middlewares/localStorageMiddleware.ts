@@ -23,7 +23,8 @@ export interface RootState {
 
 // Các state được lưu
 export interface PersistedState {
-  auth: Pick<AuthState, 'accessToken' | 'refreshToken' | 'currentUser'>;
+  // auth: Pick<AuthState, 'accessToken' | 'refreshToken' | 'currentUser'>;
+  auth: Pick<AuthState, 'currentUser'>;
   jobs: Pick<JobsState, 'allJobs' | 'loading' | 'error'>;
 }
 
@@ -35,8 +36,8 @@ export const localStorageMiddleware: Middleware =
 
     const persistedState: PersistedState = {
       auth: {
-        accessToken: state.auth.accessToken,
-        refreshToken: state.auth.refreshToken,
+        // accessToken: state.auth.accessToken,
+        // refreshToken: state.auth.refreshToken,
         currentUser: state.auth.currentUser,
       },
       jobs: {
