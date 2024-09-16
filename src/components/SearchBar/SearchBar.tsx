@@ -40,12 +40,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       </Select>
 
       <Button
+        fill
         type="button"
         title="Tìm kiếm"
+        className="ml-2"
         displayType="primary"
         iconBefore={<SearchOutlined />}
         onClick={handleSearch}
-        className="ml-2"
       />
     </div>
   );

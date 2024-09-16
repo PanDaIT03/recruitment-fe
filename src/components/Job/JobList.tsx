@@ -1,13 +1,21 @@
 import { List } from 'antd';
-import { useAppSelector } from '~/hooks/useStore';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import SearchBar from '../SearchBar/SearchBar';
 import JobCard from './JobCard';
+import { getAllJobs } from '~/store/thunk/job';
 
 const JobListPage = () => {
+  const dispatch = useAppDispatch();
+
   const handleSearch = (keyword: string, location: string) => {
     console.log('Searching for:', keyword, location);
   };
-  const allJobs = useAppSelector((state) => state.jobs.allJobs);
+  const { allJobs } = useAppSelector((state) => state.jobs);
+
+  useEffect(() => {
+    dispatch(getAllJobs());
+  }, []);
 
   return (
     <div className="container mx-auto px-4">
