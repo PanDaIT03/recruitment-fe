@@ -1,15 +1,19 @@
-import { Space } from 'antd';
-import { Counter } from './pages/Counter';
-import { WebSocketDemo } from './websocket/Websocket';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+import AppRouter from './routes/AppRouter';
 
 function App() {
+  const clientId = import.meta.env.VITE_APP_CLIENT_ID;
+
+  if (!clientId) {
+    console.error('Google Client ID is missing!');
+    return <div>Error: Google Client ID is not set.</div>;
+  }
+
   return (
-    <>
-      <Space direction="vertical" size={'large'}>
-        <Counter />
-        <WebSocketDemo />
-      </Space>
-    </>
+    <GoogleOAuthProvider clientId={clientId}>
+      <AppRouter />
+    </GoogleOAuthProvider>
   );
 }
 

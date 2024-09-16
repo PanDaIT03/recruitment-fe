@@ -1,0 +1,14 @@
+const PATH = {
+  ROOT: '/',
+  SIGN_IN: '/sign-in',
+  SIGN_UP: '/sign-up',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
+  ADMIN_DASHBOARD: '/admin/dashboard',
+  EMPLOYER_DASHBOARD: '/employer/dashboard',
+  USER_PROFILE: '/user/profile',
+  USER_ACCOUNT: '/user/account',
+  NOT_FOUND: '*',
+};
+
+export default PATH;

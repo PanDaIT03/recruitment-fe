@@ -3,8 +3,17 @@
 @tailwind utilities;
 
 :root {
-  padding: 0;
+  --header-bgColor: rgba(105 31 116 / 1);
+
+  --button-primary-bg: #f15224;
+  --button-primary-color: #f15224;
+  --button-primary-bgHover: #d94a20;
+  --button-primary-border-color: #f15224;
+}
+
+:root {
   margin: 0;
+  padding: 0;
   box-sizing: border-box;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
