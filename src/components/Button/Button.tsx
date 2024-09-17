@@ -19,6 +19,7 @@ interface IProps {
   loading?: boolean;
   disabled?: boolean;
   iconBefore?: ReactNode;
+  iconAfter?: ReactNode;
   displayType?: DisplayType;
   onClick?: ButtonClickHandler;
   onMouseEnter?: ButtonClickHandler;
@@ -32,6 +33,7 @@ const Button = ({
   type,
   disabled,
   iconBefore,
+  iconAfter,
   fill = false,
   className = '',
   displayType = 'primary',
@@ -61,10 +63,11 @@ const Button = ({
       {buttonState.loading ? (
         <Spin indicator={<LoadingOutlined />} />
       ) : (
-        <>
-          {iconBefore && <span className="flex mr-3">{iconBefore}</span>}
+        <div className="flex gap-3">
+          {iconBefore}
           <b>{title}</b>
-        </>
+          {iconAfter}
+        </div>
       )}
     </button>
   );
