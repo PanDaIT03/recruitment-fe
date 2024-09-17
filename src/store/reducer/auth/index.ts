@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { signIn, signInWithGoogle } from '~/store/thunk/auth';
+import { signIn, signInWithGoogle, signOut } from '~/store/thunk/auth';
 import { IUser } from '~/types/Auth/index';
 
 interface InitType {
@@ -18,7 +18,8 @@ const initialState: InitType = {
 };
 
 const authSlice = createSlice({
-  name: 'user',
+  // name: 'user',
+  name: 'auth',
   initialState,
   reducers: {
     setAccessToken: (state, action: PayloadAction<string>) => {
@@ -53,6 +54,20 @@ const authSlice = createSlice({
         localStorage.setItem('accessToken', accessToken);
       })
       .addCase(signInWithGoogle.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(signOut.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(signOut.fulfilled, (state, action) => {
+        state.loading = false;
+        state.accessToken = null;
+        state.refreshToken = null;
+        state.currentUser = action.payload;
+
+        localStorage.removeItem('persistedState');
+      })
+      .addCase(signOut.rejected, (state) => {
         state.loading = false;
       });
   },

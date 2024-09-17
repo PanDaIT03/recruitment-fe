@@ -1,18 +1,41 @@
 import { Dropdown, Image, MenuProps } from 'antd';
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { USER_AVATAR } from '~/assets/img';
-import { useAppSelector } from '~/hooks/useStore';
+import { DISCONNECTED, USER_AVATAR } from '~/assets/img';
+import Button from '~/components/Button/Button';
+import Modal from '~/components/Modal/Modal';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { signOut } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
-const { ProfileOutlined, SnippetsOutlined, UserOutlined, LogoutOutlined } =
-  icons;
+const {
+  UserOutlined,
+  CloseOutlined,
+  LogoutOutlined,
+  ProfileOutlined,
+  SnippetsOutlined,
+} = icons;
 
 const HeaderDropDown = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const [isOpen, setIsOpen] = useState(false);
+
   const { currentUser } = useAppSelector((state) => state.auth);
+
+  const handleCancelModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleOkModal = () => {
+    dispatch(signOut()).then(() => {
+      setIsOpen(false);
+      navigate(PATH.SIGN_IN);
+    });
+  };
 
   const baseMenu: MenuProps['items'] = useMemo(() => {
     return [
@@ -82,23 +105,54 @@ const HeaderDropDown = () => {
         className: 'hover:!bg-light-warning',
         icon: <LogoutOutlined className="text-warning" />,
         label: <span className="text-warning">Đăng xuất</span>,
-        onClick: () => console.log('logout'),
+        onClick: () => setIsOpen(true),
       },
     ];
   }, []);
 
   return (
-    <Dropdown trigger={['click']} menu={{ items: menuItems }}>
-      <a onClick={(e) => e.preventDefault()}>
-        <Image
-          width={40}
-          height={40}
-          preview={false}
-          src={USER_AVATAR}
-          className="border border-white rounded-[50%]"
-        />
-      </a>
-    </Dropdown>
+    <>
+      <Dropdown trigger={['click']} menu={{ items: menuItems }}>
+        <a onClick={(e) => e.preventDefault()}>
+          <Image
+            width={40}
+            height={40}
+            preview={false}
+            src={USER_AVATAR}
+            className="border border-white rounded-[50%]"
+          />
+        </a>
+      </Dropdown>
+      <Modal
+        isOpen={isOpen}
+        title="Đăng xuất"
+        onCancel={handleCancelModal}
+        footer={
+          <div className="flex justify-end gap-3">
+            <Button
+              title="Huỷ"
+              iconBefore={<CloseOutlined />}
+              className="w-full max-w-[143px]"
+              onClick={handleCancelModal}
+            />
+            <Button
+              fill
+              title="Đăng xuất"
+              iconAfter={<LogoutOutlined />}
+              className="w-full max-w-[143px]"
+              onClick={handleOkModal}
+            />
+          </div>
+        }
+      >
+        <div className="flex flex-col items-center gap-3">
+          <Image width={112} height={112} preview={false} src={DISCONNECTED} />
+          <p className="text-center font-semibold text-[#334155]">
+            Bạn có chắc chắn muốn đăng xuất khỏi tài khoản của mình?
+          </p>
+        </div>
+      </Modal>
+    </>
   );
 };
 

@@ -56,9 +56,9 @@ export const localStorageMiddleware: Middleware =
 export const loadState = (): Partial<RootState> | undefined => {
   try {
     const serializedState = localStorage.getItem('persistedState');
-    if (serializedState === null) {
-      return undefined;
-    }
+
+    if (serializedState === null) return undefined;
+
     return JSON.parse(serializedState) as Partial<RootState>;
   } catch (err) {
     return undefined;

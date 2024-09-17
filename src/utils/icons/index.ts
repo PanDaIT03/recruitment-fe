@@ -4,6 +4,7 @@ import {
   ArrowRightOutlined,
   CalendarOutlined,
   CheckCircleTwoTone,
+  CloseOutlined,
   DeleteOutlined,
   DollarOutlined,
   EditOutlined,
@@ -11,6 +12,7 @@ import {
   EyeInvisibleOutlined,
   EyeTwoTone,
   FilePdfOutlined,
+  HomeOutlined,
   LoadingOutlined,
   LogoutOutlined,
   ProfileOutlined,
@@ -20,7 +22,6 @@ import {
   SnippetsOutlined,
   TeamOutlined,
   UserOutlined,
-  HomeOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -46,6 +47,7 @@ const icons = {
   SettingOutlined,
   ShopOutlined,
   HomeOutlined,
+  CloseOutlined
 };
 
 export default icons;
