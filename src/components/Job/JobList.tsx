@@ -10,7 +10,6 @@ const JobListPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [keyword, setKeyword] = useState('');
-  const [searchLocation, setSearchLocation] = useState('');
   const dispatch = useAppDispatch();
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
@@ -21,7 +20,6 @@ const JobListPage = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     setKeyword(searchParams.get('keyword') || '');
-    setSearchLocation(searchParams.get('location') || '');
   }, [location]);
 
   const handleSearch = (keyword: string, location: string) => {
