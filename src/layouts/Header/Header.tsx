@@ -30,7 +30,7 @@ const menuItems: IMenuItems[] = [
 
 const Header = () => {
   const navigate = useNavigate();
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken } = useAppSelector((state) => state.auth.currentUser);
 
   return (
     <div className="bg-[#692474] px-8">

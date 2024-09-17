@@ -3,7 +3,8 @@ import { memo, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { USER_AVATAR } from '~/assets/img';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { signOut } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
@@ -12,7 +13,13 @@ const { ProfileOutlined, SnippetsOutlined, UserOutlined, LogoutOutlined } =
 
 const HeaderDropDown = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const { currentUser } = useAppSelector((state) => state.auth);
+
+  const handleClickLogOut = () => {
+    dispatch(signOut());
+  };
 
   const baseMenu: MenuProps['items'] = useMemo(() => {
     return [
@@ -82,7 +89,7 @@ const HeaderDropDown = () => {
         className: 'hover:!bg-light-warning',
         icon: <LogoutOutlined className="text-warning" />,
         label: <span className="text-warning">Đăng xuất</span>,
-        onClick: () => console.log('logout'),
+        onClick: handleClickLogOut,
       },
     ];
   }, []);
