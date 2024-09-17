@@ -61,6 +61,8 @@ const authSlice = createSlice({
       })
       .addCase(signOut.fulfilled, (state, action) => {
         state.loading = false;
+        state.accessToken = null;
+        state.refreshToken = null;
         state.currentUser = action.payload;
 
         localStorage.removeItem('persistedState');
