@@ -4,6 +4,7 @@ import { Content } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useAppSelector } from '~/hooks/useStore';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
@@ -21,6 +22,7 @@ type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const UserLayout = () => {
   const navigate = useNavigate();
+  const { currentUser } = useAppSelector((state) => state.auth);
   const [fileList, setFileList] = useState<UploadFile[]>([
     {
       uid: '-1',
@@ -83,7 +85,7 @@ const UserLayout = () => {
                 {fileList.length < 1 && <UserOutlined />}
               </Upload>
             }
-            title="Tran Tuan Kiet"
+            title={currentUser.fullName}
             description="This is the description"
           />
           <div className="flex flex-col gap-4 mt-3">
