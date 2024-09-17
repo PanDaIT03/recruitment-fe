@@ -20,8 +20,8 @@ const rootReducer = combineReducers({
 const preloadedState = loadState();
 
 export const store = configureStore({
-  reducer: rootReducer,
   preloadedState,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) => {
     const defaultMiddleware = getDefaultMiddleware();
     return defaultMiddleware.concat(localStorageMiddleware as Middleware);
