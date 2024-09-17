@@ -4,11 +4,8 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-import { setAccessToken } from '~/store/reducer/auth';
-
-// import { setAccessToken, logout } from '~/store/reducer/auth';
-import { store } from '~/store/store';
 import toast from '~/utils/functions/toast';
+import { tokenService } from './tokenService';
 
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_BASE_URL,
@@ -23,7 +20,7 @@ const instance: AxiosInstance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const accessToken = store.getState().auth.accessToken;
+    const accessToken = tokenService.getAccessToken();
 
     if (accessToken && config.headers)
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -47,7 +44,7 @@ instance.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshToken = store.getState().auth.refreshToken;
+        const refreshToken = tokenService.getRefreshToken();
         const response = await instance.post<{ accessToken: string }>(
           '/auth/sign-in',
           {
@@ -56,7 +53,7 @@ instance.interceptors.response.use(
         );
         const { accessToken } = response.data;
         console.log(accessToken);
-        store.dispatch(setAccessToken(accessToken));
+        tokenService.setAccessToken(accessToken);
 
         if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
