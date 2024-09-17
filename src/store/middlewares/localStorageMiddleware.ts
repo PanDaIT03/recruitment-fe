@@ -24,8 +24,8 @@ export interface RootState {
 // Các state được lưu
 export interface PersistedState {
   // auth: Pick<AuthState, 'accessToken' | 'refreshToken' | 'currentUser'>;
-  auth: Pick<AuthState, 'currentUser'>;
-  jobs: Pick<JobsState, 'allJobs' | 'loading' | 'error'>;
+  auth: Pick<AuthState, 'accessToken' | 'currentUser'>;
+  // jobs: Pick<JobsState, 'allJobs' | 'loading' | 'error'>;
 }
 
 // Lưu các state của redux vào local
@@ -36,15 +36,15 @@ export const localStorageMiddleware: Middleware =
 
     const persistedState: PersistedState = {
       auth: {
-        // accessToken: state.auth.accessToken,
+        accessToken: state.auth.accessToken,
         // refreshToken: state.auth.refreshToken,
         currentUser: state.auth.currentUser,
       },
-      jobs: {
-        allJobs: state.jobs.allJobs,
-        loading: false,
-        error: null,
-      },
+      // jobs: {
+      //   allJobs: state.jobs.allJobs,
+      //   loading: false,
+      //   error: null,
+      // },
     };
 
     localStorage.setItem('persistedState', JSON.stringify(persistedState));
@@ -56,9 +56,9 @@ export const localStorageMiddleware: Middleware =
 export const loadState = (): Partial<RootState> | undefined => {
   try {
     const serializedState = localStorage.getItem('persistedState');
-    if (serializedState === null) {
-      return undefined;
-    }
+
+    if (serializedState === null) return undefined;
+
     return JSON.parse(serializedState) as Partial<RootState>;
   } catch (err) {
     return undefined;

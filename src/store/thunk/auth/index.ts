@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import AuthAPI from '~/apis/auth';
-import { IBaseUser, IUserSignInWithGoogle } from '~/types/Auth/index';
+import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
 
 enum TYPE_LOGIN {
   TYPE_SYSTEM = 'system',
@@ -30,6 +30,17 @@ export const signIn = createAsyncThunk(
       const user = await AuthAPI.signIn(payload);
 
       return user;
+    } catch (error: any) {
+      return rejectWithValue(error?.message || 'Có lỗi xảy ra');
+    }
+  }
+);
+
+export const signOut = createAsyncThunk(
+  'auth/signOut',
+  async (_, { rejectWithValue }) => {
+    try {
+      return {} as IUser;
     } catch (error: any) {
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
     }

@@ -28,6 +28,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       />
 
       <Select
+        allowClear
         size="large"
         placeholder="Toàn quốc"
         value={location}
