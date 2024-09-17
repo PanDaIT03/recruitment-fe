@@ -1,28 +1,50 @@
 import { List } from 'antd';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import SearchBar from '../SearchBar/SearchBar';
 import JobCard from './JobCard';
 import { getAllJobs } from '~/store/thunk/job';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const JobListPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [keyword, setKeyword] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
   const dispatch = useAppDispatch();
-
-  const handleSearch = (keyword: string, location: string) => {
-    console.log('Searching for:', keyword, location);
-  };
-  const { allJobs } = useAppSelector((state) => state.jobs);
+  const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
   useEffect(() => {
     dispatch(getAllJobs());
   }, []);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    setKeyword(searchParams.get('keyword') || '');
+    setSearchLocation(searchParams.get('location') || '');
+  }, [location]);
+
+  const handleSearch = (keyword: string, location: string) => {
+    const searchParams = new URLSearchParams();
+    if (keyword) searchParams.append('keyword', keyword);
+    if (location) searchParams.append('location', location);
+    navigate(`?${searchParams.toString()}`);
+  };
+
+  const filteredJobs = allJobs.filter((job) => {
+    const keywordMatch = keyword
+      ? job.title.toLowerCase().includes(keyword.toLowerCase())
+      : true;
+    return keywordMatch;
+  });
+
   return (
     <div className="container mx-auto px-4">
       <SearchBar onSearch={handleSearch} />
       <List
+        loading={loading}
         itemLayout="vertical"
-        dataSource={allJobs}
+        dataSource={filteredJobs}
         renderItem={(job) => (
           <List.Item className="mb-4">
             <JobCard

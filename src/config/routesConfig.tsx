@@ -2,6 +2,7 @@ import { ComponentType, lazy, ReactNode } from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import MainLayout from '~/layouts/MainLayout';
+import UserLayout from '~/pages/User/UserLayout';
 import ProtectedRoute from '~/routes/ProtectedRoute';
 import PATH from '~/utils/path';
 
@@ -94,7 +95,7 @@ const routesConfig: CustomRouteObject[] = [
   createProtectedRoute(
     '/user',
     ['user'],
-    MainLayout,
+    UserLayout,
     { index: true, element: <UserProfile /> },
     createRoute(PATH.USER_PROFILE, <UserProfile />),
     createRoute(PATH.USER_ACCOUNT, <UserAccount />)

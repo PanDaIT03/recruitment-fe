@@ -2,18 +2,25 @@ import {
   AccountBookOutlined,
   ArrowLeftOutlined,
   ArrowRightOutlined,
+  CalendarOutlined,
   CheckCircleTwoTone,
+  DeleteOutlined,
   DollarOutlined,
+  EditOutlined,
   EnvironmentOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone,
+  FilePdfOutlined,
   LoadingOutlined,
   LogoutOutlined,
   ProfileOutlined,
   ReconciliationOutlined,
+  SettingOutlined,
+  ShopOutlined,
   SnippetsOutlined,
   TeamOutlined,
   UserOutlined,
+  HomeOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -32,6 +39,13 @@ const icons = {
   AccountBookOutlined,
   ArrowRightOutlined,
   ReconciliationOutlined,
+  CalendarOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  FilePdfOutlined,
+  SettingOutlined,
+  ShopOutlined,
+  HomeOutlined,
 };
 
 export default icons;

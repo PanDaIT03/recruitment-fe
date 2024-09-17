@@ -14,7 +14,7 @@ import FormSignUp from './FormSignUp';
 
 enum ROLE {
   USER = 1,
-  EMPLOYER = 2,
+  EMPLOYER = 3,
 }
 
 const SignUp = () => {
