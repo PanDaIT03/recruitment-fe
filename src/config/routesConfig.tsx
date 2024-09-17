@@ -2,6 +2,7 @@ import { ComponentType, lazy, ReactNode } from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import MainLayout from '~/layouts/MainLayout';
+import EmployerLayout from '~/pages/Employer/EmployerLayout';
 import UserLayout from '~/pages/User/UserLayout';
 import ProtectedRoute from '~/routes/ProtectedRoute';
 import PATH from '~/utils/path';
@@ -15,7 +16,7 @@ const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
 const EmployerDashboard = lazy(
-  () => import('~/pages/EmployerDashboard/EmployerDashboard')
+  () => import('~/pages/Employer/Dashboard/EmployerDashboard')
 );
 const ForgotPassword = lazy(
   () => import('~/pages/Auth/ForgotPassword/ForgotPassword')
@@ -86,7 +87,7 @@ const routesConfig: CustomRouteObject[] = [
   createProtectedRoute(
     '/employer',
     ['employer'],
-    undefined,
+    EmployerLayout,
     { index: true, element: <EmployerDashboard /> },
     createRoute(PATH.EMPLOYER_DASHBOARD, <EmployerDashboard />)
   ),
