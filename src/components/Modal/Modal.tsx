@@ -1,10 +1,24 @@
 import { Modal as ModalAntd, ModalProps } from 'antd';
+import './Modal.scss';
+
+type AnimationType = 'slide-down' | 'default';
+
+type CustomAnimation = Record<
+  AnimationType,
+  { maskTransitionName?: string; transitionName?: string }
+>;
 
 type IProps = {
   isOpen: boolean;
+  animationType?: AnimationType;
 } & ModalProps;
 
-const Modal = ({ isOpen, children, ...props }: IProps) => {
+const Modal = ({
+  isOpen,
+  children,
+  animationType = 'default',
+  ...props
+}: IProps) => {
   const customClassNames: ModalProps['classNames'] = {
     content: '!p-0',
     header:
@@ -13,8 +27,22 @@ const Modal = ({ isOpen, children, ...props }: IProps) => {
     footer: '!mt-0 !px-[24px] !py-[20px] !rounded-b-[8px]',
   };
 
+  const customAnimation: CustomAnimation = {
+    'slide-down': {
+      maskTransitionName: 'custom-mask',
+      transitionName: 'custom-modal-slide-down',
+    },
+    default: {},
+  };
+
   return (
-    <ModalAntd open={isOpen} classNames={customClassNames} {...props}>
+    <ModalAntd
+      centered
+      open={isOpen}
+      classNames={customClassNames}
+      {...customAnimation[animationType]}
+      {...props}
+    >
       {children}
     </ModalAntd>
   );
