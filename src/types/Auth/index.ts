@@ -26,6 +26,7 @@ export interface IUser {
   position: IPosition;
   role: IPosition;
   accessToken: string;
+  refreshToken: string;
   message: string;
   statusCode: number;
 }

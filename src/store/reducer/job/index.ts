@@ -25,12 +25,10 @@ const jobSlice = createSlice({
         state.error = null;
       })
       .addCase(getAllJobs.fulfilled, (state, action: PayloadAction<IJob[]>) => {
-        console.log(action.payload);
         state.loading = false;
         state.allJobs = action.payload;
       })
       .addCase(getAllJobs.rejected, (state, action) => {
-        console.log(action.payload);
         state.loading = false;
         state.error = action.payload || 'Có lỗi';
       });

@@ -60,6 +60,7 @@ instance.interceptors.response.use(
         return instance(originalRequest);
       } catch (refreshError) {
         // window.location.href = PATH.SIGN_IN;
+        toast.error('Phiên đăng nhập đã hết hạn. Xin vui lòng đăng nhập lại');
         return Promise.reject(refreshError);
       }
     }
