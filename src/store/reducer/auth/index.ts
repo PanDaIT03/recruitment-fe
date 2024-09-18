@@ -37,10 +37,11 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signIn.fulfilled, (state, action) => {
-        const { accessToken } = action.payload;
+        const { accessToken, refreshToken } = action.payload;
 
         state.loading = false;
         state.accessToken = accessToken;
+        state.refreshToken = refreshToken;
         state.currentUser = action.payload;
       })
       .addCase(signIn.rejected, (state) => {
@@ -50,13 +51,12 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signInWithGoogle.fulfilled, (state, action) => {
-        const { accessToken } = action.payload;
+        const { accessToken, refreshToken } = action.payload;
 
         state.loading = false;
         state.accessToken = accessToken;
+        state.refreshToken = refreshToken;
         state.currentUser = action.payload;
-
-        localStorage.setItem('accessToken', accessToken);
       })
       .addCase(signInWithGoogle.rejected, (state) => {
         state.loading = false;

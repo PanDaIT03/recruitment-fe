@@ -5,9 +5,7 @@ import { useAppSelector } from '~/hooks/useStore';
 const Home = () => {
   const { currentUser } = useAppSelector((state) => state.auth);
 
-  useEffect(() => {
-    console.log(currentUser);
-  }, [currentUser]);
+  useEffect(() => {}, [currentUser]);
 
   return (
     <div>

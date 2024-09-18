@@ -30,7 +30,7 @@ const menuItems: IMenuItems[] = [
 
 const Header = () => {
   const navigate = useNavigate();
-  const { accessToken } = useAppSelector((state) => state.auth.currentUser);
+  const { refreshToken } = useAppSelector((state) => state.auth.currentUser);
 
   return (
     <div className="bg-[#692474] px-8">
@@ -52,7 +52,7 @@ const Header = () => {
             ))}
           </div>
         </Col>
-        {accessToken ? (
+        {refreshToken ? (
           <HeaderDropDown />
         ) : (
           <Col className="flex gap-3 justify-between items-center relative">
