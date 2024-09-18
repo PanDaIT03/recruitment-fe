@@ -6,24 +6,24 @@ import Button from '../Button/Button';
 
 interface IProps {
   loading?: boolean;
-  isCancel?: boolean;
   children: ReactNode;
   className?: string;
   submitTitle?: string;
   cancelTitle?: string;
   form: FormInstance<any>;
+  footer?: ReactNode;
   onCancel?: () => void;
   onFinish(values: any): void;
 }
 
 const FormWrapper = ({
   form,
+  footer,
   children,
+  cancelTitle,
   submitTitle,
   loading = false,
-  cancelTitle = 'Hủy',
   className = 'w-full',
-  isCancel = false,
   onCancel,
   onFinish,
 }: IProps) => {
@@ -53,24 +53,26 @@ const FormWrapper = ({
         onFinish={handleFinish}
       >
         {children}
-        <Row gutter={[12, 12]} justify={'end'}>
-          {isCancel && (
-            <Col>
-              <Button title={cancelTitle} onClick={onCancel} />
-            </Col>
-          )}
-          {submitTitle && (
-            <Col span={isCancel ? undefined : 24}>
-              <Button
-                fill
-                type="submit"
-                className="w-full"
-                title={submitTitle}
-                loading={loading || isLoadingSignIn}
-              />
-            </Col>
-          )}
-        </Row>
+        {footer || (
+          <Row gutter={[12, 12]} justify={'end'}>
+            {cancelTitle && (
+              <Col>
+                <Button title={cancelTitle} onClick={onCancel} />
+              </Col>
+            )}
+            {submitTitle && (
+              <Col span={cancelTitle ? undefined : 24}>
+                <Button
+                  fill
+                  type="submit"
+                  className="w-full"
+                  title={submitTitle}
+                  loading={loading || isLoadingSignIn}
+                />
+              </Col>
+            )}
+          </Row>
+        )}
       </Form>
     </div>
   );

@@ -34,7 +34,24 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
   };
 
   return (
-    <FormWrapper form={form} onFinish={onFinish}>
+    <FormWrapper
+      form={form}
+      footer={
+        <Row
+          justify="end"
+          gutter={[12, 12]}
+          hidden={!(isChangePassword || isChangeName)}
+        >
+          <Col>
+            <Button title="Huỷ" onClick={handleCancel} />
+          </Col>
+          <Col>
+            <Button type="submit" fill title="Xác nhận" />
+          </Col>
+        </Row>
+      }
+      onFinish={onFinish}
+    >
       <Form.Item
         name="fullName"
         label="Họ và tên"
@@ -125,18 +142,6 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
           placeholder="Tối thiểu 8 ký tự"
         />
       </Form.Item>
-      <Row
-        justify="end"
-        gutter={[12, 12]}
-        hidden={!(isChangePassword || isChangeName)}
-      >
-        <Col>
-          <Button title="Huỷ" onClick={handleCancel} />
-        </Col>
-        <Col>
-          <Button type="submit" fill title="Xác nhận" />
-        </Col>
-      </Row>
     </FormWrapper>
   );
 };
