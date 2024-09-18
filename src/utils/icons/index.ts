@@ -15,6 +15,7 @@ import {
   HomeOutlined,
   LoadingOutlined,
   LogoutOutlined,
+  MailOutlined,
   ProfileOutlined,
   ReconciliationOutlined,
   SettingOutlined,
@@ -22,6 +23,7 @@ import {
   SnippetsOutlined,
   TeamOutlined,
   UserOutlined,
+  LockOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -47,7 +49,9 @@ const icons = {
   SettingOutlined,
   ShopOutlined,
   HomeOutlined,
-  CloseOutlined
+  CloseOutlined,
+  MailOutlined,
+  LockOutlined,
 };
 
 export default icons;

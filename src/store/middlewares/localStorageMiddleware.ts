@@ -23,9 +23,7 @@ export interface RootState {
 
 // Các state được lưu
 export interface PersistedState {
-  // auth: Pick<AuthState, 'accessToken' | 'refreshToken' | 'currentUser'>;
-  auth: Pick<AuthState, 'accessToken' | 'currentUser'>;
-  // jobs: Pick<JobsState, 'allJobs' | 'loading' | 'error'>;
+  auth: Pick<AuthState, 'currentUser'>;
 }
 
 // Lưu các state của redux vào local
@@ -36,15 +34,8 @@ export const localStorageMiddleware: Middleware =
 
     const persistedState: PersistedState = {
       auth: {
-        accessToken: state.auth.accessToken,
-        // refreshToken: state.auth.refreshToken,
         currentUser: state.auth.currentUser,
       },
-      // jobs: {
-      //   allJobs: state.jobs.allJobs,
-      //   loading: false,
-      //   error: null,
-      // },
     };
 
     localStorage.setItem('persistedState', JSON.stringify(persistedState));
