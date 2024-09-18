@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { resetUser } from '~/store/reducer/auth';
 import { signIn, signInWithGoogle } from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
@@ -22,9 +23,12 @@ const SignIn = () => {
   useEffect(() => {
     if (!Object.values(currentUser).length) return;
 
+    console.log(currentUser);
+
     currentUser?.statusCode === 200
       ? (toast.success(currentUser.message), navigate(path.ROOT))
-      : toast.error(currentUser?.message || 'Có lỗi xảy ra');
+      : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
+        dispatch(resetUser()));
   }, [currentUser]);
 
   const handleSignInWithGoogle = (userInfo: any) => {
