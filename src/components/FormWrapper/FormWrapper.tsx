@@ -9,7 +9,7 @@ interface IProps {
   isCancel?: boolean;
   children: ReactNode;
   className?: string;
-  submitTitle: string;
+  submitTitle?: string;
   cancelTitle?: string;
   form: FormInstance<any>;
   onCancel?: () => void;
@@ -59,15 +59,17 @@ const FormWrapper = ({
               <Button title={cancelTitle} onClick={onCancel} />
             </Col>
           )}
-          <Col span={24}>
-            <Button
-              fill
-              type="submit"
-              className="w-full"
-              title={submitTitle}
-              loading={loading || isLoadingSignIn}
-            />
-          </Col>
+          {submitTitle && (
+            <Col span={isCancel ? undefined : 24}>
+              <Button
+                fill
+                type="submit"
+                className="w-full"
+                title={submitTitle}
+                loading={loading || isLoadingSignIn}
+              />
+            </Col>
+          )}
         </Row>
       </Form>
     </div>
