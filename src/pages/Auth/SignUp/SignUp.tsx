@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthAPI from '~/apis/auth';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { resetUser } from '~/store/reducer/auth';
 import { signInWithGoogle } from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
@@ -31,7 +32,9 @@ const SignUp = () => {
 
     currentUser?.statusCode === 200
       ? (toast.success(currentUser.message), navigate(path.ROOT))
-      : toast.error(currentUser?.message || 'Có lỗi xảy ra');
+      : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
+        dispatch(resetUser()));
+    // : toast.error(currentUser?.message || 'Có lỗi xảy ra');
   }, [currentUser]);
 
   const handleFinish = async (values: IBaseUser) => {
