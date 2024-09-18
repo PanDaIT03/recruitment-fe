@@ -46,13 +46,12 @@ instance.interceptors.response.use(
       try {
         const refreshToken = tokenService.getRefreshToken();
         const response = await instance.post<{ accessToken: string }>(
-          '/auth/sign-in',
+          '/auth/refresh',
           {
             refreshToken,
           }
         );
         const { accessToken } = response.data;
-        console.log(accessToken);
         tokenService.setAccessToken(accessToken);
 
         if (originalRequest.headers)
