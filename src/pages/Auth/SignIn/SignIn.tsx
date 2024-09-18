@@ -23,8 +23,6 @@ const SignIn = () => {
   useEffect(() => {
     if (!Object.values(currentUser).length) return;
 
-    console.log(currentUser);
-
     currentUser?.statusCode === 200
       ? (toast.success(currentUser.message), navigate(path.ROOT))
       : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
