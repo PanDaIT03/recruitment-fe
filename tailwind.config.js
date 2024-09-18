@@ -93,6 +93,7 @@ export default {
         accent: '#f15224',
         dark: '#0A0A0A',
         warning: '#DC2626',
+        blue: '#1677FF',
       },
       backgroundColor: {
         main: '#f7f6f2',
