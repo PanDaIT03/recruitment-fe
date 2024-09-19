@@ -1,4 +1,12 @@
-import {
+import { Card, Col, Divider, Row } from 'antd';
+import React, { useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getJobById } from '~/store/thunk/job';
+import Button from '../Button/Button';
+import icons from '~/utils/icons';
+
+const {
   AppstoreOutlined,
   ClockCircleOutlined,
   DollarCircleOutlined,
@@ -8,13 +16,7 @@ import {
   LaptopOutlined,
   ShareAltOutlined,
   TeamOutlined,
-} from '@ant-design/icons';
-import { Card, Col, Divider, Row } from 'antd';
-import React, { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { getJobById } from '~/store/thunk/job';
-import Button from '../Button/Button';
+} = icons;
 
 const JobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
