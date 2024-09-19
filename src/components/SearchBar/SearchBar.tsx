@@ -1,56 +1,86 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Input, Select } from 'antd';
-import React from 'react';
+import { Form, Input } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import { DefaultOptionType } from 'antd/es/select';
+import React, { memo, useState } from 'react';
+
+import { LOCATION } from '~/assets/img';
+import icons from '~/utils/icons';
 import Button from '../Button/Button';
+import FormWrapper from '../FormWrapper/FormWrapper';
+import Icon from '../Icon/Icon';
+import Select from '../Select/Select';
 
-const { Option } = Select;
+const { SearchOutlined } = icons;
 
-interface SearchBarProps {
+const optionLocations: DefaultOptionType[] = [
+  {
+    label: 'Toàn quốc',
+    value: 'Toàn quốc',
+  },
+  {
+    label: 'Hồ Chí Minh',
+    value: 'Hồ Chí Minh',
+  },
+  {
+    label: 'Hà Nội',
+    value: 'Hà Nội',
+  },
+];
+
+interface IProps {
+  placeHolder?: string;
   onSearch: (keyword: string, location: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [keyword, setKeyword] = React.useState('');
-  const [location, setLocation] = React.useState('');
+const SearchBar: React.FC<IProps> = ({ placeHolder, onSearch }) => {
+  const [form] = useForm();
+
+  const [keyword, setKeyword] = useState('');
+  const [location, setLocation] = useState('');
 
   const handleSearch = () => {
     onSearch(keyword, location);
   };
 
+  const handleFinish = (values: any) => {
+    console.log(values);
+  };
+
   return (
-    <div className="flex items-center space-x-2 my-4">
-      <Input
-        size="large"
-        placeholder="Vị trí công việc/tên công ty"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        className="flex-1"
-      />
-
-      <Select
-        allowClear
-        size="large"
-        placeholder="Toàn quốc"
-        value={location}
-        onChange={setLocation}
-        className="w-1/4"
-      >
-        <Option value="">Toàn quốc</Option>
-        <Option value="HCM">Hồ Chí Minh</Option>
-        <Option value="HN">Hà Nội</Option>
-      </Select>
-
-      <Button
-        fill
-        type="button"
-        title="Tìm kiếm"
-        className="ml-2"
-        displayType="primary"
-        iconBefore={<SearchOutlined />}
-        onClick={handleSearch}
-      />
-    </div>
+    <FormWrapper
+      form={form}
+      onFinish={handleFinish}
+      className="w-full bg-white py-3 px-8"
+    >
+      <div className="flex w-full mx-auto gap-x-4 max-w-7xl">
+        <Form.Item name="keyword" className="flex-1 max-w-[957px]">
+          <Input
+            size="large"
+            value={keyword}
+            placeholder={placeHolder}
+            prefix={<SearchOutlined />}
+            className="bg-light-gray"
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+        </Form.Item>
+        <Form.Item name="location" className="w-full max-w-[198px]">
+          <Select
+            placeholder="Toàn quốc"
+            colorBgContainer="#FAFAFA"
+            options={optionLocations}
+            prefixIcon={<Icon icon={LOCATION} width={16} height={16} />}
+          />
+        </Form.Item>
+        <Button
+          fill
+          type="button"
+          title="Tìm kiếm"
+          displayType="primary"
+          onClick={handleSearch}
+        />
+      </div>
+    </FormWrapper>
   );
 };
 
-export default SearchBar;
+export default memo(SearchBar);
