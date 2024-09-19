@@ -22,11 +22,12 @@ const JobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const rightColRef = useRef<HTMLDivElement>(null);
   const { currentJob } = useAppSelector((state) => state.jobs);
-
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     dispatch(getJobById(id));
   }, [id]);
+
   console.log(currentJob);
 
   useEffect(() => {
