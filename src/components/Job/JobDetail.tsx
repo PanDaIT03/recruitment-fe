@@ -1,6 +1,6 @@
 import { Card, Col, Divider, Row } from 'antd';
 import React, { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
 import Button from '../Button/Button';
@@ -224,15 +224,15 @@ const JobDetail: React.FC = () => {
                 {
                   label: 'Website:',
                   value: (
-                    <a
-                      href="https://www.ieltsvietop.vn/tuyen-dung/"
+                    <Link
+                      to="https://recruitment-fe-vi.vercel.app/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline flex items-center"
                     >
                       ieltsvietop.vn/tuyen-dung
                       <ExportOutlined className="ml-1" />
-                    </a>
+                    </Link>
                   ),
                 },
               ].map((item, index) => (
