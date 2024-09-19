@@ -4,6 +4,7 @@ const PATH = {
   // Auth
   SIGN_IN: '/sign-in',
   SIGN_UP: '/sign-up',
+  JOB_SEEKER: '/job-seeker',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
   // Admin

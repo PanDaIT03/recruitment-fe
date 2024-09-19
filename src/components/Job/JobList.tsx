@@ -1,10 +1,10 @@
 import { List } from 'antd';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import SearchBar from '../SearchBar/SearchBar';
 import JobCard from './JobCard';
 import { getAllJobs } from '~/store/thunk/job';
 import { useLocation, useNavigate } from 'react-router-dom';
+import TopSearchBar from '../TopSearchBar/TopSearchBar';
 
 const JobListPage = () => {
   const navigate = useNavigate();
@@ -22,11 +22,13 @@ const JobListPage = () => {
     setKeyword(searchParams.get('keyword') || '');
   }, [location]);
 
-  const handleSearch = (keyword: string, location: string) => {
-    const searchParams = new URLSearchParams();
-    if (keyword) searchParams.append('keyword', keyword);
-    if (location) searchParams.append('location', location);
-    navigate(`?${searchParams.toString()}`);
+  const handleSearch = (values: any) => {
+    console.log(values);
+
+    // const searchParams = new URLSearchParams();
+    // if (keyword) searchParams.append('keyword', keyword);
+    // if (location) searchParams.append('location', location);
+    // navigate(`?${searchParams.toString()}`);
   };
 
   const filteredJobs = allJobs.filter((job) => {
@@ -38,7 +40,7 @@ const JobListPage = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <SearchBar onSearch={handleSearch} />
+      <TopSearchBar onSearch={handleSearch} />
       <List
         loading={loading}
         itemLayout="vertical"
