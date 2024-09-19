@@ -6,6 +6,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { IJob } from '~/types/Job';
 import icons from '~/utils/icons';
+import PATH from '~/utils/path';
 import Button from '../Button/Button';
 
 dayjs.extend(relativeTime);
@@ -35,7 +36,11 @@ const JobHeader: React.FC<
     </Col>
     <Row>
       <Col span={24}>
-        <Link to={`/job/${id}`} className="text-xl text-black">
+        <Link
+          to={PATH.JOB_DETAIL.replace(':id', id.toString())}
+          target="_blank"
+          className="text-xl text-black"
+        >
           {title}
         </Link>
       </Col>
@@ -126,16 +131,21 @@ const JobCard: React.FC<IJob> = ({
               {dayjs(createAt).fromNow()}
             </Tag>
           </Col>
-          <Col className="flex items-center">
-            <Button
-              displayType="text"
-              title="Xem chi tiết"
-              className="text-[#2563eb] hover:underline hover:text-[#2563eb]"
-            />
-            <span>
-              <ArrowRightOutlined style={{ color: '#2563eb' }} />
-            </span>
-          </Col>
+          <Link
+            to={PATH.JOB_DETAIL.replace(':id', id.toString())}
+            target="_blank"
+          >
+            <Col className="flex items-center gap-2">
+              <Button
+                displayType="text"
+                title="Xem chi tiết"
+                className="text-[#2563eb] hover:underline hover:text-[#2563eb]"
+              />
+              <span>
+                <ArrowRightOutlined style={{ color: '#2563eb' }} />
+              </span>
+            </Col>
+          </Link>
         </Row>
       </div>
     </Card>
