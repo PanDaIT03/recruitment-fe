@@ -97,8 +97,14 @@ export default {
       },
       backgroundColor: {
         main: '#f7f6f2',
+        secondary: '#692474',
+        'header-active': '#31123a',
         'header-bgHover': '#461A53',
         'light-warning': '#fee2e2',
+        'light-gray': '#FAFAFA',
+      },
+      boxShadow: {
+        select: '0 0 0 2px rgba(5, 145, 255, 0.1)',
       },
     },
   },

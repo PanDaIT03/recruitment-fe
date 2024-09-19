@@ -1,6 +1,7 @@
 const PATH = {
   ROOT: '/',
   JOB_DETAIL: '/job/:id',
+  JOB_SEEKER: '/job-seeker',
   // Auth
   SIGN_IN: '/sign-in',
   SIGN_UP: '/sign-up',
