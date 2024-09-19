@@ -99,6 +99,10 @@ export default {
         main: '#f7f6f2',
         'header-bgHover': '#461A53',
         'light-warning': '#fee2e2',
+        'light-gray': '#FAFAFA',
+      },
+      boxShadow: {
+        select: '0 0 0 2px rgba(5, 145, 255, 0.1)',
       },
     },
   },
