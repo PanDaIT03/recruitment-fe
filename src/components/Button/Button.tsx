@@ -30,12 +30,12 @@ const cx = classNames.bind(styles);
 
 const Button = ({
   title,
-  type,
   disabled,
   iconBefore,
   iconAfter,
   fill = false,
   className = '',
+  type = 'button',
   displayType = 'primary',
   loading = false,
   ...props

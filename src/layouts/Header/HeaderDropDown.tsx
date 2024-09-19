@@ -126,6 +126,7 @@ const HeaderDropDown = () => {
       <Modal
         isOpen={isOpen}
         title="Đăng xuất"
+        animationType="slide-down"
         onCancel={handleCancelModal}
         footer={
           <div className="flex justify-end gap-3">

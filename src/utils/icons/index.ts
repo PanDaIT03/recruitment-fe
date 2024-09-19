@@ -14,14 +14,24 @@ import {
   FilePdfOutlined,
   HomeOutlined,
   LoadingOutlined,
+  LockOutlined,
   LogoutOutlined,
+  MailOutlined,
   ProfileOutlined,
   ReconciliationOutlined,
+  SearchOutlined,
   SettingOutlined,
   ShopOutlined,
   SnippetsOutlined,
-  TeamOutlined,
   UserOutlined,
+  AppstoreOutlined,
+  ClockCircleOutlined,
+  DollarCircleOutlined,
+  ExportOutlined,
+  InfoCircleOutlined,
+  LaptopOutlined,
+  ShareAltOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -47,7 +57,17 @@ const icons = {
   SettingOutlined,
   ShopOutlined,
   HomeOutlined,
-  CloseOutlined
+  CloseOutlined,
+  MailOutlined,
+  LockOutlined,
+  SearchOutlined,
+  AppstoreOutlined,
+  ClockCircleOutlined,
+  DollarCircleOutlined,
+  ExportOutlined,
+  InfoCircleOutlined,
+  LaptopOutlined,
+  ShareAltOutlined,
 };
 
 export default icons;

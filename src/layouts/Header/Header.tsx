@@ -9,31 +9,35 @@ import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
 
 interface IMenuItems {
-  label: string;
   href: string;
+  label: string;
+  active: boolean;
 }
 
 const menuItems: IMenuItems[] = [
   {
     label: 'Danh sách ứng viên',
-    href: '/',
+    href: PATH.JOB_SEEKER,
+    active: true,
   },
   {
     label: 'Tin tuyển dụng',
     href: '/',
+    active: false,
   },
   {
     label: 'Blog',
     href: '/',
+    active: false,
   },
 ];
 
 const Header = () => {
   const navigate = useNavigate();
-  const { accessToken } = useAppSelector((state) => state.auth.currentUser);
+  const { refreshToken } = useAppSelector((state) => state.auth.currentUser);
 
   return (
-    <div className="bg-[#692474] px-8">
+    <div className="sticky bg-secondary px-8 left-0 top-0 z-40">
       <Row align={'middle'} justify={'space-between'} className="h-16 mx-12">
         <Col className="flex justify-between gap-x-12">
           <HeaderLogo
@@ -45,14 +49,14 @@ const Header = () => {
               <Link
                 key={index}
                 to={item.href}
-                className="p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main"
+                className={`p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main ${item.active ? 'bg-header-active' : ''}`}
               >
                 {item.label}
               </Link>
             ))}
           </div>
         </Col>
-        {accessToken ? (
+        {refreshToken ? (
           <HeaderDropDown />
         ) : (
           <Col className="flex gap-3 justify-between items-center relative">

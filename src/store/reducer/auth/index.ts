@@ -22,6 +22,11 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    resetUser: (state) => {
+      state.accessToken = null;
+      state.refreshToken = null;
+      state.currentUser = {} as IUser;
+    },
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
     },
@@ -32,10 +37,11 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signIn.fulfilled, (state, action) => {
-        const { accessToken } = action.payload;
+        const { accessToken, refreshToken } = action.payload;
 
         state.loading = false;
         state.accessToken = accessToken;
+        state.refreshToken = refreshToken;
         state.currentUser = action.payload;
       })
       .addCase(signIn.rejected, (state) => {
@@ -45,13 +51,12 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signInWithGoogle.fulfilled, (state, action) => {
-        const { accessToken } = action.payload;
+        const { accessToken, refreshToken } = action.payload;
 
         state.loading = false;
         state.accessToken = accessToken;
+        state.refreshToken = refreshToken;
         state.currentUser = action.payload;
-
-        localStorage.setItem('accessToken', accessToken);
       })
       .addCase(signInWithGoogle.rejected, (state) => {
         state.loading = false;
@@ -74,4 +79,4 @@ const authSlice = createSlice({
 });
 
 export const authReducer = authSlice.reducer;
-export const { setAccessToken } = authSlice.actions;
+export const { resetUser, setAccessToken } = authSlice.actions;

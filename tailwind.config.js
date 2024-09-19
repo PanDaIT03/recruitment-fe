@@ -93,11 +93,18 @@ export default {
         accent: '#f15224',
         dark: '#0A0A0A',
         warning: '#DC2626',
+        blue: '#1677FF',
       },
       backgroundColor: {
         main: '#f7f6f2',
+        secondary: '#692474',
+        'header-active': '#31123a',
         'header-bgHover': '#461A53',
         'light-warning': '#fee2e2',
+        'light-gray': '#FAFAFA',
+      },
+      boxShadow: {
+        select: '0 0 0 2px rgba(5, 145, 255, 0.1)',
       },
     },
   },

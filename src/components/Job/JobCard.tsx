@@ -6,6 +6,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { IJob } from '~/types/Job';
 import icons from '~/utils/icons';
+import PATH from '~/utils/path';
 import Button from '../Button/Button';
 
 dayjs.extend(relativeTime);
@@ -35,7 +36,7 @@ const JobHeader: React.FC<
     </Col>
     <Row>
       <Col span={24}>
-        <Link to={`/job/${id}`} className="text-xl text-black">
+        <Link to={`/job/${id}`} target="_blank" className="text-xl text-black">
           {title}
         </Link>
       </Col>
@@ -75,28 +76,17 @@ const JobTags: React.FC<{
   </Row>
 );
 
-const JobCard: React.FC<IJob> = ({
-  id,
-  title,
-  description,
-  startPrice,
-  endPrice,
-  createAt,
-  user,
-  jobPosition,
-  jobCategory,
-  workType,
-  jobsPlacements,
-}) => {
+const JobCard: React.FC<IJob> = (job) => {
   const totalAmount =
-    jobsPlacements?.reduce((sum, placement) => sum + placement.amount, 0) || 0;
+    job.jobsPlacements?.reduce((sum, placement) => sum + placement.amount, 0) ||
+    0;
   const priceRange =
-    startPrice && endPrice
-      ? `${startPrice} - ${endPrice}`
-      : startPrice
-        ? ` ${startPrice}`
-        : endPrice
-          ? ` ${endPrice}`
+    job.startPrice && job.endPrice
+      ? `${job.startPrice} - ${job.endPrice}`
+      : job.startPrice
+        ? ` ${job.startPrice}`
+        : job.endPrice
+          ? ` ${job.endPrice}`
           : 'Thương lượng';
 
   return (
@@ -106,36 +96,38 @@ const JobCard: React.FC<IJob> = ({
     >
       <div className="flex flex-col">
         <JobHeader
-          id={id}
-          title={title}
-          user={user}
-          jobPosition={jobPosition}
+          id={job.id}
+          title={job.title}
+          user={job.user}
+          jobPosition={job.jobPosition}
         />
         <JobTags
           totalAmount={totalAmount}
           priceRange={priceRange}
-          jobCategory={jobCategory}
-          workType={workType}
+          jobCategory={job.jobCategory}
+          workType={job.workType}
         />
         <Paragraph className="text-sm text-[#78726de6] mb-0 line-clamp-2">
-          {description}
+          {job.description}
         </Paragraph>
         <Row className="flex items-center justify-between mb-0">
           <Col>
             <Tag icon={<AccountBookOutlined />} color="geekblue">
-              {dayjs(createAt).fromNow()}
+              {dayjs(job.createAt).fromNow()}
             </Tag>
           </Col>
-          <Col className="flex items-center">
-            <Button
-              displayType="text"
-              title="Xem chi tiết"
-              className="text-[#2563eb] hover:underline hover:text-[#2563eb]"
-            />
-            <span>
-              <ArrowRightOutlined style={{ color: '#2563eb' }} />
-            </span>
-          </Col>
+          <Link to={`/job/${job.id}`} target="_blank">
+            <Col className="flex items-center gap-2">
+              <Button
+                displayType="text"
+                title="Xem chi tiết"
+                className="text-[#2563eb] hover:underline hover:text-[#2563eb]"
+              />
+              <span>
+                <ArrowRightOutlined style={{ color: '#2563eb' }} />
+              </span>
+            </Col>
+          </Link>
         </Row>
       </div>
     </Card>
