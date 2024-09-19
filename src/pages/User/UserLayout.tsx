@@ -68,9 +68,16 @@ const UserLayout = () => {
             />
           }
           actions={[
-            <HomeOutlined key="home" onClick={() => navigate(PATH.ROOT)} />,
-            <SettingOutlined key="setting" />,
-            <DeleteOutlined key="delete" />,
+            <HomeOutlined
+              key="home"
+              onClick={() => navigate(PATH.ROOT)}
+              style={{ fontSize: 24 }}
+            />,
+            <SettingOutlined
+              key="setting"
+              onClick={() => navigate(PATH.USER_ACCOUNT)}
+              style={{ fontSize: 24 }}
+            />,
           ]}
         >
           <Meta

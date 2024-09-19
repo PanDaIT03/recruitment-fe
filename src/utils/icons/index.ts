@@ -23,8 +23,15 @@ import {
   SettingOutlined,
   ShopOutlined,
   SnippetsOutlined,
-  TeamOutlined,
   UserOutlined,
+  AppstoreOutlined,
+  ClockCircleOutlined,
+  DollarCircleOutlined,
+  ExportOutlined,
+  InfoCircleOutlined,
+  LaptopOutlined,
+  ShareAltOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -53,7 +60,14 @@ const icons = {
   CloseOutlined,
   MailOutlined,
   LockOutlined,
-  SearchOutlined
+  SearchOutlined,
+  AppstoreOutlined,
+  ClockCircleOutlined,
+  DollarCircleOutlined,
+  ExportOutlined,
+  InfoCircleOutlined,
+  LaptopOutlined,
+  ShareAltOutlined,
 };
 
 export default icons;
