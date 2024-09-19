@@ -14,16 +14,17 @@ import {
   FilePdfOutlined,
   HomeOutlined,
   LoadingOutlined,
+  LockOutlined,
   LogoutOutlined,
   MailOutlined,
   ProfileOutlined,
   ReconciliationOutlined,
+  SearchOutlined,
   SettingOutlined,
   ShopOutlined,
   SnippetsOutlined,
   TeamOutlined,
   UserOutlined,
-  LockOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -52,6 +53,7 @@ const icons = {
   CloseOutlined,
   MailOutlined,
   LockOutlined,
+  SearchOutlined
 };
 
 export default icons;

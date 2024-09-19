@@ -16,7 +16,7 @@ interface IMenuItems {
 const menuItems: IMenuItems[] = [
   {
     label: 'Danh sách ứng viên',
-    href: '/',
+    href: PATH.JOB_SEEKER,
   },
   {
     label: 'Tin tuyển dụng',
@@ -33,7 +33,7 @@ const Header = () => {
   const { refreshToken } = useAppSelector((state) => state.auth.currentUser);
 
   return (
-    <div className="bg-[#692474] px-8">
+    <div className="bg-[#692474] px-8 shadow-lg">
       <Row align={'middle'} justify={'space-between'} className="h-16 mx-12">
         <Col className="flex justify-between gap-x-12">
           <HeaderLogo
