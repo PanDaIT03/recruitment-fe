@@ -1,14 +1,13 @@
-import SearchBar from '~/components/SearchBar/SearchBar';
+import TopSearchBar from '~/components/TopSearchBar/TopSearchBar';
 
 const JobSeeker = () => {
-  const handleSearch = (keyword: string, location: string) => {
-    console.log(keyword);
-    console.log(location);
+  const handleSearch = (values: any) => {
+    console.log(values);
   };
 
   return (
-    <div className="min-h-screen">
-      <SearchBar
+    <div className="min-h-[100vh]">
+      <TopSearchBar
         placeHolder="Tìm kiếm theo vị trí ứng tuyển"
         onSearch={handleSearch}
       />
