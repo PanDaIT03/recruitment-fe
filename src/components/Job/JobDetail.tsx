@@ -1,10 +1,11 @@
 import { Card, Col, Divider, Row } from 'antd';
 import React, { useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
-import Button from '../Button/Button';
 import icons from '~/utils/icons';
+import Button from '../Button/Button';
 
 const {
   AppstoreOutlined,
@@ -24,6 +25,16 @@ const JobDetail: React.FC = () => {
   const { currentJob } = useAppSelector((state) => state.jobs);
   const dispatch = useAppDispatch();
 
+  const customBreadcrumbItems = [
+    { path: '/jobs', label: 'Tin tuyển dụng' },
+    {
+      path: `/job/${id}`,
+      label: currentJob?.[0]?.title || 'Chi tiết công việc',
+    },
+  ];
+
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+
   useEffect(() => {
     dispatch(getJobById(id));
   }, [id]);
@@ -40,7 +51,7 @@ const JobDetail: React.FC = () => {
         if (parentRect) {
           if (window.scrollY > parentRect.top) {
             rightColRef.current.style.position = 'fixed';
-            rightColRef.current.style.top = '20px';
+            rightColRef.current.style.top = '65px';
             rightColRef.current.style.width = `${parentRect.width}px`;
           } else {
             rightColRef.current.style.position = 'static';
@@ -58,8 +69,10 @@ const JobDetail: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
+      {breadcrumb}
       <Row gutter={[16, 16]} className="flex flex-col md:flex-row">
         <Col xs={24} md={16} className="mb-4 md:mb-0">
           <Button

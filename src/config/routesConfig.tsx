@@ -15,6 +15,7 @@ const SignIn = lazy(() => import('~/pages/Auth/SignIn/SignIn'));
 const SignUp = lazy(() => import('~/pages/Auth/SignUp/SignUp'));
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
 const JobDetail = lazy(() => import('~/components/Job/JobDetail'));
+const JobListPage = lazy(() => import('~/components/Job/JobList'));
 const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
 const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
@@ -76,9 +77,13 @@ const createProtectedRoute = (
 });
 
 const routesConfig: CustomRouteObject[] = [
-  createRoute(PATH.ROOT, <Home />, MainLayout),
-  createRoute(PATH.JOB_DETAIL, <JobDetail />, MainLayout),
-  createRoute(PATH.JOB_SEEKER, <JobSeeker />, MainLayout),
+  createRoutes(
+    MainLayout,
+    createRoute(PATH.ROOT, <Home />),
+    createRoute(PATH.JOB_DETAIL, <JobDetail />),
+    createRoute(PATH.JOB_SEEKER, <JobSeeker />),
+    createRoute(PATH.JOB_LIST, <JobListPage />)
+  ),
 
   // Admin
   createProtectedRoute(

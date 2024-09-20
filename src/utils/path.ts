@@ -2,6 +2,7 @@ const PATH = {
   ROOT: '/',
   JOB_DETAIL: '/job/:id',
   JOB_SEEKER: '/job-seeker',
+  JOB_LIST: 'jobs',
   // Auth
   SIGN_IN: '/sign-in',
   SIGN_UP: '/sign-up',

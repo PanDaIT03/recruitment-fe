@@ -22,7 +22,7 @@ const menuItems: IMenuItems[] = [
   },
   {
     label: 'Tin tuyển dụng',
-    href: '/',
+    href: PATH.JOB_LIST,
     active: false,
   },
   {
