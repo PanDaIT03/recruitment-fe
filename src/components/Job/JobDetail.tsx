@@ -1,11 +1,13 @@
 import { Card, Col, Divider, Row } from 'antd';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
+import Modal from '../Modal/Modal';
+import JobApplicationModal from './JobApplicationModal/JobApplicationModal';
 
 const {
   AppstoreOutlined,
@@ -22,6 +24,7 @@ const {
 const JobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const rightColRef = useRef<HTMLDivElement>(null);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const { currentJob } = useAppSelector((state) => state.jobs);
   const dispatch = useAppDispatch();
 
@@ -38,8 +41,6 @@ const JobDetail: React.FC = () => {
   useEffect(() => {
     dispatch(getJobById(id));
   }, [id]);
-
-  console.log(currentJob);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,6 +71,10 @@ const JobDetail: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleIsOpenModal = () => {
+    setIsOpenModal(!isOpenModal);
+  };
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
       {breadcrumb}
@@ -77,9 +82,9 @@ const JobDetail: React.FC = () => {
         <Col xs={24} md={16} className="mb-4 md:mb-0">
           <Button
             className="w-full md:hidden mb-4"
-            type="button"
             iconBefore={<TeamOutlined />}
             title="Ứng tuyển ngay"
+            onClick={handleIsOpenModal}
           />
           <div className="mb-4 hidden md:block">
             <h1 className="text-2xl font-bold mb-2">
@@ -89,16 +94,15 @@ const JobDetail: React.FC = () => {
             <div className="flex flex-wrap gap-2">
               <Button
                 iconBefore={<ShareAltOutlined />}
-                type="button"
                 className="mb-2 sm:mb-0"
                 title="Chia sẻ"
               />
 
               <Button
                 fill
-                type="button"
                 className="w-full sm:w-auto"
                 title="Ứng tuyển ngay"
+                onClick={handleIsOpenModal}
               />
             </div>
           </div>
@@ -207,6 +211,7 @@ const JobDetail: React.FC = () => {
           type="button"
           iconBefore={<TeamOutlined />}
           title="Ứng tuyển ngay"
+          onClick={handleIsOpenModal}
         />
         <Col xs={24} md={8} className="hidden md:block">
           <Card
@@ -256,16 +261,15 @@ const JobDetail: React.FC = () => {
                 </div>
               ))}
             </div>
-
-            <Button
-              className="w-full"
-              type="button"
-              iconBefore={<TeamOutlined />}
-              title="Xem thông tin liên hệ"
-            />
           </Card>
         </Col>
       </Row>
+      <Modal isOpen={isOpenModal} footer={null}>
+        <JobApplicationModal
+          jobTitle={currentJob?.[0]?.title || ''}
+          handleToggleModal={handleIsOpenModal}
+        />
+      </Modal>
     </div>
   );
 };
