@@ -12,6 +12,7 @@ const PATH = {
   ADMIN_DASHBOARD: '/admin/dashboard',
   // Employer
   EMPLOYER_DASHBOARD: '/employer/dashboard',
+  EMPLOYER_POSTING: '/employer/posting',
   // User
   USER_PROFILE: '/user/profile',
   USER_ACCOUNT: '/user/account',

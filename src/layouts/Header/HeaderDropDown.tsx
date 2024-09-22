@@ -96,7 +96,7 @@ const HeaderDropDown = () => {
             {
               key: '2',
               label: 'Đăng tin',
-              onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
+              onClick: () => navigate(PATH.EMPLOYER_POSTING),
             },
           ]),
       { type: 'divider' as const },

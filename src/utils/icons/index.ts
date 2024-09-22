@@ -33,6 +33,7 @@ import {
   ShareAltOutlined,
   TeamOutlined,
   CloudUploadOutlined,
+  ArrowDownOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -70,6 +71,7 @@ const icons = {
   LaptopOutlined,
   ShareAltOutlined,
   CloudUploadOutlined,
+  ArrowDownOutlined,
 };
 
 export default icons;

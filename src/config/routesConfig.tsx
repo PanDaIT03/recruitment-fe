@@ -20,6 +20,7 @@ const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
 const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
+const PostingJob = lazy(() => import('~/pages/Employer/PostingJob/PostingJob'));
 const EmployerDashboard = lazy(
   () => import('~/pages/Employer/Dashboard/EmployerDashboard')
 );
@@ -100,7 +101,8 @@ const routesConfig: CustomRouteObject[] = [
     ['employer'],
     EmployerLayout,
     { index: true, element: <EmployerDashboard /> },
-    createRoute(PATH.EMPLOYER_DASHBOARD, <EmployerDashboard />)
+    createRoute(PATH.EMPLOYER_DASHBOARD, <EmployerDashboard />),
+    createRoute(PATH.EMPLOYER_POSTING, <PostingJob />)
   ),
 
   // User

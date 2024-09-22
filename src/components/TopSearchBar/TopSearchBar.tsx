@@ -9,6 +9,9 @@ import Button from '../Button/Button';
 import FormWrapper from '../FormWrapper/FormWrapper';
 import Icon from '../Icon/Icon';
 import Select from '../Select/Select';
+import { useFetch } from '~/hooks/useFetch';
+import { JobPlacement } from '~/types/Job';
+import { JobsAPI } from '~/apis/job';
 
 const { SearchOutlined } = icons;
 
@@ -16,14 +19,6 @@ const optionLocations: DefaultOptionType[] = [
   {
     label: 'Toàn quốc',
     value: 'Toàn quốc',
-  },
-  {
-    label: 'Hồ Chí Minh',
-    value: 'Hồ Chí Minh',
-  },
-  {
-    label: 'Hà Nội',
-    value: 'Hà Nội',
   },
 ];
 
@@ -39,6 +34,10 @@ const TopSearchBar: React.FC<IProps> = ({
   onSearch,
 }) => {
   const [form] = useForm();
+
+  const { data: placements } = useFetch<JobPlacement[]>(
+    JobsAPI.getAllPlacements
+  );
 
   useEffect(() => {
     form.setFieldValue('location', 'Toàn quốc');
@@ -68,7 +67,14 @@ const TopSearchBar: React.FC<IProps> = ({
             <Select
               colorBgContainer="#FAFAFA"
               placeholder="Chọn khu vực"
-              options={optionLocations}
+              options={
+                placements
+                  ? placements.map((place) => ({
+                      label: place.title,
+                      value: place.id,
+                    }))
+                  : optionLocations
+              }
               prefixIcon={<Icon icon={LOCATION} width={16} height={16} />}
             />
           </Form.Item>

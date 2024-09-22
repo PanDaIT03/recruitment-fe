@@ -1,5 +1,256 @@
-const PostingJob = () => {
-  return <div>PostingJob</div>;
+import { Editor } from '@tinymce/tinymce-react';
+import { Button, Divider, Form, Input, InputNumber, Radio, Select } from 'antd';
+import React from 'react';
+import { JobsAPI } from '~/apis/job';
+import useBreadcrumb from '~/hooks/useBreadcrumb';
+import { useFetch } from '~/hooks/useFetch';
+import { JobCategory, JobPlacement, JobPosition, WorkType } from '~/types/Job';
+import PATH from '~/utils/path';
+
+const { Option } = Select;
+
+const PostingJob: React.FC = () => {
+  const [form] = Form.useForm();
+
+  const customBreadcrumbItems = [
+    {
+      path: PATH.EMPLOYER_DASHBOARD,
+      label: 'Nhà tuyển dụng',
+    },
+    {
+      path: PATH.EMPLOYER_POSTING,
+      label: 'Đăng tin',
+    },
+  ];
+
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+
+  const { data: jobPositions } = useFetch<JobPosition[]>(
+    JobsAPI.getAllJobPositions
+  );
+  const { data: jobCategories } = useFetch<JobCategory[]>(
+    JobsAPI.getAllJobCategories
+  );
+  const { data: workType } = useFetch<WorkType[]>(JobsAPI.getAllWorkTypes);
+
+  const { data: jobPlacements } = useFetch<JobPlacement[]>(
+    JobsAPI.getAllPlacements
+  );
+
+  const onFinish = (values: any) => {
+    console.log('Form values:', values);
+  };
+
+  return (
+    <>
+      {breadcrumb}
+      <Form
+        form={form}
+        onFinish={onFinish}
+        layout="vertical"
+        className="max-w-3xl mx-auto p-4 rounded-md border-non  shadow"
+      >
+        <h2 className="text-xl font-bold mb-4">Thông tin cơ bản</h2>
+        <Divider />
+        <Form.Item
+          name="title"
+          label="Vị trí tuyển dụng"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="company"
+          label="Lĩnh vực của vị trí tuyển dụng này là gì?"
+          rules={[{ required: true }]}
+        >
+          <Select placeholder="Chọa danh mục">
+            <Option value="1">Kinh tế</Option>
+            <Option value="2">Công nghệ</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="jobType"
+          label="Loại công việc"
+          rules={[{ required: true }]}
+        >
+          <Radio.Group className="flex flex-col gap-4">
+            {jobCategories?.map((category) => (
+              <Radio value={category.id} id={category?.id.toString()}>
+                {category.name}
+              </Radio>
+            ))}
+          </Radio.Group>
+        </Form.Item>
+
+        <Form.Item
+          name="workType"
+          label="Hình thức làm việc"
+          rules={[{ required: true }]}
+        >
+          <Radio.Group className="flex flex-col gap-4">
+            {workType?.map((type) => (
+              <Radio value={type?.id} id={type?.id.toString()}>
+                {type?.title}
+              </Radio>
+            ))}
+          </Radio.Group>
+        </Form.Item>
+
+        <Form.Item name="level" label="Cấp bậc" rules={[{ required: true }]}>
+          <Select placeholder="Chọn cấp bậc">
+            {jobPositions?.map((position) => (
+              <Option key={position.id} value={position.id}>
+                {position.title}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          name="placements"
+          label="Địa điểm làm việc (tối đa 3 địa điểm)"
+          rules={[{ required: true }]}
+        >
+          <Select placeholder="Chọn danh mục">
+            {jobPlacements?.map((place) => (
+              <Option value={place?.id}>{place?.title}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item label="Mức lương (không bắt buộc)" className="mb-4">
+          <Input.Group compact>
+            <Input.Group compact className="w-full">
+              <Form.Item name={'salaryMin'} noStyle>
+                <InputNumber
+                  className="w-full"
+                  placeholder="Từ mức lương"
+                  min={0}
+                />
+              </Form.Item>
+              <Form.Item name={'salaryMax'} noStyle>
+                <InputNumber
+                  className="w-full"
+                  placeholder="Đến mức lương"
+                  min={0}
+                />
+              </Form.Item>
+            </Input.Group>
+          </Input.Group>
+          <p className="mt-2">
+            <span className="text-gray-400">Ứng viên sẽ nhìn thấy:</span>
+            <span className="italic text-red-500"> Thương lượng</span>
+          </p>
+        </Form.Item>
+
+        <Form.Item name="description" label="Mô tả công việc">
+          <Editor
+            apiKey={import.meta.env.VITE_APP_TINYMCE_API_KEY}
+            init={{
+              height: 200,
+              menubar: false,
+              plugins: [
+                'lists',
+                'link',
+                'image',
+                'charmap',
+                'preview',
+                'anchor',
+                'searchreplace',
+                'visualblocks',
+                'code',
+                'fullscreen',
+                'insertdatetime',
+                'media',
+                'table',
+                'code',
+                'help',
+                'wordcount',
+              ],
+              toolbar:
+                'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            }}
+          />
+        </Form.Item>
+
+        <Form.Item name="requirements" label="Yêu cầu ứng viên">
+          <Editor
+            apiKey={import.meta.env.VITE_APP_TINYMCE_API_KEY}
+            init={{
+              height: 200,
+              menubar: false,
+              plugins: [
+                'lists',
+                'link',
+                'image',
+                'charmap',
+                'preview',
+                'anchor',
+                'searchreplace',
+                'visualblocks',
+                'code',
+                'fullscreen',
+                'insertdatetime',
+                'media',
+                'table',
+                'code',
+                'help',
+                'wordcount',
+              ],
+              toolbar:
+                'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            }}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="benefits"
+          label="Tại sao nên gia nhập công ty chúng tôi"
+        >
+          <Editor
+            apiKey={import.meta.env.VITE_APP_TINYMCE_API_KEY}
+            init={{
+              height: 200,
+              menubar: false,
+              plugins: [
+                'lists',
+                'link',
+                'image',
+                'charmap',
+                'preview',
+                'anchor',
+                'searchreplace',
+                'visualblocks',
+                'code',
+                'fullscreen',
+                'insertdatetime',
+                'media',
+                'table',
+                'code',
+                'help',
+                'wordcount',
+              ],
+              toolbar:
+                'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+            }}
+          />
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="bg-orange-500 hover:bg-orange-600 border-none w-full"
+          >
+            Đăng tin
+          </Button>
+        </Form.Item>
+      </Form>
+    </>
+  );
 };
 
 export default PostingJob;
