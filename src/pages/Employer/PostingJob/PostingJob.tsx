@@ -1,7 +1,8 @@
 import { Editor } from '@tinymce/tinymce-react';
-import { Button, Divider, Form, Input, InputNumber, Radio, Select } from 'antd';
+import { Divider, Form, Input, InputNumber, Radio, Select } from 'antd';
 import React from 'react';
 import { JobsAPI } from '~/apis/job';
+import Button from '~/components/Button/Button';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useFetch } from '~/hooks/useFetch';
 import { JobCategory, JobPlacement, JobPosition, WorkType } from '~/types/Job';
@@ -65,7 +66,7 @@ const PostingJob: React.FC = () => {
           label="Lĩnh vực của vị trí tuyển dụng này là gì?"
           rules={[{ required: true }]}
         >
-          <Select placeholder="Chọa danh mục">
+          <Select placeholder="Chọn danh mục" dropdownMatchSelectWidth={false}>
             <Option value="1">Kinh tế</Option>
             <Option value="2">Công nghệ</Option>
           </Select>
@@ -240,13 +241,7 @@ const PostingJob: React.FC = () => {
         </Form.Item>
 
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="bg-orange-500 hover:bg-orange-600 border-none w-full"
-          >
-            Đăng tin
-          </Button>
+          <Button title="Đăng tin" className="w-full" fill type="submit" />
         </Form.Item>
       </Form>
     </>
