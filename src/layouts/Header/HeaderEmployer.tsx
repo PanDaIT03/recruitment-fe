@@ -3,8 +3,6 @@ import { memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { HeaderLogo } from '~/assets/svg';
-import Button from '~/components/Button/Button';
-import { useAppSelector } from '~/hooks/useStore';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
 
