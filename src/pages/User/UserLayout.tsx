@@ -10,7 +10,6 @@ import PATH from '~/utils/path';
 
 const {
   CalendarOutlined,
-  DeleteOutlined,
   FilePdfOutlined,
   SettingOutlined,
   ShopOutlined,
