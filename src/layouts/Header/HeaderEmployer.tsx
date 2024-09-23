@@ -16,25 +16,29 @@ interface IMenuItems {
 
 const menuItems: IMenuItems[] = [
   {
-    label: 'Danh sách ứng viên',
-    href: PATH.JOB_SEEKER,
+    label: 'Trang chủ',
+    href: PATH.EMPLOYER_DASHBOARD,
     active: true,
   },
   {
-    label: 'Tin tuyển dụng',
-    href: PATH.JOB_LIST,
+    label: 'Ứng viên',
+    href: PATH.EMPLOYER_DASHBOARD,
     active: false,
   },
   {
-    label: 'Blog',
-    href: '/',
+    label: 'Đăng tin',
+    href: PATH.EMPLOYER_POSTING,
+    active: false,
+  },
+  {
+    label: 'Tuyển dụng',
+    href: PATH.EMPLOYER_DASHBOARD,
     active: false,
   },
 ];
 
 const Header = () => {
   const navigate = useNavigate();
-  const { refreshToken } = useAppSelector((state) => state.auth.currentUser);
 
   return (
     <div className="sticky bg-secondary px-8 left-0 top-0 z-40">
@@ -56,25 +60,7 @@ const Header = () => {
             ))}
           </div>
         </Col>
-        {refreshToken ? (
-          <HeaderDropDown />
-        ) : (
-          <Col className="flex gap-3 justify-between items-center relative">
-            <Button
-              displayType="text"
-              className="hover:bg-header-bgHover"
-              onClick={() => navigate(PATH.SIGN_IN)}
-              title={
-                <div className="flex flex-col text-start">
-                  <span className="text-xs">Người tìm việc</span>
-                  <span className="text-sm">Đăng ký/ Đăng nhập</span>
-                </div>
-              }
-            />
-            <hr className="border-l-[1px]	border-main h-7" />
-            <Button fill title="Nhà tuyển dụng" />
-          </Col>
-        )}
+        <HeaderDropDown />
       </Row>
     </div>
   );

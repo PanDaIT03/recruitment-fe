@@ -1,6 +1,6 @@
 import { IUser } from '../Auth';
 
-interface JobPosition {
+export interface JobPosition {
   id: number;
   createBy: number;
   createAt: string;
@@ -9,14 +9,18 @@ interface JobPosition {
   title: string;
 }
 
-interface JobPlacement {
-  jobsId: number;
-  placementsId: number;
-  detailAddress: string;
-  amount: number;
+export interface JobPlacement {
+  id: number;
+  createBy: number;
+  createAt: string;
+  updateBy: string;
+  updateAt: number;
+  title: string;
+  amount?: number;
+  detailAddress?: string;
 }
 
-interface WorkType {
+export interface WorkType {
   id: number;
   createBy: number;
   createAt: string;
@@ -25,7 +29,7 @@ interface WorkType {
   title: string;
 }
 
-interface JobCategory {
+export interface JobCategory {
   id: number;
   createBy: number;
   createAt: string;
@@ -33,6 +37,15 @@ interface JobCategory {
   updateAt: string | null;
   name: string;
   description: string | null;
+}
+
+export interface JobField {
+  id: number;
+  createBy: number | null;
+  createAt: string;
+  updateBy: number | null;
+  updateAt: string;
+  title: string;
 }
 
 export interface IJob {
