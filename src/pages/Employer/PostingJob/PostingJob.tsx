@@ -1,11 +1,18 @@
 import { Editor } from '@tinymce/tinymce-react';
 import { Divider, Form, Input, InputNumber, Radio, Select } from 'antd';
-import React from 'react';
+import axios from 'axios';
+import React, { useRef } from 'react';
 import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useFetch } from '~/hooks/useFetch';
-import { JobCategory, JobPlacement, JobPosition, WorkType } from '~/types/Job';
+import {
+  JobCategory,
+  JobField,
+  JobPlacement,
+  JobPosition,
+  WorkType,
+} from '~/types/Job';
 import PATH from '~/utils/path';
 
 const { Option } = Select;
@@ -38,10 +45,40 @@ const PostingJob: React.FC = () => {
     JobsAPI.getAllPlacements
   );
 
-  const onFinish = (values: any) => {
-    console.log('Form values:', values);
+  const { data: jobFields } = useFetch<JobField[]>(JobsAPI.getAllJobFields);
+
+  const cleanFormValues = (values: any) => {
+    const cleanValues = { ...values };
+    ['description', 'requirements', 'benefits'].forEach((field) => {
+      if (cleanValues[field]) {
+        cleanValues[field] = cleanValues[field].toString();
+      } else {
+        cleanValues[field] = '';
+      }
+    });
+    return cleanValues;
   };
 
+  const onFinish = async () => {
+    try {
+      const values = form.getFieldsValue();
+
+      const payload = {
+        ...values,
+        description: values.description?.level?.content || '',
+        requirements: values.requirements?.level?.content || '',
+        benefits: values.benefits?.level?.content || '',
+      };
+
+      const cleanValues = cleanFormValues(payload);
+
+      const response = await JobsAPI.postJob(cleanValues);
+
+      console.log(response);
+    } catch (error: unknown) {
+      console.error(error);
+    }
+  };
   return (
     <>
       {breadcrumb}
@@ -66,9 +103,12 @@ const PostingJob: React.FC = () => {
           label="Lĩnh vực của vị trí tuyển dụng này là gì?"
           rules={[{ required: true }]}
         >
-          <Select placeholder="Chọn danh mục" dropdownMatchSelectWidth={false}>
-            <Option value="1">Kinh tế</Option>
-            <Option value="2">Công nghệ</Option>
+          <Select placeholder="Chọn danh mục">
+            {jobFields?.map((field) => (
+              <Option value={field.id} key={field.id}>
+                {field.title}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
 
@@ -79,7 +119,7 @@ const PostingJob: React.FC = () => {
         >
           <Radio.Group className="flex flex-col gap-4">
             {jobCategories?.map((category) => (
-              <Radio value={category.id} id={category?.id.toString()}>
+              <Radio value={category.id} key={category?.id.toString()}>
                 {category.name}
               </Radio>
             ))}
@@ -93,7 +133,7 @@ const PostingJob: React.FC = () => {
         >
           <Radio.Group className="flex flex-col gap-4">
             {workType?.map((type) => (
-              <Radio value={type?.id} id={type?.id.toString()}>
+              <Radio value={type?.id} key={type?.id.toString()}>
                 {type?.title}
               </Radio>
             ))}
@@ -115,9 +155,11 @@ const PostingJob: React.FC = () => {
           label="Địa điểm làm việc (tối đa 3 địa điểm)"
           rules={[{ required: true }]}
         >
-          <Select placeholder="Chọn danh mục">
+          <Select placeholder="Chọn danh mục" mode="multiple" maxCount={3}>
             {jobPlacements?.map((place) => (
-              <Option value={place?.id}>{place?.title}</Option>
+              <Option value={place?.id} key={place.id}>
+                {place?.title}
+              </Option>
             ))}
           </Select>
         </Form.Item>
@@ -154,6 +196,8 @@ const PostingJob: React.FC = () => {
               height: 200,
               menubar: false,
               plugins: [
+                'advlist',
+                'autolink',
                 'lists',
                 'link',
                 'image',
@@ -172,7 +216,12 @@ const PostingJob: React.FC = () => {
                 'wordcount',
               ],
               toolbar:
-                'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+                'undo redo | blocks | ' +
+                'bold italic forecolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+              content_style:
+                'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
             }}
           />
         </Form.Item>
@@ -207,10 +256,7 @@ const PostingJob: React.FC = () => {
           />
         </Form.Item>
 
-        <Form.Item
-          name="benefits"
-          label="Tại sao nên gia nhập công ty chúng tôi"
-        >
+        <Form.Item name="benefits" label="Quyền lợi">
           <Editor
             apiKey={import.meta.env.VITE_APP_TINYMCE_API_KEY}
             init={{

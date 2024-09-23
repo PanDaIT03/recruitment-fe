@@ -37,6 +37,15 @@ export interface JobCategory {
   description: string | null;
 }
 
+export interface JobField {
+  id: number;
+  createBy: number | null;
+  createAt: string;
+  updateBy: number | null;
+  updateAt: string;
+  title: string;
+}
+
 export interface IJob {
   id: number;
   createBy: number;
