@@ -1,71 +1,37 @@
-import { ConfigProvider, Select as SelectAntd, SelectProps } from 'antd';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { Select as SelectAntd, SelectProps } from 'antd';
 
-import classNames from 'classnames';
-import Icon from '../Icon/Icon';
-import './Select.scss';
+const Select = (props: SelectProps) => {
+  const handleFilterOption = (input: any, option: any) => {
+    if (typeof option?.label === 'number')
+      return option.label.toString().includes(input);
 
-type TProps = {
-  colorBgContainer?: string;
-  colorBorderContainer?: string;
-  prefixIcon?: string | ReactNode;
-} & SelectProps;
+    return (option?.label ?? '')
+      .toString()
+      .toLowerCase()
+      .includes(input.toLowerCase());
+  };
 
-const Select = ({
-  prefixIcon,
-  colorBgContainer,
-  colorBorderContainer,
-  ...props
-}: TProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [dropDownWidth, setDropDownWidth] = useState<number>();
+  const handleFilterSort = (optionA: any, optionB: any) => {
+    if (
+      typeof optionA?.label === 'number' ||
+      typeof optionB?.label === 'number'
+    )
+      return null;
 
-  const customClass = classNames(
-    'flex pl-[11px] items-center border rounded-lg',
-    `bg-[${colorBgContainer}]`,
-    `border-[${colorBorderContainer}]`
-  );
-
-  const getPopupContainer = () => containerRef.current!;
-
-  useEffect(() => {
-    const updateWidth = () => {
-      if (!containerRef.current) return;
-
-      const width = containerRef.current.offsetWidth;
-      setDropDownWidth(width);
-    };
-
-    updateWidth();
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
-  }, []);
+    return (optionA?.label ?? '')
+      .toLowerCase()
+      .localeCompare((optionB?.label ?? '').toLowerCase());
+  };
 
   return (
-    <div ref={containerRef} className={customClass}>
-      {prefixIcon && typeof prefixIcon === 'string' ? (
-        <Icon icon={prefixIcon} />
-      ) : (
-        prefixIcon
-      )}
-      <ConfigProvider
-        theme={{
-          components: {
-            Select: {
-              colorBgContainer: colorBgContainer,
-            },
-          },
-        }}
-      >
-        <SelectAntd
-          size="large"
-          {...props}
-          popupMatchSelectWidth={false}
-          dropdownStyle={{ width: dropDownWidth }}
-          getPopupContainer={getPopupContainer}
-        />
-      </ConfigProvider>
-    </div>
+    <SelectAntd
+      showSearch
+      size="large"
+      optionFilterProp="children"
+      filterSort={handleFilterSort}
+      filterOption={handleFilterOption}
+      {...props}
+    />
   );
 };
 
