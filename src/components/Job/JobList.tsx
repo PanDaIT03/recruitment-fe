@@ -30,7 +30,7 @@ const JobListPage = () => {
     // navigate(`?${searchParams.toString()}`);
   };
 
-  const filteredJobs = allJobs.filter((job) => {
+  const filteredJobs = allJobs?.items?.filter((job) => {
     const keywordMatch = keyword
       ? job.title.toLowerCase().includes(keyword.toLowerCase())
       : true;

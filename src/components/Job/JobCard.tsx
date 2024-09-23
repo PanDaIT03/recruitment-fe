@@ -4,7 +4,7 @@ import 'dayjs/locale/vi';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IJob } from '~/types/Job';
+import { IJob, JobItem } from '~/types/Job';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
 
@@ -23,7 +23,7 @@ const {
 } = icons;
 
 const JobHeader: React.FC<
-  Pick<IJob, 'id' | 'title' | 'user' | 'jobPosition'>
+  Pick<JobItem, 'id' | 'title' | 'user' | 'jobPosition'>
 > = ({ id, title, user, jobPosition }) => (
   <Row className="flex items-start gap-4 mb-3">
     <Col className="flex-shrink-0 w-12 h-12 mt-1">
@@ -56,8 +56,8 @@ const JobHeader: React.FC<
 const JobTags: React.FC<{
   totalAmount: number;
   priceRange: string;
-  jobCategory: IJob['jobCategory'];
-  workType: IJob['workType'];
+  jobCategory: JobItem['jobCategory'];
+  workType: JobItem['workType'];
 }> = ({ totalAmount, priceRange, jobCategory, workType }) => (
   <Row className="flex items-center gap-2 text-sm text-gray-200 mb-3">
     <Tag icon={<ReconciliationOutlined />} color="purple">
@@ -75,7 +75,7 @@ const JobTags: React.FC<{
   </Row>
 );
 
-const JobCard: React.FC<IJob> = (job) => {
+const JobCard: React.FC<JobItem> = (job) => {
   const totalAmount =
     job.jobsPlacements?.reduce(
       (sum, placement) => sum + (placement?.amount ?? 0),
