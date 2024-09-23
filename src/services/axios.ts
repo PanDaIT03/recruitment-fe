@@ -21,9 +21,14 @@ const instance: AxiosInstance = axios.create({
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const accessToken = tokenService.getAccessToken();
+    const refreshToken = tokenService.getRefreshToken();
 
     if (accessToken && config.headers)
       config.headers.Authorization = `Bearer ${accessToken}`;
+
+    if (refreshToken && config.headers)
+      config.headers['Set-Cookie'] =
+        `refreshToken=${refreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
 
     return config;
   },
@@ -45,17 +50,20 @@ instance.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const refreshToken = tokenService.getRefreshToken();
-        const response = await instance.post<{ accessToken: string }>(
-          '/auth/refresh',
-          {
-            refreshToken,
-          }
-        );
-        const { accessToken } = response.data;
+        const response = await instance.post<{
+          accessToken: string;
+          refreshToken: string;
+        }>('/auth/refresh', {
+          refreshToken,
+        });
+        const { accessToken, refreshToken: newRefreshToken } = response.data;
         tokenService.setAccessToken(accessToken);
 
         if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+
+        originalRequest.headers['Set-Cookie'] =
+          `refreshToken=${newRefreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
 
         return instance(originalRequest);
       } catch (refreshError) {

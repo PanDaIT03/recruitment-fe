@@ -1,6 +1,5 @@
 import { Middleware } from '@reduxjs/toolkit';
 import { IUser } from '~/types/Auth/index';
-import { IJob } from '~/types/Job';
 
 // Tạo các interface state cho mỗi block state muốn lưu
 export interface AuthState {
@@ -10,15 +9,8 @@ export interface AuthState {
   refreshToken: string | null;
 }
 
-interface JobsState {
-  loading: boolean;
-  allJobs: IJob[];
-  error: string | null;
-}
-
 export interface RootState {
   auth: AuthState;
-  jobs: JobsState;
 }
 
 // Các state được lưu

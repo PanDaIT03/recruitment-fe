@@ -1,10 +1,13 @@
 import { Card, Col, Divider, Row } from 'antd';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
-import Button from '../Button/Button';
 import icons from '~/utils/icons';
+import Button from '../Button/Button';
+import Modal from '../Modal/Modal';
+import JobApplicationModal from './JobApplicationModal/JobApplicationModal';
 
 const {
   AppstoreOutlined,
@@ -21,14 +24,23 @@ const {
 const JobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const rightColRef = useRef<HTMLDivElement>(null);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const { currentJob } = useAppSelector((state) => state.jobs);
   const dispatch = useAppDispatch();
+
+  const customBreadcrumbItems = [
+    { path: '/jobs', label: 'Tin tuyển dụng' },
+    {
+      path: `/job/${id}`,
+      label: currentJob?.[0]?.title || 'Chi tiết công việc',
+    },
+  ];
+
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
 
   useEffect(() => {
     dispatch(getJobById(id));
   }, [id]);
-
-  console.log(currentJob);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,7 +52,7 @@ const JobDetail: React.FC = () => {
         if (parentRect) {
           if (window.scrollY > parentRect.top) {
             rightColRef.current.style.position = 'fixed';
-            rightColRef.current.style.top = '20px';
+            rightColRef.current.style.top = '65px';
             rightColRef.current.style.width = `${parentRect.width}px`;
           } else {
             rightColRef.current.style.position = 'static';
@@ -58,34 +70,39 @@ const JobDetail: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleIsOpenModal = () => {
+    setIsOpenModal(!isOpenModal);
+  };
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
+      {breadcrumb}
       <Row gutter={[16, 16]} className="flex flex-col md:flex-row">
         <Col xs={24} md={16} className="mb-4 md:mb-0">
           <Button
             className="w-full md:hidden mb-4"
-            type="button"
             iconBefore={<TeamOutlined />}
             title="Ứng tuyển ngay"
+            onClick={handleIsOpenModal}
           />
           <div className="mb-4 hidden md:block">
-            <h1 className="text-2xl font-bold mb-2">
-              Nhân viên tư vấn Giáo dục (Educational Consultant)
-            </h1>
-            <p className="text-gray-500 mb-4">Cty TNHH Anh Ngữ Ytelcom</p>
+            <h1 className="text-2xl font-bold mb-2">{currentJob[0]?.title}</h1>
+            <p className="text-gray-500 mb-4">
+              {currentJob[0]?.user?.companyName}
+            </p>
             <div className="flex flex-wrap gap-2">
               <Button
                 iconBefore={<ShareAltOutlined />}
-                type="button"
                 className="mb-2 sm:mb-0"
                 title="Chia sẻ"
               />
 
               <Button
                 fill
-                type="button"
                 className="w-full sm:w-auto"
                 title="Ứng tuyển ngay"
+                onClick={handleIsOpenModal}
               />
             </div>
           </div>
@@ -99,7 +116,9 @@ const JobDetail: React.FC = () => {
                 <EnvironmentOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Địa điểm</p>
-                  <p className="font-medium">Hà Nội</p>
+                  <p className="font-medium">
+                    {currentJob[0]?.jobsPlacements.map((place) => place?.title)}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center">
@@ -134,7 +153,12 @@ const JobDetail: React.FC = () => {
                 <TeamOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Số lượng</p>
-                  <p className="font-medium">01 ứng viên</p>
+                  <p className="font-medium">
+                    {' '}
+                    {currentJob[0]?.jobsPlacements.map(
+                      (place) => place?.amount
+                    )}
+                  </p>
                 </div>
               </div>
             </div>
@@ -194,20 +218,25 @@ const JobDetail: React.FC = () => {
           type="button"
           iconBefore={<TeamOutlined />}
           title="Ứng tuyển ngay"
+          onClick={handleIsOpenModal}
         />
         <Col xs={24} md={8} className="hidden md:block">
           <Card
             className="shadow-md transition-all duration-300 ease-in-out"
             ref={rightColRef}
           >
-            <h2 className="text-lg font-semibold mb-4">Được đăng bởi</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              {currentJob[0]?.user?.fullName}
+            </h2>
 
             <div className="flex items-center mb-4">
               <div className="bg-gray-200 p-2 rounded-lg mr-3">
                 <TeamOutlined className="text-2xl text-gray-500" />
               </div>
               <div>
-                <p className="font-medium">Cty TNHH Anh Ngữ Vietop</p>
+                <p className="font-medium">
+                  {currentJob[0]?.user?.companyName}
+                </p>
                 <p className="text-orange-500">Chưa được xác minh</p>
               </div>
             </div>
@@ -215,7 +244,10 @@ const JobDetail: React.FC = () => {
             <Divider />
             <div className="space-y-2 mb-4">
               {[
-                { label: 'Tên công ty :', value: 'Cty TNHH Anh Ngữ Vietop' },
+                {
+                  label: 'Tên công ty :',
+                  value: currentJob[0]?.user?.companyName,
+                },
                 {
                   label: 'Tình trạng xác minh : ',
                   value: 'Chưa được xác minh',
@@ -243,16 +275,15 @@ const JobDetail: React.FC = () => {
                 </div>
               ))}
             </div>
-
-            <Button
-              className="w-full"
-              type="button"
-              iconBefore={<TeamOutlined />}
-              title="Xem thông tin liên hệ"
-            />
           </Card>
         </Col>
       </Row>
+      <Modal isOpen={isOpenModal} footer={null}>
+        <JobApplicationModal
+          jobTitle={currentJob?.[0]?.title || ''}
+          handleToggleModal={handleIsOpenModal}
+        />
+      </Modal>
     </div>
   );
 };

@@ -6,7 +6,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { IJob } from '~/types/Job';
 import icons from '~/utils/icons';
-import PATH from '~/utils/path';
 import Button from '../Button/Button';
 
 dayjs.extend(relativeTime);
