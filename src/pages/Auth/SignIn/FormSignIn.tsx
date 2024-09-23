@@ -2,7 +2,7 @@ import { Form, FormInstance } from 'antd';
 import { memo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import FormWrapper from '~/components/FormWrapper/FormWrapper';
+import FormWrapper from '~/components/Form/FormWrapper';
 import InputForm from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import { emailRegex, passwordRegex } from '~/utils/constant';

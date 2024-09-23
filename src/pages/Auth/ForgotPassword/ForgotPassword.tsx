@@ -2,7 +2,7 @@ import { Form } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useNavigate } from 'react-router-dom';
 
-import FormWrapper from '~/components/FormWrapper/FormWrapper';
+import FormWrapper from '~/components/Form/FormWrapper';
 import InputForm from '~/components/Input/Input';
 import { emailRegex } from '~/utils/constant';
 import PATH from '~/utils/path';
