@@ -77,8 +77,10 @@ const JobTags: React.FC<{
 
 const JobCard: React.FC<IJob> = (job) => {
   const totalAmount =
-    job.jobsPlacements?.reduce((sum, placement) => sum + placement.amount, 0) ||
-    0;
+    job.jobsPlacements?.reduce(
+      (sum, placement) => sum + (placement?.amount ?? 0),
+      0
+    ) || 0;
   const priceRange =
     job.startPrice && job.endPrice
       ? `${job.startPrice} - ${job.endPrice}`

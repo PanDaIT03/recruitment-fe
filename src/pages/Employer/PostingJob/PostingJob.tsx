@@ -1,7 +1,6 @@
 import { Editor } from '@tinymce/tinymce-react';
 import { Divider, Form, Input, InputNumber, Radio, Select } from 'antd';
-import axios from 'axios';
-import React, { useRef } from 'react';
+import React from 'react';
 import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
