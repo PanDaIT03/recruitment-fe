@@ -40,6 +40,11 @@ instance.interceptors.request.use(
 // Add a response interceptor
 instance.interceptors.response.use(
   (response: AxiosResponse): any => {
+    if (response.data.refreshToken) {
+      const refreshToken = response.data.refreshToken;
+      response.headers['Set-Cookie'] =
+        `refreshToken=${refreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
+    }
     return response.data;
   },
   async (error: AxiosError) => {
@@ -58,12 +63,15 @@ instance.interceptors.response.use(
         });
         const { accessToken, refreshToken: newRefreshToken } = response.data;
         tokenService.setAccessToken(accessToken);
+        tokenService.setRefreshToken(newRefreshToken);
 
         if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
-        originalRequest.headers['Set-Cookie'] =
-          `refreshToken=${newRefreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
+        if (originalRequest.headers) {
+          originalRequest.headers['Set-Cookie'] =
+            `refreshToken=${newRefreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
+        }
 
         return instance(originalRequest);
       } catch (refreshError) {

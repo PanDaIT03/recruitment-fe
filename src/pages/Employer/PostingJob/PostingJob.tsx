@@ -6,18 +6,37 @@ import Button from '~/components/Button/Button';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useFetch } from '~/hooks/useFetch';
 import {
-  JobCategory,
-  JobField,
   JobPlacement,
-  JobPosition,
-  WorkType,
+  PaginatedJobCategories,
+  PaginatedJobFields,
+  PaginatedJobPositions,
+  PaginatedWorkTypes,
 } from '~/types/Job';
 import PATH from '~/utils/path';
 
 const { Option } = Select;
 
+export interface PostingJobFormValues {
+  title: string;
+  jobField: number;
+  jobCategory: number;
+  workType: number;
+  jobPosition: number;
+  placements: number[];
+  startPrice?: number;
+  endPrice?: number;
+  description: string;
+  requirement: string;
+  whyLove: string;
+  applicationDeadline?: string;
+  workTime?: string;
+  startExpYearRequired?: number;
+  endExpYearRequired?: number;
+  [key: string]: any;
+}
+
 const PostingJob: React.FC = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<PostingJobFormValues>();
 
   const customBreadcrumbItems = [
     {
@@ -32,47 +51,35 @@ const PostingJob: React.FC = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems);
 
-  const { data: jobPositions } = useFetch<JobPosition[]>(
+  const { data: jobPositions } = useFetch<PaginatedJobPositions>(
     JobsAPI.getAllJobPositions
   );
-  const { data: jobCategories } = useFetch<JobCategory[]>(
+  const { data: jobCategories } = useFetch<PaginatedJobCategories>(
     JobsAPI.getAllJobCategories
   );
-  const { data: workType } = useFetch<WorkType[]>(JobsAPI.getAllWorkTypes);
-
+  const { data: workType } = useFetch<PaginatedWorkTypes>(
+    JobsAPI.getAllWorkTypes
+  );
   const { data: jobPlacements } = useFetch<JobPlacement[]>(
     JobsAPI.getAllPlacements
   );
+  const { data: jobFields } = useFetch<PaginatedJobFields>(
+    JobsAPI.getAllJobFields
+  );
 
-  const { data: jobFields } = useFetch<JobField[]>(JobsAPI.getAllJobFields);
-
-  const cleanFormValues = (values: any) => {
-    const cleanValues = { ...values };
-    ['description', 'requirements', 'benefits'].forEach((field) => {
-      if (cleanValues[field]) {
-        cleanValues[field] = cleanValues[field].toString();
-      } else {
-        cleanValues[field] = '';
-      }
-    });
-    return cleanValues;
+  const cleanFormValues = (
+    values: PostingJobFormValues
+  ): PostingJobFormValues => {
+    return Object.fromEntries(
+      Object.entries(values).filter(([_, v]) => v != null)
+    ) as PostingJobFormValues;
   };
 
   const onFinish = async () => {
     try {
       const values = form.getFieldsValue();
-
-      const payload = {
-        ...values,
-        description: values.description?.level?.content || '',
-        requirements: values.requirements?.level?.content || '',
-        benefits: values.benefits?.level?.content || '',
-      };
-
-      const cleanValues = cleanFormValues(payload);
-
+      const cleanValues = cleanFormValues(values);
       const response = await JobsAPI.postJob(cleanValues);
-
       console.log(response);
     } catch (error: unknown) {
       console.error(error);
@@ -85,7 +92,7 @@ const PostingJob: React.FC = () => {
         form={form}
         onFinish={onFinish}
         layout="vertical"
-        className="max-w-3xl mx-auto p-4 rounded-md border-non  shadow"
+        className="max-w-3xl mx-auto p-4 rounded-md border-none shadow"
       >
         <h2 className="text-xl font-bold mb-4">Thông tin cơ bản</h2>
         <Divider />
@@ -103,7 +110,7 @@ const PostingJob: React.FC = () => {
           rules={[{ required: true }]}
         >
           <Select placeholder="Chọn danh mục">
-            {jobFields?.map((field) => (
+            {jobFields?.items?.map?.((field) => (
               <Option value={field.id} key={field.id}>
                 {field.title}
               </Option>
@@ -117,8 +124,8 @@ const PostingJob: React.FC = () => {
           rules={[{ required: true }]}
         >
           <Radio.Group className="flex flex-col gap-4">
-            {jobCategories?.map((category) => (
-              <Radio value={category.id} key={category?.id.toString()}>
+            {jobCategories?.items.map?.((category) => (
+              <Radio value={category.id} key={category.id}>
                 {category.name}
               </Radio>
             ))}
@@ -131,9 +138,9 @@ const PostingJob: React.FC = () => {
           rules={[{ required: true }]}
         >
           <Radio.Group className="flex flex-col gap-4">
-            {workType?.map((type) => (
-              <Radio value={type?.id} key={type?.id.toString()}>
-                {type?.title}
+            {workType?.items.map?.((type) => (
+              <Radio value={type.id} key={type.id}>
+                {type.title}
               </Radio>
             ))}
           </Radio.Group>
@@ -141,7 +148,7 @@ const PostingJob: React.FC = () => {
 
         <Form.Item name="level" label="Cấp bậc" rules={[{ required: true }]}>
           <Select placeholder="Chọn cấp bậc">
-            {jobPositions?.map((position) => (
+            {jobPositions?.items.map?.((position) => (
               <Option key={position.id} value={position.id}>
                 {position.title}
               </Option>
@@ -154,10 +161,10 @@ const PostingJob: React.FC = () => {
           label="Địa điểm làm việc (tối đa 3 địa điểm)"
           rules={[{ required: true }]}
         >
-          <Select placeholder="Chọn danh mục" mode="multiple" maxCount={3}>
+          <Select placeholder="Chọn địa điểm" mode="multiple" maxCount={3}>
             {jobPlacements?.map((place) => (
-              <Option value={place?.id} key={place.id}>
-                {place?.title}
+              <Option value={place.id} key={place.id}>
+                {place.title}
               </Option>
             ))}
           </Select>
@@ -210,8 +217,6 @@ const PostingJob: React.FC = () => {
                 'insertdatetime',
                 'media',
                 'table',
-                'code',
-                'help',
                 'wordcount',
               ],
               toolbar:
@@ -245,8 +250,6 @@ const PostingJob: React.FC = () => {
                 'insertdatetime',
                 'media',
                 'table',
-                'code',
-                'help',
                 'wordcount',
               ],
               toolbar:
@@ -275,8 +278,6 @@ const PostingJob: React.FC = () => {
                 'insertdatetime',
                 'media',
                 'table',
-                'code',
-                'help',
                 'wordcount',
               ],
               toolbar:

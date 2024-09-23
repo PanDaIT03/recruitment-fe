@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getAllJobs, getJobById } from '~/store/thunk/job';
-import { IJob } from '~/types/Job';
+import { IJob, JobItem } from '~/types/Job';
 
-interface InitType {
+interface JobState {
   loading: boolean;
-  allJobs: IJob[];
+  allJobs: IJob | null;
   error: string | null;
-  currentJob: IJob[];
+  currentJob: JobItem | null;
 }
 
-const initialState: InitType = {
+const initialState: JobState = {
   loading: false,
-  allJobs: [],
-  currentJob: [],
+  allJobs: null,
+  currentJob: null,
   error: null,
 };
 
@@ -22,31 +22,34 @@ const jobSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // getAllJobs
       .addCase(getAllJobs.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getAllJobs.fulfilled, (state, action: PayloadAction<IJob[]>) => {
+      .addCase(getAllJobs.fulfilled, (state, action: PayloadAction<IJob>) => {
         state.loading = false;
         state.allJobs = action.payload;
       })
       .addCase(getAllJobs.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Có lỗi';
+        state.error =
+          action.error.message ?? 'Có lỗi khi lấy danh sách công việc';
       })
-      // getJobById
       .addCase(getJobById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getJobById.fulfilled, (state, action: PayloadAction<IJob[]>) => {
-        state.loading = false;
-        state.currentJob = action.payload;
-      })
+      .addCase(
+        getJobById.fulfilled,
+        (state, action: PayloadAction<JobItem>) => {
+          state.loading = false;
+          state.currentJob = action.payload;
+        }
+      )
       .addCase(getJobById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Có lỗi khi lấy thông tin công việc';
+        state.error =
+          action.error.message ?? 'Có lỗi khi lấy thông tin công việc';
       });
   },
 });
