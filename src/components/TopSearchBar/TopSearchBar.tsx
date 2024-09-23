@@ -1,12 +1,13 @@
-import { Form, Input } from 'antd';
+import { Input } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
-import React, { memo, ReactNode, useEffect } from 'react';
+import React, { memo, ReactNode } from 'react';
 
 import { LOCATION } from '~/assets/img';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
-import FormWrapper from '../FormWrapper/FormWrapper';
+import FormItem from '../Form/FormItem';
+import FormWrapper from '../Form/FormWrapper';
 import Icon from '../Icon/Icon';
 import CustomSelect from '../Select/CustomSelect';
 
@@ -15,7 +16,7 @@ const { SearchOutlined } = icons;
 const optionLocations: DefaultOptionType[] = [
   {
     label: 'Toàn quốc',
-    value: 'Toàn quốc',
+    value: 'all',
   },
   {
     label: 'Hồ Chí Minh',
@@ -40,10 +41,6 @@ const TopSearchBar: React.FC<IProps> = ({
 }) => {
   const [form] = useForm();
 
-  useEffect(() => {
-    form.setFieldValue('location', 'Toàn quốc');
-  }, []);
-
   const handleFinish = (values: any) => {
     onSearch(values);
   };
@@ -57,22 +54,27 @@ const TopSearchBar: React.FC<IProps> = ({
       >
         <div className="mx-auto max-w-7xl">
           <div className="flex w-full gap-x-4">
-            <Form.Item name="keyword" className="flex-1 max-w-[957px]">
+            <FormItem name="keyword" className="flex-1 max-w-[957px] mb-3">
               <Input
                 size="large"
                 placeholder={placeHolder}
                 prefix={<SearchOutlined />}
                 className="bg-light-gray"
               />
-            </Form.Item>
-            <Form.Item name="location" className="w-full max-w-[198px]">
+            </FormItem>
+            <FormItem
+              childrenSelected
+              name="location"
+              className="w-full max-w-[198px] mb-3"
+            >
               <CustomSelect
+                className="h-10"
                 colorBgContainer="#FAFAFA"
                 placeholder="Chọn khu vực"
                 options={optionLocations}
                 prefixIcon={<Icon icon={LOCATION} width={16} height={16} />}
               />
-            </Form.Item>
+            </FormItem>
             <Button fill type="submit" title="Tìm kiếm" />
           </div>
           <div className="flex gap-2">{children}</div>

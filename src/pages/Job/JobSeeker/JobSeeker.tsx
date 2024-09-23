@@ -1,9 +1,8 @@
-import { Form } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 
-import { PortFolio } from '~/assets/svg';
+import { BlockChain, PortFolio } from '~/assets/svg';
+import FormItem from '~/components/Form/FormItem';
 import CustomSelect from '~/components/Select/CustomSelect';
-import Select from '~/components/Select/Select';
 import TopSearchBar from '~/components/TopSearchBar/TopSearchBar';
 
 const optionsExperience: DefaultOptionType[] = [
@@ -21,7 +20,24 @@ const optionsExperience: DefaultOptionType[] = [
   },
 ];
 
-const optionsField: DefaultOptionType[] = [{}];
+const optionsField: DefaultOptionType[] = [
+  {
+    label: 'Tất cả lĩnh vực',
+    value: 'all',
+  },
+  {
+    label: 'Accountant/Finance/Investment',
+    value: 'op1',
+  },
+  {
+    label: 'Biên/Phiên dịch',
+    value: 'op2',
+  },
+  {
+    label: 'Bán lẻ/Tiêu dùng',
+    value: 'op3',
+  },
+];
 
 const JobSeeker = () => {
   const handleSearch = (values: any) => {
@@ -34,16 +50,32 @@ const JobSeeker = () => {
         placeHolder="Tìm kiếm theo vị trí ứng tuyển"
         onSearch={handleSearch}
       >
-        <Form.Item name="experience" className="w-full h-10 max-w-48 mb-0">
+        <FormItem
+          childrenSelected
+          name="experience"
+          className="w-full h-10 max-w-48 mb-0"
+        >
           <CustomSelect
+            showSearch={false}
+            displayedType="text"
             className="w-full h-full"
             options={optionsExperience}
             prefixIcon={<PortFolio className="w-5 h-5" />}
           />
-        </Form.Item>
-        <Form.Item name="field" className="w-full h-10 max-w-48 mb-0">
-          <Select options={optionsField} />
-        </Form.Item>
+        </FormItem>
+        <FormItem
+          childrenSelected
+          name="field"
+          className="w-full h-10 max-w-56 mb-0"
+        >
+          <CustomSelect
+            showSearch={false}
+            displayedType="text"
+            className="w-full h-full"
+            options={optionsField}
+            prefixIcon={<BlockChain className="w-5 h-5" />}
+          />
+        </FormItem>
       </TopSearchBar>
     </div>
   );
