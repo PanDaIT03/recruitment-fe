@@ -1,38 +1,40 @@
+import { PostingJobFormValues } from '~/pages/Employer/PostingJob/PostingJob';
 import axiosApi from '~/services/axios';
 import {
   IJob,
-  JobCategory,
-  JobField,
+  JobItem,
   JobPlacement,
-  JobPosition,
-  WorkType,
+  PaginatedJobCategories,
+  PaginatedJobFields,
+  PaginatedJobPositions,
+  PaginatedWorkTypes,
 } from '~/types/Job';
 
 export const JobsAPI = {
   // GET
-  getAllJobs: (): Promise<IJob[]> => {
+  getAllJobs: (): Promise<IJob> => {
     return axiosApi.get('/jobs/all');
   },
-  getJobById: (id: string): Promise<IJob[]> => {
+  getJobById: (id: string): Promise<JobItem> => {
     return axiosApi.get(`/jobs?id=${id}`);
   },
-  getAllJobPositions: (): Promise<JobPosition[]> => {
+  getAllJobPositions: (): Promise<PaginatedJobPositions> => {
     return axiosApi.get(`job-positions/all`);
   },
-  getAllJobCategories: (): Promise<JobCategory[]> => {
+  getAllJobCategories: (): Promise<PaginatedJobCategories> => {
     return axiosApi.get(`/job-categories/all`);
   },
-  getAllWorkTypes: (): Promise<WorkType[]> => {
+  getAllWorkTypes: (): Promise<PaginatedWorkTypes> => {
     return axiosApi.get(`/work-types/all`);
   },
   getAllPlacements: (): Promise<JobPlacement[]> => {
     return axiosApi.get(`/placements/all`);
   },
-  getAllJobFields: (): Promise<JobField[]> => {
+  getAllJobFields: (): Promise<PaginatedJobFields> => {
     return axiosApi.get(`/job-fields/all`);
   },
   // POST
-  postJob: (data: IJob): Promise<IJob[]> => {
+  postJob: (data: PostingJobFormValues): Promise<JobItem> => {
     return axiosApi.post('/jobs', data);
   },
 };

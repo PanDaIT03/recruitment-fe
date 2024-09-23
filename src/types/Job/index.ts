@@ -1,64 +1,80 @@
 import { IUser } from '../Auth';
 
-export interface JobPosition {
-  id: number;
-  createBy: number;
-  createAt: string;
-  updateBy: number | null;
-  updateAt: string | null;
+type Nullable<T> = T | null;
+
+interface BaseEntity<TId = number, TCreateBy = number> {
+  id: TId;
+  createBy?: TCreateBy;
+  createAt?: string;
+  updateBy?: Nullable<number>;
+  updateAt?: Nullable<string>;
+}
+
+interface Titled {
   title: string;
 }
 
-export interface JobPlacement {
-  id: number;
-  createBy: number;
-  createAt: string;
+type BaseEntityWithTitle<TId = number, TCreateBy = number> = BaseEntity<
+  TId,
+  TCreateBy
+> &
+  Titled;
+
+type JobPosition = BaseEntityWithTitle;
+
+export interface PaginatedJobPositions {
+  pageInfo: PageInfo;
+  items: JobPosition[];
+}
+
+export interface JobPlacement
+  extends Omit<BaseEntityWithTitle, 'updateBy' | 'updateAt'> {
   updateBy: string;
   updateAt: number;
-  title: string;
   amount?: number;
   detailAddress?: string;
 }
 
-export interface WorkType {
-  id: number;
-  createBy: number;
-  createAt: string;
-  updateBy: number | null;
-  updateAt: string | null;
-  title: string;
+type WorkType = BaseEntityWithTitle;
+
+export interface PaginatedWorkTypes {
+  pageInfo: PageInfo;
+  items: WorkType[];
 }
 
-export interface JobCategory {
-  id: number;
-  createBy: number;
-  createAt: string;
-  updateBy: number | null;
-  updateAt: string | null;
+interface JobCategory extends BaseEntity {
   name: string;
-  description: string | null;
+  description: Nullable<string>;
 }
 
-export interface JobField {
-  id: number;
-  createBy: number | null;
-  createAt: string;
-  updateBy: number | null;
-  updateAt: string;
-  title: string;
+export interface PaginatedJobCategories {
+  pageInfo: PageInfo;
+  items: JobCategory[];
 }
 
-export interface IJob {
-  id: number;
-  createBy: number;
-  createAt: string;
-  updateBy: number | null;
-  updateAt: string | null;
-  title: string;
-  startPrice: number | null;
-  endPrice: number | null;
-  startExpYearRequired: number | null;
-  endExpYearRequired: number | null;
+type JobField = BaseEntityWithTitle<number, Nullable<number>>;
+
+export interface PaginatedJobFields {
+  pageInfo: PageInfo;
+  items: JobField[];
+}
+
+export interface PageInfo {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  currentPage: number;
+  itemsPerPage: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+type NullableNumber = Nullable<number>;
+
+export interface JobItem extends BaseEntityWithTitle {
+  startPrice: NullableNumber;
+  endPrice: NullableNumber;
+  startExpYearRequired: NullableNumber;
+  endExpYearRequired: NullableNumber;
   applicationDeadline: string;
   workTime: string;
   description: string;
@@ -66,8 +82,13 @@ export interface IJob {
   whyLove: string;
   user: IUser;
   jobPosition: JobPosition;
-  jobField: string | null;
+  jobField: Nullable<string>;
   jobsPlacements: JobPlacement[];
   workType: WorkType;
   jobCategory: JobCategory;
+}
+
+export interface IJob<T = JobItem> {
+  pageInfo: PageInfo;
+  items: T[];
 }
