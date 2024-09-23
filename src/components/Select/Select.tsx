@@ -1,4 +1,5 @@
 import { Select as SelectAntd, SelectProps } from 'antd';
+import { memo } from 'react';
 
 const Select = (props: SelectProps) => {
   const handleFilterOption = (input: any, option: any) => {
@@ -18,6 +19,9 @@ const Select = (props: SelectProps) => {
     )
       return null;
 
+    if (optionA?.value === 'all') return -1;
+    if (optionB?.value === 'all') return 1;
+
     return (optionA?.label ?? '')
       .toLowerCase()
       .localeCompare((optionB?.label ?? '').toLowerCase());
@@ -26,7 +30,7 @@ const Select = (props: SelectProps) => {
   return (
     <SelectAntd
       showSearch
-      size="large"
+      size="middle"
       optionFilterProp="children"
       filterSort={handleFilterSort}
       filterOption={handleFilterOption}
@@ -35,4 +39,4 @@ const Select = (props: SelectProps) => {
   );
 };
 
-export default Select;
+export default memo(Select);
