@@ -2,7 +2,7 @@ import { Col, Form, FormInstance, Row } from 'antd';
 import { useState } from 'react';
 
 import Button from '~/components/Button/Button';
-import FormWrapper from '~/components/FormWrapper/FormWrapper';
+import FormWrapper from '~/components/Form/FormWrapper';
 import InputForm from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import { IFormAccount } from '~/types/Account';
