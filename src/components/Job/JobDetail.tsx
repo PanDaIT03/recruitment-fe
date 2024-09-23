@@ -87,10 +87,10 @@ const JobDetail: React.FC = () => {
             onClick={handleIsOpenModal}
           />
           <div className="mb-4 hidden md:block">
-            <h1 className="text-2xl font-bold mb-2">
-              Nhân viên tư vấn Giáo dục (Educational Consultant)
-            </h1>
-            <p className="text-gray-500 mb-4">Cty TNHH Anh Ngữ Ytelcom</p>
+            <h1 className="text-2xl font-bold mb-2">{currentJob[0]?.title}</h1>
+            <p className="text-gray-500 mb-4">
+              {currentJob[0]?.user?.companyName}
+            </p>
             <div className="flex flex-wrap gap-2">
               <Button
                 iconBefore={<ShareAltOutlined />}
@@ -116,7 +116,9 @@ const JobDetail: React.FC = () => {
                 <EnvironmentOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Địa điểm</p>
-                  <p className="font-medium">Hà Nội</p>
+                  <p className="font-medium">
+                    {currentJob[0]?.jobsPlacements.map((place) => place?.title)}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center">
@@ -151,7 +153,12 @@ const JobDetail: React.FC = () => {
                 <TeamOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Số lượng</p>
-                  <p className="font-medium">01 ứng viên</p>
+                  <p className="font-medium">
+                    {' '}
+                    {currentJob[0]?.jobsPlacements.map(
+                      (place) => place?.amount
+                    )}
+                  </p>
                 </div>
               </div>
             </div>
@@ -218,14 +225,18 @@ const JobDetail: React.FC = () => {
             className="shadow-md transition-all duration-300 ease-in-out"
             ref={rightColRef}
           >
-            <h2 className="text-lg font-semibold mb-4">Được đăng bởi</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              {currentJob[0]?.user?.fullName}
+            </h2>
 
             <div className="flex items-center mb-4">
               <div className="bg-gray-200 p-2 rounded-lg mr-3">
                 <TeamOutlined className="text-2xl text-gray-500" />
               </div>
               <div>
-                <p className="font-medium">Cty TNHH Anh Ngữ Vietop</p>
+                <p className="font-medium">
+                  {currentJob[0]?.user?.companyName}
+                </p>
                 <p className="text-orange-500">Chưa được xác minh</p>
               </div>
             </div>
@@ -233,7 +244,10 @@ const JobDetail: React.FC = () => {
             <Divider />
             <div className="space-y-2 mb-4">
               {[
-                { label: 'Tên công ty :', value: 'Cty TNHH Anh Ngữ Vietop' },
+                {
+                  label: 'Tên công ty :',
+                  value: currentJob[0]?.user?.companyName,
+                },
                 {
                   label: 'Tình trạng xác minh : ',
                   value: 'Chưa được xác minh',

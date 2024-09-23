@@ -16,6 +16,8 @@ export interface JobPlacement {
   updateBy: string;
   updateAt: number;
   title: string;
+  amount?: number;
+  detailAddress?: string;
 }
 
 export interface WorkType {
