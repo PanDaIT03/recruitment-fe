@@ -1,9 +1,12 @@
 import { Input } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
-import React, { memo, ReactNode } from 'react';
+import React, { memo, ReactNode, useEffect } from 'react';
 
+import { JobsAPI } from '~/apis/job';
 import { LOCATION } from '~/assets/img';
+import { useFetch } from '~/hooks/useFetch';
+import { JobPlacement } from '~/types/Job';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
 import FormItem from '../Form/FormItem';
@@ -17,14 +20,6 @@ const optionLocations: DefaultOptionType[] = [
   {
     label: 'Toàn quốc',
     value: 'all',
-  },
-  {
-    label: 'Hồ Chí Minh',
-    value: 'Hồ Chí Minh',
-  },
-  {
-    label: 'Hà Nội',
-    value: 'Hà Nội',
   },
 ];
 
@@ -40,6 +35,14 @@ const TopSearchBar: React.FC<IProps> = ({
   onSearch,
 }) => {
   const [form] = useForm();
+
+  const { data: placements } = useFetch<JobPlacement[]>(
+    JobsAPI.getAllPlacements
+  );
+
+  useEffect(() => {
+    form.setFieldValue('location', 'Toàn quốc');
+  }, []);
 
   const handleFinish = (values: any) => {
     onSearch(values);
@@ -71,7 +74,14 @@ const TopSearchBar: React.FC<IProps> = ({
                 className="h-10"
                 colorBgContainer="#FAFAFA"
                 placeholder="Chọn khu vực"
-                options={optionLocations}
+                options={
+                  placements
+                    ? placements.map((place) => ({
+                        label: place.title,
+                        value: place.id,
+                      }))
+                    : optionLocations
+                }
                 prefixIcon={<Icon icon={LOCATION} width={16} height={16} />}
               />
             </FormItem>
