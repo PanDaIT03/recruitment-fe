@@ -1,3 +1,4 @@
+import { googleLogout } from '@react-oauth/google';
 import { Dropdown, Image, MenuProps } from 'antd';
 import { memo, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -31,6 +32,8 @@ const HeaderDropDown = () => {
   };
 
   const handleOkModal = () => {
+    googleLogout();
+
     dispatch(signOut()).then(() => {
       setIsOpen(false);
       navigate(PATH.SIGN_IN);
