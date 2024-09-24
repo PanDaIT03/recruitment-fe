@@ -1,11 +1,11 @@
-import { Form, FormInstance } from 'antd';
+import { FormInstance } from 'antd';
 import { memo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import InputForm from '~/components/Input/Input';
-import InputPassword from '~/components/Input/InputPassword';
-import { emailRegex, passwordRegex } from '~/utils/constant';
+import { emailRegex } from '~/utils/constant';
 import PATH from '~/utils/path';
 
 interface IProps {
@@ -24,7 +24,7 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
   return (
     <>
       <FormWrapper form={form} submitTitle="Đăng nhập" onFinish={onFinish}>
-        <Form.Item
+        <FormItem
           name="email"
           label="Địa chỉ email"
           rules={[
@@ -33,8 +33,8 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
           ]}
         >
           <InputForm name="email" placeholder="abc@example.com" />
-        </Form.Item>
-        <Form.Item
+        </FormItem>
+        {/* <Form.Item
           name="password"
           label="Mật khẩu"
           rules={[
@@ -46,7 +46,7 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
           ]}
         >
           <InputPassword name="password" placeholder="Nhập mật khẩu" />
-        </Form.Item>
+        </Form.Item> */}
         <Link
           to={PATH.FORGOT_PASSWORD}
           className="block w-full font-semibold text-end text-[#2563eb] mb-6 hover:underline hover:text-[#2563eb]"

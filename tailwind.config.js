@@ -92,8 +92,9 @@ export default {
         sub: '#78726de6',
         accent: '#f15224',
         dark: '#0A0A0A',
-        warning: '#DC2626',
         blue: '#1677FF',
+        warning: '#DC2626',
+        success: '#15803D',
       },
       backgroundColor: {
         main: '#f7f6f2',

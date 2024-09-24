@@ -1,11 +1,19 @@
 import instance from '~/services/axios';
-import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
+import {
+  IBaseUser,
+  IEmailVerify,
+  IUser,
+  IUserSignInWithGoogle,
+} from '~/types/Auth/index';
 
 type Response = IBaseResponse<{
   data: IUser;
 }>;
 
 const AuthAPI = {
+  emailVerification: (email: string): Promise<IEmailVerify> => {
+    return instance.get(`/users/check-exist-email?email=${email}`);
+  },
   signUp: (payload: IBaseUser): Promise<Response> => {
     return instance.post('/auth/register', payload);
   },

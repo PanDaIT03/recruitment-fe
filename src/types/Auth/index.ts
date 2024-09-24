@@ -4,6 +4,13 @@ export interface IBaseUser {
   password?: string;
 }
 
+export interface IEmailVerify {
+  message: string;
+  hasPassword: boolean;
+  signInWith: string;
+  statusCode: number;
+}
+
 interface IPosition {
   id: number;
   title: string;

@@ -8,6 +8,19 @@ enum TYPE_LOGIN {
   TYPE_GOOGLE = 'google',
 }
 
+export const checkEmailVerification = createAsyncThunk(
+  'auth/emailVerification',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const isExistedEmail = AuthAPI.emailVerification(email);
+
+      return isExistedEmail;
+    } catch (error: any) {
+      return rejectWithValue(error?.message || 'Có lỗi xảy ra');
+    }
+  }
+);
+
 export const signInWithGoogle = createAsyncThunk(
   'auth/signInWithGoogle',
   async (data: IUserSignInWithGoogle, { rejectWithValue }) => {
