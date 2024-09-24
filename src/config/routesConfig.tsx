@@ -4,7 +4,7 @@ import { Outlet, RouteObject } from 'react-router-dom';
 import AuthLayout from '~/layouts/AuthLayout';
 import MainLayout from '~/layouts/MainLayout';
 import EmployerLayout from '~/pages/Employer/EmployerLayout';
-import UserLayout from '~/pages/User/UserLayout';
+import UserLayout from '~/layouts/UserLayout';
 
 import PATH from '~/utils/path';
 
