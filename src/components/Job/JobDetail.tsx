@@ -76,7 +76,11 @@ const JobDetail: React.FC = () => {
   };
 
   if (!currentJob || currentJob.length === 0 || loading) {
-    return <Spin size="large" />;
+    return (
+      <div className="flex items-center justify-center">
+        <Spin size="large" />;
+      </div>
+    );
   }
 
   return (
