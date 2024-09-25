@@ -12,10 +12,25 @@ import HeaderDropDown from './HeaderDropDown';
 export type MenuItem = { key: string } & Required<MenuProps>['items'][number];
 
 interface IProps {
-  items: MenuItem[];
+  items?: MenuItem[];
 }
 
-const Header = ({ items }: IProps) => {
+const defaultItems: MenuItem[] = [
+  {
+    key: PATH.JOB_SEEKER,
+    label: 'Danh sách ứng viên',
+  },
+  {
+    key: PATH.JOB_LIST,
+    label: 'Tin tuyển dụng',
+  },
+  {
+    key: 'blog',
+    label: 'Blog',
+  },
+];
+
+const Header = ({ items = defaultItems }: IProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,6 +48,7 @@ const Header = ({ items }: IProps) => {
         return {
           ...rest,
           style: {
+            fontWeight: 600,
             width: 'max-content',
             overflow: 'inherit',
             padding: '0 8px',
