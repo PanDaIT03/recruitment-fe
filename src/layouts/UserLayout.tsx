@@ -153,18 +153,21 @@ const UserLayout = () => {
             />
             <Divider dashed />
             <div className="flex flex-col gap-4 mt-3">
-              {items.map((item) => (
-                <>
+              {items.map((item, index) => (
+                <div key={index}>
                   <h3 className="font-bold">{item.title}</h3>
-                  {item.children.map((child) => (
-                    <p className="flex p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5]">
+                  {item.children.map((child, index) => (
+                    <p
+                      key={index}
+                      className="flex p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5]"
+                    >
                       <span>{child.icon}</span>
                       <Link to={child.href} className="hover:text-[#000000E0]">
                         {child.title}
                       </Link>
                     </p>
                   ))}
-                </>
+                </div>
               ))}
             </div>
           </Card>

@@ -11,7 +11,7 @@ type ButtonType = 'button' | 'submit' | 'reset';
 type DisplayType = 'error' | 'approve' | 'primary' | 'text';
 type ButtonClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => void;
 
-interface IProps {
+export interface IButtonProps {
   fill?: boolean;
   title: ReactNode;
   type?: ButtonType;
@@ -39,7 +39,7 @@ const Button = ({
   displayType = 'primary',
   loading = false,
   ...props
-}: IProps) => {
+}: IButtonProps) => {
   const classes = cx('button', 'rounded-md transition duration-300', {
     fill,
     [className]: className,
