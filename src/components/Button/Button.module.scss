@@ -32,7 +32,7 @@
   border: 1px solid var(--button-primary-border-color);
 
   &:hover {
-    opacity: 0.6;
+    background-color: rgb(252 235 230);
   }
 }
 
@@ -50,4 +50,8 @@
   &:hover {
     background: var(--button-primary-bgHover);
   }
+}
+
+.dashed {
+  border: 1px dashed var(--button-primary-border-color);
 }
