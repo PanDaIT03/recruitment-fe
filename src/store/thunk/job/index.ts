@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { JobsAPI } from '~/apis/job';
-import { IJob, JobItem } from '~/types/Job';
+import { IJob } from '~/types/Job';
 
 export const getAllJobs = createAsyncThunk<IJob, void, { rejectValue: string }>(
   'job/getAllJobs',
@@ -16,7 +16,7 @@ export const getAllJobs = createAsyncThunk<IJob, void, { rejectValue: string }>(
 );
 
 export const getJobById = createAsyncThunk<
-  JobItem,
+  IJob['items'],
   string | undefined,
   { rejectValue: string }
 >('job/getJobById', async (id, { rejectWithValue }) => {

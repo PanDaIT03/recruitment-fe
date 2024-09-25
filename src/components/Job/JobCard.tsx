@@ -4,7 +4,7 @@ import 'dayjs/locale/vi';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IJob, JobItem } from '~/types/Job';
+import { JobItem } from '~/types/Job';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
 

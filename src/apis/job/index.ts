@@ -15,7 +15,7 @@ export const JobsAPI = {
   getAllJobs: (): Promise<IJob> => {
     return axiosApi.get('/jobs/all');
   },
-  getJobById: (id: string): Promise<JobItem> => {
+  getJobById: (id: string): Promise<IJob['items']> => {
     return axiosApi.get(`/jobs?id=${id}`);
   },
   getAllJobPositions: (): Promise<PaginatedJobPositions> => {

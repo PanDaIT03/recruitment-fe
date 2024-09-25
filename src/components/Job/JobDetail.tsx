@@ -1,4 +1,4 @@
-import { Card, Col, Divider, Row } from 'antd';
+import { Card, Col, Divider, Row, Spin } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
@@ -25,7 +25,7 @@ const JobDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const rightColRef = useRef<HTMLDivElement>(null);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const { currentJob } = useAppSelector((state) => state.jobs);
+  const { currentJob, loading } = useAppSelector((state) => state.jobs);
   const dispatch = useAppDispatch();
 
   const customBreadcrumbItems = [
@@ -75,6 +75,10 @@ const JobDetail: React.FC = () => {
     setIsOpenModal(!isOpenModal);
   };
 
+  if (!currentJob || currentJob.length === 0 || loading) {
+    return <Spin size="large" />;
+  }
+
   return (
     <div className="p-4 max-w-7xl mx-auto">
       {breadcrumb}
@@ -117,7 +121,9 @@ const JobDetail: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-500">Địa điểm</p>
                   <p className="font-medium">
-                    {currentJob[0]?.jobsPlacements.map((place) => place?.title)}
+                    {currentJob[0]?.jobsPlacements
+                      .map((place) => place?.detailAddress)
+                      .join(' / ')}
                   </p>
                 </div>
               </div>
@@ -125,21 +131,29 @@ const JobDetail: React.FC = () => {
                 <DollarCircleOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Mức lương</p>
-                  <p className="font-medium">10tr - 15tr VND</p>
+                  <p className="font-medium">
+                    {currentJob[0]?.startPrice && currentJob[0]?.endPrice
+                      ? `${currentJob[0].startPrice} - ${currentJob[0].endPrice}`
+                      : 'Thương lượng'}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center">
                 <LaptopOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Hình thức làm việc</p>
-                  <p className="font-medium">Tại văn phòng</p>
+                  <p className="font-medium">
+                    {currentJob[0]?.workType?.title}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center">
                 <ClockCircleOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Loại công việc</p>
-                  <p className="font-medium">Toàn thời gian</p>
+                  <p className="font-medium">
+                    {currentJob[0]?.jobCategory?.name}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center">
@@ -154,9 +168,9 @@ const JobDetail: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-500">Số lượng</p>
                   <p className="font-medium">
-                    {' '}
-                    {currentJob[0]?.jobsPlacements.map(
-                      (place) => place?.amount
+                    {currentJob[0]?.jobsPlacements?.reduce(
+                      (total, place) => total + (place.amount ?? 0),
+                      0
                     )}
                   </p>
                 </div>
