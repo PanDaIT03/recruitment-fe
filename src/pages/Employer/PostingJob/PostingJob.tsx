@@ -12,9 +12,12 @@ import {
   PaginatedJobPositions,
   PaginatedWorkTypes,
 } from '~/types/Job';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
 const { Option } = Select;
+
+const { TeamOutlined } = icons;
 
 export interface PostingJobFormValues {
   title: string;
@@ -195,6 +198,18 @@ const PostingJob: React.FC = () => {
           </p>
         </Form.Item>
 
+        <Form.Item name={'count'} className="mb-4">
+          <InputNumber
+            prefix={<TeamOutlined />}
+            className="w-full"
+            placeholder="Số lượng cần tuyển"
+            min={1}
+          />
+        </Form.Item>
+
+        <Divider />
+
+        <h2 className="text-xl font-bold mb-4">Mô tả công việc</h2>
         <Form.Item name="description" label="Mô tả công việc">
           <Editor
             apiKey={import.meta.env.VITE_APP_TINYMCE_API_KEY}
