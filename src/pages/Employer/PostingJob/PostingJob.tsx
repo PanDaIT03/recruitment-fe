@@ -28,8 +28,6 @@ export interface PostingJobFormValues {
   placements: number[];
   startPrice?: number;
   endPrice?: number;
-  description: string;
-  requirement: string;
   whyLove: string;
   applicationDeadline?: string;
   workTime?: string;
@@ -70,19 +68,33 @@ const PostingJob: React.FC = () => {
     JobsAPI.getAllJobFields
   );
 
-  const cleanFormValues = (
-    values: PostingJobFormValues
-  ): PostingJobFormValues => {
-    return Object.fromEntries(
-      Object.entries(values).filter(([_, v]) => v != null)
-    ) as PostingJobFormValues;
+  const cleanFormValues = (values: any) => {
+    const cleanValues = { ...values };
+    ['description', 'requirements', 'benefits'].forEach((field) => {
+      if (cleanValues[field]) {
+        cleanValues[field] = cleanValues[field].toString();
+      } else {
+        cleanValues[field] = '';
+      }
+    });
+    return cleanValues;
   };
 
   const onFinish = async () => {
     try {
       const values = form.getFieldsValue();
       const cleanValues = cleanFormValues(values);
-      const response = await JobsAPI.postJob(cleanValues);
+
+      console.log(values);
+
+      const payload = {
+        ...cleanValues,
+        description: values.description?.level?.content || '',
+        requirements: values.requirements?.level?.content || '',
+        benefits: values.benefits?.level?.content || '',
+      };
+
+      const response = await JobsAPI.postJob(payload);
       console.log(response);
     } catch (error: unknown) {
       console.error(error);
@@ -217,8 +229,6 @@ const PostingJob: React.FC = () => {
               height: 200,
               menubar: false,
               plugins: [
-                'advlist',
-                'autolink',
                 'lists',
                 'link',
                 'image',
@@ -235,12 +245,7 @@ const PostingJob: React.FC = () => {
                 'wordcount',
               ],
               toolbar:
-                'undo redo | blocks | ' +
-                'bold italic forecolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-              content_style:
-                'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
             }}
           />
         </Form.Item>
