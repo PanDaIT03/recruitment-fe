@@ -2,16 +2,13 @@ import { memo } from 'react';
 import Button, { IButtonProps } from './Button';
 import classNames from 'classnames';
 
-const ButtonAction = ({ className, ...props }: IButtonProps) => {
-  const classNames = `text-`;
+const ButtonAction = ({ title, className, ...props }: IButtonProps) => {
+  const customClasses = classNames(
+    'px-3 py-2 border-none !rounded-[50%] hover:bg-button-color hover:opacity-100',
+    className
+  );
 
-  //   const customClasses = classNames(
-  //     'border-none px- hover:bg-button-color hover:opacity-100 rounded-full',
-  //     className
-  //   );
-
-  //   return <Button className={customClasses} {...props} />;
-  return <Button className={'px-'} {...props} />;
+  return <Button title={title} className={customClasses} />;
 };
 
 export default memo(ButtonAction);

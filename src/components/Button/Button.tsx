@@ -7,8 +7,9 @@ import styles from './Button.module.scss';
 
 const { LoadingOutlined } = icons;
 
+type ButtonBorderType = 'solid' | 'dashed';
 type ButtonType = 'button' | 'submit' | 'reset';
-type DisplayType = 'error' | 'approve' | 'primary' | 'text';
+type DisplayType = 'error' | 'approve' | 'primary' | 'text' | 'dashed';
 type ButtonClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => void;
 
 export interface IButtonProps {
@@ -21,6 +22,7 @@ export interface IButtonProps {
   iconBefore?: ReactNode;
   iconAfter?: ReactNode;
   displayType?: DisplayType;
+  borderType?: ButtonBorderType;
   onClick?: ButtonClickHandler;
   onMouseEnter?: ButtonClickHandler;
   onMouseLeave?: ButtonClickHandler;
@@ -36,6 +38,7 @@ const Button = ({
   fill = false,
   className = '',
   type = 'button',
+  borderType = 'solid',
   displayType = 'primary',
   loading = false,
   ...props
@@ -43,6 +46,7 @@ const Button = ({
   const classes = cx('button', 'rounded-md transition duration-300', {
     fill,
     [className]: className,
+    [borderType]: borderType,
     [displayType]: displayType,
   });
 
@@ -60,7 +64,7 @@ const Button = ({
       disabled={buttonState.disabled}
       {...props}
     >
-      {buttonState.loading ? (
+      {/* {buttonState.loading ? (
         <Spin indicator={<LoadingOutlined />} />
       ) : (
         <div className="flex gap-3">
@@ -68,7 +72,12 @@ const Button = ({
           <b>{title}</b>
           {iconAfter}
         </div>
-      )}
+      )} */}
+      <div className="flex gap-3">
+        {iconBefore}
+        <b>{title}</b>
+        {iconAfter}
+      </div>
     </button>
   );
 };
