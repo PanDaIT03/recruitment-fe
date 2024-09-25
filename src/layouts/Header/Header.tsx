@@ -9,9 +9,13 @@ import { useAppSelector } from '~/hooks/useStore';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
 
-type MenuItem = Required<MenuProps>['items'][number];
+export type MenuItem = { key: string } & Required<MenuProps>['items'][number];
 
-const items: MenuItem[] = [
+interface IProps {
+  items?: MenuItem[];
+}
+
+const defaultItems: MenuItem[] = [
   {
     key: PATH.JOB_SEEKER,
     label: 'Danh sách ứng viên',
@@ -26,26 +30,15 @@ const items: MenuItem[] = [
   },
 ];
 
-const selectedKeys = [
-  PATH.JOB_LIST,
-  PATH.JOB_SEEKER,
-  // [PATH.BLOG]
-];
-
-const Header = () => {
+const Header = ({ items = defaultItems }: IProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const { refreshToken } = useAppSelector((state) => state.auth.currentUser);
 
-  const getSelectedKey = useCallback((path: string) => {
-    return Object.values(selectedKeys).filter((key) => key === path);
-  }, []);
-
-  const handleSelect = useCallback((selectInfo: any) => {
-    const { key } = selectInfo;
-    navigate(key);
-  }, []);
+  const itemSelectedKeys = useMemo(() => {
+    return items.map((item) => item.key);
+  }, [items]);
 
   const menuItems: ItemType<MenuItemType>[] = useMemo(
     () =>
@@ -55,14 +48,24 @@ const Header = () => {
         return {
           ...rest,
           style: {
+            fontWeight: 600,
             width: 'max-content',
             overflow: 'inherit',
             padding: '0 8px',
           },
         };
       }),
-    []
+    [items]
   );
+
+  const getSelectedKey = useCallback((path: string) => {
+    return Object.values(itemSelectedKeys).filter((key) => key === path);
+  }, []);
+
+  const handleSelect = useCallback((selectInfo: any) => {
+    const { key } = selectInfo;
+    navigate(key);
+  }, []);
 
   return (
     <div className="sticky bg-secondary px-8 left-0 top-0 z-40">
