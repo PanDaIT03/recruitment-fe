@@ -158,9 +158,12 @@ const JobDetail: React.FC = () => {
               <div className="flex items-center">
                 <AppstoreOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
-                  <p className="text-sm text-gray-500">Lĩnh vực</p>
+                  <p className="text-sm text-gray-500">Kinh nghiệm</p>
                   <p className="font-medium">
-                    {currentJob[0]?.jobField?.title}
+                    {currentJob[0]?.minExpYearRequired &&
+                    currentJob[0]?.maxExpYearRequired
+                      ? `${currentJob[0]?.minExpYearRequired} - ${currentJob[0]?.maxExpYearRequired} năm`
+                      : 'Không yêu cầu'}
                   </p>
                 </div>
               </div>

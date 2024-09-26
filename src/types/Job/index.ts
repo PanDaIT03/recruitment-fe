@@ -76,7 +76,7 @@ export interface JobItem extends BaseEntityWithTitle {
   message?: string;
   salaryMax: NullableNumber;
   salaryMin: NullableNumber;
-  mExpYearRequired: NullableNumber;
+  minExpYearRequired: NullableNumber;
   maxExpYearRequired: NullableNumber;
   applicationDeadline: string;
   workTime: string;
