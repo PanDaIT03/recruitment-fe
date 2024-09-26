@@ -7,6 +7,10 @@ import axios, {
 import toast from '~/utils/functions/toast';
 import { tokenService } from './tokenService';
 
+interface CustomAxiosResponse extends AxiosResponse {
+  action?: string;
+}
+
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_BASE_URL,
   headers: {
@@ -46,7 +50,11 @@ instance.interceptors.response.use(
       _retry?: boolean;
     };
 
-    if (error.response?.status === 403 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      (error.response as CustomAxiosResponse)?.action === 'REFRESH_TOKEN' &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
       try {
         const refreshToken = tokenService.getRefreshToken();
