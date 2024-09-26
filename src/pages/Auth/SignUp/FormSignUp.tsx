@@ -2,7 +2,7 @@ import { Form, FormInstance } from 'antd';
 import { Link } from 'react-router-dom';
 
 import FormWrapper from '~/components/Form/FormWrapper';
-import InputForm from '~/components/Input/Input';
+import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import { emailRegex, passwordRegex } from '~/utils/constant';
 import PATH from '~/utils/path';
@@ -27,7 +27,7 @@ const FormSignUp = ({ form, onFinish, loading }: IProps) => {
           label="Chúng tôi nên gọi bạn là gì?"
           rules={[{ required: true, message: 'Họ và tên không được để trống' }]}
         >
-          <InputForm name="fullName" placeholder="Nguyễn Văn A" />
+          <Input name="fullName" placeholder="Nguyễn Văn A" />
         </Form.Item>
         <Form.Item
           name="email"
@@ -37,7 +37,7 @@ const FormSignUp = ({ form, onFinish, loading }: IProps) => {
             { pattern: emailRegex, message: 'Email không hợp lệ' },
           ]}
         >
-          <InputForm name="email" placeholder="abc@example.com" />
+          <Input name="email" placeholder="abc@example.com" />
         </Form.Item>
         <Form.Item
           name="password"

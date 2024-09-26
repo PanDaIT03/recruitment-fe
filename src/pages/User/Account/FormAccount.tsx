@@ -1,10 +1,10 @@
-import { Col, Form, FormInstance, Row } from 'antd';
+import { Col, FormInstance, Row } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import { useState } from 'react';
 
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
-import InputForm from '~/components/Input/Input';
+import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import { IFormAccount } from '~/types/Account';
 import { passwordRegex } from '~/utils/constant';
@@ -58,7 +58,7 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
           },
         ]}
       >
-        <InputForm
+        <Input
           name="fullName"
           disabled={!isChangeName}
           prefix={<UserOutlined />}
@@ -71,7 +71,7 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
         />
       </FormItem>
       <FormItem name="email" label="Email">
-        <InputForm disabled prefix={<MailOutlined />} name="email" />
+        <Input disabled prefix={<MailOutlined />} name="email" />
       </FormItem>
       <FormItem hidden={isChangePassword}>
         <Button

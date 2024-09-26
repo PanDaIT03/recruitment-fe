@@ -1,24 +1,31 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { signIn, signInWithGoogle, signOut } from '~/store/thunk/auth';
-import { IUser } from '~/types/Auth/index';
+import {
+  checkExistedEmail,
+  signIn,
+  signInWithGoogle,
+  signOut,
+  verifyOTP,
+} from '~/store/thunk/auth';
+import { IEmailStatus, IUser } from '~/types/Auth/index';
 
 interface InitType {
   loading: boolean;
   currentUser: IUser;
   accessToken: string | null;
   refreshToken: string | null;
+  emailStatus: IEmailStatus | null;
 }
 
 const initialState: InitType = {
   loading: false,
   accessToken: null,
   refreshToken: null,
+  emailStatus: null,
   currentUser: {} as IUser,
 };
 
 const authSlice = createSlice({
-  // name: 'user',
   name: 'auth',
   initialState,
   reducers: {
@@ -27,12 +34,36 @@ const authSlice = createSlice({
       state.refreshToken = null;
       state.currentUser = {} as IUser;
     },
+    resetEmailStatus: (state) => {
+      state.emailStatus = null;
+    },
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
     },
   },
   extraReducers(builder) {
     builder
+      .addCase(checkExistedEmail.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(checkExistedEmail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.emailStatus = action.payload;
+      })
+      .addCase(checkExistedEmail.rejected, (state) => {
+        state.loading = false;
+        state.emailStatus = null;
+      })
+      .addCase(verifyOTP.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyOTP.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentUser = action.payload;
+      })
+      .addCase(verifyOTP.rejected, (state) => {
+        state.loading = false;
+      })
       .addCase(signIn.pending, (state) => {
         state.loading = true;
       })
@@ -79,4 +110,5 @@ const authSlice = createSlice({
 });
 
 export const authReducer = authSlice.reducer;
-export const { resetUser, setAccessToken } = authSlice.actions;
+export const { resetUser, resetEmailStatus, setAccessToken } =
+  authSlice.actions;

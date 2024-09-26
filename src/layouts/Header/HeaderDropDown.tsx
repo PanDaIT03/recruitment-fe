@@ -32,7 +32,7 @@ const HeaderDropDown = () => {
   const handleOkModal = () => {
     dispatch(signOut()).then(() => {
       setIsOpen(false);
-      navigate(PATH.SIGN_IN);
+      navigate(PATH.ROOT);
     });
   };
 
