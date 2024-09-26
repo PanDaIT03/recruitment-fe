@@ -23,8 +23,10 @@ import {
   LaptopOutlined,
   LoadingOutlined,
   LockOutlined,
+  LoginOutlined,
   LogoutOutlined,
   MailOutlined,
+  MinusOutlined,
   PlusOutlined,
   ProfileOutlined,
   ReconciliationOutlined,
@@ -34,6 +36,7 @@ import {
   ShopOutlined,
   SnippetsOutlined,
   TeamOutlined,
+  UserAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 
@@ -74,6 +77,9 @@ const icons = {
   CloudUploadOutlined,
   ArrowDownOutlined,
   PlusOutlined,
+  MinusOutlined,
+  LoginOutlined,
+  UserAddOutlined
 };
 
 export default icons;
