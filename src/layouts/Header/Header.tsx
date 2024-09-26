@@ -1,4 +1,4 @@
-import { Col, ConfigProvider, Menu, MenuProps, Row } from 'antd';
+import { Col, ConfigProvider, Dropdown, Menu, MenuProps, Row } from 'antd';
 import { memo, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -7,12 +7,15 @@ import Button from '~/components/Button/Button';
 import { useAppSelector } from '~/hooks/useStore';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
+import icons from '~/utils/icons';
 
 export type MenuItem = { key: string } & Required<MenuProps>['items'][number];
 
 interface IProps {
   items?: MenuItem[];
 }
+
+const { LoginOutlined, UserAddOutlined } = icons;
 
 const defaultItems: MenuItem[] = [
   {
@@ -52,6 +55,25 @@ const Header = ({ items = defaultItems }: IProps) => {
       }),
     [items]
   );
+
+  const userMenuItems: MenuProps['items'] = useMemo(() => {
+    return [
+      {
+        key: 0,
+        label: 'Đăng nhập',
+        icon: <LoginOutlined className="w-4 h-4" />,
+        className: 'hover:!text-main hover:!bg-bright-orange',
+        onClick: () => navigate(PATH.SIGN_IN),
+      },
+      {
+        key: 1,
+        label: 'Đăng ký tìm việc',
+        icon: <UserAddOutlined className="w-4 h-4" />,
+        className: 'hover:!text-main hover:!bg-bright-orange',
+        onClick: () => navigate(PATH.SIGN_UP),
+      },
+    ];
+  }, []);
 
   const getSelectedKey = useCallback(
     (path: string) => {
@@ -101,17 +123,19 @@ const Header = ({ items = defaultItems }: IProps) => {
           <HeaderDropDown />
         ) : (
           <Col className="flex gap-3 justify-between items-center relative">
-            <Button
-              displayType="text"
-              className="p-2 hover:bg-header-bgHover"
-              onClick={() => navigate(PATH.SIGN_IN)}
-              title={
-                <div className="flex flex-col text-start">
-                  <span className="text-xs">Người tìm việc</span>
-                  <span className="text-sm">Đăng ký/ Đăng nhập</span>
-                </div>
-              }
-            />
+            {/* warning */}
+            <Dropdown trigger={['click']} menu={{ items: userMenuItems }}>
+              <Button
+                displayType="text"
+                className="px-3 py-2 hover:bg-header-bgHover"
+                title={
+                  <div className="flex flex-col text-start">
+                    <span className="text-xs">Người tìm việc</span>
+                    <span className="text-sm">Đăng ký/ Đăng nhập</span>
+                  </div>
+                }
+              />
+            </Dropdown>
             <hr className="border-l-[1px]	border-main h-7" />
             <Button fill title="Nhà tuyển dụng" />
           </Col>
