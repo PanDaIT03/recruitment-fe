@@ -28,6 +28,16 @@ export interface PaginatedJobPositions {
 }
 
 export interface JobPlacement {
+  pageInfo: PageInfo;
+  items: [
+    {
+      id: number;
+      title: string;
+    },
+  ];
+}
+
+export interface JobPlacementItems {
   jobsId: number;
   placementsId: number;
   placement: {
@@ -88,7 +98,7 @@ export interface JobItem extends BaseEntityWithTitle {
   jobPosition: JobPosition;
   jobField: JobField;
   quantity: number;
-  jobsPlacements: JobPlacement[];
+  jobsPlacements: JobPlacementItems[];
   workType: WorkType;
   jobCategory: JobCategory;
 }

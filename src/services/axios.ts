@@ -1,6 +1,7 @@
 import axios, {
   AxiosError,
   AxiosInstance,
+  AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
@@ -116,7 +117,7 @@ const retryRequest = async <T>(
 };
 
 const axiosApi = {
-  get: <T = any>(url: string, config?: InternalAxiosRequestConfig) =>
+  get: <T = any>(url: string, config?: AxiosRequestConfig) =>
     retryRequest<T>({
       ...config,
       method: 'get',

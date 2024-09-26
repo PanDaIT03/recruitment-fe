@@ -36,9 +36,7 @@ const TopSearchBar: React.FC<IProps> = ({
 }) => {
   const [form] = useForm();
 
-  const { data: placements } = useFetch<JobPlacement[]>(
-    JobsAPI.getAllPlacements
-  );
+  const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
 
   useEffect(() => {
     form.setFieldValue('location', 'Toàn quốc');
@@ -75,12 +73,10 @@ const TopSearchBar: React.FC<IProps> = ({
                 colorBgContainer="#FAFAFA"
                 placeholder="Chọn khu vực"
                 options={
-                  placements
-                    ? placements.map((place) => ({
-                        label: place.title,
-                        value: place.id,
-                      }))
-                    : optionLocations
+                  placements?.items?.map((place) => ({
+                    value: place?.id,
+                    label: place?.title,
+                  })) || optionLocations
                 }
                 prefixIcon={<Icon icon={LOCATION} width={16} height={16} />}
               />
