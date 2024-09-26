@@ -90,10 +90,10 @@ const Profile = () => {
   return (
     <>
       {items.map((item, index) => (
-        <>
-          <ProfileSection key={index} {...item} onClick={handleClick} />
+        <div key={index}>
+          <ProfileSection {...item} onClick={handleClick} />
           {index !== items.length - 1 && <Divider />}
-        </>
+        </div>
       ))}
     </>
   );

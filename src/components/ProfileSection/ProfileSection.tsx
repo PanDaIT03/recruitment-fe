@@ -26,7 +26,7 @@ const ProfileSection = ({
   onClick,
 }: IProfileSection) => {
   return (
-    <div>
+    <>
       <div className="flex mb-8 justify-between items-center">
         <div className="flex items-center gap-4">
           {typeof header === 'string' ? (
@@ -60,7 +60,7 @@ const ProfileSection = ({
           onClick={onClick}
         />
       </div>
-    </div>
+    </>
   );
 };
 

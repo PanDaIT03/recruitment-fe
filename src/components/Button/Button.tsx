@@ -64,18 +64,13 @@ const Button = ({
       disabled={buttonState.disabled}
       {...props}
     >
-      {/* {buttonState.loading ? (
-        <Spin indicator={<LoadingOutlined />} />
-      ) : (
-        <div className="flex gap-3">
-          {iconBefore}
-          <b>{title}</b>
-          {iconAfter}
-        </div>
-      )} */}
       <div className="flex gap-3">
-        {iconBefore}
-        <b>{title}</b>
+        {buttonState.loading ? (
+          <Spin indicator={<LoadingOutlined />} />
+        ) : (
+          iconBefore
+        )}
+        <b className="w-max">{title}</b>
         {iconAfter}
       </div>
     </button>
