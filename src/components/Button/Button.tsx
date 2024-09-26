@@ -64,7 +64,7 @@ const Button = ({
       disabled={buttonState.disabled}
       {...props}
     >
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
         {buttonState.loading ? (
           <Spin indicator={<LoadingOutlined />} />
         ) : (

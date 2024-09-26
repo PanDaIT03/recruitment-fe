@@ -103,6 +103,7 @@ export default {
         'light-gray': '#FAFAFA',
         'light-warning': '#fee2e2',
         'header-bgHover': '#461A53',
+        'bright-orange': '#F15224',
         'button-color': 'rgba(105, 31, 116, 0.1)',
       },
       boxShadow: {
