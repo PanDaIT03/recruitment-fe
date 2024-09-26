@@ -27,10 +27,13 @@ export interface PaginatedJobPositions {
   items: JobPosition[];
 }
 
-export interface JobPlacement
-  extends Omit<BaseEntityWithTitle, 'updateBy' | 'updateAt'> {
-  updateBy: string;
-  updateAt: number;
+export interface JobPlacement {
+  jobsId: number;
+  placementsId: number;
+  placement: {
+    id: number;
+    title: string;
+  };
 }
 
 type WorkType = BaseEntityWithTitle;
@@ -73,8 +76,8 @@ export interface JobItem extends BaseEntityWithTitle {
   message?: string;
   salaryMax: NullableNumber;
   salaryMin: NullableNumber;
-  startExpYearRequired: NullableNumber;
-  endExpYearRequired: NullableNumber;
+  mExpYearRequired: NullableNumber;
+  maxExpYearRequired: NullableNumber;
   applicationDeadline: string;
   workTime: string;
   description: string;

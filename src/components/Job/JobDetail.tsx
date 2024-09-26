@@ -121,8 +121,8 @@ const JobDetail: React.FC = () => {
                   <p className="text-sm text-gray-500">Địa điểm</p>
                   <p className="font-medium">
                     {currentJob[0]?.jobsPlacements
-                      .map((place) => place?.title)
-                      .join(' / ')}
+                      ?.map((place) => place?.placement?.title)
+                      .join(' - ')}
                   </p>
                 </div>
               </div>
