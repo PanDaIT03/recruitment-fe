@@ -1,5 +1,4 @@
 import { Col, ConfigProvider, Menu, MenuProps, Row } from 'antd';
-import { ItemType, MenuItemType } from 'antd/es/menu/interface';
 import { memo, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -36,11 +35,7 @@ const Header = ({ items = defaultItems }: IProps) => {
 
   const { refreshToken } = useAppSelector((state) => state.auth.currentUser);
 
-  const itemSelectedKeys = useMemo(() => {
-    return items.map((item) => item.key);
-  }, [items]);
-
-  const menuItems: ItemType<MenuItemType>[] = useMemo(
+  const menuItems: MenuItem[] = useMemo(
     () =>
       items.map((item) => {
         const { ...rest } = item;
@@ -58,9 +53,13 @@ const Header = ({ items = defaultItems }: IProps) => {
     [items]
   );
 
-  const getSelectedKey = useCallback((path: string) => {
-    return Object.values(itemSelectedKeys).filter((key) => key === path);
-  }, []);
+  const getSelectedKey = useCallback(
+    (path: string) => {
+      const selectedKey = menuItems.filter((item) => item.key === path);
+      return selectedKey.map((item) => item.key);
+    },
+    [menuItems]
+  );
 
   const handleSelect = useCallback((selectInfo: any) => {
     const { key } = selectInfo;
@@ -104,7 +103,7 @@ const Header = ({ items = defaultItems }: IProps) => {
           <Col className="flex gap-3 justify-between items-center relative">
             <Button
               displayType="text"
-              className="hover:bg-header-bgHover"
+              className="p-2 hover:bg-header-bgHover"
               onClick={() => navigate(PATH.SIGN_IN)}
               title={
                 <div className="flex flex-col text-start">

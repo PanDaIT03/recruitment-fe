@@ -48,6 +48,8 @@ const TopSearchBar: React.FC<IProps> = ({
     onSearch(values);
   };
 
+  console.log(placements);
+
   return (
     <div className="w-full sticky left-0 top-16 z-30 shadow-lg">
       <FormWrapper
@@ -65,7 +67,7 @@ const TopSearchBar: React.FC<IProps> = ({
                 className="bg-light-gray"
               />
             </FormItem>
-            <FormItem
+            {/* <FormItem
               childrenSelected
               name="location"
               className="w-full max-w-[198px] mb-3"
@@ -84,7 +86,7 @@ const TopSearchBar: React.FC<IProps> = ({
                 }
                 prefixIcon={<Icon icon={LOCATION} width={16} height={16} />}
               />
-            </FormItem>
+            </FormItem> */}
             <Button fill type="submit" title="Tìm kiếm" />
           </div>
           <div className="flex gap-2">{children}</div>
