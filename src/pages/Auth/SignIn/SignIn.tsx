@@ -1,6 +1,6 @@
 import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
@@ -29,21 +29,21 @@ const SignIn = () => {
         dispatch(resetUser()));
   }, [currentUser]);
 
-  const handleSignInWithGoogle = (userInfo: any) => {
+  const handleSignInWithGoogle = useCallback((userInfo: any) => {
     try {
       dispatch(signInWithGoogle(userInfo));
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
 
-  const handleSignIn = async (values: any) => {
+  const handleSignIn = useCallback(async (values: any) => {
     try {
       dispatch(signIn(values));
     } catch (error: any) {
       console.log(error);
     }
-  };
+  }, []);
 
   return (
     <>
