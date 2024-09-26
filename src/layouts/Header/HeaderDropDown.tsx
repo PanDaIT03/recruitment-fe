@@ -23,7 +23,6 @@ const HeaderDropDown = () => {
   const dispatch = useAppDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
-
   const { currentUser } = useAppSelector((state) => state.auth);
 
   const handleCancelModal = () => {
