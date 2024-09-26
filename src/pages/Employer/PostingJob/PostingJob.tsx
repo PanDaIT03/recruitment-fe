@@ -70,7 +70,7 @@ const PostingJob: React.FC = () => {
   const { data: workType } = useFetch<PaginatedWorkTypes>(
     JobsAPI.getAllWorkTypes
   );
-  const { data: jobPlacements } = useFetch<JobPlacement[]>(
+  const { data: jobPlacements } = useFetch<JobPlacement>(
     JobsAPI.getAllPlacements
   );
   const { data: jobFields } = useFetch<PaginatedJobFields>(
@@ -228,8 +228,8 @@ const PostingJob: React.FC = () => {
           rules={[{ required: true, validator: validateField('Địa điểm') }]}
         >
           <Select placeholder="Chọn địa điểm" mode="multiple" maxCount={3}>
-            {jobPlacements?.map((place) => (
-              <Option value={place.id} key={place.id}>
+            {jobPlacements?.items?.map((place) => (
+              <Option key={place.id} value={place.id}>
                 {place.title}
               </Option>
             ))}

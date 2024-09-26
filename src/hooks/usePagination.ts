@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch } from '~/hooks/useStore';
 
 interface PaginationInfo {
@@ -6,9 +6,8 @@ interface PaginationInfo {
   itemsPerPage: number;
   totalItems: number;
 }
-
 interface UsePaginationProps<T> {
-  fetchAction: (page: number) => any;
+  fetchAction: (page: number, pageSize: number) => any;
   pageInfo?: PaginationInfo;
   items?: T[];
 }
@@ -18,19 +17,25 @@ function usePagination<T>({
   pageInfo,
   items,
 }: UsePaginationProps<T>) {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(pageInfo?.currentPage || 1);
+  const [itemsPerPage, setItemsPerPage] = useState(
+    pageInfo?.itemsPerPage || 10
+  );
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchAction(currentPage));
-  }, [currentPage, dispatch, fetchAction]);
-
-  const handlePageChange = (page: number) => {
+  const handlePageChange = useCallback((page: number, pageSize?: number) => {
     setCurrentPage(page);
-  };
+    if (pageSize) setItemsPerPage(pageSize);
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    dispatch(fetchAction(currentPage, itemsPerPage));
+  }, [currentPage, itemsPerPage, dispatch, fetchAction]);
 
   return {
     currentPage,
+    itemsPerPage,
     pageInfo,
     items,
     handlePageChange,

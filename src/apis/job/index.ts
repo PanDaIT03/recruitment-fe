@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios';
 import { PostingJobFormValues } from '~/pages/Employer/PostingJob/PostingJob';
 import axiosApi from '~/services/axios';
 import {
@@ -10,10 +11,18 @@ import {
   PaginatedWorkTypes,
 } from '~/types/Job';
 
+export interface IPaginationParms {
+  page?: number;
+  pageSize?: number;
+}
+
 export const JobsAPI = {
   // GET
-  getAllJobs: (): Promise<IJob> => {
-    return axiosApi.get('/jobs/all');
+  getAllJobs: (data: IPaginationParms): Promise<IJob> => {
+    const payload: AxiosRequestConfig = {
+      params: { page: data.page, pageSize: data.pageSize },
+    };
+    return axiosApi.get('/jobs/all', payload);
   },
   getJobById: (id: string): Promise<IJob['items']> => {
     return axiosApi.get(`/jobs?id=${id}`);
@@ -27,7 +36,7 @@ export const JobsAPI = {
   getAllWorkTypes: (): Promise<PaginatedWorkTypes> => {
     return axiosApi.get(`/work-types/all`);
   },
-  getAllPlacements: (): Promise<JobPlacement[]> => {
+  getAllPlacements: (): Promise<JobPlacement> => {
     return axiosApi.get(`/placements/all`);
   },
   getAllJobFields: (): Promise<PaginatedJobFields> => {
