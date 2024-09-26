@@ -1,4 +1,5 @@
 import { List } from 'antd';
+import { DefaultOptionType } from 'antd/es/select';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { JobsAPI } from '~/apis/job';
@@ -15,7 +16,6 @@ import FormItem from '../Form/FormItem';
 import CustomSelect from '../Select/CustomSelect';
 import TopSearchBar from '../TopSearchBar/TopSearchBar';
 import JobCard from './JobCard';
-import { DefaultOptionType } from 'antd/es/select';
 
 const optionsExperience: DefaultOptionType[] = [
   {
@@ -111,7 +111,7 @@ const JobListPage = () => {
   );
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="w-full">
       <TopSearchBar onSearch={handleSearch} placeHolder="Vị trí công việc">
         <FormItem
           childrenSelected
@@ -166,16 +166,18 @@ const JobListPage = () => {
           />
         </FormItem>
       </TopSearchBar>
-      <List
-        loading={loading}
-        itemLayout="vertical"
-        dataSource={filteredJobs}
-        renderItem={(job) => (
-          <List.Item className="mb-4">
-            <JobCard {...job} />
-          </List.Item>
-        )}
-      />
+      <div className="container mx-auto px-4">
+        <List
+          loading={loading}
+          itemLayout="vertical"
+          dataSource={filteredJobs}
+          renderItem={(job) => (
+            <List.Item className="mb-4">
+              <JobCard {...job} />
+            </List.Item>
+          )}
+        />
+      </div>
     </div>
   );
 };

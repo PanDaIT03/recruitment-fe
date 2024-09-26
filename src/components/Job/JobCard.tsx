@@ -5,6 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { JobItem } from '~/types/Job';
+import { formatCurrencyVN } from '~/utils/functions/formatNumber';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
 
@@ -20,6 +21,7 @@ const {
   AccountBookOutlined,
   ArrowRightOutlined,
   ReconciliationOutlined,
+  HomeOutlined,
 } = icons;
 
 const JobHeader: React.FC<
@@ -27,11 +29,15 @@ const JobHeader: React.FC<
 > = ({ id, title, user, jobPosition }) => (
   <Row className="flex items-start gap-4 mb-3">
     <Col className="flex-shrink-0 w-12 h-12 mt-1">
-      <img
-        alt={title}
-        src={user.avatarUrl || 'default-avatar.png'}
-        className="rounded-md object-contain w-full h-full"
-      />
+      {user.avatarUrl ? (
+        <img
+          alt={title}
+          src={user.avatarUrl}
+          className="rounded-md object-contain w-full h-full"
+        />
+      ) : (
+        <HomeOutlined className="text-5xl" />
+      )}
     </Col>
     <Row>
       <Col span={24}>
@@ -54,11 +60,11 @@ const JobHeader: React.FC<
 );
 
 const JobTags: React.FC<{
-  totalAmount: number;
+  quantity: number;
   priceRange: string;
   jobCategory: JobItem['jobCategory'];
   workType: JobItem['workType'];
-}> = ({ totalAmount, priceRange, jobCategory, workType }) => (
+}> = ({ quantity, priceRange, jobCategory, workType }) => (
   <Row className="flex items-center gap-2 text-sm text-gray-200 mb-3">
     <Tag icon={<ReconciliationOutlined />} color="purple">
       {workType.title}
@@ -70,24 +76,19 @@ const JobTags: React.FC<{
       {priceRange}
     </Tag>
     <Tag icon={<TeamOutlined />} color="blue">
-      {totalAmount}
+      {quantity}
     </Tag>
   </Row>
 );
 
 const JobCard: React.FC<JobItem> = (job) => {
-  const totalAmount =
-    job.jobsPlacements?.reduce(
-      (sum, placement) => sum + (placement?.amount ?? 0),
-      0
-    ) || 0;
   const priceRange =
-    job.startPrice && job.endPrice
-      ? `${job.startPrice} - ${job.endPrice}`
-      : job.startPrice
-        ? ` ${job.startPrice}`
-        : job.endPrice
-          ? ` ${job.endPrice}`
+    job.salaryMin && job.salaryMax
+      ? `${formatCurrencyVN(Number(job.salaryMin))} - ${formatCurrencyVN(Number(job.salaryMax))}`
+      : job.salaryMin
+        ? ` ${formatCurrencyVN(Number(job.salaryMin))}`
+        : job.salaryMax
+          ? ` ${formatCurrencyVN(Number(job.salaryMax))}`
           : 'Thương lượng';
 
   return (
@@ -103,13 +104,16 @@ const JobCard: React.FC<JobItem> = (job) => {
           jobPosition={job.jobPosition}
         />
         <JobTags
-          totalAmount={totalAmount}
+          quantity={job.quantity}
           priceRange={priceRange}
           jobCategory={job.jobCategory}
           workType={job.workType}
         />
         <Paragraph className="text-sm text-[#78726de6] mb-0 line-clamp-2">
-          {job.description}
+          <ul
+            className="list-none"
+            dangerouslySetInnerHTML={{ __html: job?.description }}
+          ></ul>
         </Paragraph>
         <Row className="flex items-center justify-between mb-0">
           <Col>

@@ -1,5 +1,14 @@
 import { Editor } from '@tinymce/tinymce-react';
-import { Divider, Form, Input, InputNumber, Radio, Select } from 'antd';
+import {
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Radio,
+  Select,
+} from 'antd';
+import dayjs from 'dayjs';
 import React from 'react';
 import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
@@ -12,11 +21,11 @@ import {
   PaginatedJobPositions,
   PaginatedWorkTypes,
 } from '~/types/Job';
+import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
 const { Option } = Select;
-
 const { TeamOutlined } = icons;
 
 export interface PostingJobFormValues {
@@ -28,10 +37,8 @@ export interface PostingJobFormValues {
   placements: number[];
   startPrice?: number;
   endPrice?: number;
-  description: string;
-  requirement: string;
   whyLove: string;
-  applicationDeadline?: string;
+  deadline?: string;
   workTime?: string;
   startExpYearRequired?: number;
   endExpYearRequired?: number;
@@ -70,24 +77,67 @@ const PostingJob: React.FC = () => {
     JobsAPI.getAllJobFields
   );
 
-  const cleanFormValues = (
-    values: PostingJobFormValues
-  ): PostingJobFormValues => {
-    return Object.fromEntries(
-      Object.entries(values).filter(([_, v]) => v != null)
-    ) as PostingJobFormValues;
+  const cleanFormValues = (values: any) => {
+    const cleanValues = { ...values };
+    ['description', 'requirements', 'benefits'].forEach((field) => {
+      if (cleanValues[field]) {
+        cleanValues[field] = cleanValues[field].toString();
+      } else {
+        cleanValues[field] = '';
+      }
+    });
+    return cleanValues;
   };
 
   const onFinish = async () => {
     try {
       const values = form.getFieldsValue();
       const cleanValues = cleanFormValues(values);
-      const response = await JobsAPI.postJob(cleanValues);
-      console.log(response);
+
+      const deadline = values?.deadline
+        ? dayjs(values.deadline).format('YYYY-MM-DD HH:mm:ss')
+        : '';
+
+      const payload = {
+        ...cleanValues,
+        description: values.description?.level?.content || '',
+        requirements: values.requirements?.level?.content || '',
+        benefits: values.benefits?.level?.content || '',
+        deadline,
+      };
+
+      const response = await JobsAPI.postJob(payload);
+
+      toast[response.statusCode === 200 ? 'success' : 'error'](
+        response.message || 'Có lỗi xảy ra'
+      );
+      if (response.statusCode === 200) form.resetFields();
     } catch (error: unknown) {
       console.error(error);
     }
   };
+
+  const validateField = (name?: string) => {
+    return (_: any, value: number | string) => {
+      if (!value) {
+        return Promise.reject(
+          new Error(`Dữ liệu trường ${name} không được để trống`)
+        );
+      }
+
+      return Promise.resolve();
+    };
+  };
+
+  const formatter = (value: string | undefined): string => {
+    if (!value) return '';
+    return `${value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+  };
+
+  const parser = (value: string | undefined): string => {
+    return value ? value.replace(/₫\s?|(,*)/g, '') : '';
+  };
+
   return (
     <>
       {breadcrumb}
@@ -95,22 +145,27 @@ const PostingJob: React.FC = () => {
         form={form}
         onFinish={onFinish}
         layout="vertical"
-        className="max-w-3xl mx-auto p-4 rounded-md border-none shadow"
+        className="max-w-3xl mx-auto p-4 rounded-md border-none shadow gap-4"
       >
         <h2 className="text-xl font-bold mb-4">Thông tin cơ bản</h2>
         <Divider />
         <Form.Item
           name="title"
           label="Vị trí tuyển dụng"
-          rules={[{ required: true }]}
+          rules={[
+            {
+              required: true,
+              validator: validateField('Vị trí tuyển dụng'),
+            },
+          ]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
-          name="company"
+          name="fieldsId"
           label="Lĩnh vực của vị trí tuyển dụng này là gì?"
-          rules={[{ required: true }]}
+          rules={[{ required: true, validator: validateField('Lĩnh vực') }]}
         >
           <Select placeholder="Chọn danh mục">
             {jobFields?.items?.map?.((field) => (
@@ -122,9 +177,11 @@ const PostingJob: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          name="jobType"
+          name="categoriesId"
           label="Loại công việc"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true, validator: validateField('Loại công việc') },
+          ]}
         >
           <Radio.Group className="flex flex-col gap-4">
             {jobCategories?.items.map?.((category) => (
@@ -136,9 +193,11 @@ const PostingJob: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          name="workType"
+          name="workTypesId"
           label="Hình thức làm việc"
-          rules={[{ required: true }]}
+          rules={[
+            { required: true, validator: validateField('Hình thức làm việc') },
+          ]}
         >
           <Radio.Group className="flex flex-col gap-4">
             {workType?.items.map?.((type) => (
@@ -149,7 +208,11 @@ const PostingJob: React.FC = () => {
           </Radio.Group>
         </Form.Item>
 
-        <Form.Item name="level" label="Cấp bậc" rules={[{ required: true }]}>
+        <Form.Item
+          name="positionsId"
+          label="Cấp bậc"
+          rules={[{ required: true, validator: validateField('Cấp bậc') }]}
+        >
           <Select placeholder="Chọn cấp bậc">
             {jobPositions?.items.map?.((position) => (
               <Option key={position.id} value={position.id}>
@@ -162,7 +225,7 @@ const PostingJob: React.FC = () => {
         <Form.Item
           name="placements"
           label="Địa điểm làm việc (tối đa 3 địa điểm)"
-          rules={[{ required: true }]}
+          rules={[{ required: true, validator: validateField('Địa điểm') }]}
         >
           <Select placeholder="Chọn địa điểm" mode="multiple" maxCount={3}>
             {jobPlacements?.map((place) => (
@@ -173,21 +236,59 @@ const PostingJob: React.FC = () => {
           </Select>
         </Form.Item>
 
+        <Form.Item
+          name={'quantity'}
+          label="Số lượng tuyển dụng"
+          className="mb-4"
+          rules={[{ required: true, validator: validateField('Số lượng') }]}
+        >
+          <InputNumber
+            prefix={<TeamOutlined />}
+            className="w-full"
+            placeholder="Số lượng cần tuyển"
+            min={1}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name={'deadline'}
+          label="Hạn ứng tuyển"
+          className="mb-4"
+          rules={[
+            { required: true, validator: validateField('Thời hạn ứng tuyển') },
+          ]}
+        >
+          <DatePicker
+            placeholder="Thời hạn ứng tuyển"
+            className="w-full"
+            format="DD-MM-YYYY"
+            disabledDate={(current) =>
+              current && current.isBefore(dayjs().startOf('day'))
+            }
+          />
+        </Form.Item>
+
         <Form.Item label="Mức lương (không bắt buộc)" className="mb-4">
           <Input.Group compact>
             <Input.Group compact className="w-full">
               <Form.Item name={'salaryMin'} noStyle>
                 <InputNumber
+                  formatter={formatter}
+                  parser={parser}
                   className="w-full"
                   placeholder="Từ mức lương"
-                  min={0}
+                  suffix="VND"
+                  min="1"
                 />
               </Form.Item>
               <Form.Item name={'salaryMax'} noStyle>
                 <InputNumber
+                  formatter={formatter}
+                  parser={parser}
                   className="w-full"
                   placeholder="Đến mức lương"
-                  min={0}
+                  suffix="VND"
+                  min="1"
                 />
               </Form.Item>
             </Input.Group>
@@ -198,13 +299,29 @@ const PostingJob: React.FC = () => {
           </p>
         </Form.Item>
 
-        <Form.Item name={'count'} className="mb-4">
-          <InputNumber
-            prefix={<TeamOutlined />}
-            className="w-full"
-            placeholder="Số lượng cần tuyển"
-            min={1}
-          />
+        <Form.Item label="Năm kinh nghiệm (không bắt buộc)" className="mb-4">
+          <Input.Group compact>
+            <Input.Group compact className="w-full">
+              <Form.Item name={'minExpYearRequired'} noStyle>
+                <InputNumber
+                  className="w-full"
+                  placeholder="Năm kinh nghiệm"
+                  min={0}
+                />
+              </Form.Item>
+              <Form.Item name={'maxExpYearRequired'} noStyle>
+                <InputNumber
+                  className="w-full"
+                  placeholder="Năm kinh nghiệm"
+                  min={0}
+                />
+              </Form.Item>
+            </Input.Group>
+          </Input.Group>
+          <p className="mt-2">
+            <span className="text-gray-400">Ứng viên sẽ nhìn thấy:</span>
+            <span className="italic text-red-500"> Không yêu cầu</span>
+          </p>
         </Form.Item>
 
         <Divider />
@@ -217,8 +334,6 @@ const PostingJob: React.FC = () => {
               height: 200,
               menubar: false,
               plugins: [
-                'advlist',
-                'autolink',
                 'lists',
                 'link',
                 'image',
@@ -235,12 +350,7 @@ const PostingJob: React.FC = () => {
                 'wordcount',
               ],
               toolbar:
-                'undo redo | blocks | ' +
-                'bold italic forecolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'removeformat | help',
-              content_style:
-                'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
             }}
           />
         </Form.Item>
