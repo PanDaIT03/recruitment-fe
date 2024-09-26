@@ -94,12 +94,15 @@ export default {
         dark: '#0A0A0A',
         warning: '#DC2626',
         blue: '#1677FF',
+        success: "#15803D",
       },
       backgroundColor: {
         main: '#f7f6f2',
         secondary: '#692474',
+        'light-success': '#F0FDF4',
         'light-gray': '#FAFAFA',
         'light-warning': '#fee2e2',
+        'header-bgHover': '#461A53',
         'button-color': 'rgba(105, 31, 116, 0.1)',
       },
       boxShadow: {

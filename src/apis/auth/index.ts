@@ -1,19 +1,38 @@
-import instance from '~/services/axios';
-import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
+import axiosApi from '~/services/axios';
+import {
+  IBaseUser,
+  IEmailStatus,
+  IUser,
+  IUserSignInWithGoogle,
+} from '~/types/Auth/index';
 
 type Response = IBaseResponse<{
   data: IUser;
 }>;
 
+export interface IVerifyOTP {
+  email: string;
+  otp: number;
+}
+
 const AuthAPI = {
-  signUp: (payload: IBaseUser): Promise<Response> => {
-    return instance.post('/auth/register', payload);
+  signUp: async (payload: IBaseUser): Promise<Response> => {
+    return await axiosApi.post('/auth/register', payload);
   },
-  signIn: (payload: IBaseUser): Promise<IUser> => {
-    return instance.post('/auth/sign-in', payload).then((response) => response);
+  signIn: async (payload: IBaseUser): Promise<IUser> => {
+    return await axiosApi.post('/auth/sign-in', payload);
   },
-  signInWithGoogle: (payload: IUserSignInWithGoogle): Promise<IUser> => {
-    return instance.post('/auth/sign-in', payload).then((response) => response);
+  signInWithGoogle: async (payload: IUserSignInWithGoogle): Promise<IUser> => {
+    return await axiosApi.post('/auth/sign-in', payload);
+  },
+  checkExistedEmail: async (email: string): Promise<IEmailStatus> => {
+    return await axiosApi.get(`/users/check-exist-email?email=${email}`);
+  },
+  sendOTPToEmail: async (email: string) => {
+    return await axiosApi.post('/auth/send-otp', { email });
+  },
+  verifyOTP: async (payload: IVerifyOTP): Promise<IUser> => {
+    return await axiosApi.post('/auth/verify-otp', payload);
   },
 };
 

@@ -1,12 +1,41 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import AuthAPI from '~/apis/auth';
+import AuthAPI, { IVerifyOTP } from '~/apis/auth';
 import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
 
 enum TYPE_LOGIN {
   TYPE_SYSTEM = 'system',
   TYPE_GOOGLE = 'google',
 }
+
+export const checkExistedEmail = createAsyncThunk(
+  'auth/checkExitedEmail',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      const response = await AuthAPI.checkExistedEmail(email);
+
+      if (response.statusCode === 200)
+        await AuthAPI.sendOTPToEmail('daiphucduongvinh203@gmail.com');
+
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error?.message || 'Có lỗi xảy ra');
+    }
+  }
+);
+
+export const verifyOTP = createAsyncThunk(
+  'auth/verifyOTP',
+  async (data: IVerifyOTP, { rejectWithValue }) => {
+    try {
+      const response = await AuthAPI.verifyOTP(data);
+
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error?.message || 'Có lỗi xảy ra');
+    }
+  }
+);
 
 export const signInWithGoogle = createAsyncThunk(
   'auth/signInWithGoogle',

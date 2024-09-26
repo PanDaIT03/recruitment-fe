@@ -25,6 +25,7 @@ import {
   LockOutlined,
   LogoutOutlined,
   MailOutlined,
+  MinusOutlined,
   PlusOutlined,
   ProfileOutlined,
   ReconciliationOutlined,
@@ -74,6 +75,7 @@ const icons = {
   CloudUploadOutlined,
   ArrowDownOutlined,
   PlusOutlined,
+  MinusOutlined,
 };
 
 export default icons;
