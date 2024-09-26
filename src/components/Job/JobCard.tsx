@@ -62,15 +62,15 @@ const JobHeader: React.FC<
 const JobTags: React.FC<{
   quantity: number;
   priceRange: string;
-  jobCategory: JobItem['jobCategory'];
+  placement: JobItem['jobsPlacements'];
   workType: JobItem['workType'];
-}> = ({ quantity, priceRange, jobCategory, workType }) => (
+}> = ({ quantity, priceRange, placement, workType }) => (
   <Row className="flex items-center gap-2 text-sm text-gray-200 mb-3">
     <Tag icon={<ReconciliationOutlined />} color="purple">
       {workType.title}
     </Tag>
     <Tag icon={<EnvironmentOutlined />} color="red">
-      {jobCategory?.name}
+      {placement?.map((place) => place?.placement?.title).join(' - ')}
     </Tag>
     <Tag icon={<DollarOutlined />} color="green">
       {priceRange}
@@ -106,7 +106,7 @@ const JobCard: React.FC<JobItem> = (job) => {
         <JobTags
           quantity={job.quantity}
           priceRange={priceRange}
-          jobCategory={job.jobCategory}
+          placement={job.jobsPlacements}
           workType={job.workType}
         />
         <Paragraph className="text-sm text-[#78726de6] mb-0 line-clamp-2">

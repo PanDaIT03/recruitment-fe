@@ -16,6 +16,7 @@ import FormItem from '../Form/FormItem';
 import CustomSelect from '../Select/CustomSelect';
 import TopSearchBar from '../TopSearchBar/TopSearchBar';
 import JobCard from './JobCard';
+import usePagination from '~/hooks/usePagination';
 
 const optionsExperience: DefaultOptionType[] = [
   {
@@ -37,11 +38,20 @@ const optionsExperience: DefaultOptionType[] = [
 ];
 
 const JobListPage = () => {
-  const location = useLocation();
-  const [keyword, setKeyword] = useState('');
   const dispatch = useAppDispatch();
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
+  const {
+    currentPage,
+    pageInfo,
+    items: job,
+    handlePageChange,
+  } = usePagination({
+    fetchAction: getAllJobs,
+    pageInfo: allJobs?.pageInfo,
+    items: allJobs?.items,
+  });
+  console.log(pageInfo);
   const { data: jobCategories } = useFetch<PaginatedJobCategories>(
     JobsAPI.getAllJobCategories
   );
@@ -56,26 +66,9 @@ const JobListPage = () => {
     dispatch(getAllJobs());
   }, []);
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    setKeyword(searchParams.get('keyword') || '');
-  }, [location]);
-
   const handleSearch = (values: any) => {
     console.log(values);
-
-    // const searchParams = new URLSearchParams();
-    // if (keyword) searchParams.append('keyword', keyword);
-    // if (location) searchParams.append('location', location);
-    // navigate(`?${searchParams.toString()}`);
   };
-
-  const filteredJobs = allJobs?.items?.filter((job) => {
-    const keywordMatch = keyword
-      ? job.title.toLowerCase().includes(keyword.toLowerCase())
-      : true;
-    return keywordMatch;
-  });
 
   const jobCategoriesOptions = useMemo(
     () => [
@@ -170,12 +163,19 @@ const JobListPage = () => {
         <List
           loading={loading}
           itemLayout="vertical"
-          dataSource={filteredJobs}
+          dataSource={job}
           renderItem={(job) => (
             <List.Item className="mb-4">
               <JobCard {...job} />
             </List.Item>
           )}
+          pagination={{
+            current: pageInfo?.currentPage || currentPage,
+            pageSize: pageInfo?.itemsPerPage,
+            total: pageInfo?.totalItems,
+            onChange: handlePageChange,
+            showSizeChanger: false,
+          }}
         />
       </div>
     </div>
