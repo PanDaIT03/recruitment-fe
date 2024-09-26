@@ -1,7 +1,9 @@
+import { message } from 'antd';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import AuthAPI, { IVerifyOTP } from '~/apis/auth';
 import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
+import toast from '~/utils/functions/toast';
 
 enum TYPE_LOGIN {
   TYPE_SYSTEM = 'system',
@@ -60,6 +62,7 @@ export const signIn = createAsyncThunk(
 
       return user;
     } catch (error: any) {
+      toast.error(error.response.data.message);
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
     }
   }
