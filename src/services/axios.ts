@@ -46,7 +46,7 @@ instance.interceptors.response.use(
       _retry?: boolean;
     };
 
-    if (error.response?.status === 404 && !originalRequest._retry) {
+    if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         const refreshToken = tokenService.getRefreshToken();
