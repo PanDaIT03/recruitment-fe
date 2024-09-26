@@ -1,6 +1,6 @@
 import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AuthAPI from '~/apis/auth';
@@ -34,12 +34,12 @@ const SignUp = () => {
       ? (toast.success(currentUser.message), navigate(path.ROOT))
       : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
         dispatch(resetUser()));
-    // : toast.error(currentUser?.message || 'Có lỗi xảy ra');
   }, [currentUser]);
 
-  const handleFinish = async (values: IBaseUser) => {
+  const handleFinish = useCallback(async (values: IBaseUser) => {
     const payload = { ...values, roleId: ROLE.USER };
     setIsLoading(true);
+
     try {
       const response = await AuthAPI.signUp(payload);
       const { statusCode, message } = response;
@@ -51,15 +51,15 @@ const SignUp = () => {
     } catch (error: any) {
       console.log('Unexpected error', error);
     }
-  };
+  }, []);
 
-  const handleSignUpWithGoogle = (userInfo: any) => {
+  const handleSignUpWithGoogle = useCallback((userInfo: any) => {
     try {
       dispatch(signInWithGoogle(userInfo));
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
 
   return (
     <>

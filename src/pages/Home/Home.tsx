@@ -1,11 +1,5 @@
-import { useEffect } from 'react';
-import { useAppSelector } from '~/hooks/useStore';
-
 const Home = () => {
-  const { currentUser } = useAppSelector((state) => state.auth);
-  useEffect(() => {}, [currentUser]);
-
-  return <div></div>;
+  return <div className="min-h-screen">Home</div>;
 };
 
 export default Home;

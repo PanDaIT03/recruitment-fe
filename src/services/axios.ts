@@ -27,8 +27,7 @@ instance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${accessToken}`;
 
     if (refreshToken && config.headers)
-      config.headers['Set-Cookie'] =
-        `refreshToken=${refreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
+      config.headers.Cookies = `${refreshToken}`;
 
     return config;
   },
@@ -46,24 +45,21 @@ instance.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
-    if (error.response?.status === 401 && !originalRequest._retry) {
+
+    if (error.response?.status === 404 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         const refreshToken = tokenService.getRefreshToken();
         const response = await instance.post<{
           accessToken: string;
-          refreshToken: string;
         }>('/auth/refresh', {
           refreshToken,
         });
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
+        const { accessToken } = response.data;
         tokenService.setAccessToken(accessToken);
 
         if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-
-        originalRequest.headers['Set-Cookie'] =
-          `refreshToken=${newRefreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
 
         return instance(originalRequest);
       } catch (refreshError) {
