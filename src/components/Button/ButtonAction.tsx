@@ -8,7 +8,7 @@ const ButtonAction = ({ title, className, ...props }: IButtonProps) => {
     className
   );
 
-  return <Button title={title} className={customClasses} />;
+  return <Button title={title} className={customClasses} {...props} />;
 };
 
 export default memo(ButtonAction);
