@@ -1,11 +1,11 @@
 import { List } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
-import { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useCallback, useMemo } from 'react';
 import { JobsAPI } from '~/apis/job';
 import { BlockChain, PortFolio } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import usePagination from '~/hooks/usePagination';
+import { useAppSelector } from '~/hooks/useStore';
 import { getAllJobs } from '~/store/thunk/job';
 import {
   PaginatedJobCategories,
@@ -16,7 +16,6 @@ import FormItem from '../Form/FormItem';
 import CustomSelect from '../Select/CustomSelect';
 import TopSearchBar from '../TopSearchBar/TopSearchBar';
 import JobCard from './JobCard';
-import usePagination from '~/hooks/usePagination';
 
 const optionsExperience: DefaultOptionType[] = [
   {
@@ -38,20 +37,22 @@ const optionsExperience: DefaultOptionType[] = [
 ];
 
 const JobListPage = () => {
-  const dispatch = useAppDispatch();
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
-  const {
-    currentPage,
-    pageInfo,
-    items: job,
-    handlePageChange,
-  } = usePagination({
-    fetchAction: getAllJobs,
-    pageInfo: allJobs?.pageInfo,
+  const fetchJobs = useCallback((page: number, pageSize: number) => {
+    return getAllJobs({ page, pageSize });
+  }, []);
+
+  const { currentPage, itemsPerPage, handlePageChange } = usePagination({
+    fetchAction: fetchJobs,
+    pageInfo: {
+      currentPage: 1,
+      itemsPerPage: 10,
+      totalItems: allJobs?.pageInfo?.totalItems || 0,
+    },
     items: allJobs?.items,
   });
-  console.log(pageInfo);
+
   const { data: jobCategories } = useFetch<PaginatedJobCategories>(
     JobsAPI.getAllJobCategories
   );
@@ -61,10 +62,6 @@ const JobListPage = () => {
   const { data: jobFields } = useFetch<PaginatedJobFields>(
     JobsAPI.getAllJobFields
   );
-
-  useEffect(() => {
-    dispatch(getAllJobs());
-  }, []);
 
   const handleSearch = (values: any) => {
     console.log(values);
@@ -163,16 +160,16 @@ const JobListPage = () => {
         <List
           loading={loading}
           itemLayout="vertical"
-          dataSource={job}
+          dataSource={allJobs?.items}
           renderItem={(job) => (
             <List.Item className="mb-4">
               <JobCard {...job} />
             </List.Item>
           )}
           pagination={{
-            current: pageInfo?.currentPage || currentPage,
-            pageSize: pageInfo?.itemsPerPage,
-            total: pageInfo?.totalItems,
+            current: currentPage,
+            pageSize: itemsPerPage,
+            total: allJobs?.pageInfo?.totalItems,
             onChange: handlePageChange,
             showSizeChanger: false,
           }}
