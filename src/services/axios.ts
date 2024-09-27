@@ -56,7 +56,7 @@ instance.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
-    console.log(error);
+
     if (
       error.response?.status === 401 &&
       (error.response as CustomAxiosResponse)?.data?.action ===
