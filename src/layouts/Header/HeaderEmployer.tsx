@@ -19,12 +19,17 @@ const menuItems: IMenuItems[] = [
     active: true,
   },
   {
+    label: 'Tổng quan',
+    href: PATH.EMPLOYER_DASHBOARD,
+    active: true,
+  },
+  {
     label: 'Ứng viên',
     href: PATH.EMPLOYER_DASHBOARD,
     active: false,
   },
   {
-    label: 'Đăng tin',
+    label: 'Công việc',
     href: PATH.EMPLOYER_POSTING,
     active: false,
   },

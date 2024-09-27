@@ -166,13 +166,17 @@ const JobListPage = () => {
               <JobCard {...job} />
             </List.Item>
           )}
-          pagination={{
-            current: currentPage,
-            pageSize: itemsPerPage,
-            total: allJobs?.pageInfo?.totalItems,
-            onChange: handlePageChange,
-            showSizeChanger: false,
-          }}
+          pagination={
+            allJobs && allJobs?.items?.length
+              ? {
+                  current: currentPage,
+                  pageSize: itemsPerPage,
+                  total: allJobs?.pageInfo?.totalItems,
+                  onChange: handlePageChange,
+                  showSizeChanger: false,
+                }
+              : false
+          }
         />
       </div>
     </div>
