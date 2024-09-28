@@ -25,7 +25,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
 
   return (
     <Layout className="w-full min-h-screen p-8 justify-center items-center">
-      <Row justify={'center'} align={'middle'} className="flex gap-x-32">
+      <Row justify={'center'} align={'middle'} className="flex w-full gap-x-32">
         {isLeftPanelVisible && (
           <Col className="flex flex-col justify-center items-start max-w-md">
             <Title level={2} className="text-gray-700 !mb-0">
@@ -39,8 +39,8 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
             </Paragraph>
           </Col>
         )}
-        <Col className="max-w-sm">
-          <div className="flex flex-col gap-y-6 bg-white p-6 border rounded-xl shadow-md">
+        <Col className="w-full max-w-sm">
+          <div className="flex w-full flex-col gap-y-6 bg-white p-6 border rounded-xl shadow-md">
             {children}
           </div>
           <div className="w-full flex justify-center mt-6">

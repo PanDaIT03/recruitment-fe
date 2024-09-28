@@ -22,7 +22,11 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
 
   return (
     <>
-      <FormWrapper form={form} submitTitle="Tiếp tục" onFinish={onFinish}>
+      <FormWrapper
+        form={form}
+        submitTitle="Tiếp tục"
+        onFinish={onFinish}
+      >
         <Form.Item
           name="email"
           label="Địa chỉ email"
