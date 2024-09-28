@@ -38,10 +38,6 @@ const TopSearchBar: React.FC<IProps> = ({
 
   const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
 
-  useEffect(() => {
-    form.setFieldValue('location', 'Toàn quốc');
-  }, []);
-
   const handleFinish = (values: any) => {
     onSearch(values);
   };
@@ -55,7 +51,7 @@ const TopSearchBar: React.FC<IProps> = ({
       >
         <div className="mx-auto max-w-7xl">
           <div className="flex w-full gap-x-4">
-            <FormItem name="keyword" className="flex-1 max-w-[957px] mb-3">
+            <FormItem name="title" className="flex-1 max-w-[957px] mb-3">
               <Input
                 size="large"
                 placeholder={placeHolder}
@@ -65,13 +61,15 @@ const TopSearchBar: React.FC<IProps> = ({
             </FormItem>
             <FormItem
               childrenSelected
-              name="location"
+              name="placmentsId"
               className="w-full max-w-[198px] mb-3"
             >
               <CustomSelect
+                allowClear
                 className="h-10"
                 colorBgContainer="#FAFAFA"
                 placeholder="Chọn khu vực"
+                defaultValue="all"
                 options={
                   placements?.items?.map((place) => ({
                     value: place?.id,
