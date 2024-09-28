@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import AuthAPI, { IVerifyOTP } from '~/apis/auth';
@@ -15,9 +14,6 @@ export const checkExistedEmail = createAsyncThunk(
   async (email: string, { rejectWithValue }) => {
     try {
       const response = await AuthAPI.checkExistedEmail(email);
-
-      if (response.statusCode === 200)
-        await AuthAPI.sendOTPToEmail('daiphucduongvinh203@gmail.com');
 
       return response;
     } catch (error: any) {

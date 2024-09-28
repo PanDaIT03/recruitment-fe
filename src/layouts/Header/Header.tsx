@@ -1,5 +1,5 @@
 import { Col, ConfigProvider, Dropdown, Menu, MenuProps, Row } from 'antd';
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { HeaderLogo } from '~/assets/svg';
@@ -73,7 +73,7 @@ const Header = ({ items = defaultItems }: IProps) => {
         onClick: () => navigate(PATH.SIGN_UP),
       },
     ];
-  }, []);
+  }, [navigate]);
 
   const getSelectedKey = useCallback(
     (path: string) => {
@@ -123,7 +123,6 @@ const Header = ({ items = defaultItems }: IProps) => {
           <HeaderDropDown />
         ) : (
           <Col className="flex gap-3 justify-between items-center relative">
-            {/* warning */}
             <Dropdown trigger={['click']} menu={{ items: userMenuItems }}>
               <Button
                 displayType="text"
