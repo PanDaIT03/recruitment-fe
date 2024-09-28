@@ -7,7 +7,7 @@ const Home = () => {
   const { emailStatus } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (emailStatus?.statusCode) return;
+    if (!emailStatus?.statusCode) return;
     dispatch(resetEmailStatus());
   }, []);
 

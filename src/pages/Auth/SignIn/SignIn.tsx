@@ -1,14 +1,15 @@
-import { Divider, Flex } from 'antd';
+import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Button from '~/components/Button/Button';
+import AuthAPI, { IVerifyOTP } from '~/apis/auth';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetEmailStatus, resetUser } from '~/store/reducer/auth';
 import {
   checkExistedEmail,
+  signIn,
   signInWithGoogle,
   verifyOTP,
 } from '~/store/thunk/auth';
@@ -16,18 +17,22 @@ import { IBaseUser } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
 import path from '~/utils/path';
 import FormSignIn from './FormSignIn';
-import FormVerify from './FormVerify';
-import { IVerifyOTP } from '~/apis/auth';
+import FormOTPVerify from './FormOTPVerify';
+import FormPasswordVerify, { IVerifyForm } from './FormPasswordVerify';
 
 const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [form] = useForm<IBaseUser>();
+
+  const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
   const { currentUser, emailStatus } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (emailStatus?.statusCode) return;
+    if (!emailStatus?.statusCode) return;
+
+    setIsSignInWithOTP(false);
     dispatch(resetEmailStatus());
   }, []);
 
@@ -39,6 +44,15 @@ const SignIn = () => {
       : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
         dispatch(resetUser()));
   }, [currentUser]);
+
+  useEffect(() => {
+    if (!emailStatus) return;
+
+    const { email, statusCode } = emailStatus;
+    const sendOTP = async () => await AuthAPI.sendOTPToEmail(email);
+
+    statusCode === 200 && isSignInWithOTP && sendOTP();
+  }, [emailStatus, isSignInWithOTP]);
 
   const handleSignInWithGoogle = useCallback((userInfo: any) => {
     try {
@@ -59,6 +73,15 @@ const SignIn = () => {
     },
     [emailStatus]
   );
+
+  const handlePasswordVerify = (values: IVerifyForm) => {
+    try {
+      const { email, password } = values;
+      dispatch(signIn({ email: email, password: password }));
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
 
   const handleVerify = useCallback(
     (value: any) => {
@@ -81,25 +104,16 @@ const SignIn = () => {
   return (
     <>
       {emailStatus?.statusCode === 200 ? (
-        <div>
-          <div className="rounded-lg bg-green-50 p-4 mb-6">
-            <p className="text-success font-semibold">
-              Mã xác minh đã được gửi tới email
-              <strong> {emailStatus.email}</strong> của bạn.
-            </p>
-            <p className="mt-2 text-sub">
-              * Kiểm tra mục spam/quảng cáo nếu không tìm thấy email.
-            </p>
-          </div>
-          <FormVerify onFinish={handleVerify} />
-          <Flex justify="center" className="mt-4">
-            <Button
-              displayType="text"
-              title="Gửi lại mã xác minh"
-              className="text-[#691F74] hover:underline"
+        <>
+          {emailStatus.hasPassword && !isSignInWithOTP ? (
+            <FormPasswordVerify
+              onFinish={handlePasswordVerify}
+              setIsSignInWithOTP={setIsSignInWithOTP}
             />
-          </Flex>
-        </div>
+          ) : (
+            <FormOTPVerify onFinish={handleVerify} />
+          )}
+        </>
       ) : (
         <>
           <div className="w-full">
