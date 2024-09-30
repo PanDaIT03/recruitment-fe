@@ -25,7 +25,6 @@ const SignIn = () => {
   const dispatch = useAppDispatch();
 
   const [form] = useForm<IBaseUser>();
-  const [verifyForm] = useForm();
 
   const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
   const { currentUser, emailStatus } = useAppSelector((state) => state.auth);

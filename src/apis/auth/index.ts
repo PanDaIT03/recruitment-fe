@@ -34,6 +34,9 @@ const AuthAPI = {
   verifyOTP: async (payload: IVerifyOTP): Promise<IUser> => {
     return await axiosApi.post('/auth/verify-otp', payload);
   },
+  changePassword: async () => {
+    return await axiosApi.patch('/users/change-password')
+  }
 };
 
 export default AuthAPI;

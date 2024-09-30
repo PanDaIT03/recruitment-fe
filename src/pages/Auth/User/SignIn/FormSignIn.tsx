@@ -35,7 +35,7 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
           <Input name="email" placeholder="abc@example.com" />
         </FormItem>
         <Link
-          to={PATH.FORGOT_PASSWORD}
+          to={PATH.USER_FORGOT_PASSWORD}
           className="block w-full font-semibold text-end text-[#2563eb] mb-6 hover:underline hover:text-[#2563eb]"
         >
           Quên mật khẩu
@@ -44,7 +44,7 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
       <div className="flex gap-x-1">
         <span>Chưa có tài khoản?</span>
         <Link
-          to={PATH.SIGN_UP}
+          to={PATH.USER_SIGN_UP}
           className="font-semibold text-end text-[#2563eb] hover:underline hover:text-[#2563eb]"
         >
           Đăng ký tại đây.
