@@ -274,10 +274,16 @@ const JobDetail: React.FC = () => {
                 </div>
               ))}
             </div>
+            <Button
+              fill
+              title="Ứng tuyển ngay"
+              className="w-full"
+              onClick={handleIsOpenModal}
+            />
           </Card>
         </Col>
       </Row>
-      <Modal isOpen={isOpenModal} footer={null}>
+      <Modal isOpen={isOpenModal} footer={null} closeIcon={false}>
         <JobApplicationModal
           jobTitle={currentJob?.[0]?.title || ''}
           handleToggleModal={handleIsOpenModal}
