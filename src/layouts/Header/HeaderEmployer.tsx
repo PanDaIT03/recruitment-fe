@@ -14,18 +14,13 @@ interface IMenuItems {
 
 const menuItems: IMenuItems[] = [
   {
-    label: 'Trang chủ',
-    href: PATH.EMPLOYER_DASHBOARD,
-    active: true,
-  },
-  {
     label: 'Tổng quan',
     href: PATH.EMPLOYER_DASHBOARD,
     active: true,
   },
   {
     label: 'Ứng viên',
-    href: PATH.EMPLOYER_DASHBOARD,
+    href: PATH.EMPLOYER_CANDICATES_DASHBOARD,
     active: false,
   },
   {
@@ -35,7 +30,7 @@ const menuItems: IMenuItems[] = [
   },
   {
     label: 'Tuyển dụng',
-    href: PATH.EMPLOYER_DASHBOARD,
+    href: PATH.EMPLOYER_RECRUITMENT_LIST,
     active: false,
   },
 ];
