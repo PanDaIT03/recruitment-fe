@@ -27,8 +27,6 @@ export const loadState = (): Partial<RootState> | undefined => {
     return {
       auth: {
         ...parsedState.auth,
-        loading: false,
-        emailStatus: null,
       },
     };
   } catch (err) {
