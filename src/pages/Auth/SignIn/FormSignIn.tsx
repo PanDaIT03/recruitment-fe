@@ -23,12 +23,8 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
 
   return (
     <>
-      <FormWrapper
-        form={form}
-        submitTitle="Tiếp tục"
-        onFinish={onFinish}
-      >
-        <Form.Item
+      <FormWrapper form={form} submitTitle="Tiếp tục" onFinish={onFinish}>
+        <FormItem
           name="email"
           label="Địa chỉ email"
           rules={[
@@ -37,7 +33,7 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
           ]}
         >
           <Input name="email" placeholder="abc@example.com" />
-        </Form.Item>
+        </FormItem>
         <Link
           to={PATH.FORGOT_PASSWORD}
           className="block w-full font-semibold text-end text-[#2563eb] mb-6 hover:underline hover:text-[#2563eb]"
