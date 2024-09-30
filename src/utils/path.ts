@@ -13,6 +13,8 @@ const PATH = {
   // Employer
   EMPLOYER_DASHBOARD: '/employer/dashboard',
   EMPLOYER_POSTING: '/employer/posting',
+  EMPLOYER_CANDICATES_DASHBOARD: '/employer/manage-candicates',
+  EMPLOYER_RECRUITMENT_LIST: '/employer/recruitment-list',
   // User
   USER_PROFILE: '/user/profile',
   USER_ACCOUNT: '/user/account',

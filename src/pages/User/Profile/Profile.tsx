@@ -1,5 +1,5 @@
 import { Divider } from 'antd';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
 
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -11,12 +11,6 @@ import icons from '~/utils/icons';
 const { PlusOutlined, EditOutlined } = icons;
 
 const Profile = () => {
-  const [isOpenModal, setIsOpenModal] = useState(false);
-
-  const handleClick = useCallback(() => {
-    setIsOpenModal(true);
-  }, []);
-
   const items: IProfileSection[] = useMemo(
     () => [
       {
@@ -32,7 +26,6 @@ const Profile = () => {
         buttonAction: (
           <ButtonAction
             title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
-            onClick={handleClick}
           />
         ),
       },
@@ -47,7 +40,6 @@ const Profile = () => {
         buttonAction: (
           <ButtonAction
             title={<PlusOutlined className="text-[#691f74] cursor-pointer" />}
-            onClick={handleClick}
           />
         ),
       },
@@ -62,7 +54,6 @@ const Profile = () => {
         buttonAction: (
           <ButtonAction
             title={<PlusOutlined className="text-[#691f74] cursor-pointer" />}
-            onClick={handleClick}
           />
         ),
       },
@@ -79,7 +70,6 @@ const Profile = () => {
         buttonAction: (
           <ButtonAction
             title={<PlusOutlined className="text-[#691f74] cursor-pointer" />}
-            onClick={handleClick}
           />
         ),
       },
@@ -91,7 +81,7 @@ const Profile = () => {
     <>
       {items.map((item, index) => (
         <div key={index}>
-          <ProfileSection {...item} onClick={handleClick} />
+          <ProfileSection {...item} />
           {index !== items.length - 1 && <Divider />}
         </div>
       ))}

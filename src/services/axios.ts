@@ -1,11 +1,16 @@
 import axios, {
   AxiosError,
   AxiosInstance,
+  AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
 import toast from '~/utils/functions/toast';
 import { tokenService } from './tokenService';
+
+interface CustomAxiosResponse extends AxiosResponse {
+  action?: string;
+}
 
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_BASE_URL,
@@ -39,6 +44,12 @@ instance.interceptors.request.use(
 // Add a response interceptor
 instance.interceptors.response.use(
   (response: AxiosResponse): any => {
+    const { accessToken } = response.data;
+
+    if (accessToken) {
+      tokenService.setAccessToken(accessToken);
+    }
+
     return response.data;
   },
   async (error: AxiosError) => {
@@ -46,25 +57,28 @@ instance.interceptors.response.use(
       _retry?: boolean;
     };
 
-    if (error.response?.status === 404 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      (error.response as CustomAxiosResponse)?.data?.action ===
+        'REFRESH_TOKEN' &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
       try {
-        const refreshToken = tokenService.getRefreshToken();
         const response = await instance.post<{
           accessToken: string;
-        }>('/auth/refresh', {
-          refreshToken,
-        });
+        }>('/auth/refresh');
         const { accessToken } = response.data;
-        tokenService.setAccessToken(accessToken);
 
         if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
+        tokenService.setAccessToken(accessToken);
+
         return instance(originalRequest);
       } catch (refreshError) {
         // window.location.href = PATH.SIGN_IN;
-        toast.error('Phiên đăng nhập đã hết hạn. Xin vui lòng đăng nhập lại');
+        toast.warning('Có lỗi xảy ra, xin vui lòng thử lại');
         return Promise.reject(refreshError);
       }
     }
@@ -103,7 +117,7 @@ const retryRequest = async <T>(
 };
 
 const axiosApi = {
-  get: <T = any>(url: string, config?: InternalAxiosRequestConfig) =>
+  get: <T = any>(url: string, config?: AxiosRequestConfig) =>
     retryRequest<T>({
       ...config,
       method: 'get',

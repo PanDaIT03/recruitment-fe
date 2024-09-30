@@ -4,7 +4,8 @@ export interface IBaseUser {
   password?: string;
 }
 
-export interface IEmailVerify {
+export interface IEmailStatus {
+  email: string;
   message: string;
   hasPassword: boolean;
   signInWith: string;

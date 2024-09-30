@@ -1,17 +1,24 @@
 import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import AuthAPI, { IVerifyOTP } from '~/apis/auth';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { resetUser } from '~/store/reducer/auth';
-import { checkEmailVerification, signInWithGoogle } from '~/store/thunk/auth';
+import { resetEmailStatus, resetUser } from '~/store/reducer/auth';
+import {
+  checkExistedEmail,
+  signIn,
+  signInWithGoogle,
+  verifyOTP,
+} from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
 import path from '~/utils/path';
 import FormSignIn from './FormSignIn';
-import FormVerify from './FormVerify';
+import FormOTPVerify from './FormOTPVerify';
+import FormPasswordVerify, { IVerifyForm } from './FormPasswordVerify';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -20,13 +27,14 @@ const SignIn = () => {
   const [form] = useForm<IBaseUser>();
   const [verifyForm] = useForm();
 
-  const { currentUser, emailVerification } = useAppSelector(
-    (state) => state.auth
-  );
+  const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
+  const { currentUser, emailStatus } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    const email = 'abc@gmail.com';
-    // dispatch(checkEmailVerification(email));
+    if (!emailStatus?.statusCode) return;
+
+    setIsSignInWithOTP(false);
+    dispatch(resetEmailStatus());
   }, []);
 
   useEffect(() => {
@@ -38,6 +46,15 @@ const SignIn = () => {
         dispatch(resetUser()));
   }, [currentUser]);
 
+  useEffect(() => {
+    if (!emailStatus) return;
+
+    const { email, statusCode } = emailStatus;
+    const sendOTP = async () => await AuthAPI.sendOTPToEmail(email);
+
+    statusCode === 200 && isSignInWithOTP && sendOTP();
+  }, [emailStatus, isSignInWithOTP]);
+
   const handleSignInWithGoogle = useCallback((userInfo: any) => {
     try {
       dispatch(signInWithGoogle(userInfo));
@@ -46,40 +63,57 @@ const SignIn = () => {
     }
   }, []);
 
-  const handleSignIn = useCallback(async (values: any) => {
+  const handleCheckExistedEmail = useCallback(
+    (value: any) => {
+      try {
+        const { email } = value;
+        dispatch(checkExistedEmail(email));
+      } catch (error: any) {
+        console.log(error);
+      }
+    },
+    [emailStatus]
+  );
+
+  const handlePasswordVerify = (values: IVerifyForm) => {
     try {
-      const email = values?.email;
-      // dispatch(signIn(values));
-      dispatch(checkEmailVerification(email));
+      const { email, password } = values;
+      dispatch(signIn({ email: email, password: password }));
     } catch (error: any) {
       console.log(error);
     }
-  }, []);
-
-  const handleVerify = (values: any) => {
-    console.log(values);
   };
 
-  console.log(emailVerification);
+  const handleVerify = useCallback(
+    (value: any) => {
+      if (!emailStatus) return;
+
+      try {
+        const params: IVerifyOTP = {
+          email: emailStatus.email,
+          otp: parseInt(value.verifyCode),
+        };
+
+        dispatch(verifyOTP(params));
+      } catch (error: any) {
+        console.log(error);
+      }
+    },
+    [emailStatus]
+  );
 
   return (
     <>
-      {emailVerification?.statusCode === 200 ? (
+      {emailStatus?.statusCode === 200 ? (
         <>
-          <div className="w-full p-4 bg-green-50 rounded-lg">
-            <p className="text-sm text-success">
-              Mã xác minh đã được gửi tới email
-              <strong> 21000149@lttc.edu.vn</strong> của bạn.
-            </p>
-            <p className="text-xs text-sub mt-2">
-              * Kiểm tra mục spam/quảng cáo nếu không tìm thấy email.
-            </p>
-          </div>
-          <FormVerify
-            className="mt-6"
-            form={verifyForm}
-            onFinish={handleVerify}
-          />
+          {emailStatus.hasPassword && !isSignInWithOTP ? (
+            <FormPasswordVerify
+              onFinish={handlePasswordVerify}
+              setIsSignInWithOTP={setIsSignInWithOTP}
+            />
+          ) : (
+            <FormOTPVerify onFinish={handleVerify} />
+          )}
         </>
       ) : (
         <>
@@ -97,7 +131,7 @@ const SignIn = () => {
           <Divider className="!my-0">
             <p className="text-sub text-sm">hoặc</p>
           </Divider>
-          <FormSignIn form={form} onFinish={handleSignIn} />
+          <FormSignIn form={form} onFinish={handleCheckExistedEmail} />
         </>
       )}
     </>

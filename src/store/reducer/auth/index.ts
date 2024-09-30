@@ -1,26 +1,26 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 import {
-  checkEmailVerification,
+  checkExistedEmail,
   signIn,
   signInWithGoogle,
   signOut,
+  verifyOTP
 } from '~/store/thunk/auth';
-import { IEmailVerify, IUser } from '~/types/Auth/index';
+import { IEmailStatus, IUser } from '~/types/Auth/index';
 
-interface InitType {
-  loading: boolean;
+export interface AuthState {
+  loading?: boolean;
   currentUser: IUser;
-  accessToken: string | null;
-  refreshToken: string | null;
-  emailVerification: IEmailVerify | null;
+  accessToken?: string | null;
+  refreshToken?: string | null;
+  emailStatus?: IEmailStatus | null;
 }
 
-const initialState: InitType = {
+const initialState: AuthState = {
   loading: false,
   accessToken: null,
   refreshToken: null,
-  emailVerification: null,
+  emailStatus: null,
   currentUser: {} as IUser,
 };
 
@@ -33,20 +33,34 @@ const authSlice = createSlice({
       state.refreshToken = null;
       state.currentUser = {} as IUser;
     },
+    resetEmailStatus: (state) => {
+      state.emailStatus = null;
+    },
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
     },
   },
   extraReducers(builder) {
     builder
-      .addCase(checkEmailVerification.pending, (state) => {
+      .addCase(checkExistedEmail.pending, (state) => {
         state.loading = true;
       })
-      .addCase(checkEmailVerification.fulfilled, (state, action) => {
+      .addCase(checkExistedEmail.fulfilled, (state, action) => {
         state.loading = false;
-        state.emailVerification = action.payload;
+        state.emailStatus = action.payload;
       })
-      .addCase(checkEmailVerification.rejected, (state) => {
+      .addCase(checkExistedEmail.rejected, (state) => {
+        state.loading = false;
+        state.emailStatus = null;
+      })
+      .addCase(verifyOTP.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(verifyOTP.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentUser = action.payload;
+      })
+      .addCase(verifyOTP.rejected, (state) => {
         state.loading = false;
       })
       .addCase(signIn.pending, (state) => {
@@ -85,8 +99,6 @@ const authSlice = createSlice({
         state.accessToken = null;
         state.refreshToken = null;
         state.currentUser = action.payload;
-
-        localStorage.removeItem('persistedState');
       })
       .addCase(signOut.rejected, (state) => {
         state.loading = false;
@@ -95,4 +107,5 @@ const authSlice = createSlice({
 });
 
 export const authReducer = authSlice.reducer;
-export const { resetUser, setAccessToken } = authSlice.actions;
+export const { resetUser, resetEmailStatus, setAccessToken } =
+  authSlice.actions;

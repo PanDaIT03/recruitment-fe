@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
+import { formatCurrencyVN } from '~/utils/functions/formatNumber';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
 import Modal from '../Modal/Modal';
@@ -45,7 +46,6 @@ const JobDetail: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (rightColRef.current) {
-        const rect = rightColRef.current.getBoundingClientRect();
         const parentRect =
           rightColRef.current.parentElement?.getBoundingClientRect();
 
@@ -57,11 +57,6 @@ const JobDetail: React.FC = () => {
           } else {
             rightColRef.current.style.position = 'static';
             rightColRef.current.style.width = '100%';
-          }
-
-          if (window.scrollY + rect.height > parentRect.bottom) {
-            const diff = window.scrollY + rect.height - parentRect.bottom;
-            rightColRef.current.style.top = `${20 - diff}px`;
           }
         }
       }
@@ -126,8 +121,8 @@ const JobDetail: React.FC = () => {
                   <p className="text-sm text-gray-500">Địa điểm</p>
                   <p className="font-medium">
                     {currentJob[0]?.jobsPlacements
-                      .map((place) => place?.detailAddress)
-                      .join(' / ')}
+                      ?.map((place) => place?.placement?.title)
+                      .join(' - ')}
                   </p>
                 </div>
               </div>
@@ -136,8 +131,8 @@ const JobDetail: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-500">Mức lương</p>
                   <p className="font-medium">
-                    {currentJob[0]?.startPrice && currentJob[0]?.endPrice
-                      ? `${currentJob[0].startPrice} - ${currentJob[0].endPrice}`
+                    {currentJob[0]?.salaryMin && currentJob[0]?.salaryMax
+                      ? `${formatCurrencyVN(Number(currentJob[0]?.salaryMin))} - ${formatCurrencyVN(Number(currentJob[0]?.salaryMax))}`
                       : 'Thương lượng'}
                   </p>
                 </div>
@@ -163,20 +158,20 @@ const JobDetail: React.FC = () => {
               <div className="flex items-center">
                 <AppstoreOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
-                  <p className="text-sm text-gray-500">Lĩnh vực</p>
-                  <p className="font-medium">Thiết kế</p>
+                  <p className="text-sm text-gray-500">Kinh nghiệm</p>
+                  <p className="font-medium">
+                    {currentJob[0]?.minExpYearRequired &&
+                    currentJob[0]?.maxExpYearRequired
+                      ? `${currentJob[0]?.minExpYearRequired} - ${currentJob[0]?.maxExpYearRequired} năm`
+                      : 'Không yêu cầu'}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center">
                 <TeamOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Số lượng</p>
-                  <p className="font-medium">
-                    {currentJob[0]?.jobsPlacements?.reduce(
-                      (total, place) => total + (place.amount ?? 0),
-                      0
-                    )}
-                  </p>
+                  <p className="font-medium">{currentJob[0]?.quantity}</p>
                 </div>
               </div>
             </div>
@@ -190,43 +185,32 @@ const JobDetail: React.FC = () => {
 
             <section className="mb-6">
               <h2 className="text-xl font-bold mb-2">Mô tả công việc</h2>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>
-                  Nhận được tin nhắn từ học viên qua chat box của công ty, sau
-                  đó liên hệ tư vấn, giải đáp thông tin, chăm sóc khách hàng
-                  tiềm năng trên các nền tảng phổ biến của công ty.
-                </li>
-                <li>
-                  Tư vấn khóa học phù hợp cho học viên dựa trên nhu cầu và trình
-                  độ của từng người.
-                </li>
-                <li>
-                  Chủ động liên hệ và hỗ trợ học viên trong quá trình học tập.
-                </li>
-              </ul>
+              <ul
+                className="list-disc pl-5 space-y-2"
+                dangerouslySetInnerHTML={{ __html: currentJob[0]?.description }}
+              />
             </section>
 
             <Divider />
 
             <section className="mb-6">
               <h2 className="text-xl font-bold mb-2">Yêu cầu công việc</h2>
-              {['Chuyên môn, kinh nghiệm:', 'Kỹ năng:', 'Ưu tiên:'].map(
-                (title, index) => (
-                  <div key={index}>
-                    <h3 className="font-bold mt-4 mb-2">{`${index + 1}) ${title}`}</h3>
-                    <ul className="list-disc pl-5 space-y-2"></ul>
-                  </div>
-                )
-              )}
+              <ul
+                className="list-disc pl-5 space-y-2"
+                dangerouslySetInnerHTML={{
+                  __html: currentJob[0]?.requirements,
+                }}
+              />
             </section>
 
             <Divider />
 
             <section>
-              <h2 className="text-xl font-bold mb-2">
-                Tại sao bạn nên thích làm việc tại đây
-              </h2>
-              <ul className="list-disc pl-5 space-y-2"></ul>
+              <h2 className="text-xl font-bold mb-2">Quyền lợi</h2>
+              <ul
+                className="list-disc pl-5 space-y-2"
+                dangerouslySetInnerHTML={{ __html: currentJob[0]?.benefits }}
+              />
             </section>
           </Card>
         </Col>
@@ -239,10 +223,7 @@ const JobDetail: React.FC = () => {
           onClick={handleIsOpenModal}
         />
         <Col xs={24} md={8} className="hidden md:block">
-          <Card
-            className="shadow-md transition-all duration-300 ease-in-out"
-            ref={rightColRef}
-          >
+          <Card className="shadow-md " ref={rightColRef}>
             <h2 className="text-lg font-semibold mb-4">
               {currentJob[0]?.user?.fullName}
             </h2>
@@ -293,10 +274,16 @@ const JobDetail: React.FC = () => {
                 </div>
               ))}
             </div>
+            <Button
+              fill
+              title="Ứng tuyển ngay"
+              className="w-full"
+              onClick={handleIsOpenModal}
+            />
           </Card>
         </Col>
       </Row>
-      <Modal isOpen={isOpenModal} footer={null}>
+      <Modal isOpen={isOpenModal} footer={null} closeIcon={false}>
         <JobApplicationModal
           jobTitle={currentJob?.[0]?.title || ''}
           handleToggleModal={handleIsOpenModal}

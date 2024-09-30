@@ -35,7 +35,7 @@ const HeaderDropDown = () => {
 
     dispatch(signOut()).then(() => {
       setIsOpen(false);
-      navigate(PATH.SIGN_IN);
+      navigate(PATH.ROOT);
     });
   };
 
