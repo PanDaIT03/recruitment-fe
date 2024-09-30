@@ -1,13 +1,13 @@
 import { Col, ConfigProvider, Dropdown, Menu, MenuProps, Row } from 'antd';
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { HeaderLogo } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import { useAppSelector } from '~/hooks/useStore';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
-import icons from '~/utils/icons';
 
 export type MenuItem = { key: string } & Required<MenuProps>['items'][number];
 

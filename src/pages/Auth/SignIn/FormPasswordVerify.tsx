@@ -1,14 +1,14 @@
 import { Flex } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import FormItem from 'antd/es/form/FormItem';
-import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react';
+import { Dispatch, memo, SetStateAction, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { useAppSelector } from '~/hooks/useStore';
 import PATH from '~/utils/path';
 
 export interface IVerifyForm {
