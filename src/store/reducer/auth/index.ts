@@ -11,9 +11,9 @@ import { IEmailStatus, IUser } from '~/types/Auth/index';
 export interface AuthState {
   loading: boolean;
   currentUser: IUser;
-  accessToken: string | null;
-  refreshToken: string | null;
-  emailStatus: IEmailStatus | null;
+  accessToken?: string | null;
+  refreshToken?: string | null;
+  emailStatus?: IEmailStatus | null;
 }
 
 const initialState: AuthState = {

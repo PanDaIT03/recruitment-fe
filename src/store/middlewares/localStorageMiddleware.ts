@@ -3,7 +3,7 @@ import { RootState } from '../store';
 import { AuthState } from '../reducer/auth';
 
 export interface PersistedState {
-  auth: Pick<AuthState, 'currentUser' | 'accessToken' | 'refreshToken'>;
+  auth: Pick<AuthState, 'currentUser'>;
 }
 
 export const localStorageMiddleware: Middleware =
@@ -13,8 +13,6 @@ export const localStorageMiddleware: Middleware =
     const persistedState: PersistedState = {
       auth: {
         currentUser: state.auth.currentUser,
-        accessToken: state.auth.accessToken,
-        refreshToken: state.auth.refreshToken,
       },
     };
     localStorage.setItem('persistedState', JSON.stringify(persistedState));
