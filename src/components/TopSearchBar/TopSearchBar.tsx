@@ -1,6 +1,6 @@
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
-import React, { memo, ReactNode, useEffect } from 'react';
+import React, { memo, ReactNode } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { LOCATION } from '~/assets/img';
@@ -11,8 +11,8 @@ import Button from '../Button/Button';
 import FormItem from '../Form/FormItem';
 import FormWrapper from '../Form/FormWrapper';
 import Icon from '../Icon/Icon';
-import CustomSelect from '../Select/CustomSelect';
 import Input from '../Input/Input';
+import CustomSelect from '../Select/CustomSelect';
 
 const { SearchOutlined } = icons;
 

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getAllJobs, getJobById } from '~/store/thunk/job';
 import { IJob } from '~/types/Job';
 
-interface JobState {
+export interface JobState {
   loading: boolean;
   allJobs: IJob | null;
   error: string | null;
