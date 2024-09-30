@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 import {
   checkExistedEmail,
   signIn,
@@ -9,7 +8,7 @@ import {
 } from '~/store/thunk/auth';
 import { IEmailStatus, IUser } from '~/types/Auth/index';
 
-interface InitType {
+export interface AuthState {
   loading: boolean;
   currentUser: IUser;
   accessToken: string | null;
@@ -17,7 +16,7 @@ interface InitType {
   emailStatus: IEmailStatus | null;
 }
 
-const initialState: InitType = {
+const initialState: AuthState = {
   loading: false,
   accessToken: null,
   refreshToken: null,
@@ -100,8 +99,6 @@ const authSlice = createSlice({
         state.accessToken = null;
         state.refreshToken = null;
         state.currentUser = action.payload;
-
-        localStorage.removeItem('persistedState');
       })
       .addCase(signOut.rejected, (state) => {
         state.loading = false;

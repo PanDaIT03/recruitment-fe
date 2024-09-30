@@ -17,15 +17,11 @@ const rootReducer = combineReducers({
   jobs: jobReducer,
 });
 
-const preloadedState = loadState();
-
 export const store = configureStore({
-  preloadedState,
+  preloadedState: loadState(),
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => {
-    const defaultMiddleware = getDefaultMiddleware();
-    return defaultMiddleware.concat(localStorageMiddleware as Middleware);
-  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(localStorageMiddleware as Middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
