@@ -1,9 +1,10 @@
-import { Col, Form, FormInstance, Row } from 'antd';
+import { Col, FormInstance, Row } from 'antd';
+import FormItem from 'antd/es/form/FormItem';
 import { useState } from 'react';
 
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
-import InputForm from '~/components/Input/Input';
+import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import { IFormAccount } from '~/types/Account';
 import { passwordRegex } from '~/utils/constant';
@@ -20,11 +21,6 @@ interface IProps {
 const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
   const [isChangeName, setIsChangeName] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
-
-  const handleChangePassword = () => {
-    form.setFieldValue('password', undefined);
-    setIsChangePassword(true);
-  };
 
   const handleCancel = () => {
     onCancel();
@@ -52,7 +48,7 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
       }
       onFinish={onFinish}
     >
-      <Form.Item
+      <FormItem
         name="fullName"
         label="Họ và tên"
         rules={[
@@ -62,7 +58,7 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
           },
         ]}
       >
-        <InputForm
+        <Input
           name="fullName"
           disabled={!isChangeName}
           prefix={<UserOutlined />}
@@ -73,67 +69,54 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
             />
           }
         />
-      </Form.Item>
-      <Form.Item name="email" label="Email">
-        <InputForm disabled prefix={<MailOutlined />} name="email" />
-      </Form.Item>
-      <Form.Item
+      </FormItem>
+      <FormItem name="email" label="Email">
+        <Input disabled prefix={<MailOutlined />} name="email" />
+      </FormItem>
+      <FormItem hidden={isChangePassword}>
+        <Button
+          displayType="text"
+          title="Đổi mật khẩu"
+          iconBefore={<EditOutlined />}
+          className="text-blue hover:underline"
+          onClick={() => setIsChangePassword(true)}
+        />
+      </FormItem>
+      <FormItem
         name="password"
         className="mb-3"
-        label={isChangePassword ? 'Mật khẩu mới' : 'Mật khẩu'}
-        rules={
-          isChangePassword
-            ? [
-                {
-                  pattern: passwordRegex,
-                  required: isChangePassword,
-                  message: 'Mật khẩu phải có ít nhất 8 ký tự',
-                },
-              ]
-            : []
-        }
+        label="Mật khẩu mới"
+        hidden={!isChangePassword}
+        rules={[
+          {
+            pattern: passwordRegex,
+            required: isChangePassword,
+            message: 'Mật khẩu phải có ít nhất 8 ký tự',
+          },
+        ]}
       >
-        {isChangePassword ? (
-          <InputPassword
-            name="password"
-            type="password"
-            prefix={<LockOutlined />}
-            placeholder="Tối thiểu 8 ký tự"
-          />
-        ) : (
-          <InputForm
-            name="password"
-            type="password"
-            prefix={<LockOutlined />}
-            disabled={!isChangePassword}
-            suffix={
-              <EditOutlined
-                className="text-blue"
-                onClick={handleChangePassword}
-              />
-            }
-          />
-        )}
-      </Form.Item>
-      <Form.Item
+        <InputPassword
+          name="password"
+          type="password"
+          prefix={<LockOutlined />}
+          placeholder="Tối thiểu 8 ký tự"
+        />
+      </FormItem>
+      <FormItem
         name="reEnterPassword"
         hidden={!isChangePassword}
         label="Nhập lại mật khẩu mới"
-        rules={
-          isChangePassword
-            ? [
-                {
-                  required: true,
-                  validator: (_, value) => {
-                    if (value !== form.getFieldValue('password'))
-                      return Promise.reject('Mật khẩu không khớp');
+        rules={[
+          {
+            required: true,
+            validator: (_, value) => {
+              if (value !== form.getFieldValue('password'))
+                return Promise.reject('Mật khẩu không khớp');
 
-                    return Promise.resolve();
-                  },
-                },
-              ]
-            : []
-        }
+              return Promise.resolve();
+            },
+          },
+        ]}
       >
         <InputPassword
           type="password"
@@ -141,7 +124,7 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
           prefix={<LockOutlined />}
           placeholder="Tối thiểu 8 ký tự"
         />
-      </Form.Item>
+      </FormItem>
     </FormWrapper>
   );
 };

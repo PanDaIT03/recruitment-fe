@@ -7,7 +7,6 @@ import { IFormAccount } from '~/types/Account';
 import FormAccount from './FormAccount';
 
 const { Title } = Typography;
-const defaultPassword = '12345678';
 
 const Account = () => {
   const [form] = useForm<IFormAccount>();
@@ -17,7 +16,6 @@ const Account = () => {
   const handleSetFormDefault = () => {
     const formValues: IFormAccount = {
       email: currentUser.email,
-      password: defaultPassword,
       fullName: currentUser.fullName,
     };
 

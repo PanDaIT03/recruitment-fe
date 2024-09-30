@@ -1,11 +1,17 @@
 import { useEffect } from 'react';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { resetEmailStatus } from '~/store/reducer/auth';
 
 const Home = () => {
-  const { currentUser } = useAppSelector((state) => state.auth);
-  useEffect(() => {}, [currentUser]);
+  const dispatch = useAppDispatch();
+  const { emailStatus } = useAppSelector((state) => state.auth);
 
-  return <div></div>;
+  useEffect(() => {
+    if (!emailStatus?.statusCode) return;
+    dispatch(resetEmailStatus());
+  }, []);
+
+  return <div className="min-h-screen">Home</div>;
 };
 
 export default Home;

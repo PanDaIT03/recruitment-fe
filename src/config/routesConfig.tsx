@@ -3,11 +3,13 @@ import { Outlet, RouteObject } from 'react-router-dom';
 
 import AuthLayout from '~/layouts/AuthLayout';
 import MainLayout from '~/layouts/MainLayout';
+import UserLayout from '~/layouts/UserLayout';
 import EmployerLayout from '~/pages/Employer/EmployerLayout';
-import UserLayout from '~/pages/User/UserLayout';
 
 import PATH from '~/utils/path';
 
+import CandicateDashboard from '~/pages/Employer/Candicates/CandicateDashboard';
+import RecruitmentList from '~/pages/Employer/RecruitmentList/RecruitmentList';
 import ProtectedRoute from '~/routes/ProtectedRoute';
 
 const Home = lazy(() => import('~/pages/Home/Home'));
@@ -102,7 +104,9 @@ const routesConfig: CustomRouteObject[] = [
     EmployerLayout,
     { index: true, element: <EmployerDashboard /> },
     createRoute(PATH.EMPLOYER_DASHBOARD, <EmployerDashboard />),
-    createRoute(PATH.EMPLOYER_POSTING, <PostingJob />)
+    createRoute(PATH.EMPLOYER_POSTING, <PostingJob />),
+    createRoute(PATH.EMPLOYER_CANDICATES_DASHBOARD, <CandicateDashboard />),
+    createRoute(PATH.EMPLOYER_RECRUITMENT_LIST, <RecruitmentList />)
   ),
 
   // User

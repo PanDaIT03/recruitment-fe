@@ -27,12 +27,23 @@ export interface PaginatedJobPositions {
   items: JobPosition[];
 }
 
-export interface JobPlacement
-  extends Omit<BaseEntityWithTitle, 'updateBy' | 'updateAt'> {
-  updateBy: string;
-  updateAt: number;
-  amount?: number;
-  detailAddress?: string;
+export interface JobPlacement {
+  pageInfo: PageInfo;
+  items: [
+    {
+      id: number;
+      title: string;
+    },
+  ];
+}
+
+export interface JobPlacementItems {
+  jobsId: number;
+  placementsId: number;
+  placement: {
+    id: number;
+    title: string;
+  };
 }
 
 type WorkType = BaseEntityWithTitle;
@@ -52,7 +63,7 @@ export interface PaginatedJobCategories {
   items: JobCategory[];
 }
 
-type JobField = BaseEntityWithTitle<number, Nullable<number>>;
+type JobField = BaseEntityWithTitle;
 
 export interface PaginatedJobFields {
   pageInfo: PageInfo;
@@ -71,19 +82,23 @@ export interface PageInfo {
 type NullableNumber = Nullable<number>;
 
 export interface JobItem extends BaseEntityWithTitle {
-  startPrice: NullableNumber;
-  endPrice: NullableNumber;
-  startExpYearRequired: NullableNumber;
-  endExpYearRequired: NullableNumber;
+  statusCode?: number;
+  message?: string;
+  salaryMax: NullableNumber;
+  salaryMin: NullableNumber;
+  minExpYearRequired: NullableNumber;
+  maxExpYearRequired: NullableNumber;
   applicationDeadline: string;
   workTime: string;
   description: string;
-  requirement: string;
+  requirements: string;
+  benefits: string;
   whyLove: string;
   user: IUser;
   jobPosition: JobPosition;
-  jobField: Nullable<string>;
-  jobsPlacements: JobPlacement[];
+  jobField: JobField;
+  quantity: number;
+  jobsPlacements: JobPlacementItems[];
   workType: WorkType;
   jobCategory: JobCategory;
 }

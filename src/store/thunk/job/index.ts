@@ -1,22 +1,23 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { JobsAPI } from '~/apis/job';
-import { IJob, JobItem } from '~/types/Job';
+import { IPaginationParms, JobsAPI } from '~/apis/job';
+import { IParams } from '~/components/Job/JobList';
+import { IJob } from '~/types/Job';
 
-export const getAllJobs = createAsyncThunk<IJob, void, { rejectValue: string }>(
-  'job/getAllJobs',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await JobsAPI.getAllJobs();
-
-      return response;
-    } catch (error) {
-      return rejectWithValue('Có lỗi');
-    }
+export const getAllJobs = createAsyncThunk<
+  IJob,
+  IPaginationParms & IParams,
+  { rejectValue: string }
+>('job/getAllJobs', async (params, { rejectWithValue }) => {
+  try {
+    const response = await JobsAPI.getAllJobs(params);
+    return response;
+  } catch (error) {
+    return rejectWithValue('Có lỗi');
   }
-);
+});
 
 export const getJobById = createAsyncThunk<
-  JobItem,
+  IJob['items'],
   string | undefined,
   { rejectValue: string }
 >('job/getJobById', async (id, { rejectWithValue }) => {

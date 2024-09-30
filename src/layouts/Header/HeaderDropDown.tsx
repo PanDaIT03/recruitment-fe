@@ -23,7 +23,6 @@ const HeaderDropDown = () => {
   const dispatch = useAppDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
-
   const { currentUser } = useAppSelector((state) => state.auth);
 
   const handleCancelModal = () => {
@@ -33,7 +32,7 @@ const HeaderDropDown = () => {
   const handleOkModal = () => {
     dispatch(signOut()).then(() => {
       setIsOpen(false);
-      navigate(PATH.SIGN_IN);
+      navigate(PATH.ROOT);
     });
   };
 

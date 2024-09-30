@@ -3,7 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import { useNavigate } from 'react-router-dom';
 
 import FormWrapper from '~/components/Form/FormWrapper';
-import InputForm from '~/components/Input/Input';
+import Input from '~/components/Input/Input';
 import { emailRegex } from '~/utils/constant';
 import PATH from '~/utils/path';
 
@@ -38,7 +38,7 @@ const ForgotPassword = () => {
             { pattern: emailRegex, message: 'Email không hợp lệ' },
           ]}
         >
-          <InputForm name="email" placeholder="abc@example.com" />
+          <Input name="email" placeholder="abc@example.com" />
         </Form.Item>
       </FormWrapper>
     </>

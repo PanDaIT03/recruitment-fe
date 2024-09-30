@@ -1,11 +1,16 @@
 import axios, {
   AxiosError,
   AxiosInstance,
+  AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
 import toast from '~/utils/functions/toast';
 import { tokenService } from './tokenService';
+
+interface CustomAxiosResponse extends AxiosResponse {
+  action?: string;
+}
 
 const instance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_APP_API_BASE_URL,
@@ -27,8 +32,7 @@ instance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${accessToken}`;
 
     if (refreshToken && config.headers)
-      config.headers['Set-Cookie'] =
-        `refreshToken=${refreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
+      config.headers.Cookies = `${refreshToken}`;
 
     return config;
   },
@@ -40,43 +44,41 @@ instance.interceptors.request.use(
 // Add a response interceptor
 instance.interceptors.response.use(
   (response: AxiosResponse): any => {
-    if (response.data.refreshToken) {
-      const refreshToken = response.data.refreshToken;
-      response.headers['Set-Cookie'] =
-        `refreshToken=${refreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
+    const { accessToken } = response.data;
+
+    if (accessToken) {
+      tokenService.setAccessToken(accessToken);
     }
+
     return response.data;
   },
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
     };
-    if (error.response?.status === 401 && !originalRequest._retry) {
+
+    if (
+      error.response?.status === 401 &&
+      (error.response as CustomAxiosResponse)?.data?.action ===
+        'REFRESH_TOKEN' &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
       try {
-        const refreshToken = tokenService.getRefreshToken();
         const response = await instance.post<{
           accessToken: string;
-          refreshToken: string;
-        }>('/auth/refresh', {
-          refreshToken,
-        });
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
-        tokenService.setAccessToken(accessToken);
-        tokenService.setRefreshToken(newRefreshToken);
+        }>('/auth/refresh');
+        const { accessToken } = response.data;
 
         if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
-        if (originalRequest.headers) {
-          originalRequest.headers['Set-Cookie'] =
-            `refreshToken=${newRefreshToken}; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`;
-        }
+        tokenService.setAccessToken(accessToken);
 
         return instance(originalRequest);
       } catch (refreshError) {
         // window.location.href = PATH.SIGN_IN;
-        toast.error('Phiên đăng nhập đã hết hạn. Xin vui lòng đăng nhập lại');
+        toast.warning('Có lỗi xảy ra, xin vui lòng thử lại');
         return Promise.reject(refreshError);
       }
     }
@@ -115,7 +117,7 @@ const retryRequest = async <T>(
 };
 
 const axiosApi = {
-  get: <T = any>(url: string, config?: InternalAxiosRequestConfig) =>
+  get: <T = any>(url: string, config?: AxiosRequestConfig) =>
     retryRequest<T>({
       ...config,
       method: 'get',
