@@ -2,7 +2,7 @@ import { List } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
-import { BlockChain, PortFolio } from '~/assets/svg';
+import { BlockChain, PortFolio, BriefCase, PencilSkill } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
@@ -201,7 +201,7 @@ const JobListPage = () => {
             displayedType="text"
             className="w-full h-full"
             options={optionsSalary}
-            prefixIcon={<BlockChain className="w-5 h-5" />}
+            prefixIcon={<BriefCase className="w-5 h-5" />}
           />
         </FormItem>
         <FormItem
@@ -214,7 +214,7 @@ const JobListPage = () => {
             displayedType="text"
             className="w-full h-full"
             options={jobFieldsOptions}
-            prefixIcon={<BlockChain className="w-5 h-5" />}
+            prefixIcon={<PencilSkill className="w-5 h-5" />}
           />
         </FormItem>
       </TopSearchBar>

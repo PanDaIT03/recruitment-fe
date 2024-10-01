@@ -1,5 +1,6 @@
 const PATH = {
   ROOT: '/',
+  BLOG: 'blog',
   JOB_DETAIL: '/job/:id',
   JOB_SEEKER: '/job-seeker',
   JOB_LIST: '/jobs',

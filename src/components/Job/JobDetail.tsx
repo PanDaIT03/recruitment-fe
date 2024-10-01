@@ -283,7 +283,12 @@ const JobDetail: React.FC = () => {
           </Card>
         </Col>
       </Row>
-      <Modal isOpen={isOpenModal} footer={null} closeIcon={false}>
+      <Modal
+        isOpen={isOpenModal}
+        footer={null}
+        closeIcon={false}
+        onCancel={handleIsOpenModal}
+      >
         <JobApplicationModal
           jobTitle={currentJob?.[0]?.title || ''}
           handleToggleModal={handleIsOpenModal}

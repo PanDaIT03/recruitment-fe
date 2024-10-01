@@ -11,6 +11,7 @@ import PATH from '~/utils/path';
 import CandicateDashboard from '~/pages/Employer/Candicates/CandicateDashboard';
 import RecruitmentList from '~/pages/Employer/RecruitmentList/RecruitmentList';
 import ProtectedRoute from '~/routes/ProtectedRoute';
+import Blog from '~/pages/Blog/Blogs';
 
 const Home = lazy(() => import('~/pages/Home/Home'));
 const SignIn = lazy(() => import('~/pages/Auth/SignIn/SignIn'));
@@ -83,6 +84,7 @@ const routesConfig: CustomRouteObject[] = [
   createRoutes(
     MainLayout,
     createRoute(PATH.ROOT, <Home />),
+    createRoute(PATH.BLOG, <Blog />),
     createRoute(PATH.JOB_DETAIL, <JobDetail />),
     createRoute(PATH.JOB_SEEKER, <JobSeeker />),
     createRoute(PATH.JOB_LIST, <JobListPage />)

@@ -77,6 +77,7 @@ instance.interceptors.response.use(
 
         return instance(originalRequest);
       } catch (refreshError) {
+        console.log(refreshError);
         // window.location.href = PATH.SIGN_IN;
         toast.warning('Có lỗi xảy ra, xin vui lòng thử lại');
         return Promise.reject(refreshError);
