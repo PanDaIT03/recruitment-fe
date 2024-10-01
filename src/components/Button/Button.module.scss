@@ -8,6 +8,15 @@
 }
 
 .button:disabled {
+  color: #c2c2c2;
+  cursor: not-allowed;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.button:not(.text):disabled {
   color: white;
   background-color: #c2c2c2;
   border-color: transparent;
