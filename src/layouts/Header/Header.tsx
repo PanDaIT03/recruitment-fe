@@ -109,8 +109,8 @@ const Header = ({ items = defaultItems }: IProps) => {
 
   return (
     <div className="sticky bg-secondary px-8 left-0 top-0 z-40">
-      <Row align={'middle'} justify={'space-between'} className="h-16 mx-12">
-        <Col className="flex flex-1 justify-between gap-x-12">
+      <Row align="middle" justify="space-between" className="h-16 mx-12">
+        <Col className="flex flex-1 justify-between items-center gap-x-12">
           <HeaderLogo
             className="max-w-[139px] h-full object-cover cursor-pointer"
             onClick={() => navigate(PATH.ROOT)}

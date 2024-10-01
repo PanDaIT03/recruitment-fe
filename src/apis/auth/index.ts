@@ -2,6 +2,7 @@ import axiosApi from '~/services/axios';
 import {
   IBaseUser,
   IEmailStatus,
+  IForgotPassword,
   IUser,
   IUserSignInWithGoogle,
 } from '~/types/Auth/index';
@@ -35,8 +36,11 @@ const AuthAPI = {
     return await axiosApi.post('/auth/verify-otp', payload);
   },
   changePassword: async () => {
-    return await axiosApi.patch('/users/change-password')
-  }
+    return await axiosApi.patch('/users/change-password');
+  },
+  forgotPassword: async (email: string):Promise<IForgotPassword> => {
+    return await axiosApi.post('/auth/forgot-password', { email });
+  },
 };
 
 export default AuthAPI;

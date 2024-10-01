@@ -19,6 +19,9 @@ const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
 const UserForgotPassword = lazy(
   () => import('~/pages/Auth/User/ForgotPassword/ForgotPassword')
 );
+const UserResetPassword = lazy(
+  () => import('~/pages/Auth/User/ResetPassword/ResetPassword')
+);
 const EmployerSignIn = lazy(
   () => import('~/pages/Auth/Employer/SignIn/SignIn')
 );
@@ -132,6 +135,7 @@ const routesConfig: CustomRouteObject[] = [
     AuthLayout,
     createRoute(PATH.USER_SIGN_IN, <UserSignIn />),
     createRoute(PATH.USER_SIGN_UP, <UserSignUp />),
+    createRoute(PATH.USER_RESET_PASSWORD, <UserResetPassword />),
     createRoute(PATH.USER_FORGOT_PASSWORD, <UserForgotPassword />),
     createRoute(PATH.EMPLOYER_SIGN_IN, <EmployerSignIn />),
     createRoute(PATH.EMPLOYER_SIGN_UP, <EmployerSignUp />)

@@ -7,7 +7,7 @@ const PATH = {
   USER_SIGN_IN: '/user/sign-in',
   USER_SIGN_UP: '/user/sign-up',
   USER_FORGOT_PASSWORD: '/user/forgot-password',
-  USER_RESET_PASSWORD: 'user/reset-password',
+  USER_RESET_PASSWORD: '/user/reset-password',
   EMPLOYER_SIGN_IN: '/employer/sign-in',
   EMPLOYER_SIGN_UP: '/employer/sign-up',
   // Admin
