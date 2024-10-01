@@ -17,6 +17,7 @@ export const checkExistedEmail = createAsyncThunk(
 
       return response;
     } catch (error: any) {
+      toast.error(error?.response?.data?.message);
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
     }
   }
@@ -30,6 +31,7 @@ export const verifyOTP = createAsyncThunk(
 
       return response;
     } catch (error: any) {
+      toast.error(error?.response?.data?.message);
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
     }
   }
