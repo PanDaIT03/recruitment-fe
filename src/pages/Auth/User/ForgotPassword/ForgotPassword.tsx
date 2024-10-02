@@ -1,19 +1,42 @@
 import { Form } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { resetForgotPasswordStatus } from '~/store/reducer/auth';
+import { forgotPassword } from '~/store/thunk/auth';
 import { emailRegex } from '~/utils/constant';
 import PATH from '~/utils/path';
 
 const ForgotPassword = () => {
-  const [form] = useForm();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const handleFinish = (values: any) => {
-    console.log(values);
-    navigate(PATH.RESET_PASSWORD, { state: values });
+  const [form] = useForm();
+  const { forgotPasswordStatus } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    form.setFieldValue('email', 'daiphucduongvinh203@gmail.com');
+
+    if (!forgotPasswordStatus) return;
+    dispatch(resetForgotPasswordStatus());
+  }, []);
+
+  useEffect(() => {
+    if (!forgotPasswordStatus) return;
+
+    const email = form.getFieldValue('email');
+    const { statusCode } = forgotPasswordStatus;
+
+    statusCode === 200 && navigate(PATH.USER_RESET_PASSWORD, { state: email });
+  }, [forgotPasswordStatus]);
+
+  const handleFinish = async (value: any) => {
+    const { email } = value;
+    dispatch(forgotPassword(email));
   };
 
   return (
@@ -32,7 +55,6 @@ const ForgotPassword = () => {
         <Form.Item
           name="email"
           label="Địa chỉ email"
-          initialValue={'abc@gmail.com'}
           rules={[
             { required: true, message: 'Hãy nhập email' },
             { pattern: emailRegex, message: 'Email không hợp lệ' },

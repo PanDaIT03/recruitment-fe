@@ -28,24 +28,29 @@ export interface IParams {
   placmentsId?: number;
   workTypesId?: number;
   title?: string;
+  salaryRange: any;
 }
 
-const optionsExperience: DefaultOptionType[] = [
+const optionsSalary: DefaultOptionType[] = [
   {
     label: 'Tất cả mức lương',
     value: 'all',
   },
   {
-    label: 'Dưới 10 triệu',
-    value: 'less',
+    label: '1 - 10 triệu',
+    value: 'below10',
   },
   {
     label: '10 - 20 triệu',
-    value: 'less than 1 year',
+    value: '10to20',
   },
   {
-    label: '23 - 30 triệu ',
-    value: '1-3 year',
+    label: '20 - 30 triệu ',
+    value: '20to30',
+  },
+  {
+    label: 'Trên 30 triệu ',
+    value: 'adove30',
   },
 ];
 
@@ -113,8 +118,37 @@ const JobListPage = () => {
   );
 
   const handleSearch = (values: IParams) => {
+    let salaryMin: number | undefined;
+    let salaryMax: number | undefined;
+
+    switch (values.salaryRange) {
+      case 'below10':
+        salaryMin = 1000000;
+        salaryMax = 10000000;
+        break;
+      case '10to20':
+        salaryMin = 10000000;
+        salaryMax = 20000000;
+        break;
+      case '20to30':
+        salaryMin = 20000000;
+        salaryMax = 30000000;
+        break;
+      case 'above30':
+        salaryMin = 30000000;
+        break;
+      default:
+        break;
+    }
+
+    const { salaryRange, ...valuesWithoutSalaryRange } = values;
+
     const cleanedFilters = Object.fromEntries(
-      Object.entries(values).filter(([_, value]) => value && value !== 'all')
+      Object.entries({
+        ...valuesWithoutSalaryRange,
+        salaryMin,
+        salaryMax,
+      }).filter(([_, value]) => value && value !== 'all')
     ) as Partial<IParams>;
 
     setFilters(cleanedFilters);
@@ -159,14 +193,14 @@ const JobListPage = () => {
         </FormItem>
         <FormItem
           childrenSelected
-          name="field"
+          name="salaryRange"
           className="w-full h-10 max-w-56 mb-0"
         >
           <CustomSelect
             showSearch={false}
             displayedType="text"
             className="w-full h-full"
-            options={optionsExperience}
+            options={optionsSalary}
             prefixIcon={<BlockChain className="w-5 h-5" />}
           />
         </FormItem>

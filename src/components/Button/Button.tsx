@@ -1,6 +1,6 @@
 import { Spin } from 'antd';
 import classNames from 'classnames/bind';
-import { ReactNode, memo, useMemo } from 'react';
+import { ReactNode, memo } from 'react';
 
 import icons from '~/utils/icons';
 import styles from './Button.module.scss';
@@ -50,26 +50,15 @@ const Button = ({
     [displayType]: displayType,
   });
 
-  const buttonState = useMemo(() => {
-    return {
-      loading: loading && displayType !== 'text',
-      disabled: (disabled || loading) && displayType !== 'text',
-    };
-  }, [loading, disabled]);
-
   return (
     <button
       type={type}
       className={classes}
-      disabled={buttonState.disabled}
+      disabled={disabled || loading}
       {...props}
     >
       <div className="flex items-center gap-3">
-        {buttonState.loading ? (
-          <Spin indicator={<LoadingOutlined />} />
-        ) : (
-          iconBefore
-        )}
+        {loading ? <Spin indicator={<LoadingOutlined />} /> : iconBefore}
         <b className="w-max">{title}</b>
         {iconAfter}
       </div>

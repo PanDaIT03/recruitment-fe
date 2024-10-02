@@ -1,18 +1,18 @@
-import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 import icons from '~/utils/icons';
+import PATH from '~/utils/path';
 
 const { CheckCircleTwoTone } = icons;
 
 const ResetPassword = () => {
+  const navigate = useNavigate();
   const location = useLocation();
 
-  // if (!location.state)
-  //   // navigate(PATH.ROOT);
-  //   return <Navigate to={PATH.ROOT} replace />;
-
-  // useEffect(() => {
-  //   if (!location.state) navigate(PATH.ROOT);
-  // }, [location]);
+  useEffect(() => {
+    if (!location.state) navigate(PATH.ROOT);
+  }, [location]);
 
   return (
     <>

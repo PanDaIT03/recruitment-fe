@@ -1,9 +1,10 @@
-import { Flex } from 'antd';
+import { Flex, Tooltip } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import FormItem from 'antd/es/form/FormItem';
 import { Dispatch, memo, SetStateAction, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import { LeftArrow } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
@@ -17,11 +18,16 @@ export interface IVerifyForm {
 }
 
 interface IProps {
+  onReset: () => void;
   onFinish(values: IVerifyForm): void;
   setIsSignInWithOTP: Dispatch<SetStateAction<boolean>>;
 }
 
-const FormPasswordVerify = ({ setIsSignInWithOTP, onFinish }: IProps) => {
+const FormPasswordVerify = ({
+  onReset,
+  onFinish,
+  setIsSignInWithOTP,
+}: IProps) => {
   const [form] = useForm<IVerifyForm>();
   const { emailStatus } = useAppSelector((state) => state.auth);
 
@@ -32,6 +38,14 @@ const FormPasswordVerify = ({ setIsSignInWithOTP, onFinish }: IProps) => {
 
   return (
     <>
+      <Tooltip title="Trở về">
+        <Button
+          displayType="text"
+          title={<LeftArrow className="w-5 h-5" />}
+          className="w-max fill-[#b6baba] px-2 py-1 rounded-full hover:bg-[#ececec] hover:fill-[#595757]"
+          onClick={onReset}
+        />
+      </Tooltip>
       <FormWrapper form={form} submitTitle="Đăng nhập" onFinish={onFinish}>
         <FormItem name="email" label="Địa chỉ email">
           <Input disabled name="email" />
@@ -44,7 +58,7 @@ const FormPasswordVerify = ({ setIsSignInWithOTP, onFinish }: IProps) => {
           <InputPassword name="password" placeholder="Tối thiểu 8 ký tự" />
         </FormItem>
         <Link
-          to={PATH.FORGOT_PASSWORD}
+          to={PATH.USER_FORGOT_PASSWORD}
           className="block w-full font-semibold text-end text-[#2563eb] mb-6 hover:underline hover:text-[#2563eb]"
         >
           Quên mật khẩu

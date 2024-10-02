@@ -1,15 +1,22 @@
+interface IBaseAuthResponse {
+  message: string;
+  statusCode: number;
+}
+
 export interface IBaseUser {
   email: string;
   userName?: string;
   password?: string;
 }
 
-export interface IEmailStatus {
+export interface IEmailStatus extends IBaseAuthResponse {
   email: string;
-  message: string;
   hasPassword: boolean;
   signInWith: string;
-  statusCode: number;
+}
+
+export interface IForgotPassword extends IBaseAuthResponse {
+  email?: string;
 }
 
 interface IPosition {
@@ -17,7 +24,7 @@ interface IPosition {
   title: string;
 }
 
-export interface IUser {
+export interface IUser extends IBaseAuthResponse {
   id: string;
   createBy?: string;
   createAt?: string;
@@ -35,8 +42,6 @@ export interface IUser {
   role: IPosition;
   accessToken: string;
   refreshToken: string;
-  message: string;
-  statusCode: number;
 }
 
 export interface IUserSignIn extends IBaseUser {

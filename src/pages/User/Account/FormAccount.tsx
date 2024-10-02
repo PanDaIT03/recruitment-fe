@@ -1,11 +1,13 @@
-import { Col, FormInstance, Row } from 'antd';
+import { Col, Row } from 'antd';
+import { useForm } from 'antd/es/form/Form';
 import FormItem from 'antd/es/form/FormItem';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
+import { useAppSelector } from '~/hooks/useStore';
 import { IFormAccount } from '~/types/Account';
 import { passwordRegex } from '~/utils/constant';
 import icons from '~/utils/icons';
@@ -13,20 +15,50 @@ import icons from '~/utils/icons';
 const { UserOutlined, MailOutlined, LockOutlined, EditOutlined } = icons;
 
 interface IProps {
-  form: FormInstance<IFormAccount>;
-  onCancel: () => void;
   onFinish: (values: IFormAccount) => void;
 }
 
-const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
+const FormAccount = ({ onFinish }: IProps) => {
+  const [form] = useForm<IFormAccount>();
+
+  const { currentUser } = useAppSelector((state) => state.auth);
+
   const [isChangeName, setIsChangeName] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
 
-  const handleCancel = () => {
-    onCancel();
+  const handleSetFormDefault = () => {
+    const formValues: IFormAccount = {
+      email: currentUser.email,
+      fullName: currentUser.fullName,
+    };
 
+    form.setFieldsValue(formValues);
+  };
+
+  useEffect(() => {
+    handleSetFormDefault();
+  }, [currentUser]);
+
+  const handleCancel = () => {
+    form.resetFields();
     setIsChangeName(false);
     setIsChangePassword(false);
+
+    handleSetFormDefault();
+  };
+
+  const handleFinish = (values: IFormAccount) => {
+    const { password, reEnterPassword } = values;
+
+    if (password !== reEnterPassword) {
+      form.setFields([
+        { name: 'reEnterPassword', errors: ['Mật khẩu không khớp'] },
+      ]);
+
+      return;
+    }
+
+    onFinish(values);
   };
 
   return (
@@ -46,7 +78,7 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
           </Col>
         </Row>
       }
-      onFinish={onFinish}
+      onFinish={handleFinish}
     >
       <FormItem
         name="fullName"
@@ -109,12 +141,7 @@ const FormAccount = ({ form, onFinish, onCancel }: IProps) => {
         rules={[
           {
             required: true,
-            validator: (_, value) => {
-              if (value !== form.getFieldValue('password'))
-                return Promise.reject('Mật khẩu không khớp');
-
-              return Promise.resolve();
-            },
+            message: 'Hãy nhập mật khẩu mới',
           },
         ]}
       >

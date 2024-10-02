@@ -17,7 +17,7 @@ const GoogleSignInButton = ({
   title = 'Tiếp tục với Google',
   onClick,
 }: IProps) => {
-  const handleClick = useGoogleLogin({
+  const handleSignIn = useGoogleLogin({
     onSuccess: async (response) => {
       try {
         const userInfo = await fetchGoogleUserInfo({ response });
@@ -36,6 +36,9 @@ const GoogleSignInButton = ({
         console.log(error);
       }
     },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
   return (
@@ -45,7 +48,7 @@ const GoogleSignInButton = ({
         <Image preview={false} src={GOOGLE_LOGO} width={24} height={24} />
       }
       className="w-full text-[#3c4043] border-[#dadce0] hover:border-[#d2e3fc] hover:bg-[#f7fafe]"
-      onClick={() => handleClick()}
+      onClick={() => handleSignIn()}
     />
   );
 };
