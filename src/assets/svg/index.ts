@@ -10,3 +10,4 @@ export { ReactComponent as Summary } from './summary.svg';
 export { ReactComponent as BriefCase } from './briefcase.svg';
 export { ReactComponent as MagicHat } from './magic-hat.svg';
 export { ReactComponent as LanguageCenter } from './language-center.svg';
+export { ReactComponent as LeftArrow } from './left-arrow.svg';
