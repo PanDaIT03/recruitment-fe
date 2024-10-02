@@ -29,11 +29,14 @@ const SignIn = () => {
   const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
   const { currentUser, emailStatus } = useAppSelector((state) => state.auth);
 
+  const handleBackToSignIn = useCallback(() => {
+    dispatch(resetEmailStatus());
+    setIsSignInWithOTP(false);
+  }, []);
+
   useEffect(() => {
     if (!emailStatus?.statusCode) return;
-
-    setIsSignInWithOTP(false);
-    dispatch(resetEmailStatus());
+    handleBackToSignIn();
   }, []);
 
   useEffect(() => {
@@ -83,7 +86,7 @@ const SignIn = () => {
     }
   };
 
-  const handleVerify = useCallback(
+  const handleOTPVerify = useCallback(
     (value: any) => {
       if (!emailStatus) return;
 
@@ -107,11 +110,15 @@ const SignIn = () => {
         <>
           {emailStatus.hasPassword && !isSignInWithOTP ? (
             <FormPasswordVerify
+              onReset={handleBackToSignIn}
               onFinish={handlePasswordVerify}
               setIsSignInWithOTP={setIsSignInWithOTP}
             />
           ) : (
-            <FormOTPVerify onFinish={handleVerify} />
+            <FormOTPVerify
+              onFinish={handleOTPVerify}
+              onReset={handleBackToSignIn}
+            />
           )}
         </>
       ) : (
