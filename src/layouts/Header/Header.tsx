@@ -62,15 +62,34 @@ const Header = ({ items = defaultItems }: IProps) => {
         key: 0,
         label: 'Đăng nhập',
         icon: <LoginOutlined className="w-4 h-4" />,
-        className: 'hover:!text-main hover:!bg-bright-orange',
-        onClick: () => navigate(PATH.SIGN_IN),
+        className: 'hover:!text-main hover:!bg-bright-orange !font-medium',
+        onClick: () => navigate(PATH.USER_SIGN_IN),
       },
       {
         key: 1,
         label: 'Đăng ký tìm việc',
         icon: <UserAddOutlined className="w-4 h-4" />,
-        className: 'hover:!text-main hover:!bg-bright-orange',
-        onClick: () => navigate(PATH.SIGN_UP),
+        className: 'hover:!text-main hover:!bg-bright-orange !font-medium',
+        onClick: () => navigate(PATH.USER_SIGN_UP),
+      },
+    ];
+  }, [navigate]);
+
+  const employerMenuItems: MenuProps['items'] = useMemo(() => {
+    return [
+      {
+        key: 0,
+        label: 'Đăng nhập',
+        icon: <LoginOutlined className="w-4 h-4" />,
+        className: 'hover:!text-main hover:!bg-bright-orange !font-medium',
+        onClick: () => navigate(PATH.EMPLOYER_SIGN_IN),
+      },
+      {
+        key: 1,
+        label: 'Đăng ký tuyển dụng',
+        icon: <UserAddOutlined className="w-4 h-4" />,
+        className: 'hover:!text-main hover:!bg-bright-orange !font-medium',
+        onClick: () => navigate(PATH.EMPLOYER_SIGN_UP),
       },
     ];
   }, [navigate]);
@@ -90,8 +109,8 @@ const Header = ({ items = defaultItems }: IProps) => {
 
   return (
     <div className="sticky bg-secondary px-8 left-0 top-0 z-40">
-      <Row align={'middle'} justify={'space-between'} className="h-16 mx-12">
-        <Col className="flex flex-1 justify-between gap-x-12">
+      <Row align="middle" justify="space-between" className="h-16 mx-12">
+        <Col className="flex flex-1 justify-between items-center gap-x-12">
           <HeaderLogo
             className="max-w-[139px] h-full object-cover cursor-pointer"
             onClick={() => navigate(PATH.ROOT)}
@@ -136,7 +155,9 @@ const Header = ({ items = defaultItems }: IProps) => {
               />
             </Dropdown>
             <hr className="border-l-[1px]	border-main h-7" />
-            <Button fill title="Nhà tuyển dụng" />
+            <Dropdown trigger={['click']} menu={{ items: employerMenuItems }}>
+              <Button fill title="Nhà tuyển dụng" />
+            </Dropdown>
           </Col>
         )}
       </Row>

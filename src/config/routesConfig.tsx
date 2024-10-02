@@ -14,8 +14,22 @@ import ProtectedRoute from '~/routes/ProtectedRoute';
 import Blog from '~/pages/Blog/Blogs';
 
 const Home = lazy(() => import('~/pages/Home/Home'));
-const SignIn = lazy(() => import('~/pages/Auth/SignIn/SignIn'));
-const SignUp = lazy(() => import('~/pages/Auth/SignUp/SignUp'));
+
+const UserSignIn = lazy(() => import('~/pages/Auth/User/SignIn/SignIn'));
+const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
+const UserForgotPassword = lazy(
+  () => import('~/pages/Auth/User/ForgotPassword/ForgotPassword')
+);
+const UserResetPassword = lazy(
+  () => import('~/pages/Auth/User/ResetPassword/ResetPassword')
+);
+const EmployerSignIn = lazy(
+  () => import('~/pages/Auth/Employer/SignIn/SignIn')
+);
+const EmployerSignUp = lazy(
+  () => import('~/pages/Auth/Employer/SignUp/SignUp')
+);
+
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
 const JobDetail = lazy(() => import('~/components/Job/JobDetail'));
 const JobListPage = lazy(() => import('~/components/Job/JobList'));
@@ -26,9 +40,6 @@ const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
 const PostingJob = lazy(() => import('~/pages/Employer/PostingJob/PostingJob'));
 const EmployerDashboard = lazy(
   () => import('~/pages/Employer/Dashboard/EmployerDashboard')
-);
-const ForgotPassword = lazy(
-  () => import('~/pages/Auth/ForgotPassword/ForgotPassword')
 );
 
 type CustomRouteObject = RouteObject & {
@@ -124,9 +135,12 @@ const routesConfig: CustomRouteObject[] = [
   // Auth
   createRoutes(
     AuthLayout,
-    createRoute(PATH.SIGN_IN, <SignIn />),
-    createRoute(PATH.SIGN_UP, <SignUp />),
-    createRoute(PATH.FORGOT_PASSWORD, <ForgotPassword />)
+    createRoute(PATH.USER_SIGN_IN, <UserSignIn />),
+    createRoute(PATH.USER_SIGN_UP, <UserSignUp />),
+    createRoute(PATH.USER_RESET_PASSWORD, <UserResetPassword />),
+    createRoute(PATH.USER_FORGOT_PASSWORD, <UserForgotPassword />),
+    createRoute(PATH.EMPLOYER_SIGN_IN, <EmployerSignIn />),
+    createRoute(PATH.EMPLOYER_SIGN_UP, <EmployerSignUp />)
   ),
 
   // Not Found
