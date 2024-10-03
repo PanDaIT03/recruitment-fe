@@ -1,28 +1,39 @@
+import { Image } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import Title from 'antd/es/typography/Title';
 import { memo, ReactElement, ReactNode } from 'react';
 
-import { Summary } from '~/assets/svg';
 import Button from '~/components/Button/Button';
+import ButtonAction from '~/components/Button/ButtonAction';
 import icons from '~/utils/icons';
 
 type TitleType = { title: string; suffixIcon: ReactElement } | string;
 
+export enum ProfileSectionType {
+  ACHIEVEMENT = 'achievement',
+  EXPERIENCE = 'experience',
+  LANGUAGE = 'language',
+  SKILL = 'skill',
+}
+
 export interface IProfileSection {
+  img: string;
+  id: ProfileSectionType;
   header: TitleType;
   content: string;
   buttonTitle: ReactNode;
-  buttonAction?: ReactNode;
+  buttonActionTitle?: ReactNode;
   onClick?: () => void;
 }
 
 const { PlusOutlined } = icons;
 
 const ProfileSection = ({
+  img,
   header,
   content,
   buttonTitle,
-  buttonAction,
+  buttonActionTitle,
   onClick,
 }: IProfileSection) => {
   return (
@@ -42,12 +53,16 @@ const ProfileSection = ({
             </>
           )}
         </div>
-        {buttonAction}
+        {buttonActionTitle && (
+          <ButtonAction title={buttonActionTitle} onClick={onClick} />
+        )}
       </div>
       <div className="flex flex-col justify-center items-center gap-4">
-        <Summary
+        <Image
+          src={img}
           width={96}
           height={96}
+          preview={false}
           className="rounded-full p-4 bg-gray-100"
         />
         <Paragraph className="text-center text-sm text-sub italic max-w-md">
