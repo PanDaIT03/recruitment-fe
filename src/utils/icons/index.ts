@@ -38,6 +38,10 @@ import {
   TeamOutlined,
   UserAddOutlined,
   UserOutlined,
+  SaveOutlined,
+  BankOutlined,
+  IdcardOutlined,
+  ContainerOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -79,7 +83,11 @@ const icons = {
   PlusOutlined,
   MinusOutlined,
   LoginOutlined,
-  UserAddOutlined
+  UserAddOutlined,
+  SaveOutlined,
+  BankOutlined,
+  IdcardOutlined,
+  ContainerOutlined,
 };
 
 export default icons;
