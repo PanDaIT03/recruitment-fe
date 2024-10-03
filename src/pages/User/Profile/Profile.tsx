@@ -10,6 +10,9 @@ import ProfileSection, {
 } from '~/pages/User/Profile/ProfileSection';
 import { getUserProfile } from '~/store/thunk/user';
 import icons from '~/utils/icons';
+import ExperienceCard from './Card/ExperienceCard';
+import LanguageCard from './Card/LanguageCard';
+import SkillCard from './Card/SkillCard';
 import AchievementModal from './Modal/AchievementModal';
 import ModalExperience from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
@@ -31,7 +34,7 @@ const Profile = () => {
     () => [
       {
         id: ProfileSectionType.ACHIEVEMENT,
-        img: Summary,
+        imgUrl: Summary,
         header: {
           title: 'Thành tích / Kỹ năng nổi bật',
           suffixIcon: (
@@ -39,44 +42,54 @@ const Profile = () => {
           ),
         },
         buttonTitle: 'Cập nhật tóm tắt',
-        hint:
-          'Tóm tắt về thành tích / kỹ năng nổi bật giúp hồ sơ của bạn tăng 3.9 lần lượt tiếp cận từ nhà tuyển dụng.',
+        hint: 'Tóm tắt về thành tích / kỹ năng nổi bật giúp hồ sơ của bạn tăng 3.9 lần lượt tiếp cận từ nhà tuyển dụng.',
         buttonActionTitle: (
           <EditOutlined className="text-[#691f74] cursor-pointer" />
         ),
-        content: ''
+        content: userProfile?.achivement?.description && (
+          <div
+            className="text-sm font-medium"
+            dangerouslySetInnerHTML={{
+              __html: userProfile.achivement.description,
+            }}
+          />
+        ),
       },
       {
         id: ProfileSectionType.EXPERIENCE,
-        img: BriefCase,
+        imgUrl: BriefCase,
         header: {
           title: 'Kinh nghiệm',
           suffixIcon: <Bag width={20} height={20} className="font-bold" />,
         },
         buttonTitle: 'Thêm kinh nghiệm',
-        hint:
-          'Thêm kinh nghiệm làm việc để giúp nhà tuyển dụng hiểu hơn về bạn',
+        hint: 'Thêm kinh nghiệm làm việc để giúp nhà tuyển dụng hiểu hơn về bạn',
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
+        ),
+        content: userProfile.workExperiences && (
+          <ExperienceCard data={userProfile.workExperiences} />
         ),
       },
       {
         id: ProfileSectionType.LANGUAGE,
-        img: LanguageCenter,
+        imgUrl: LanguageCenter,
         header: {
           title: 'Ngoại ngữ',
           suffixIcon: <Language width={20} height={20} className="font-bold" />,
         },
         buttonTitle: 'Thêm ngoại ngữ',
-        hint:
-          'Bạn biết những ngoại ngữ nào? Hãy thêm vào để tăng độ "hot" cho hồ sơ nhé.',
+        hint: 'Bạn biết những ngoại ngữ nào? Hãy thêm vào để tăng độ "hot" cho hồ sơ nhé.',
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
+        ),
+        content: userProfile.userLanguages && (
+          <LanguageCard data={userProfile.userLanguages} />
         ),
       },
       {
         id: ProfileSectionType.SKILL,
-        img: MagicHat,
+        imgUrl: MagicHat,
         header: {
           title: 'Kỹ năng / Công cụ',
           suffixIcon: (
@@ -84,14 +97,16 @@ const Profile = () => {
           ),
         },
         buttonTitle: 'Thêm kỹ năng',
-        hint:
-          'Kỹ năng / công cụ giúp bạn nổi bật hơn trong mắt nhà tuyển dụng.',
+        hint: 'Kỹ năng / công cụ giúp bạn nổi bật hơn trong mắt nhà tuyển dụng.',
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
         ),
+        content: userProfile.userSkills && (
+          <SkillCard data={userProfile.userSkills} />
+        ),
       },
     ],
-    []
+    [userProfile]
   );
 
   useEffect(() => {
@@ -104,7 +119,7 @@ const Profile = () => {
       {items.map((item, index) => (
         <div key={index}>
           <ProfileSection {...item} onClick={() => setSelectedItem(item.id)} />
-          {index !== items.length - 1 && <Divider />}
+          {index !== items.length - 1 && <Divider className=''/>}
         </div>
       ))}
       <AchievementModal

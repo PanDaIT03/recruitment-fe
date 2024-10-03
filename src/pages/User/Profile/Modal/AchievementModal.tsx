@@ -1,10 +1,9 @@
 import { useForm } from 'antd/es/form/Form';
-import TextArea from 'antd/es/input/TextArea';
 import { memo } from 'react';
 
 import FormItem from '~/components/Form/FormItem';
 import ProfileModal from './ProfileModal';
-import { Editor } from '@tinymce/tinymce-react';
+import Editor from '~/components/Editor/Editor';
 
 interface IProps {
   isOpen: boolean;
@@ -40,31 +39,7 @@ const AchievementModal = ({ isOpen, setSelectedItem }: IProps) => {
           </p>
         }
       >
-        <Editor
-          apiKey={import.meta.env.VITE_APP_TINYMCE_API_KEY}
-          init={{
-            height: 300,
-            menubar: false,
-            plugins: [
-              'lists',
-              'link',
-              'image',
-              'charmap',
-              'preview',
-              'anchor',
-              'searchreplace',
-              'visualblocks',
-              'code',
-              'fullscreen',
-              'insertdatetime',
-              'media',
-              'table',
-              'wordcount',
-            ],
-            toolbar:
-              'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
-          }}
-        />
+        <Editor />
       </FormItem>
     </ProfileModal>
   );

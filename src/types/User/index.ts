@@ -8,6 +8,36 @@ interface IBaseUserProfile {
   description: string;
 }
 
+interface JobCategory {
+  id: number;
+  name: string;
+  description: null;
+}
+
+interface JobPosition {
+  id: number;
+  title: string;
+}
+
+export interface IWorkExperience {
+  id: number;
+  companyName: string;
+  isWorking: boolean;
+  startDate: Date;
+  endDate: null;
+  description: string;
+  placement: JobPosition;
+  jobPosition: JobPosition;
+  jobCategory: JobCategory;
+}
+
+interface Role {
+  id: number;
+  title: string;
+}
+
+//--------------
+
 export interface IUserProfile {
   statusCode: number;
   id: number;
@@ -20,15 +50,41 @@ export interface IUserProfile {
   isActive: boolean;
   role: Role;
   jobPosition: string;
-  userSkills: any[];
-  achivement: string;
-  userLanguages: any[];
-  workExperiences: any[];
+  userSkills: UserSkill[];
+  achivement: Achivement;
+  userLanguages: UserLanguage[];
+  workExperiences: WorkExperience[];
 }
 
-export interface Role {
+export interface Achivement {
   id: number;
-  title: string;
+  description: string;
+}
+
+export interface UserLanguage {
+  level: number;
+  usersId: number;
+  foreignLanguagesId: number;
+  foreignLanguage: Role;
+}
+
+export interface UserSkill {
+  level: number;
+  usersId: number;
+  skillsId: number;
+  skill: Role;
+}
+
+export interface WorkExperience {
+  id: number;
+  companyName: string;
+  isWorking: boolean;
+  startDate: Date;
+  endDate: null;
+  description: string;
+  placement: Role;
+  jobPosition: Role;
+  jobCategory: JobCategory;
 }
 
 export interface IUserProfileData extends IBaseUserProfile {

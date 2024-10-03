@@ -17,7 +17,7 @@ export enum ProfileSectionType {
 }
 
 export interface IProfileSection {
-  img: string;
+  imgUrl: string;
   id: ProfileSectionType;
   header: TitleType;
   hint: string;
@@ -30,7 +30,7 @@ export interface IProfileSection {
 const { PlusOutlined } = icons;
 
 const ProfileSection = ({
-  img,
+  imgUrl,
   hint,
   header,
   content,
@@ -38,6 +38,8 @@ const ProfileSection = ({
   buttonActionTitle,
   onClick,
 }: IProfileSection) => {
+  console.log(content);
+
   return (
     <>
       <div className="flex mb-8 justify-between items-center">
@@ -59,24 +61,28 @@ const ProfileSection = ({
           <ButtonAction title={buttonActionTitle} onClick={onClick} />
         )}
       </div>
-      <div className="flex flex-col justify-center items-center gap-4">
-        <Image
-          src={img}
-          width={96}
-          height={96}
-          preview={false}
-          className="rounded-full p-4 bg-gray-100"
-        />
-        <Paragraph className="text-center text-sm text-sub italic max-w-md">
-          {hint}
-        </Paragraph>
-        <Button
-          borderType="dashed"
-          title={buttonTitle}
-          iconBefore={<PlusOutlined />}
-          onClick={onClick}
-        />
-      </div>
+      {content ? (
+        content
+      ) : (
+        <div className="flex flex-col justify-center items-center gap-4">
+          <Image
+            width={96}
+            height={96}
+            src={imgUrl}
+            preview={false}
+            className="rounded-full p-4 bg-gray-100"
+          />
+          <Paragraph className="text-center text-sm text-sub italic max-w-md">
+            {hint}
+          </Paragraph>
+          <Button
+            borderType="dashed"
+            title={buttonTitle}
+            iconBefore={<PlusOutlined />}
+            onClick={onClick}
+          />
+        </div>
+      )}
     </>
   );
 };
