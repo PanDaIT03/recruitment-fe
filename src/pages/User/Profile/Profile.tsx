@@ -1,12 +1,14 @@
 import { Divider } from 'antd';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { BriefCase, LanguageCenter, MagicHat, Summary } from '~/assets/img';
 import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import ProfileSection, {
   IProfileSection,
   ProfileSectionType,
 } from '~/pages/User/Profile/ProfileSection';
+import { getUserProfile } from '~/store/thunk/user';
 import icons from '~/utils/icons';
 import AchievementModal from './Modal/AchievementModal';
 import ModalExperience from './Modal/ExperienceModal';
@@ -16,7 +18,14 @@ import SkillModal from './Modal/SkillModal';
 const { PlusOutlined, EditOutlined } = icons;
 
 const Profile = () => {
+  const dispatch = useAppDispatch();
+
   const [selectedItem, setSelectedItem] = useState('');
+
+  const { userProfile } = useAppSelector((state) => state.user);
+  const { currentUser } = useAppSelector((state) => state.auth);
+
+  console.log(userProfile);
 
   const items: IProfileSection[] = useMemo(
     () => [
@@ -30,11 +39,12 @@ const Profile = () => {
           ),
         },
         buttonTitle: 'Cập nhật tóm tắt',
-        content:
+        hint:
           'Tóm tắt về thành tích / kỹ năng nổi bật giúp hồ sơ của bạn tăng 3.9 lần lượt tiếp cận từ nhà tuyển dụng.',
         buttonActionTitle: (
           <EditOutlined className="text-[#691f74] cursor-pointer" />
         ),
+        content: ''
       },
       {
         id: ProfileSectionType.EXPERIENCE,
@@ -44,7 +54,7 @@ const Profile = () => {
           suffixIcon: <Bag width={20} height={20} className="font-bold" />,
         },
         buttonTitle: 'Thêm kinh nghiệm',
-        content:
+        hint:
           'Thêm kinh nghiệm làm việc để giúp nhà tuyển dụng hiểu hơn về bạn',
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
@@ -58,7 +68,7 @@ const Profile = () => {
           suffixIcon: <Language width={20} height={20} className="font-bold" />,
         },
         buttonTitle: 'Thêm ngoại ngữ',
-        content:
+        hint:
           'Bạn biết những ngoại ngữ nào? Hãy thêm vào để tăng độ "hot" cho hồ sơ nhé.',
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
@@ -74,7 +84,7 @@ const Profile = () => {
           ),
         },
         buttonTitle: 'Thêm kỹ năng',
-        content:
+        hint:
           'Kỹ năng / công cụ giúp bạn nổi bật hơn trong mắt nhà tuyển dụng.',
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
@@ -83,6 +93,11 @@ const Profile = () => {
     ],
     []
   );
+
+  useEffect(() => {
+    const { accessToken, refreshToken } = currentUser;
+    dispatch(getUserProfile({ accessToken, refreshToken }));
+  }, []);
 
   return (
     <>

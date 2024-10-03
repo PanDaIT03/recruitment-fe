@@ -4,6 +4,7 @@ import { memo } from 'react';
 
 import FormItem from '~/components/Form/FormItem';
 import ProfileModal from './ProfileModal';
+import { Editor } from '@tinymce/tinymce-react';
 
 interface IProps {
   isOpen: boolean;
@@ -39,12 +40,30 @@ const AchievementModal = ({ isOpen, setSelectedItem }: IProps) => {
           </p>
         }
       >
-        <TextArea
-          placeholder={`Ví dụ:
-- Tốt nghiệp loại giỏi chuyên ngành Quản trị Nhân lực với GPA 3.53/4.00 
-- Đạt 100% KPI trong thời gian thử việc, vượt 119% KPI chung trong Quý 2 2022 
-- Mang về mỗi tháng lên tới 30 khách hàng tương đương 40% doanh thu năm 2023`}
-          className="p-3 rounded-lg !min-h-48"
+        <Editor
+          apiKey={import.meta.env.VITE_APP_TINYMCE_API_KEY}
+          init={{
+            height: 300,
+            menubar: false,
+            plugins: [
+              'lists',
+              'link',
+              'image',
+              'charmap',
+              'preview',
+              'anchor',
+              'searchreplace',
+              'visualblocks',
+              'code',
+              'fullscreen',
+              'insertdatetime',
+              'media',
+              'table',
+              'wordcount',
+            ],
+            toolbar:
+              'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+          }}
         />
       </FormItem>
     </ProfileModal>

@@ -20,7 +20,8 @@ export interface IProfileSection {
   img: string;
   id: ProfileSectionType;
   header: TitleType;
-  content: string;
+  hint: string;
+  content?: ReactNode;
   buttonTitle: ReactNode;
   buttonActionTitle?: ReactNode;
   onClick?: () => void;
@@ -30,6 +31,7 @@ const { PlusOutlined } = icons;
 
 const ProfileSection = ({
   img,
+  hint,
   header,
   content,
   buttonTitle,
@@ -66,7 +68,7 @@ const ProfileSection = ({
           className="rounded-full p-4 bg-gray-100"
         />
         <Paragraph className="text-center text-sm text-sub italic max-w-md">
-          {content}
+          {hint}
         </Paragraph>
         <Button
           borderType="dashed"
