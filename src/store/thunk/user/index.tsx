@@ -1,9 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+
 import UserApi, { IUserProfileParams } from '~/apis/user';
 import toast from '~/utils/functions/toast';
 
 export const getUserProfile = createAsyncThunk(
-  'userProfile',
+  'userProfile/getProfile',
   async (data: IUserProfileParams, { rejectWithValue }) => {
     try {
       const response = await UserApi.getUserProfile(data);

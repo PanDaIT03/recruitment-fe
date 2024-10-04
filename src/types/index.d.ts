@@ -1,5 +1,5 @@
-interface IBaseResponse<T> {
-  data: T;
+interface IBaseResponse<T = undefined> {
+  data?: T;
   message: string;
   statusCode: number;
 }

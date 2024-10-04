@@ -1,5 +1,5 @@
 import { Divider } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { BriefCase, LanguageCenter, MagicHat, Summary } from '~/assets/img';
 import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
@@ -14,21 +14,39 @@ import ExperienceCard from './Card/ExperienceCard';
 import LanguageCard from './Card/LanguageCard';
 import SkillCard from './Card/SkillCard';
 import AchievementModal from './Modal/AchievementModal';
-import ModalExperience from './Modal/ExperienceModal';
+
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
+import { IWorkExperience } from '~/types/User';
+import ExperienceModal from './Modal/ExperienceModal';
 
 const { PlusOutlined, EditOutlined } = icons;
+
+const initExperience = {} as IWorkExperience;
 
 const Profile = () => {
   const dispatch = useAppDispatch();
 
   const [selectedItem, setSelectedItem] = useState('');
+  const [experienceItemSelected, setExperienceItemSelected] =
+    useState<IWorkExperience>(initExperience);
 
-  const { userProfile } = useAppSelector((state) => state.user);
+  const { userProfile, loading } = useAppSelector((state) => state.user);
   const { currentUser } = useAppSelector((state) => state.auth);
 
-  console.log(userProfile);
+  const refetchUserProfile = useCallback(() => {
+    const { accessToken, refreshToken } = currentUser;
+    dispatch(getUserProfile({ accessToken, refreshToken }));
+  }, [userProfile]);
+
+  const handleEditExperience = useCallback((values: IWorkExperience) => {
+    setExperienceItemSelected(values);
+  }, []);
+
+  const handleCancelExperience = useCallback(() => {
+    setSelectedItem('');
+    setExperienceItemSelected(initExperience);
+  }, []);
 
   const items: IProfileSection[] = useMemo(
     () => [
@@ -68,7 +86,11 @@ const Profile = () => {
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
         ),
         content: userProfile.workExperiences && (
-          <ExperienceCard data={userProfile.workExperiences} />
+          <ExperienceCard
+            data={userProfile.workExperiences}
+            onEdit={handleEditExperience}
+            setSelectedItem={setSelectedItem}
+          />
         ),
       },
       {
@@ -110,25 +132,32 @@ const Profile = () => {
   );
 
   useEffect(() => {
-    const { accessToken, refreshToken } = currentUser;
-    dispatch(getUserProfile({ accessToken, refreshToken }));
+    refetchUserProfile();
   }, []);
 
   return (
     <>
       {items.map((item, index) => (
         <div key={index}>
-          <ProfileSection {...item} onClick={() => setSelectedItem(item.id)} />
-          {index !== items.length - 1 && <Divider className=''/>}
+          <ProfileSection
+            {...item}
+            loading={loading}
+            onClick={() => setSelectedItem(item.id)}
+          />
+          {index !== items.length - 1 && <Divider />}
         </div>
       ))}
       <AchievementModal
+        data={userProfile?.achivement?.description}
         isOpen={selectedItem === ProfileSectionType.ACHIEVEMENT}
+        refetch={refetchUserProfile}
         setSelectedItem={setSelectedItem}
       />
-      <ModalExperience
+      <ExperienceModal
+        data={experienceItemSelected}
         isOpen={selectedItem === ProfileSectionType.EXPERIENCE}
-        setSelectedItem={setSelectedItem}
+        refetch={refetchUserProfile}
+        onCancel={handleCancelExperience}
       />
       <LanguageModal
         isOpen={selectedItem === ProfileSectionType.LANGUAGE}

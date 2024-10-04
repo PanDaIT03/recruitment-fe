@@ -10,8 +10,8 @@ const Input = (props: InputProps) => {
     <InputAntd
       size="middle"
       allowClear={allowClear}
-      className={customClass}
       {...props}
+      className={customClass}
     />
   );
 };
