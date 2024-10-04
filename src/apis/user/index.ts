@@ -1,6 +1,6 @@
 import axiosApi from '~/services/axios';
 import { IUser } from '~/types/Auth';
-import { IUserProfile } from '~/types/User';
+import { Achivement, IUserProfile, IUserProfileData } from '~/types/User';
 
 export type IUserProfileParams = Pick<IUser, 'accessToken' | 'refreshToken'>;
 
@@ -14,8 +14,21 @@ const UserApi = {
       headers: { Authorization: accessToken, Cookies: refreshToken },
     });
   },
-  createWorkExperience: async (payload: any) => {
-    return await axiosApi.post('/work-experiences');
+  createAchievement: async (
+    payload: Pick<Achivement, 'description'>
+  ): Promise<IBaseResponse> => {
+    return await axiosApi.post('/achivements', payload);
+  },
+  createWorkExperience: async (
+    payload: IUserProfileData
+  ): Promise<IBaseResponse> => {
+    return await axiosApi.post('/work-experiences', payload);
+  },
+  updateWorkExperience: async (
+    payload: IUserProfileData & { id: number }
+  ): Promise<IBaseResponse> => {
+    const { id, ...rest } = payload;
+    return await axiosApi.patch(`/work-experiences/${id}`, rest);
   },
 };
 

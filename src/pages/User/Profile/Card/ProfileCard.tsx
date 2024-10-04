@@ -1,4 +1,4 @@
-import { Flex, Image } from 'antd';
+import { Flex, Image, Popconfirm } from 'antd';
 import { memo, ReactElement } from 'react';
 
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -7,11 +7,13 @@ import icons from '~/utils/icons';
 interface IProps {
   imgUrl?: string;
   content: ReactElement;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
-const { EditOutlined, CloseOutlined } = icons;
+const { EditOutlined, CloseOutlined, QuestionCircleOutlined } = icons;
 
-const ProfileCard = ({ imgUrl, content }: IProps) => {
+const ProfileCard = ({ imgUrl, content, onEdit, onDelete }: IProps) => {
   return (
     <Flex gap={24}>
       {imgUrl && (
@@ -28,11 +30,21 @@ const ProfileCard = ({ imgUrl, content }: IProps) => {
         <Flex gap={4}>
           <ButtonAction
             title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
+            onClick={onEdit}
           />
-          <ButtonAction
-            title={<CloseOutlined className="text-warning cursor-pointer" />}
-            className="hover:bg-light-warning"
-          />
+          <Popconfirm
+            okText="Có"
+            cancelText="Không"
+            title="Xoá mục này"
+            description="Bạn có chắc chắn muốn xoá mục này?"
+            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+            onConfirm={onDelete}
+          >
+            <ButtonAction
+              title={<CloseOutlined className="text-warning cursor-pointer" />}
+              className="hover:bg-light-warning"
+            />
+          </Popconfirm>
         </Flex>
       </Flex>
     </Flex>

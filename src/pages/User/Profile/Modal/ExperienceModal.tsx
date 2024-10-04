@@ -1,38 +1,61 @@
-import dayjs, { Dayjs } from 'dayjs';
 import { Checkbox } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
-import { memo, useState } from 'react';
+import dayjs from 'dayjs';
+import { memo, useEffect, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
+import UserApi from '~/apis/user';
 import { DatePicker, RangePicker } from '~/components/DatePicker/DatePicker';
 import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
-import { JobPlacement, PaginatedJobCategories } from '~/types/Job';
-import { IUserProfile, IUserProfileForm } from '~/types/User/UserProfile';
+import {
+  JobPlacement,
+  PaginatedJobCategories,
+  PaginatedJobPositions,
+} from '~/types/Job';
+import {
+  IUserProfileData,
+  IUserProfileForm,
+  IWorkExperience,
+} from '~/types/User';
+import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import ProfileModal from './ProfileModal';
 
 interface IProps {
   isOpen: boolean;
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  data: IWorkExperience;
+  refetch: () => void;
+  onCancel: () => void;
 }
 
-const { BankOutlined, IdcardOutlined } = icons;
+const { BankOutlined } = icons;
 
-const ExperienceModal = ({ isOpen, setSelectedItem }: IProps) => {
+const ExperienceModal = ({
+  data,
+  isOpen,
+  refetch,
+  onCancel,
+}: IProps) => {
   const [form] = useForm<IUserProfileForm>();
 
   const [isChecked, setIsChecked] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
+  const { data: jobPositions } = useFetch<PaginatedJobPositions>(
+    JobsAPI.getAllJobPositions
+  );
   const { data: jobCategories } = useFetch<PaginatedJobCategories>(
     JobsAPI.getAllJobCategories
   );
 
-  const handleFinish = (values: IUserProfileForm) => {
+  const handleFinish = async (values: IUserProfileForm) => {
+    setIsLoading(true);
+
     const { workingTime, ...rest } = values;
     let startDate = null,
       endDate = null;
@@ -42,31 +65,54 @@ const ExperienceModal = ({ isOpen, setSelectedItem }: IProps) => {
         (endDate = dayjs(workingTime[1]).format('YYYY/MM/DD HH:mm:ss')))
       : (startDate = dayjs(workingTime).format('YYYY/MM/DD HH:mm:ss'));
 
-    const params: IUserProfile = {
+    const params: IUserProfileData = {
       ...rest,
       startDate: startDate,
       endDate: endDate,
     };
 
-    console.log('params', params);
+    const { statusCode, message } = await UserApi.createWorkExperience(params);
+
+    if (statusCode === 200) refetch();
+    toast[statusCode === 200 ? 'success' : 'error'](message || 'Có lỗi xảy ra');
+
+    setIsLoading(false);
+    form.resetFields();
+    onCancel();
   };
 
-  const handleCancel = () => {
-    setSelectedItem('');
-  };
+  useEffect(() => {
+    if (!Object.keys(data).length) return;
+
+    const workingTime = data.endDate
+      ? [dayjs(data.startDate), dayjs(data.endDate)]
+      : dayjs(data.startDate);
+
+    const fieldsValue: IUserProfileForm = {
+      companyName: data.companyName,
+      positionId: data.jobPosition.id,
+      jobCategoriesId: data.jobCategory.id,
+      workingTime: workingTime,
+      placementsId: data.placement.id,
+      description: data.description,
+    };
+
+    form.setFieldsValue(fieldsValue);
+  }, [data]);
 
   return (
     <ProfileModal
       form={form}
       isOpen={isOpen}
+      loading={isLoading}
       title="Thêm kinh nghiệm làm việc"
-      onCancel={handleCancel}
+      onCancel={onCancel}
       onFinish={handleFinish}
     >
       <FormItem
         name="companyName"
         label="Công ty"
-        // rules={[{ required: true, message: 'Hãy nhập công ty của bạn' }]}
+        rules={[{ required: true, message: 'Hãy nhập công ty của bạn' }]}
       >
         <Input
           name="companyName"
@@ -77,20 +123,23 @@ const ExperienceModal = ({ isOpen, setSelectedItem }: IProps) => {
       <FormItem
         name="positionId"
         label="Chức danh"
-        // rules={[{ required: true, message: 'Hãy nhập chức danh của bạn' }]}
+        rules={[{ required: true, message: 'Hãy nhập chức danh của bạn' }]}
       >
-        <Input
-          name="positionId"
-          prefix={<IdcardOutlined />}
-          placeholder="Ví dụ: Trường phòng nhân sự"
+        <Select
+          allowClear
+          placeholder="Chọn chức danh"
+          options={jobPositions?.items.map((jobPosition) => ({
+            value: jobPosition.id,
+            label: jobPosition.title,
+          }))}
         />
       </FormItem>
       <FormItem
         name="jobCategoriesId"
         label="Loại hình làm việc"
-        // rules={[
-        //   { required: true, message: 'Hãy chọn loại hình làm việc của bạn' },
-        // ]}
+        rules={[
+          { required: true, message: 'Hãy chọn loại hình làm việc của bạn' },
+        ]}
       >
         <Select
           allowClear
@@ -119,14 +168,6 @@ const ExperienceModal = ({ isOpen, setSelectedItem }: IProps) => {
         ]}
       >
         {isChecked ? (
-          <RangePicker
-            allowClear
-            format="DD/MM/YYYY"
-            inputReadOnly={true}
-            isCalendarIconPrefix={true}
-            placeholder={['Chọn thời gian bắt đầu', 'Chọn thời gian kết thúc']}
-          />
-        ) : (
           <DatePicker
             allowClear
             format="DD/MM/YYYY"
@@ -134,12 +175,20 @@ const ExperienceModal = ({ isOpen, setSelectedItem }: IProps) => {
             isCalendarIconPrefix={true}
             placeholder="Chọn thời gian bắt đầu"
           />
+        ) : (
+          <RangePicker
+            allowClear
+            format="DD/MM/YYYY"
+            inputReadOnly={true}
+            isCalendarIconPrefix={true}
+            placeholder={['Chọn thời gian bắt đầu', 'Chọn thời gian kết thúc']}
+          />
         )}
       </FormItem>
       <FormItem
         name="placementsId"
         label="Nơi làm việc"
-        // rules={[{ required: true, message: 'Hãy nơi làm việc của bạn' }]}
+        rules={[{ required: true, message: 'Hãy nơi làm việc của bạn' }]}
       >
         <Select
           allowClear
@@ -154,7 +203,7 @@ const ExperienceModal = ({ isOpen, setSelectedItem }: IProps) => {
         name="description"
         label="Tóm tắt"
         className="mb-1"
-        // rules={[{ required: true, message: 'Hãy nơi làm việc của bạn' }]}
+        rules={[{ required: true, message: 'Hãy nơi làm việc của bạn' }]}
       >
         <TextArea
           name="description"

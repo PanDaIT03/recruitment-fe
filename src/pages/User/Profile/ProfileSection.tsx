@@ -40,8 +40,6 @@ const ProfileSection = ({
   buttonActionTitle,
   onClick,
 }: IProfileSection) => {
-  console.log(content);
-
   return (
     <>
       <div className="flex mb-8 justify-between items-center">
@@ -65,7 +63,7 @@ const ProfileSection = ({
       </div>
       {loading ? (
         <div className="flex flex-col justify-center items-center gap-4">
-          <Skeleton.Image style={{ borderRadius: '8px' }} active={loading} />
+          <Skeleton.Image active={loading} style={{ borderRadius: '50%' }} />
           <Skeleton
             active={loading}
             className="max-w-[500px]"
@@ -97,40 +95,6 @@ const ProfileSection = ({
           />
         </div>
       )}
-      {/* {content ? (
-        content
-      ) : loading ? (
-        <div className="flex flex-col justify-center items-center gap-4">
-          <Skeleton.Image style={{ borderRadius: '8px' }} active={loading} />
-          <Skeleton
-            active={loading}
-            className="max-w-[500px]"
-            paragraph={{
-              style: { width: '100%', marginTop: '12px' },
-            }}
-          />
-          <Skeleton.Button active={loading} className="!w-full max-w-44" />
-        </div>
-      ) : (
-        <div className="flex flex-col justify-center items-center gap-4">
-          <Image
-            width={96}
-            height={96}
-            src={imgUrl}
-            preview={false}
-            className="rounded-full p-4 bg-gray-100"
-          />
-          <Paragraph className="text-center text-sm text-sub italic max-w-md">
-            {hint}
-          </Paragraph>
-          <Button
-            borderType="dashed"
-            title={buttonTitle}
-            iconBefore={<PlusOutlined />}
-            onClick={onClick}
-          />
-        </div>
-      )} */}
     </>
   );
 };
