@@ -75,7 +75,7 @@ const SignUp = () => {
       <Divider className="!my-0">
         <p className="text-sub text-sm">hoặc</p>
       </Divider>
-      <FormSignUp form={form} onFinish={handleFinish} loading={isLoading} />
+      <FormSignUp loading={isLoading} form={form} onFinish={handleFinish} />
     </>
   );
 };

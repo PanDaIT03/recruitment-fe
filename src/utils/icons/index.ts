@@ -4,11 +4,13 @@ import {
   ArrowDownOutlined,
   ArrowLeftOutlined,
   ArrowRightOutlined,
+  BankOutlined,
   CalendarOutlined,
   CheckCircleTwoTone,
   ClockCircleOutlined,
   CloseOutlined,
   CloudUploadOutlined,
+  ContainerOutlined,
   DeleteOutlined,
   DollarCircleOutlined,
   DollarOutlined,
@@ -19,6 +21,7 @@ import {
   EyeTwoTone,
   FilePdfOutlined,
   HomeOutlined,
+  IdcardOutlined,
   InfoCircleOutlined,
   LaptopOutlined,
   LoadingOutlined,
@@ -29,7 +32,9 @@ import {
   MinusOutlined,
   PlusOutlined,
   ProfileOutlined,
+  QuestionCircleOutlined,
   ReconciliationOutlined,
+  SaveOutlined,
   SearchOutlined,
   SettingOutlined,
   ShareAltOutlined,
@@ -38,10 +43,6 @@ import {
   TeamOutlined,
   UserAddOutlined,
   UserOutlined,
-  SaveOutlined,
-  BankOutlined,
-  IdcardOutlined,
-  ContainerOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -88,6 +89,7 @@ const icons = {
   BankOutlined,
   IdcardOutlined,
   ContainerOutlined,
+  QuestionCircleOutlined,
 };
 
 export default icons;

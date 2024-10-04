@@ -1,4 +1,4 @@
-import { Image } from 'antd';
+import { Image, Skeleton } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import Title from 'antd/es/typography/Title';
 import { memo, ReactElement, ReactNode } from 'react';
@@ -21,6 +21,7 @@ export interface IProfileSection {
   id: ProfileSectionType;
   header: TitleType;
   hint: string;
+  loading?: boolean;
   content?: ReactNode;
   buttonTitle: ReactNode;
   buttonActionTitle?: ReactNode;
@@ -33,13 +34,12 @@ const ProfileSection = ({
   imgUrl,
   hint,
   header,
+  loading,
   content,
   buttonTitle,
   buttonActionTitle,
   onClick,
 }: IProfileSection) => {
-  console.log(content);
-
   return (
     <>
       <div className="flex mb-8 justify-between items-center">
@@ -61,7 +61,19 @@ const ProfileSection = ({
           <ButtonAction title={buttonActionTitle} onClick={onClick} />
         )}
       </div>
-      {content ? (
+      {loading ? (
+        <div className="flex flex-col justify-center items-center gap-4">
+          <Skeleton.Image active={loading} style={{ borderRadius: '50%' }} />
+          <Skeleton
+            active={loading}
+            className="max-w-[500px]"
+            paragraph={{
+              style: { width: '100%', marginTop: '12px' },
+            }}
+          />
+          <Skeleton.Button active={loading} className="!w-full max-w-44" />
+        </div>
+      ) : content ? (
         content
       ) : (
         <div className="flex flex-col justify-center items-center gap-4">

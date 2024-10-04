@@ -10,6 +10,7 @@ import icons from '~/utils/icons';
 
 type IProps = {
   isOpen: boolean;
+  loading?: boolean;
   children: ReactNode;
   form: FormInstance<any>;
   onCancel: () => void;
@@ -21,6 +22,7 @@ const { CloseOutlined, SaveOutlined } = icons;
 const ProfileModal = ({
   form,
   isOpen,
+  loading,
   children,
   onCancel,
   onFinish,
@@ -47,6 +49,7 @@ const ProfileModal = ({
         <Flex gap={16}>
           <Button
             title="Để sau"
+            disabled={loading}
             className="basis-1/2"
             iconBefore={<CloseOutlined />}
             onClick={handleCancel}
@@ -54,6 +57,8 @@ const ProfileModal = ({
           <Button
             fill
             title="Lưu"
+            loading={loading}
+            disabled={loading}
             className="basis-1/2"
             iconBefore={<SaveOutlined />}
             onClick={() => form.submit()}

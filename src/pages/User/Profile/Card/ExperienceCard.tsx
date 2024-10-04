@@ -1,25 +1,41 @@
 import { Divider } from 'antd';
 import dayjs from 'dayjs';
-import { memo } from 'react';
+import { Dispatch, memo, SetStateAction, useCallback } from 'react';
 
 import { mockFileList } from '~/mocks/data';
 import { IWorkExperience } from '~/types/User';
+import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
   data: IWorkExperience[];
+  onEdit(values: IWorkExperience): void;
+  setSelectedItem: Dispatch<SetStateAction<string>>;
 }
 
 const defaultImgUrl = mockFileList[0].url;
 
-const ExperienceCard = ({ data }: IProps) => {
+const ExperienceCard = ({ data, onEdit, setSelectedItem }: IProps) => {
+  const handleEditItem = useCallback(
+    (values: IWorkExperience) => {
+      onEdit(values);
+      setSelectedItem(ProfileSectionType.EXPERIENCE);
+    },
+    [onEdit]
+  );
+
+  const handleDeleteItem = useCallback(() => {
+    console.log('del');
+  }, []);
+
   return (
     <>
       {data?.map((item, index) => (
-        <>
+        <div key={index}>
           <ProfileCard
-            key={index}
             imgUrl={defaultImgUrl}
+            onDelete={handleDeleteItem}
+            onEdit={() => handleEditItem(item)}
             content={
               <div className="space-y-1">
                 <p className="text-base font-semibold">
@@ -47,7 +63,7 @@ const ExperienceCard = ({ data }: IProps) => {
             }
           />
           {index < data.length - 1 && <Divider dashed className="my-4" />}
-        </>
+        </div>
       ))}
     </>
   );

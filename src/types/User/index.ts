@@ -39,7 +39,8 @@ interface Role {
 //--------------
 
 export interface IUserProfile {
-  statusCode: number;
+  message?: string;
+  statusCode?: number;
   id: number;
   fullName: string;
   phoneNumber: string;

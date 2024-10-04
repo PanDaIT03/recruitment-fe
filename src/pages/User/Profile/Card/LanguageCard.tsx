@@ -14,9 +14,8 @@ const LanguageCard = ({ data }: IProps) => {
   return (
     <Flex vertical gap={16}>
       {data?.map((item, index) => (
-        <>
+        <div key={index}>
           <ProfileCard
-            key={index}
             imgUrl={defaultImgUrl}
             content={
               <div className="space-y-1">
@@ -28,7 +27,7 @@ const LanguageCard = ({ data }: IProps) => {
             }
           />
           {index < data.length - 1 && <Divider dashed className="my-4" />}
-        </>
+        </div>
       ))}
     </Flex>
   );
