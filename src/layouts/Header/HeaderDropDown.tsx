@@ -114,7 +114,7 @@ const HeaderDropDown = () => {
 
   return (
     <>
-      <Dropdown trigger={['click']} menu={{ items: menuItems }}>
+      <Dropdown arrow trigger={['click']} menu={{ items: menuItems }}>
         <a onClick={(e) => e.preventDefault()}>
           <Image
             width={40}

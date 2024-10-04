@@ -25,10 +25,8 @@ const Profile = () => {
 
   const [selectedItem, setSelectedItem] = useState('');
 
-  const { userProfile } = useAppSelector((state) => state.user);
+  const { userProfile, loading } = useAppSelector((state) => state.user);
   const { currentUser } = useAppSelector((state) => state.auth);
-
-  console.log(userProfile);
 
   const items: IProfileSection[] = useMemo(
     () => [
@@ -118,8 +116,12 @@ const Profile = () => {
     <>
       {items.map((item, index) => (
         <div key={index}>
-          <ProfileSection {...item} onClick={() => setSelectedItem(item.id)} />
-          {index !== items.length - 1 && <Divider className=''/>}
+          <ProfileSection
+            {...item}
+            loading={loading}
+            onClick={() => setSelectedItem(item.id)}
+          />
+          {index !== items.length - 1 && <Divider className="" />}
         </div>
       ))}
       <AchievementModal
