@@ -9,16 +9,16 @@ import {
 } from '~/store/thunk/auth';
 import { IEmailStatus, IForgotPassword, IUser } from '~/types/Auth/index';
 
-export interface AuthState {
+export interface IAuthState {
   loading?: boolean;
   currentUser: IUser;
   accessToken?: string | null;
   refreshToken?: string | null;
   emailStatus?: IEmailStatus | null;
-  forgotPasswordStatus: IForgotPassword | null;
+  forgotPasswordStatus?: IForgotPassword | null;
 }
 
-const initialState: AuthState = {
+const initialState: IAuthState = {
   loading: false,
   accessToken: null,
   refreshToken: null,

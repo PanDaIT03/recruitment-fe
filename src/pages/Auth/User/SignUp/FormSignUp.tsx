@@ -9,8 +9,8 @@ import PATH from '~/utils/path';
 
 interface IProps {
   form: FormInstance<any>;
-  onFinish(values: any): void;
   loading: boolean;
+  onFinish(values: any): void;
 }
 
 const FormSignUp = ({ form, onFinish, loading }: IProps) => {
@@ -56,7 +56,7 @@ const FormSignUp = ({ form, onFinish, loading }: IProps) => {
       <div className="flex gap-x-1">
         <span>Đã có tài khoản?</span>
         <Link
-          to={PATH.SIGN_IN}
+          to={PATH.USER_SIGN_IN}
           className="font-semibold text-end text-[#2563eb] hover:underline hover:text-[#2563eb]"
         >
           Đăng nhập tại đây.

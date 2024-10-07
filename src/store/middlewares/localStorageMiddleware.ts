@@ -1,9 +1,9 @@
 import { Middleware } from '@reduxjs/toolkit';
+import { IAuthState } from '../reducer/auth';
 import { RootState } from '../store';
-import { AuthState } from '../reducer/auth';
 
 export interface PersistedState {
-  auth: Pick<AuthState, 'currentUser'>;
+  auth: Pick<IAuthState, 'currentUser'>;
 }
 
 export const localStorageMiddleware: Middleware =

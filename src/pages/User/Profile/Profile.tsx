@@ -1,19 +1,58 @@
 import { Divider } from 'antd';
-import { useMemo } from 'react';
-import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import ButtonAction from '~/components/Button/ButtonAction';
+import { BriefCase, LanguageCenter, MagicHat, Summary } from '~/assets/img';
+import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import ProfileSection, {
   IProfileSection,
-} from '~/components/ProfileSection/ProfileSection';
+  ProfileSectionType,
+} from '~/pages/User/Profile/ProfileSection';
+import { getUserProfile } from '~/store/thunk/user';
 import icons from '~/utils/icons';
+import ExperienceCard from './Card/ExperienceCard';
+import LanguageCard from './Card/LanguageCard';
+import SkillCard from './Card/SkillCard';
+import AchievementModal from './Modal/AchievementModal';
+
+import LanguageModal from './Modal/LanguageModal';
+import SkillModal from './Modal/SkillModal';
+import { IWorkExperience } from '~/types/User';
+import ExperienceModal from './Modal/ExperienceModal';
 
 const { PlusOutlined, EditOutlined } = icons;
 
+const initExperience = {} as IWorkExperience;
+
 const Profile = () => {
+  const dispatch = useAppDispatch();
+
+  const [selectedItem, setSelectedItem] = useState('');
+  const [experienceItemSelected, setExperienceItemSelected] =
+    useState<IWorkExperience>(initExperience);
+
+  const { userProfile, loading } = useAppSelector((state) => state.user);
+  const { currentUser } = useAppSelector((state) => state.auth);
+
+  const refetchUserProfile = useCallback(() => {
+    const { accessToken, refreshToken } = currentUser;
+    dispatch(getUserProfile({ accessToken, refreshToken }));
+  }, [userProfile]);
+
+  const handleEditExperience = useCallback((values: IWorkExperience) => {
+    setExperienceItemSelected(values);
+  }, []);
+
+  const handleCancelExperience = useCallback(() => {
+    setSelectedItem('');
+    setExperienceItemSelected(initExperience);
+  }, []);
+
   const items: IProfileSection[] = useMemo(
     () => [
       {
+        id: ProfileSectionType.ACHIEVEMENT,
+        imgUrl: Summary,
         header: {
           title: 'Thành tích / Kỹ năng nổi bật',
           suffixIcon: (
@@ -21,43 +60,58 @@ const Profile = () => {
           ),
         },
         buttonTitle: 'Cập nhật tóm tắt',
-        content:
-          'Tóm tắt về thành tích / kỹ năng nổi bật giúp hồ sơ của bạn tăng 3.9 lần lượt tiếp cận từ nhà tuyển dụng.',
-        buttonAction: (
-          <ButtonAction
-            title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
+        hint: 'Tóm tắt về thành tích / kỹ năng nổi bật giúp hồ sơ của bạn tăng 3.9 lần lượt tiếp cận từ nhà tuyển dụng.',
+        buttonActionTitle: (
+          <EditOutlined className="text-[#691f74] cursor-pointer" />
+        ),
+        content: userProfile?.achivement?.description && (
+          <div
+            className="text-sm font-medium"
+            dangerouslySetInnerHTML={{
+              __html: userProfile.achivement.description,
+            }}
           />
         ),
       },
       {
+        id: ProfileSectionType.EXPERIENCE,
+        imgUrl: BriefCase,
         header: {
           title: 'Kinh nghiệm',
           suffixIcon: <Bag width={20} height={20} className="font-bold" />,
         },
         buttonTitle: 'Thêm kinh nghiệm',
-        content:
-          'Thêm kinh nghiệm làm việc để giúp nhà tuyển dụng hiểu hơn về bạn',
-        buttonAction: (
-          <ButtonAction
-            title={<PlusOutlined className="text-[#691f74] cursor-pointer" />}
+        hint: 'Thêm kinh nghiệm làm việc để giúp nhà tuyển dụng hiểu hơn về bạn',
+        buttonActionTitle: (
+          <PlusOutlined className="text-[#691f74] cursor-pointer" />
+        ),
+        content: userProfile.workExperiences && (
+          <ExperienceCard
+            data={userProfile.workExperiences}
+            onEdit={handleEditExperience}
+            setSelectedItem={setSelectedItem}
           />
         ),
       },
       {
+        id: ProfileSectionType.LANGUAGE,
+        imgUrl: LanguageCenter,
         header: {
           title: 'Ngoại ngữ',
           suffixIcon: <Language width={20} height={20} className="font-bold" />,
         },
         buttonTitle: 'Thêm ngoại ngữ',
-        content:
-          'Bạn biết những ngoại ngữ nào? Hãy thêm vào để tăng độ "hot" cho hồ sơ nhé.',
-        buttonAction: (
-          <ButtonAction
-            title={<PlusOutlined className="text-[#691f74] cursor-pointer" />}
-          />
+        hint: 'Bạn biết những ngoại ngữ nào? Hãy thêm vào để tăng độ "hot" cho hồ sơ nhé.',
+        buttonActionTitle: (
+          <PlusOutlined className="text-[#691f74] cursor-pointer" />
+        ),
+        content: userProfile.userLanguages && (
+          <LanguageCard data={userProfile.userLanguages} />
         ),
       },
       {
+        id: ProfileSectionType.SKILL,
+        imgUrl: MagicHat,
         header: {
           title: 'Kỹ năng / Công cụ',
           suffixIcon: (
@@ -65,26 +119,54 @@ const Profile = () => {
           ),
         },
         buttonTitle: 'Thêm kỹ năng',
-        content:
-          'Kỹ năng / công cụ giúp bạn nổi bật hơn trong mắt nhà tuyển dụng.',
-        buttonAction: (
-          <ButtonAction
-            title={<PlusOutlined className="text-[#691f74] cursor-pointer" />}
-          />
+        hint: 'Kỹ năng / công cụ giúp bạn nổi bật hơn trong mắt nhà tuyển dụng.',
+        buttonActionTitle: (
+          <PlusOutlined className="text-[#691f74] cursor-pointer" />
+        ),
+        content: userProfile.userSkills && (
+          <SkillCard data={userProfile.userSkills} />
         ),
       },
     ],
-    []
+    [userProfile]
   );
+
+  useEffect(() => {
+    refetchUserProfile();
+  }, []);
 
   return (
     <>
       {items.map((item, index) => (
         <div key={index}>
-          <ProfileSection {...item} />
+          <ProfileSection
+            {...item}
+            loading={loading}
+            onClick={() => setSelectedItem(item.id)}
+          />
           {index !== items.length - 1 && <Divider />}
         </div>
       ))}
+      <AchievementModal
+        data={userProfile?.achivement?.description}
+        isOpen={selectedItem === ProfileSectionType.ACHIEVEMENT}
+        refetch={refetchUserProfile}
+        setSelectedItem={setSelectedItem}
+      />
+      <ExperienceModal
+        data={experienceItemSelected}
+        isOpen={selectedItem === ProfileSectionType.EXPERIENCE}
+        refetch={refetchUserProfile}
+        onCancel={handleCancelExperience}
+      />
+      <LanguageModal
+        isOpen={selectedItem === ProfileSectionType.LANGUAGE}
+        setSelectedItem={setSelectedItem}
+      />
+      <SkillModal
+        isOpen={selectedItem === ProfileSectionType.SKILL}
+        setSelectedItem={setSelectedItem}
+      />
     </>
   );
 };
