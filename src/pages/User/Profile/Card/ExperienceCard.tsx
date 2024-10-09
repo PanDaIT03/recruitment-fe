@@ -6,6 +6,7 @@ import { mockFileList } from '~/mocks/data';
 import { IWorkExperience } from '~/types/User';
 import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
+import UserApi from '~/apis/user';
 
 interface IProps {
   data: IWorkExperience[];
@@ -24,8 +25,10 @@ const ExperienceCard = ({ data, onEdit, setSelectedItem }: IProps) => {
     [onEdit]
   );
 
-  const handleDeleteItem = useCallback(() => {
-    console.log('del');
+  const handleDeleteItem = useCallback(async (id: number) => {
+    console.log('del', id);
+    const response = await UserApi.deleteWorkExperience(id);
+    
   }, []);
 
   return (
@@ -34,8 +37,8 @@ const ExperienceCard = ({ data, onEdit, setSelectedItem }: IProps) => {
         <div key={index}>
           <ProfileCard
             imgUrl={defaultImgUrl}
-            onDelete={handleDeleteItem}
             onEdit={() => handleEditItem(item)}
+            onDelete={() => handleDeleteItem(item.id)}
             content={
               <div className="space-y-1">
                 <p className="text-base font-semibold">
