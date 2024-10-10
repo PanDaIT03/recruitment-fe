@@ -2,7 +2,7 @@ import { List } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
-import { BlockChain, PortFolio, BriefCase, PencilSkill } from '~/assets/svg';
+import { BlockChain, PortFolio, Calendar, PencilSkill } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
@@ -28,7 +28,7 @@ export interface IParams {
   placmentsId?: number;
   workTypesId?: number;
   title?: string;
-  salaryRange: any;
+  salaryRange?: any;
 }
 
 const optionsSalary: DefaultOptionType[] = [
@@ -201,7 +201,7 @@ const JobListPage = () => {
             displayedType="text"
             className="w-full h-full"
             options={optionsSalary}
-            prefixIcon={<BriefCase className="w-5 h-5" />}
+            prefixIcon={<Calendar className="w-5 h-5" />}
           />
         </FormItem>
         <FormItem

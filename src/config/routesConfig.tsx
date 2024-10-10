@@ -8,12 +8,19 @@ import EmployerLayout from '~/pages/Employer/EmployerLayout';
 
 import PATH from '~/utils/path';
 
-import CandicateDashboard from '~/pages/Employer/Candicates/CandicateDashboard';
-import RecruitmentList from '~/pages/Employer/RecruitmentList/RecruitmentList';
 import ProtectedRoute from '~/routes/ProtectedRoute';
 import Blog from '~/pages/Blog/Blogs';
 
 const Home = lazy(() => import('~/pages/Home/Home'));
+const CandicateDashboard = lazy(
+  () => import('~/pages/Employer/Candicates/CandicateDashboard')
+);
+const RecruitmentList = lazy(
+  () => import('~/pages/Employer/RecruitmentList/RecruitmentList')
+);
+const UpdateJob = lazy(
+  () => import('~/pages/Employer/RecruitmentList/UpdateJob')
+);
 
 const UserSignIn = lazy(() => import('~/pages/Auth/User/SignIn/SignIn'));
 const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
@@ -119,9 +126,9 @@ const routesConfig: CustomRouteObject[] = [
     createRoute(PATH.EMPLOYER_DASHBOARD, <EmployerDashboard />),
     createRoute(PATH.EMPLOYER_POSTING, <PostingJob />),
     createRoute(PATH.EMPLOYER_CANDICATES_DASHBOARD, <CandicateDashboard />),
-    createRoute(PATH.EMPLOYER_RECRUITMENT_LIST, <RecruitmentList />)
+    createRoute(PATH.EMPLOYER_RECRUITMENT_LIST, <RecruitmentList />),
+    createRoute(PATH.UPDATE_JOB, <UpdateJob />)
   ),
-
   // User
   createProtectedRoute(
     '/user',

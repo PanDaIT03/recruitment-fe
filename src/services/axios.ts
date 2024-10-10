@@ -70,10 +70,10 @@ instance.interceptors.response.use(
         }>('/auth/refresh');
         const { accessToken } = response.data;
 
+        tokenService.setAccessToken(accessToken);
+
         if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-
-        tokenService.setAccessToken(accessToken);
 
         return instance(originalRequest);
       } catch (refreshError) {

@@ -11,6 +11,7 @@ const PATH = {
   USER_RESET_PASSWORD: '/user/reset-password',
   EMPLOYER_SIGN_IN: '/employer/sign-in',
   EMPLOYER_SIGN_UP: '/employer/sign-up',
+  UPDATE_JOB: '/employer/update-job',
   // Admin
   ADMIN_DASHBOARD: '/admin/dashboard',
   // Employer
