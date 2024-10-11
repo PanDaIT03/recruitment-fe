@@ -29,7 +29,7 @@ const UpdateJob = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const dataJob: JobItem = location.state;
-  const { currentJob, loading } = useAppSelector((state) => state.jobs);
+  const { currentJob } = useAppSelector((state) => state.jobs);
   const [jobData, setJobData] = useState<JobItem>(dataJob);
 
   const [openModal, setOpenModal] = useState<SelectModal | null>(null);
@@ -52,8 +52,8 @@ const UpdateJob = () => {
   };
 
   useEffect(() => {
-    dispatch(getJobById(currentJob?.id.toString()));
-  }, [currentJob?.id, dispatch]);
+    dispatch(getJobById(dataJob?.id.toString()));
+  }, []);
 
   const handleSubmit = async (data: Partial<JobItem>) => {
     const {
@@ -74,10 +74,8 @@ const UpdateJob = () => {
     try {
       const response = await JobsAPI.updateJob(jobData?.id.toString(), payload);
 
-      toast[response?.statusCode === 200 ? 'success' : 'error'](
-        response?.message || ''
-      );
       if (response?.statusCode === 200) {
+        toast.success(response?.message || 'Cập nhật thành công');
         dispatch(getJobById(currentJob?.id.toString()));
         handleCloseModal();
       }
@@ -86,13 +84,22 @@ const UpdateJob = () => {
     }
   };
 
-  const handleModalUpdate = (field: keyof JobItem, value: any) => {
-    const updatedJobData = { ...jobData, [field]: value };
-    setJobData(updatedJobData);
-    handleSubmit(updatedJobData);
+  const handleModalUpdate = (
+    field: keyof JobItem | 'modalInfo',
+    value: any
+  ) => {
+    if (field === 'modalInfo') {
+      const updatedJobData = { ...jobData, ...value };
+      setJobData(updatedJobData);
+      handleSubmit(updatedJobData);
+    } else {
+      const updatedJobData = { ...jobData, [field]: value };
+      setJobData(updatedJobData);
+      handleSubmit(updatedJobData);
+    }
   };
 
-  if (!currentJob || loading) {
+  if (!currentJob) {
     return (
       <div className="flex items-center justify-center">
         <Spin size="large" />
@@ -247,7 +254,7 @@ const UpdateJob = () => {
         open={openModal === SelectModal.INFOMATION}
         onClose={handleCloseModal}
         initData={currentJob}
-        // onUpdate={(updatedData) => setJobData(updatedData)}
+        onUpdate={(updatedData) => handleModalUpdate('modalInfo', updatedData)}
       />
     </>
   );

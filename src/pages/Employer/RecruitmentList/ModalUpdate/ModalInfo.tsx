@@ -19,8 +19,14 @@ export interface ModalProps {
   open: boolean;
   onClose: () => void;
   initData?: JobItem;
+  onUpdate: (value: any) => void;
 }
-const ModalInfo: React.FC<ModalProps> = ({ open, onClose, initData }) => {
+const ModalInfo: React.FC<ModalProps> = ({
+  open,
+  onClose,
+  initData,
+  onUpdate,
+}) => {
   const [form] = Form.useForm();
 
   const { data: jobCategories } = useFetch<PaginatedJobCategories>(
@@ -65,10 +71,31 @@ const ModalInfo: React.FC<ModalProps> = ({ open, onClose, initData }) => {
     }
   }, [initData, form]);
 
+  const handleOk = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        const modalInfo = {
+          fieldsId: values.fieldsId,
+          categoriesId: values.categoriesId,
+          workTypesId: values.workTypesId,
+          placementIds: values.placementIds,
+          salaryMin: values.salaryMin,
+          salaryMax: values.salaryMax,
+          quantity: values.quantity,
+        };
+        onUpdate(modalInfo);
+        onClose();
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
+      });
+  };
+
   return (
-    <Modal open={open} onCancel={onClose} onOk={onClose}>
+    <Modal open={open} onCancel={onClose} onOk={handleOk}>
       <h2 className="text-xl font-bold mb-6 text-center">Cập nhật thông tin</h2>
-      <Form form={form} layout="vertical" onFinish={onFinish}>
+      <Form form={form} layout="vertical">
         <Form.Item
           name="fieldsId"
           label="Lĩnh vực của vị trí tuyển dụng này là gì?"
@@ -104,7 +131,7 @@ const ModalInfo: React.FC<ModalProps> = ({ open, onClose, initData }) => {
         </Form.Item>
 
         <Form.Item
-          name="placements"
+          name="placementIds"
           label="Địa điểm làm việc (tối đa 3 địa điểm)"
           required
         >
