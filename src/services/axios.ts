@@ -70,13 +70,15 @@ instance.interceptors.response.use(
         }>('/auth/refresh');
         const { accessToken } = response.data;
 
+        tokenService.setAccessToken(accessToken);
+
         if (originalRequest.headers)
           originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
 
-        tokenService.setAccessToken(accessToken);
-
         return instance(originalRequest);
       } catch (refreshError) {
+        console.log(refreshError);
+        // window.location.href = PATH.SIGN_IN;
         toast.warning('Có lỗi xảy ra, xin vui lòng thử lại');
         return Promise.reject(refreshError);
       }
