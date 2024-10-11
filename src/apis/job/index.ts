@@ -25,7 +25,7 @@ export const JobsAPI = {
     };
     return axiosApi.get('/jobs/all', payload);
   },
-  getJobById: (id: string): Promise<IJob['items']> => {
+  getJobById: (id: string): Promise<JobItem> => {
     return axiosApi.get(`/jobs?id=${id}`);
   },
   getAllJobPositions: (): Promise<PaginatedJobPositions> => {
@@ -46,5 +46,10 @@ export const JobsAPI = {
   // POST
   postJob: (data: PostingJobFormValues): Promise<JobItem> => {
     return axiosApi.post('/jobs', data);
+  },
+
+  // PATCH
+  updateJob: (id: string, data: Partial<JobItem>): Promise<JobItem> => {
+    return axiosApi.patch(`/jobs/${id}`, data);
   },
 };
