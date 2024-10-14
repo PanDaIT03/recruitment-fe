@@ -43,6 +43,9 @@ import {
   TeamOutlined,
   UserAddOutlined,
   UserOutlined,
+  EyeOutlined,
+  CommentOutlined,
+  LikeOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -90,6 +93,9 @@ const icons = {
   IdcardOutlined,
   ContainerOutlined,
   QuestionCircleOutlined,
+  EyeOutlined,
+  CommentOutlined,
+  LikeOutlined,
 };
 
 export default icons;
