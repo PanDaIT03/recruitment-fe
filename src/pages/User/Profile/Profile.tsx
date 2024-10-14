@@ -37,7 +37,7 @@ const Profile = () => {
   const refetchUserProfile = useCallback(() => {
     const { accessToken, refreshToken } = currentUser;
     dispatch(getUserProfile({ accessToken, refreshToken }));
-  }, [userProfile]);
+  }, [currentUser]);
 
   const handleEditExperience = useCallback((values: IWorkExperience) => {
     setExperienceItemSelected(values);
@@ -85,9 +85,10 @@ const Profile = () => {
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
         ),
-        content: userProfile.workExperiences && (
+        content: userProfile.workExperiences?.length && (
           <ExperienceCard
             data={userProfile.workExperiences}
+            refetch={refetchUserProfile}
             onEdit={handleEditExperience}
             setSelectedItem={setSelectedItem}
           />
@@ -105,7 +106,7 @@ const Profile = () => {
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
         ),
-        content: userProfile.userLanguages && (
+        content: userProfile.userLanguages?.length && (
           <LanguageCard data={userProfile.userLanguages} />
         ),
       },
@@ -123,7 +124,7 @@ const Profile = () => {
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
         ),
-        content: userProfile.userSkills && (
+        content: userProfile.userSkills?.length && (
           <SkillCard data={userProfile.userSkills} />
         ),
       },
