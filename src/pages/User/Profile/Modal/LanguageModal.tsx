@@ -4,39 +4,43 @@ import { DefaultOptionType } from 'antd/es/select';
 import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
 import ProfileModal from './ProfileModal';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import useMessageApi from '~/hooks/useMessageApi';
+import UserApi from '~/apis/user';
+import { ILanguageComboBox } from '~/types/User';
+import { useFetch } from '~/hooks/useFetch';
 
 interface IProps {
   isOpen: boolean;
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const languageOptions: DefaultOptionType[] = [
-  {
-    label: 'English',
-    value: 'eng',
-  },
-  {
-    label: 'Japanse',
-    value: 'jp',
-  },
-  {
-    label: 'Korean',
-    value: 'korean',
-  },
-  {
-    label: 'Chinese',
-    value: 'chinese',
-  },
-  {
-    label: 'French',
-    value: 'french',
-  },
-  {
-    label: 'German',
-    value: 'german',
-  },
-];
+// const languageOptions: DefaultOptionType[] = [
+//   {
+//     label: 'English',
+//     value: 'eng',
+//   },
+//   {
+//     label: 'Japanse',
+//     value: 'jp',
+//   },
+//   {
+//     label: 'Korean',
+//     value: 'korean',
+//   },
+//   {
+//     label: 'Chinese',
+//     value: 'chinese',
+//   },
+//   {
+//     label: 'French',
+//     value: 'french',
+//   },
+//   {
+//     label: 'German',
+//     value: 'german',
+//   },
+// ];
 
 const advanceOptions: DefaultOptionType[] = [
   { label: 'Sơ cấp', value: 'elementary' },
@@ -47,6 +51,12 @@ const advanceOptions: DefaultOptionType[] = [
 
 const LanguageModal = ({ isOpen, setSelectedItem }: IProps) => {
   const [form] = useForm();
+
+  const { data: languages } = useFetch(UserApi.getAllForeignLanguage);
+
+  const [languageOptions, setLanguageOptions] = useState<DefaultOptionType[]>(
+    []
+  );
 
   const handleFinish = (values: any) => {
     console.log(values);
@@ -59,6 +69,12 @@ const LanguageModal = ({ isOpen, setSelectedItem }: IProps) => {
   useEffect(() => {
     form.setFieldValue('advanced', 'intermediate');
   }, []);
+
+  useEffect(() => {
+    // const options:DefaultOptionType[] = languages?.items?.map(language => ({
+    //   label: 
+    // }))
+  }, [languages]);
 
   return (
     <ProfileModal
