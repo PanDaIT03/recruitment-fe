@@ -10,6 +10,7 @@ import { DatePicker, RangePicker } from '~/components/DatePicker/DatePicker';
 import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
+import { useMessage } from '~/contexts/messageProvider';
 import { useFetch } from '~/hooks/useFetch';
 import {
   JobPlacement,
@@ -21,7 +22,6 @@ import {
   IUserProfileForm,
   IWorkExperience,
 } from '~/types/User';
-import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import ProfileModal from './ProfileModal';
 
@@ -34,14 +34,12 @@ interface IProps {
 
 const { BankOutlined } = icons;
 
-const ExperienceModal = ({
-  data,
-  isOpen,
-  refetch,
-  onCancel,
-}: IProps) => {
+const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
+  const { messageApi } = useMessage();
+
   const [form] = useForm<IUserProfileForm>();
 
+  const [isEdit, setIsEdit] = useState(false);
   const [isChecked, setIsChecked] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -71,10 +69,16 @@ const ExperienceModal = ({
       endDate: endDate,
     };
 
-    const { statusCode, message } = await UserApi.createWorkExperience(params);
+    try {
+      const { statusCode, message } = isEdit
+        ? await UserApi.updateWorkExperience({ id: data.id, ...params })
+        : await UserApi.createWorkExperience(params);
 
-    if (statusCode === 200) refetch();
-    toast[statusCode === 200 ? 'success' : 'error'](message || 'Có lỗi xảy ra');
+      if (statusCode === 200) refetch();
+      messageApi.success(message);
+    } catch (error: any) {
+      messageApi.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`);
+    }
 
     setIsLoading(false);
     form.resetFields();
@@ -82,22 +86,24 @@ const ExperienceModal = ({
   };
 
   useEffect(() => {
-    if (!Object.keys(data).length) return;
+    if (Object.keys(data).length) {
+      setIsEdit(true);
 
-    const workingTime = data.endDate
-      ? [dayjs(data.startDate), dayjs(data.endDate)]
-      : dayjs(data.startDate);
+      const workingTime = data.endDate
+        ? [dayjs(data.startDate), dayjs(data.endDate)]
+        : dayjs(data.startDate);
 
-    const fieldsValue: IUserProfileForm = {
-      companyName: data.companyName,
-      positionId: data.jobPosition.id,
-      jobCategoriesId: data.jobCategory.id,
-      workingTime: workingTime,
-      placementsId: data.placement.id,
-      description: data.description,
-    };
+      const fieldsValue: IUserProfileForm = {
+        companyName: data.companyName,
+        positionId: data.jobPosition.id,
+        jobCategoriesId: data.jobCategory.id,
+        workingTime: workingTime,
+        placementsId: data.placement.id,
+        description: data.description,
+      };
 
-    form.setFieldsValue(fieldsValue);
+      form.setFieldsValue(fieldsValue);
+    } else setIsEdit(false);
   }, [data]);
 
   return (

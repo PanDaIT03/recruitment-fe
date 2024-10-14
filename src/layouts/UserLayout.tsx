@@ -109,7 +109,7 @@ const UserLayout = () => {
   return (
     <Layout className="min-h-screen">
       <Header />
-      <Layout className="w-full pt-4 px-8 mx-auto max-w-7xl h-[200vh]">
+      <Layout className="w-full py-4 px-8 mx-auto max-w-7xl min-h-screen">
         <Sider
           width={400}
           theme="light"
