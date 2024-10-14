@@ -2,21 +2,25 @@ import { Divider } from 'antd';
 import dayjs from 'dayjs';
 import { Dispatch, memo, SetStateAction, useCallback } from 'react';
 
+import UserApi from '~/apis/user';
+import { useMessage } from '~/contexts/messageProvider';
 import { mockFileList } from '~/mocks/data';
 import { IWorkExperience } from '~/types/User';
 import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
-import UserApi from '~/apis/user';
 
 interface IProps {
   data: IWorkExperience[];
+  refetch: () => void;
   onEdit(values: IWorkExperience): void;
   setSelectedItem: Dispatch<SetStateAction<string>>;
 }
 
 const defaultImgUrl = mockFileList[0].url;
 
-const ExperienceCard = ({ data, onEdit, setSelectedItem }: IProps) => {
+const ExperienceCard = ({ data, refetch, onEdit, setSelectedItem }: IProps) => {
+  const { messageApi } = useMessage();
+
   const handleEditItem = useCallback(
     (values: IWorkExperience) => {
       onEdit(values);
@@ -25,11 +29,19 @@ const ExperienceCard = ({ data, onEdit, setSelectedItem }: IProps) => {
     [onEdit]
   );
 
-  const handleDeleteItem = useCallback(async (id: number) => {
-    console.log('del', id);
-    const response = await UserApi.deleteWorkExperience(id);
-    
-  }, []);
+  const handleDeleteItem = useCallback(
+    async (id: number) => {
+      try {
+        const { message, statusCode } = await UserApi.deleteWorkExperience(id);
+
+        if (statusCode === 200) refetch();
+        messageApi.success(message);
+      } catch (error: any) {
+        messageApi.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`);
+      }
+    },
+    [messageApi]
+  );
 
   return (
     <>

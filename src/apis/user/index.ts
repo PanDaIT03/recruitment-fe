@@ -30,7 +30,7 @@ const UserApi = {
     const { id, ...rest } = payload;
     return await axiosApi.patch(`/work-experiences/${id}`, rest);
   },
-  deleteWorkExperience: async (id: number) => {
+  deleteWorkExperience: async (id: number): Promise<IBaseResponse> => {
     return await axiosApi.delete(`/work-experiences/${id}`);
   },
 };
