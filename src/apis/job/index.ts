@@ -43,9 +43,17 @@ export const JobsAPI = {
   getAllJobFields: (): Promise<PaginatedJobFields> => {
     return axiosApi.get(`/job-fields/all`);
   },
+
   // POST
   postJob: (data: PostingJobFormValues): Promise<JobItem> => {
     return axiosApi.post('/jobs', data);
+  },
+  ApplyJob: (data: any): Promise<any> => {
+    return axiosApi.post('/users-jobs', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 
   // PATCH

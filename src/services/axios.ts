@@ -87,6 +87,8 @@ instance.interceptors.response.use(
   }
 );
 
+let isWarningShown = false;
+
 const retryRequest = async <T>(
   config: InternalAxiosRequestConfig,
   retries = 3,
@@ -102,7 +104,10 @@ const retryRequest = async <T>(
       error.code === 'ECONNABORTED'
     ) {
       if (retries === 1) {
-        toast.warning('Hết thời gian truy cập. Xin vui lòng thử lại.');
+        if (!isWarningShown) {
+          toast.warning('Hết thời gian truy cập. Xin vui lòng thử lại.');
+          isWarningShown = true;
+        }
         return Promise.reject(error);
       }
 
@@ -124,11 +129,7 @@ const axiosApi = {
       method: 'get',
       url,
     } as InternalAxiosRequestConfig),
-  post: <T = any>(
-    url: string,
-    data?: any,
-    config?: InternalAxiosRequestConfig
-  ) =>
+  post: <T = any>(url: string, data?: any, config?: any) =>
     retryRequest<T>({
       ...config,
       method: 'post',

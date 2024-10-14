@@ -256,7 +256,7 @@ const JobDetail: React.FC = () => {
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline flex items-center"
                     >
-                      ieltsvietop.vn/tuyen-dung
+                      {currentJob?.user?.companyUrl || 'Không xác định'}
                       <ExportOutlined className="ml-1" />
                     </Link>
                   ),
@@ -285,6 +285,7 @@ const JobDetail: React.FC = () => {
       >
         <JobApplicationModal
           jobTitle={currentJob?.title || ''}
+          jobId={currentJob?.id}
           handleToggleModal={handleIsOpenModal}
         />
       </Modal>
