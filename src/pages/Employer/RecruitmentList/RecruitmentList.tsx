@@ -98,7 +98,7 @@ const RecruitmentList: React.FC = () => {
       title: 'Địa điểm',
       dataIndex: ['jobsPlacements'],
       render: (record: any) => {
-        return record?.placement?.title;
+        return record.map((i: any) => i.placement.title).join(' - ');
       },
     },
     {
