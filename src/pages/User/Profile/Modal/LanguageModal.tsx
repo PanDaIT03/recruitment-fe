@@ -92,11 +92,7 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
         label="Ngoại ngữ"
         rules={[{ required: true, message: 'Hãy chọn ngoại ngữ của bạn' }]}
       >
-        <Select
-          allowClear
-          options={languageOptions}
-          placeholder="Chọn loại ngoại ngữ"
-        />
+        <Select allowClear options={[]} placeholder="Chọn loại ngoại ngữ" />
       </FormItem>
       <FormItem
         name="advanced"

@@ -98,7 +98,7 @@ const RecruitmentList: React.FC = () => {
       title: 'Địa điểm',
       dataIndex: ['jobsPlacements'],
       render: (record: any) => {
-        return record?.placement?.title;
+        return record.map((i: any) => i.placement.title).join(' - ');
       },
     },
     {
@@ -126,9 +126,8 @@ const RecruitmentList: React.FC = () => {
       <div className="flex justify-between">
         <div>
           <h1 className="text-2xl font-bold text-purple-800 mb-4">
-            Danh sách tuyển dụng
+            Quản lý tin tuyển dụng
           </h1>
-          <p className="text-gray-600 mb-4">Có 0 hồ sơ được tìm thấy</p>
         </div>
         <Select
           options={optionStatus}

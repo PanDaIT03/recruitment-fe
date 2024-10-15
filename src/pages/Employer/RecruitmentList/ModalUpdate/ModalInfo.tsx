@@ -1,6 +1,7 @@
 import { Form, Input, InputNumber, Modal, Radio, Select } from 'antd';
 import React, { useEffect } from 'react';
 import { JobsAPI } from '~/apis/job';
+import Button from '~/components/Button/Button';
 import { useFetch } from '~/hooks/useFetch';
 import {
   JobItem,
@@ -50,19 +51,17 @@ const ModalInfo: React.FC<ModalProps> = ({
   const parser = (value: string | undefined): string => {
     return value ? value.replace(/₫\s?|(,*)/g, '') : '';
   };
-
-  const onFinish = (values: any) => {
-    console.log('Form values:', values);
-  };
-
+  console.log(
+    initData?.jobsPlacements?.map((placement) => placement.placement.id)
+  );
   useEffect(() => {
     if (initData) {
       form.setFieldsValue({
         fieldsId: initData.jobField?.id,
         categoriesId: initData.jobCategory?.id,
         workTypesId: initData.workType?.id,
-        placements: initData.jobsPlacements?.map(
-          (placement) => placement.placement.id
+        placements: initData?.jobsPlacements?.map(
+          (placement) => placement?.placement.id
         ),
         salaryMin: initData.salaryMin,
         salaryMax: initData.salaryMax,
@@ -85,7 +84,6 @@ const ModalInfo: React.FC<ModalProps> = ({
           quantity: values.quantity,
         };
         onUpdate(modalInfo);
-        onClose();
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -93,7 +91,7 @@ const ModalInfo: React.FC<ModalProps> = ({
   };
 
   return (
-    <Modal open={open} onCancel={onClose} onOk={handleOk}>
+    <Modal open={open} footer={false} closeIcon={null}>
       <h2 className="text-xl font-bold mb-6 text-center">Cập nhật thông tin</h2>
       <Form form={form} layout="vertical">
         <Form.Item
@@ -188,6 +186,11 @@ const ModalInfo: React.FC<ModalProps> = ({
             min={1}
           />
         </Form.Item>
+        <div className="flex items-center justify-end gap-2">
+          <Button title="Hủy" onClick={onClose} />
+
+          <Button title="Cập nhật" onClick={handleOk} fill />
+        </div>
       </Form>
     </Modal>
   );

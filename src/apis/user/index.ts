@@ -30,6 +30,11 @@ const UserApi = {
       headers: { Authorization: accessToken, Cookies: refreshToken },
     });
   },
+
+  getMyCv: async (): Promise<any> => {
+    return await axiosApi.get('/curriculum-vitaes/my-CVs');
+  },
+
   createAchievement: async (
     params: Pick<Achivement, 'description'>
   ): Promise<IBaseResponse> => {

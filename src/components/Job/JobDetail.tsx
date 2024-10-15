@@ -1,14 +1,16 @@
-import { Card, Col, Divider, Row, Spin } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Card, Col, Divider, Row, Spin, Modal, Typography } from 'antd';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
 import { formatCurrencyVN } from '~/utils/functions/formatNumber';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
-import Modal from '../Modal/Modal';
 import JobApplicationModal from './JobApplicationModal/JobApplicationModal';
+import PATH from '~/utils/path';
+
+const { Title } = Typography;
 
 const {
   AppstoreOutlined,
@@ -23,9 +25,12 @@ const {
 } = icons;
 
 const JobDetail: React.FC = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const rightColRef = useRef<HTMLDivElement>(null);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [isLoginModalVisible, setIsLoginModalVisible] =
+    useState<boolean>(false);
   const { currentJob, loading } = useAppSelector((state) => state.jobs);
   const dispatch = useAppDispatch();
 
@@ -67,7 +72,18 @@ const JobDetail: React.FC = () => {
   }, []);
 
   const handleIsOpenModal = () => {
-    setIsOpenModal(!isOpenModal);
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      setIsLoginModalVisible(true);
+    } else {
+      setIsOpenModal(true);
+    }
+  };
+
+  const handleLoginModalOk = () => {
+    setIsLoginModalVisible(false);
+    navigate(PATH.USER_SIGN_IN);
   };
 
   if (!currentJob || loading) {
@@ -256,7 +272,7 @@ const JobDetail: React.FC = () => {
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline flex items-center"
                     >
-                      ieltsvietop.vn/tuyen-dung
+                      {currentJob?.user?.companyUrl || 'Không xác định'}
                       <ExportOutlined className="ml-1" />
                     </Link>
                   ),
@@ -278,15 +294,33 @@ const JobDetail: React.FC = () => {
         </Col>
       </Row>
       <Modal
-        isOpen={isOpenModal}
+        open={isOpenModal}
         footer={null}
         closeIcon={false}
-        onCancel={handleIsOpenModal}
+        onCancel={() => setIsOpenModal(false)}
       >
         <JobApplicationModal
           jobTitle={currentJob?.title || ''}
-          handleToggleModal={handleIsOpenModal}
+          jobId={currentJob?.id}
+          handleToggleModal={() => setIsOpenModal(false)}
         />
+      </Modal>
+
+      <Modal
+        open={isLoginModalVisible}
+        footer={false}
+        className="flex justify-center items-center min-h-[50%]"
+      >
+        <Title level={4}>Thông báo</Title>
+        <Divider />
+        <p className="text-center text-lg font-bold">
+          Bạn cần đăng nhập để sử dụng chức năng tuyển dụng.
+        </p>
+
+        <div className="flex items-center justify-end mt-4 gap-2">
+          <Button title="Hủy" onClick={() => setIsLoginModalVisible(false)} />
+          <Button title="Đăng nhập" fill onClick={handleLoginModalOk} />
+        </div>
       </Modal>
     </div>
   );

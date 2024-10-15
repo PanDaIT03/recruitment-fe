@@ -1,17 +1,17 @@
 import { Card, Spin, Typography } from 'antd';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { JobsAPI } from '~/apis/job';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getJobById } from '~/store/thunk/job';
+import { JobItem } from '~/types/Job';
+import { formatCurrencyVN } from '~/utils/functions/formatNumber';
+import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import ModalBen from './ModalUpdate/ModalBen';
 import ModalDesc from './ModalUpdate/ModalDesc';
-import ModalReq from './ModalUpdate/ModalReq';
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { getJobById } from '~/store/thunk/job';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { JobItem } from '~/types/Job';
-import { formatCurrencyVN } from '~/utils/functions/formatNumber';
 import ModalInfo from './ModalUpdate/ModalInfo';
-import { JobsAPI } from '~/apis/job';
-import toast from '~/utils/functions/toast';
+import ModalReq from './ModalUpdate/ModalReq';
 
 const { EditOutlined, ArrowLeftOutlined } = icons;
 
@@ -84,19 +84,18 @@ const UpdateJob = () => {
     }
   };
 
-  const handleModalUpdate = (
+  const handleModalUpdate = async (
     field: keyof JobItem | 'modalInfo',
     value: any
   ) => {
+    let updatedJobData;
     if (field === 'modalInfo') {
-      const updatedJobData = { ...jobData, ...value };
-      setJobData(updatedJobData);
-      handleSubmit(updatedJobData);
+      updatedJobData = { ...jobData, ...value };
     } else {
-      const updatedJobData = { ...jobData, [field]: value };
-      setJobData(updatedJobData);
-      handleSubmit(updatedJobData);
+      updatedJobData = { ...jobData, [field]: value };
     }
+    setJobData(updatedJobData);
+    await handleSubmit(updatedJobData);
   };
 
   if (!currentJob) {
