@@ -20,4 +20,4 @@ const MessageProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export { useMessage, MessageProvider };
+export { MessageProvider, useMessage };

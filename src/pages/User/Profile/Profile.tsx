@@ -15,21 +15,21 @@ import LanguageCard from './Card/LanguageCard';
 import SkillCard from './Card/SkillCard';
 import AchievementModal from './Modal/AchievementModal';
 
+import { WorkExperience } from '~/types/User';
+import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
-import { IWorkExperience } from '~/types/User';
-import ExperienceModal from './Modal/ExperienceModal';
 
 const { PlusOutlined, EditOutlined } = icons;
 
-const initExperience = {} as IWorkExperience;
+const initExperience = {} as WorkExperience;
 
 const Profile = () => {
   const dispatch = useAppDispatch();
 
   const [selectedItem, setSelectedItem] = useState('');
   const [experienceItemSelected, setExperienceItemSelected] =
-    useState<IWorkExperience>(initExperience);
+    useState<WorkExperience>(initExperience);
 
   const { userProfile, loading } = useAppSelector((state) => state.user);
   const { currentUser } = useAppSelector((state) => state.auth);
@@ -39,7 +39,7 @@ const Profile = () => {
     dispatch(getUserProfile({ accessToken, refreshToken }));
   }, [currentUser]);
 
-  const handleEditExperience = useCallback((values: IWorkExperience) => {
+  const handleEditExperience = useCallback((values: WorkExperience) => {
     setExperienceItemSelected(values);
   }, []);
 
