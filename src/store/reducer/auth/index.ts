@@ -1,13 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   checkExistedEmail,
-  forgotPassword,
   signIn,
   signInWithGoogle,
   signOut,
   verifyOTP,
 } from '~/store/thunk/auth';
-import { IEmailStatus, IForgotPassword, IUser } from '~/types/Auth/index';
+import { IEmailStatus, IUser } from '~/types/Auth/index';
 
 export interface IAuthState {
   loading?: boolean;
@@ -15,7 +14,6 @@ export interface IAuthState {
   accessToken?: string | null;
   refreshToken?: string | null;
   emailStatus?: IEmailStatus | null;
-  forgotPasswordStatus?: IForgotPassword | null;
 }
 
 const initialState: IAuthState = {
@@ -23,7 +21,6 @@ const initialState: IAuthState = {
   accessToken: null,
   refreshToken: null,
   emailStatus: null,
-  forgotPasswordStatus: null,
   currentUser: {} as IUser,
 };
 
@@ -38,9 +35,6 @@ const authSlice = createSlice({
     },
     resetEmailStatus: (state) => {
       state.emailStatus = null;
-    },
-    resetForgotPasswordStatus: (state) => {
-      state.forgotPasswordStatus = null;
     },
     setAccessToken: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
@@ -108,25 +102,10 @@ const authSlice = createSlice({
       })
       .addCase(signOut.rejected, (state) => {
         state.loading = false;
-      })
-      .addCase(forgotPassword.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(forgotPassword.fulfilled, (state, action) => {
-        state.loading = false;
-        state.forgotPasswordStatus = action.payload;
-      })
-      .addCase(forgotPassword.rejected, (state) => {
-        state.loading = false;
-        state.forgotPasswordStatus = null;
       });
   },
 });
 
 export const authReducer = authSlice.reducer;
-export const {
-  resetUser,
-  resetEmailStatus,
-  resetForgotPasswordStatus,
-  setAccessToken,
-} = authSlice.actions;
+export const { resetUser, resetEmailStatus, setAccessToken } =
+  authSlice.actions;
