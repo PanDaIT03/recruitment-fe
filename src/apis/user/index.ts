@@ -1,11 +1,6 @@
 import axiosApi from '~/services/axios';
 import { IUser } from '~/types/Auth';
-import {
-  Achivement,
-  ILanguageComboBox,
-  IUserProfile,
-  IUserProfileData,
-} from '~/types/User';
+import { Achivement, IUserProfile, IUserProfileData } from '~/types/User';
 
 export type IUserProfileParams = Pick<IUser, 'accessToken' | 'refreshToken'>;
 export type IUpdateWorkExperience = IUserProfileData & { id: number };

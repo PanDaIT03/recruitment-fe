@@ -1,4 +1,3 @@
-import { Input, InputNumber } from 'antd';
 import { InputOTP } from 'antd-input-otp';
 import { FormInstance } from 'antd/es/form/Form';
 import { useEffect } from 'react';
