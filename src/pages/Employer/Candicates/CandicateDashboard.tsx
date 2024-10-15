@@ -1,7 +1,6 @@
-import React from 'react';
-import { Card, Row, Col, Empty, Table } from 'antd';
 import { ArrowUpOutlined } from '@ant-design/icons';
-import Button from '~/components/Button/Button';
+import { Card, Col, Row, Table } from 'antd';
+import React from 'react';
 import icons from '~/utils/icons';
 
 const { FilePdfOutlined } = icons;
@@ -64,11 +63,6 @@ const CandicateDashboard: React.FC = () => {
 
       <Card className="mt-6 text-center shadow-md">
         <Table columns={columns} dataSource={[]} className="mb-4" />
-        {/* <Empty
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-          description="Không có ứng viên nào ứng tuyển trong 30 ngày qua"
-        />
-        <Button fill title="Đăng tin tuyển dụng" className="mx-auto" /> */}
       </Card>
     </div>
   );

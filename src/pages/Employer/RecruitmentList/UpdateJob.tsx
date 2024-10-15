@@ -1,17 +1,17 @@
 import { Card, Spin, Typography } from 'antd';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { JobsAPI } from '~/apis/job';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getJobById } from '~/store/thunk/job';
+import { JobItem } from '~/types/Job';
+import { formatCurrencyVN } from '~/utils/functions/formatNumber';
+import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import ModalBen from './ModalUpdate/ModalBen';
 import ModalDesc from './ModalUpdate/ModalDesc';
-import ModalReq from './ModalUpdate/ModalReq';
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { getJobById } from '~/store/thunk/job';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { JobItem } from '~/types/Job';
-import { formatCurrencyVN } from '~/utils/functions/formatNumber';
 import ModalInfo from './ModalUpdate/ModalInfo';
-import { JobsAPI } from '~/apis/job';
-import toast from '~/utils/functions/toast';
+import ModalReq from './ModalUpdate/ModalReq';
 
 const { EditOutlined, ArrowLeftOutlined } = icons;
 
@@ -29,7 +29,7 @@ const UpdateJob = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const dataJob: JobItem = location.state;
-  const { currentJob, loading } = useAppSelector((state) => state.jobs);
+  const { currentJob } = useAppSelector((state) => state.jobs);
   const [jobData, setJobData] = useState<JobItem>(dataJob);
 
   const [openModal, setOpenModal] = useState<SelectModal | null>(null);

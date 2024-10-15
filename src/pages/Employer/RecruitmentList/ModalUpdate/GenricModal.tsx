@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import { Form, Modal } from 'antd';
 import { useForm } from 'antd/lib/form/Form';
+import React, { useEffect, useState } from 'react';
 import Button from '~/components/Button/Button';
 import Editor from '~/components/Editor/Editor';
 

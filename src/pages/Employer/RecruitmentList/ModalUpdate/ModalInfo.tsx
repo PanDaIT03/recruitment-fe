@@ -51,15 +51,17 @@ const ModalInfo: React.FC<ModalProps> = ({
   const parser = (value: string | undefined): string => {
     return value ? value.replace(/₫\s?|(,*)/g, '') : '';
   };
-
+  console.log(
+    initData?.jobsPlacements?.map((placement) => placement.placement.id)
+  );
   useEffect(() => {
     if (initData) {
       form.setFieldsValue({
         fieldsId: initData.jobField?.id,
         categoriesId: initData.jobCategory?.id,
         workTypesId: initData.workType?.id,
-        placements: initData.jobsPlacements?.map(
-          (placement) => placement.placement.id
+        placements: initData?.jobsPlacements?.map(
+          (placement) => placement?.placement.id
         ),
         salaryMin: initData.salaryMin,
         salaryMax: initData.salaryMax,
