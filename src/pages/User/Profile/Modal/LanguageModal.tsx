@@ -1,54 +1,94 @@
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 
-import { useEffect } from 'react';
-import UserApi from '~/apis/user';
+import { useEffect, useState } from 'react';
+import UserApi, { ILanguageParams } from '~/apis/user';
 import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
+import useMessageApi from '~/hooks/useMessageApi';
+import { UserLanguage } from '~/types/User';
 import ProfileModal from './ProfileModal';
 
 interface IProps {
   isOpen: boolean;
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  data: UserLanguage;
+  refetch: () => void;
+  onCancel: () => void;
 }
 
-const advanceOptions: DefaultOptionType[] = [
-  { label: 'Sơ cấp', value: 'elementary' },
-  { label: 'Giao tiếp cơ bản', value: 'intermediate' },
-  { label: 'Giao tiếp chuyên nghiệp', value: 'advanced' },
-  { label: 'Hoàn toàn thành thạo', value: 'proficient' },
+export const advanceOptions: DefaultOptionType[] = [
+  { label: 'Sơ cấp', value: '1' },
+  { label: 'Giao tiếp cơ bản', value: '2' },
+  { label: 'Giao tiếp chuyên nghiệp', value: '3' },
+  { label: 'Hoàn toàn thành thạo', value: '4' },
 ];
 
-const LanguageModal = ({ isOpen, setSelectedItem }: IProps) => {
+const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const [form] = useForm();
 
   const { data: languages } = useFetch(UserApi.getAllForeignLanguage);
+  const { mutate: createUserLanguage, isPending } = useMessageApi({
+    apiFn: (params: ILanguageParams) => UserApi.createForeignLanguage(params),
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
-  const handleFinish = (values: any) => {
-    console.log(values);
-  };
+  const [languageOptions, setLanguageOptions] = useState<DefaultOptionType[]>(
+    []
+  );
 
   const handleCancel = () => {
-    setSelectedItem('');
+    form.resetFields();
+    onCancel();
+  };
+
+  const handleFinish = (values: any) => {
+    const params: ILanguageParams = {
+      foreignLanguagesId: values.language,
+      level: Number(values.advanced),
+    };
+
+    createUserLanguage(params);
+    handleCancel();
   };
 
   useEffect(() => {
-    form.setFieldValue('advanced', 'intermediate');
-  }, []);
+    if (!Object.keys(data).length) {
+      form.setFieldValue('advanced', '2');
+      return;
+    }
 
-  useEffect(() => {}, [languages]);
+    const fieldsValue = {
+      language: data.foreignLanguagesId,
+      advanced: data.level?.toString(),
+    };
+    form.setFieldsValue(fieldsValue);
+  }, [data]);
+
+  useEffect(() => {
+    if (!languages) return;
+
+    const options: DefaultOptionType[] = languages?.items.map((language) => ({
+      label: language.title,
+      value: language.id,
+    }));
+
+    setLanguageOptions(options);
+  }, [languages]);
 
   return (
     <ProfileModal
       form={form}
       isOpen={isOpen}
+      loading={isPending}
       title="Cập nhật tóm tắt"
       onCancel={handleCancel}
       onFinish={handleFinish}
     >
       <FormItem
-        name="achievement"
+        name="language"
         label="Ngoại ngữ"
         rules={[{ required: true, message: 'Hãy chọn ngoại ngữ của bạn' }]}
       >

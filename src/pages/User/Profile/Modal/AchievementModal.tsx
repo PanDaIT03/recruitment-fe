@@ -11,17 +11,17 @@ interface IProps {
   data: string;
   isOpen: boolean;
   refetch: () => void;
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  onCancel: () => void;
 }
 
-const AchievementModal = ({
-  data,
-  isOpen,
-  refetch,
-  setSelectedItem,
-}: IProps) => {
+const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const [form] = useForm();
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleCancel = () => {
+    form.resetFields();
+    onCancel();
+  };
 
   const handleFinish = async (values: any) => {
     setIsLoading(true);
@@ -35,12 +35,7 @@ const AchievementModal = ({
     toast[statusCode === 200 ? 'success' : 'error'](message || 'Có lỗi xảy ra');
 
     setIsLoading(false);
-    setSelectedItem('');
-    form.resetFields();
-  };
-
-  const handleCancel = () => {
-    setSelectedItem('');
+    handleCancel();
   };
 
   useEffect(() => {

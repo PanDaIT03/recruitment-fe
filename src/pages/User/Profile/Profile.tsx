@@ -15,7 +15,7 @@ import LanguageCard from './Card/LanguageCard';
 import SkillCard from './Card/SkillCard';
 import AchievementModal from './Modal/AchievementModal';
 
-import { WorkExperience } from '~/types/User';
+import { UserLanguage, UserSkill, WorkExperience } from '~/types/User';
 import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
@@ -23,13 +23,20 @@ import SkillModal from './Modal/SkillModal';
 const { PlusOutlined, EditOutlined } = icons;
 
 const initExperience = {} as WorkExperience;
+const initLanguage = {} as UserLanguage;
+const initSkill = {} as UserSkill;
 
 const Profile = () => {
   const dispatch = useAppDispatch();
 
   const [selectedItem, setSelectedItem] = useState('');
+
   const [experienceItemSelected, setExperienceItemSelected] =
     useState<WorkExperience>(initExperience);
+  const [languageItemSelected, setLanguageItemSelected] =
+    useState<UserLanguage>(initLanguage);
+  const [skillItemSelected, setSkillItemSelected] =
+    useState<UserSkill>(initSkill);
 
   const { userProfile, loading } = useAppSelector((state) => state.user);
   const { currentUser } = useAppSelector((state) => state.auth);
@@ -46,6 +53,20 @@ const Profile = () => {
   const handleCancelExperience = useCallback(() => {
     setSelectedItem('');
     setExperienceItemSelected(initExperience);
+  }, []);
+
+  const handleEditLanguage = useCallback((values: UserLanguage) => {
+    setLanguageItemSelected(values);
+  }, []);
+
+  const handleCancelLanguage = useCallback(() => {
+    setSelectedItem('');
+    setLanguageItemSelected(initLanguage);
+  }, []);
+
+  const handleCancelSkill = useCallback(() => {
+    setSelectedItem('');
+    setSkillItemSelected(initSkill);
   }, []);
 
   const items: IProfileSection[] = useMemo(
@@ -107,7 +128,12 @@ const Profile = () => {
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
         ),
         content: userProfile.userLanguages?.length && (
-          <LanguageCard data={userProfile.userLanguages} />
+          <LanguageCard
+            data={userProfile.userLanguages}
+            refetch={refetchUserProfile}
+            onEdit={handleEditLanguage}
+            setSelectedItem={setSelectedItem}
+          />
         ),
       },
       {
@@ -152,7 +178,7 @@ const Profile = () => {
         data={userProfile?.achivement?.description}
         isOpen={selectedItem === ProfileSectionType.ACHIEVEMENT}
         refetch={refetchUserProfile}
-        setSelectedItem={setSelectedItem}
+        onCancel={() => setSelectedItem('')}
       />
       <ExperienceModal
         data={experienceItemSelected}
@@ -161,12 +187,16 @@ const Profile = () => {
         onCancel={handleCancelExperience}
       />
       <LanguageModal
+        data={languageItemSelected}
         isOpen={selectedItem === ProfileSectionType.LANGUAGE}
-        setSelectedItem={setSelectedItem}
+        refetch={refetchUserProfile}
+        onCancel={handleCancelLanguage}
       />
       <SkillModal
+        data={skillItemSelected}
         isOpen={selectedItem === ProfileSectionType.SKILL}
-        setSelectedItem={setSelectedItem}
+        refetch={refetchUserProfile}
+        onCancel={handleCancelSkill}
       />
     </>
   );

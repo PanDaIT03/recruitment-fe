@@ -64,6 +64,11 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     },
   });
 
+  const handleCancel = () => {
+    form.resetFields();
+    onCancel();
+  };
+
   const handleFinish = async (values: IUserProfileForm) => {
     const { workingTime, ...rest } = values;
     let startDate = null,
@@ -84,8 +89,7 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
       ? updateWorkExperience({ id: data.id, ...params })
       : createWorkExperience(params);
 
-    form.resetFields();
-    onCancel();
+    handleCancel();
   };
 
   useEffect(() => {
@@ -115,7 +119,7 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
       isOpen={isOpen}
       loading={isCreateWorkPending}
       title="Thêm kinh nghiệm làm việc"
-      onCancel={onCancel}
+      onCancel={handleCancel}
       onFinish={handleFinish}
     >
       <FormItem

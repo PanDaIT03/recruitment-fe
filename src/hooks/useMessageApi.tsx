@@ -29,7 +29,7 @@ const useMessageApi = ({ apiFn, onSuccess, onError }: IProps) => {
     } catch (error: any) {
       messageApi.error({
         key: 'messageApi',
-        content: `Có lỗi xảy ra: ${error?.response?.data?.message} || 'Không xác định'`,
+        content: `Có lỗi xảy ra: ${error?.response?.data?.message || 'Không xác định'}`,
       });
 
       setIsPending(false);

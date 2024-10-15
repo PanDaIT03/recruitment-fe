@@ -3,3 +3,8 @@ interface IBaseResponse<T = undefined> {
   message: string;
   statusCode: number;
 }
+
+interface IPaginatedData<T> {
+  pageInfo: PageInfo
+  items: T;
+}
