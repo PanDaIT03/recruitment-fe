@@ -1,8 +1,14 @@
 import axiosApi from '~/services/axios';
 import { IUser } from '~/types/Auth';
-import { Achivement, IUserProfile, IUserProfileData } from '~/types/User';
+import {
+  Achivement,
+  ILanguageComboBox,
+  IUserProfile,
+  IUserProfileData,
+} from '~/types/User';
 
 export type IUserProfileParams = Pick<IUser, 'accessToken' | 'refreshToken'>;
+export type IUpdateWorkExperience = IUserProfileData & { id: number };
 
 const UserApi = {
   getUserProfile: async (
@@ -30,13 +36,16 @@ const UserApi = {
     return await axiosApi.post('/work-experiences', payload);
   },
   updateWorkExperience: async (
-    payload: IUserProfileData & { id: number }
+    payload: IUpdateWorkExperience
   ): Promise<IBaseResponse> => {
     const { id, ...rest } = payload;
     return await axiosApi.patch(`/work-experiences/${id}`, rest);
   },
   deleteWorkExperience: async (id: number): Promise<IBaseResponse> => {
     return await axiosApi.delete(`/work-experiences/${id}`);
+  },
+  getAllForeignLanguage: async () => {
+    return await axiosApi.get('/foreign-languages/all');
   },
 };
 

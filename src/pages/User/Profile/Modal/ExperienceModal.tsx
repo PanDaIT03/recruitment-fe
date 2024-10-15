@@ -5,13 +5,13 @@ import dayjs from 'dayjs';
 import { memo, useEffect, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
-import UserApi from '~/apis/user';
+import UserApi, { IUpdateWorkExperience } from '~/apis/user';
 import { DatePicker, RangePicker } from '~/components/DatePicker/DatePicker';
 import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
-import { useMessage } from '~/contexts/messageProvider';
 import { useFetch } from '~/hooks/useFetch';
+import useMessageApi from '~/hooks/useMessageApi';
 import {
   JobPlacement,
   PaginatedJobCategories,
@@ -20,14 +20,14 @@ import {
 import {
   IUserProfileData,
   IUserProfileForm,
-  IWorkExperience,
+  WorkExperience,
 } from '~/types/User';
 import icons from '~/utils/icons';
 import ProfileModal from './ProfileModal';
 
 interface IProps {
   isOpen: boolean;
-  data: IWorkExperience;
+  data: WorkExperience;
   refetch: () => void;
   onCancel: () => void;
 }
@@ -35,13 +35,10 @@ interface IProps {
 const { BankOutlined } = icons;
 
 const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
-  const { messageApi } = useMessage();
-
   const [form] = useForm<IUserProfileForm>();
 
   const [isEdit, setIsEdit] = useState(false);
   const [isChecked, setIsChecked] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
 
   const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
   const { data: jobPositions } = useFetch<PaginatedJobPositions>(
@@ -51,9 +48,23 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     JobsAPI.getAllJobCategories
   );
 
-  const handleFinish = async (values: IUserProfileForm) => {
-    setIsLoading(true);
+  const { mutate: createWorkExperience, isPending: isCreateWorkPending } =
+    useMessageApi({
+      apiFn: (params: IUserProfileData) => UserApi.createWorkExperience(params),
+      onSuccess: () => {
+        refetch();
+      },
+    });
 
+  const { mutate: updateWorkExperience } = useMessageApi({
+    apiFn: (params: IUpdateWorkExperience) =>
+      UserApi.updateWorkExperience(params),
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const handleFinish = async (values: IUserProfileForm) => {
     const { workingTime, ...rest } = values;
     let startDate = null,
       endDate = null;
@@ -69,18 +80,10 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
       endDate: endDate,
     };
 
-    try {
-      const { statusCode, message } = isEdit
-        ? await UserApi.updateWorkExperience({ id: data.id, ...params })
-        : await UserApi.createWorkExperience(params);
+    isEdit
+      ? updateWorkExperience({ id: data.id, ...params })
+      : createWorkExperience(params);
 
-      if (statusCode === 200) refetch();
-      messageApi.success(message);
-    } catch (error: any) {
-      messageApi.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`);
-    }
-
-    setIsLoading(false);
     form.resetFields();
     onCancel();
   };
@@ -110,7 +113,7 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     <ProfileModal
       form={form}
       isOpen={isOpen}
-      loading={isLoading}
+      loading={isCreateWorkPending}
       title="Thêm kinh nghiệm làm việc"
       onCancel={onCancel}
       onFinish={handleFinish}
