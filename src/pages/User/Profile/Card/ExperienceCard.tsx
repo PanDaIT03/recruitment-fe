@@ -26,13 +26,10 @@ const ExperienceCard = ({ data, refetch, onEdit, setSelectedItem }: IProps) => {
     },
   });
 
-  const handleEditItem = useCallback(
-    (values: WorkExperience) => {
-      onEdit(values);
-      setSelectedItem(ProfileSectionType.EXPERIENCE);
-    },
-    [onEdit]
-  );
+  const handleEditItem = useCallback((values: WorkExperience) => {
+    onEdit(values);
+    setSelectedItem(ProfileSectionType.EXPERIENCE);
+  }, []);
 
   const handleDeleteItem = useCallback(async (id: number) => {
     deleteWorkExperience(id);

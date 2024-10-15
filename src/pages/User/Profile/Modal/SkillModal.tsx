@@ -1,27 +1,70 @@
-import { useForm } from 'antd/es/form/Form';
-import { memo } from 'react';
-
-import FormItem from '~/components/Form/FormItem';
-import ProfileModal from './ProfileModal';
-import Input from '~/components/Input/Input';
 import { Rate } from 'antd';
-import { Box } from '~/assets/svg';
+import { useForm } from 'antd/es/form/Form';
+import { DefaultOptionType } from 'antd/es/select';
+import { memo, useEffect, useState } from 'react';
+
+import UserApi, { ISkillParams } from '~/apis/user';
+import FormItem from '~/components/Form/FormItem';
+import Select from '~/components/Select/Select';
+import { useFetch } from '~/hooks/useFetch';
+import useMessageApi from '~/hooks/useMessageApi';
+import { UserSkill } from '~/types/User';
+import ProfileModal from './ProfileModal';
 
 interface IProps {
   isOpen: boolean;
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  data: UserSkill;
+  refetch: () => void;
+  onCancel: () => void;
 }
 
-const SkillModal = ({ isOpen, setSelectedItem }: IProps) => {
+const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const [form] = useForm();
 
-  const handleFinish = (values: any) => {
-    console.log(values);
-  };
+  const [skillOptions, setSkillOptions] = useState<DefaultOptionType[]>([]);
+
+  const { data: skillComboBox } = useFetch(UserApi.getAllSkill);
+  const { mutate: createUserSkill } = useMessageApi({
+    apiFn: (params: ISkillParams) => UserApi.createUserSkill(params),
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const handleCancel = () => {
-    setSelectedItem('');
+    form.resetFields();
+    onCancel();
   };
+
+  const handleFinish = (values: any) => {
+    const params: ISkillParams = {
+      skillsId: values.skill,
+      level: values.level,
+    };
+
+    createUserSkill(params);
+    handleCancel();
+  };
+
+  useEffect(() => {
+    if (!Object.keys(data).length) return;
+
+    const fieldsValue = {
+      skill: data.skill.title,
+      level: data.level.toString(),
+    };
+    form.setFieldsValue(fieldsValue);
+  }, [data]);
+
+  useEffect(() => {
+    if (!skillComboBox) return;
+
+    const options: DefaultOptionType[] = skillComboBox?.items.map((skill) => ({
+      label: skill.title,
+      value: skill.id,
+    }));
+    setSkillOptions(options);
+  }, [skillComboBox]);
 
   return (
     <ProfileModal
@@ -36,9 +79,8 @@ const SkillModal = ({ isOpen, setSelectedItem }: IProps) => {
         label="Kỹ năng"
         rules={[{ required: true, message: 'Hãy chọn kỹ năng của bạn' }]}
       >
-        <Input
-          name="skill"
-          prefix={<Box width={16} height={16} />}
+        <Select
+          options={skillOptions}
           placeholder="Ví dụ: Microsoft Excel..."
         />
       </FormItem>
@@ -47,7 +89,7 @@ const SkillModal = ({ isOpen, setSelectedItem }: IProps) => {
         label="Thành thạo"
         rules={[{ required: true, message: 'Hãy mức độ thành thạo của bạn' }]}
       >
-        <Rate allowHalf />
+        <Rate />
       </FormItem>
     </ProfileModal>
   );

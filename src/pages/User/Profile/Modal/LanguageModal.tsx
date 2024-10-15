@@ -1,99 +1,98 @@
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 
+import { useEffect, useState } from 'react';
+import UserApi, { ILanguageParams } from '~/apis/user';
 import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
-import ProfileModal from './ProfileModal';
-import { useEffect, useState } from 'react';
-import useMessageApi from '~/hooks/useMessageApi';
-import UserApi from '~/apis/user';
-import { ILanguageComboBox } from '~/types/User';
 import { useFetch } from '~/hooks/useFetch';
+import useMessageApi from '~/hooks/useMessageApi';
+import { UserLanguage } from '~/types/User';
+import ProfileModal from './ProfileModal';
 
 interface IProps {
   isOpen: boolean;
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+  data: UserLanguage;
+  refetch: () => void;
+  onCancel: () => void;
 }
 
-// const languageOptions: DefaultOptionType[] = [
-//   {
-//     label: 'English',
-//     value: 'eng',
-//   },
-//   {
-//     label: 'Japanse',
-//     value: 'jp',
-//   },
-//   {
-//     label: 'Korean',
-//     value: 'korean',
-//   },
-//   {
-//     label: 'Chinese',
-//     value: 'chinese',
-//   },
-//   {
-//     label: 'French',
-//     value: 'french',
-//   },
-//   {
-//     label: 'German',
-//     value: 'german',
-//   },
-// ];
-
-const advanceOptions: DefaultOptionType[] = [
-  { label: 'Sơ cấp', value: 'elementary' },
-  { label: 'Giao tiếp cơ bản', value: 'intermediate' },
-  { label: 'Giao tiếp chuyên nghiệp', value: 'advanced' },
-  { label: 'Hoàn toàn thành thạo', value: 'proficient' },
+export const advanceOptions: DefaultOptionType[] = [
+  { label: 'Sơ cấp', value: '1' },
+  { label: 'Giao tiếp cơ bản', value: '2' },
+  { label: 'Giao tiếp chuyên nghiệp', value: '3' },
+  { label: 'Hoàn toàn thành thạo', value: '4' },
 ];
 
-const LanguageModal = ({ isOpen, setSelectedItem }: IProps) => {
+const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const [form] = useForm();
 
   const { data: languages } = useFetch(UserApi.getAllForeignLanguage);
+  const { mutate: createUserLanguage, isPending } = useMessageApi({
+    apiFn: (params: ILanguageParams) => UserApi.createForeignLanguage(params),
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const [languageOptions, setLanguageOptions] = useState<DefaultOptionType[]>(
     []
   );
 
-  const handleFinish = (values: any) => {
-    console.log(values);
-  };
-
   const handleCancel = () => {
-    setSelectedItem('');
+    form.resetFields();
+    onCancel();
+  };
+
+  const handleFinish = (values: any) => {
+    const params: ILanguageParams = {
+      foreignLanguagesId: values.language,
+      level: Number(values.advanced),
+    };
+
+    createUserLanguage(params);
+    handleCancel();
   };
 
   useEffect(() => {
-    form.setFieldValue('advanced', 'intermediate');
-  }, []);
+    if (!Object.keys(data).length) {
+      form.setFieldValue('advanced', '2');
+      return;
+    }
+
+    const fieldsValue = {
+      language: data.foreignLanguagesId,
+      advanced: data.level?.toString(),
+    };
+    form.setFieldsValue(fieldsValue);
+  }, [data]);
 
   useEffect(() => {
-    // const options:DefaultOptionType[] = languages?.items?.map(language => ({
-    //   label: 
-    // }))
+    if (!languages) return;
+
+    const options: DefaultOptionType[] = languages?.items.map((language) => ({
+      label: language.title,
+      value: language.id,
+    }));
+
+    setLanguageOptions(options);
   }, [languages]);
 
   return (
     <ProfileModal
       form={form}
       isOpen={isOpen}
+      loading={isPending}
       title="Cập nhật tóm tắt"
       onCancel={handleCancel}
       onFinish={handleFinish}
     >
       <FormItem
-        name="achievement"
+        name="language"
         label="Ngoại ngữ"
         rules={[{ required: true, message: 'Hãy chọn ngoại ngữ của bạn' }]}
       >
-        <Select
-          allowClear
-          options={languageOptions}
-          placeholder="Chọn loại ngoại ngữ"
-        />
+        <Select allowClear options={[]} placeholder="Chọn loại ngoại ngữ" />
       </FormItem>
       <FormItem
         name="advanced"
