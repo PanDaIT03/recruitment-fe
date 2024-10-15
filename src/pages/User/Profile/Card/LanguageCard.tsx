@@ -1,7 +1,6 @@
 import { Divider, Flex } from 'antd';
 import { Dispatch, SetStateAction, useCallback } from 'react';
 
-import { useEffect } from 'react';
 import { mockFileList } from '~/mocks/data';
 import { UserLanguage } from '~/types/User';
 import { advanceOptions } from '../Modal/LanguageModal';
