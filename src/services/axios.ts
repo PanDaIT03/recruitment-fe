@@ -25,7 +25,7 @@ const instance: AxiosInstance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const accessToken = tokenService.getAccessToken();
+    const accessToken = localStorage.getItem('accessToken');
     const refreshToken = tokenService.getRefreshToken();
 
     if (accessToken && config.headers)
@@ -46,9 +46,7 @@ instance.interceptors.response.use(
   (response: AxiosResponse): any => {
     const { accessToken } = response.data;
 
-    if (accessToken) {
-      tokenService.setAccessToken(accessToken);
-    }
+    if (accessToken) localStorage.setItem('accessToken', accessToken);
 
     return response.data;
   },
@@ -65,15 +63,13 @@ instance.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const response = await instance.post<{
+        const response: any = await instance.post<{
           accessToken: string;
         }>('/auth/refresh');
-        const { accessToken } = response.data;
-
-        tokenService.setAccessToken(accessToken);
 
         if (originalRequest.headers)
-          originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+          originalRequest.headers['Authorization'] =
+            `Bearer ${response.accessToken}`;
 
         return instance(originalRequest);
       } catch (refreshError) {

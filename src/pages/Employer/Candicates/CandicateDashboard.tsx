@@ -1,7 +1,10 @@
 import React from 'react';
-import { Card, Row, Col, Empty } from 'antd';
+import { Card, Row, Col, Empty, Table } from 'antd';
 import { ArrowUpOutlined } from '@ant-design/icons';
 import Button from '~/components/Button/Button';
+import icons from '~/utils/icons';
+
+const { FilePdfOutlined } = icons;
 
 const CandicateDashboard: React.FC = () => {
   const stats = [
@@ -9,6 +12,37 @@ const CandicateDashboard: React.FC = () => {
     { title: 'Ứng viên tự ứng tuyển', value: 0 },
     { title: 'Ứng viên được chia sẻ', value: 0 },
     { title: 'Ứng viên từ nguồn khác', value: 0 },
+  ];
+
+  const columns = [
+    {
+      title: 'Trạng thái',
+      dataIndex: 'status',
+    },
+    {
+      title: 'Vị trí tuyển dụng',
+      dataIndex: 'title',
+    },
+    {
+      title: 'Ứng viên',
+      dataIndex: ['user', 'fullName'],
+    },
+    {
+      title: 'Ngày ứng tuyển',
+      dataIndex: 'applicationDeadline',
+    },
+    {
+      title: 'Địa điểm',
+      dataIndex: ['jobsPlacements'],
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+    },
+    {
+      title: 'Hành động',
+      render: () => <FilePdfOutlined />,
+    },
   ];
 
   return (
@@ -29,11 +63,12 @@ const CandicateDashboard: React.FC = () => {
       </Row>
 
       <Card className="mt-6 text-center shadow-md">
-        <Empty
+        <Table columns={columns} dataSource={[]} className="mb-4" />
+        {/* <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           description="Không có ứng viên nào ứng tuyển trong 30 ngày qua"
         />
-        <Button fill title="Đăng tin tuyển dụng" className="mx-auto" />
+        <Button fill title="Đăng tin tuyển dụng" className="mx-auto" /> */}
       </Card>
     </div>
   );
