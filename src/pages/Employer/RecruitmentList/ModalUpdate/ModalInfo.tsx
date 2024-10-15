@@ -1,6 +1,7 @@
 import { Form, Input, InputNumber, Modal, Radio, Select } from 'antd';
 import React, { useEffect } from 'react';
 import { JobsAPI } from '~/apis/job';
+import Button from '~/components/Button/Button';
 import { useFetch } from '~/hooks/useFetch';
 import {
   JobItem,
@@ -51,10 +52,6 @@ const ModalInfo: React.FC<ModalProps> = ({
     return value ? value.replace(/₫\s?|(,*)/g, '') : '';
   };
 
-  const onFinish = (values: any) => {
-    console.log('Form values:', values);
-  };
-
   useEffect(() => {
     if (initData) {
       form.setFieldsValue({
@@ -85,7 +82,6 @@ const ModalInfo: React.FC<ModalProps> = ({
           quantity: values.quantity,
         };
         onUpdate(modalInfo);
-        onClose();
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -93,7 +89,7 @@ const ModalInfo: React.FC<ModalProps> = ({
   };
 
   return (
-    <Modal open={open} onCancel={onClose} onOk={handleOk}>
+    <Modal open={open} footer={false} closeIcon={null}>
       <h2 className="text-xl font-bold mb-6 text-center">Cập nhật thông tin</h2>
       <Form form={form} layout="vertical">
         <Form.Item
@@ -188,6 +184,11 @@ const ModalInfo: React.FC<ModalProps> = ({
             min={1}
           />
         </Form.Item>
+        <div className="flex items-center justify-end gap-2">
+          <Button title="Hủy" onClick={onClose} />
+
+          <Button title="Cập nhật" onClick={handleOk} fill />
+        </div>
       </Form>
     </Modal>
   );

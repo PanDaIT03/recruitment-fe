@@ -29,7 +29,7 @@ const UpdateJob = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const dataJob: JobItem = location.state;
-  const { currentJob } = useAppSelector((state) => state.jobs);
+  const { currentJob, loading } = useAppSelector((state) => state.jobs);
   const [jobData, setJobData] = useState<JobItem>(dataJob);
 
   const [openModal, setOpenModal] = useState<SelectModal | null>(null);
@@ -84,19 +84,18 @@ const UpdateJob = () => {
     }
   };
 
-  const handleModalUpdate = (
+  const handleModalUpdate = async (
     field: keyof JobItem | 'modalInfo',
     value: any
   ) => {
+    let updatedJobData;
     if (field === 'modalInfo') {
-      const updatedJobData = { ...jobData, ...value };
-      setJobData(updatedJobData);
-      handleSubmit(updatedJobData);
+      updatedJobData = { ...jobData, ...value };
     } else {
-      const updatedJobData = { ...jobData, [field]: value };
-      setJobData(updatedJobData);
-      handleSubmit(updatedJobData);
+      updatedJobData = { ...jobData, [field]: value };
     }
+    setJobData(updatedJobData);
+    await handleSubmit(updatedJobData);
   };
 
   if (!currentJob) {
