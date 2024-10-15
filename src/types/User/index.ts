@@ -14,23 +14,6 @@ interface JobCategory {
   description: null;
 }
 
-interface JobPosition {
-  id: number;
-  title: string;
-}
-
-export interface IWorkExperience {
-  id: number;
-  companyName: string;
-  isWorking: boolean;
-  startDate: Date;
-  endDate: null;
-  description: string;
-  placement: JobPosition;
-  jobPosition: JobPosition;
-  jobCategory: JobCategory;
-}
-
 interface Role {
   id: number;
   title: string;
@@ -100,4 +83,13 @@ export interface IUserProfileForm extends IBaseUserProfile {
   placementsId: number;
   description: string;
   workingTime: Dayjs | Dayjs[];
+}
+
+export interface ILanguageComboBox {
+  id: number;
+  createBy: number;
+  createAt: Date;
+  updateBy: null;
+  updateAt: null;
+  title: string;
 }

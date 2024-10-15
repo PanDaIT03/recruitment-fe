@@ -3,45 +3,40 @@ import dayjs from 'dayjs';
 import { Dispatch, memo, SetStateAction, useCallback } from 'react';
 
 import UserApi from '~/apis/user';
-import { useMessage } from '~/contexts/messageProvider';
+import useMessageApi from '~/hooks/useMessageApi';
 import { mockFileList } from '~/mocks/data';
-import { IWorkExperience } from '~/types/User';
+import { WorkExperience } from '~/types/User';
 import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
-  data: IWorkExperience[];
+  data: WorkExperience[];
   refetch: () => void;
-  onEdit(values: IWorkExperience): void;
+  onEdit(values: WorkExperience): void;
   setSelectedItem: Dispatch<SetStateAction<string>>;
 }
 
 const defaultImgUrl = mockFileList[0].url;
 
 const ExperienceCard = ({ data, refetch, onEdit, setSelectedItem }: IProps) => {
-  const { messageApi } = useMessage();
+  const { mutate: deleteWorkExperience } = useMessageApi({
+    apiFn: (id: number) => UserApi.deleteWorkExperience(id),
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const handleEditItem = useCallback(
-    (values: IWorkExperience) => {
+    (values: WorkExperience) => {
       onEdit(values);
       setSelectedItem(ProfileSectionType.EXPERIENCE);
     },
     [onEdit]
   );
 
-  const handleDeleteItem = useCallback(
-    async (id: number) => {
-      try {
-        const { message, statusCode } = await UserApi.deleteWorkExperience(id);
-
-        if (statusCode === 200) refetch();
-        messageApi.success(message);
-      } catch (error: any) {
-        messageApi.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`);
-      }
-    },
-    [messageApi]
-  );
+  const handleDeleteItem = useCallback(async (id: number) => {
+    deleteWorkExperience(id);
+  }, []);
 
   return (
     <>
