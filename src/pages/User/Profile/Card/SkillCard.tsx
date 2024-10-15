@@ -15,7 +15,7 @@ const SkillCard = ({ data }: IProps) => {
           content={
             <div className="space-y-2">
               <p className="text-base font-semibold">{item.skill.title}</p>
-              <Rate allowHalf value={item.level} />
+              <Rate value={item.level} />
             </div>
           }
         />

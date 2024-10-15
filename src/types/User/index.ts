@@ -88,8 +88,17 @@ export interface IUserProfileForm extends IBaseUserProfile {
 export interface ILanguageComboBox {
   id: number;
   createBy: number;
-  createAt: Date;
-  updateBy: null;
-  updateAt: null;
+  createAt: string;
+  updateBy: string;
+  updateAt: string;
+  title: string;
+}
+
+export interface ISkillComboBox {
+  id: number;
+  createBy: number;
+  createAt: string;
+  updateBy: string;
+  updateAt: string;
   title: string;
 }
