@@ -9,8 +9,14 @@ const { LoadingOutlined } = icons;
 
 type ButtonBorderType = 'solid' | 'dashed';
 type ButtonType = 'button' | 'submit' | 'reset';
-type DisplayType = 'error' | 'approve' | 'primary' | 'text' | 'dashed';
 type ButtonClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => void;
+type DisplayType =
+  | 'outline'
+  | 'error'
+  | 'approve'
+  | 'primary'
+  | 'text'
+  | 'dashed';
 
 export interface IButtonProps {
   fill?: boolean;
@@ -53,8 +59,8 @@ const Button = ({
   return (
     <button
       type={type}
-      className={classes}
       disabled={disabled || loading}
+      className={classes}
       {...props}
     >
       <div className="flex items-center gap-3">

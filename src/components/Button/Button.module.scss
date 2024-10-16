@@ -36,12 +36,26 @@
   background-color: #038f00;
 }
 
-.primary {
-  color: var(--button-primary-color);
-  border: 1px solid var(--button-primary-border-color);
+.outline {
+  color: var(--button-outline-color);
+  background-color: var(--button-outline-bg);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--button-outline-border-color);
 
   &:hover {
-    background-color: rgb(252 235 230);
+    color: var(--button-primary-color);
+    background-color: var(--button-bg-hover-color);
+    border-color: var(--button-primary-border-color);
+  }
+}
+
+.primary {
+  color: var(--button-primary-color);
+  border: 1px solid var(--button-border-color);
+
+  &:hover {
+    background-color: var(--button-bg-hover-color);
   }
 }
 
@@ -62,5 +76,5 @@
 }
 
 .dashed {
-  border: 1px dashed var(--button-primary-border-color);
+  border: 1px dashed var(--button-border-color);
 }
