@@ -65,7 +65,7 @@ const Button = ({
     >
       <div className="flex items-center gap-3">
         {loading ? <Spin indicator={<LoadingOutlined />} /> : iconBefore}
-        <b className="w-max">{title}</b>
+        <span className="w-max">{title}</span>
         {iconAfter}
       </div>
     </button>

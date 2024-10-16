@@ -5,6 +5,10 @@
   height: max-content;
   align-items: center;
   justify-content: center;
+
+  &:not(.text) {
+    font-weight: 600;
+  }
 }
 
 .button:disabled {
