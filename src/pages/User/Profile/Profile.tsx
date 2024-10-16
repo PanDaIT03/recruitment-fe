@@ -51,6 +51,7 @@ const Profile = () => {
 
   const handleEditExperience = useCallback((values: WorkExperience) => {
     setExperienceItemSelected(values);
+    setSelectedItem(ProfileSectionType.EXPERIENCE);
   }, []);
 
   const handleCancelExperience = useCallback(() => {
@@ -60,11 +61,17 @@ const Profile = () => {
 
   const handleEditLanguage = useCallback((values: UserLanguage) => {
     setLanguageItemSelected(values);
+    setSelectedItem(ProfileSectionType.LANGUAGE);
   }, []);
 
   const handleCancelLanguage = useCallback(() => {
     setSelectedItem('');
     setLanguageItemSelected(initLanguage);
+  }, []);
+
+  const handleEditSkill = useCallback((values: UserSkill) => {
+    setSkillItemSelected(values);
+    setSelectedItem(ProfileSectionType.SKILL);
   }, []);
 
   const handleCancelSkill = useCallback(() => {
@@ -114,7 +121,6 @@ const Profile = () => {
             data={userProfile.workExperiences}
             refetch={refetchUserProfile}
             onEdit={handleEditExperience}
-            setSelectedItem={setSelectedItem}
           />
         ),
       },
@@ -135,7 +141,6 @@ const Profile = () => {
             data={userProfile.userLanguages}
             refetch={refetchUserProfile}
             onEdit={handleEditLanguage}
-            setSelectedItem={setSelectedItem}
           />
         ),
       },
@@ -154,7 +159,11 @@ const Profile = () => {
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
         ),
         content: userProfile.userSkills?.length && (
-          <SkillCard data={userProfile.userSkills} />
+          <SkillCard
+            data={userProfile.userSkills}
+            refetch={refetchUserProfile}
+            onEdit={handleEditSkill}
+          />
         ),
       },
     ],
