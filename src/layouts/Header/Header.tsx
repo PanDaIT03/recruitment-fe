@@ -41,10 +41,10 @@ const Header = ({ items = defaultItems }: IProps) => {
   const menuItems: MenuItem[] = useMemo(
     () =>
       items.map((item) => {
-        const { ...rest } = item;
+        const { ...others } = item;
 
         return {
-          ...rest,
+          ...others,
           style: {
             fontWeight: 600,
             width: 'max-content',

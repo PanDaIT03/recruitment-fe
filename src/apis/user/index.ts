@@ -46,8 +46,8 @@ const UserApi = {
   updateWorkExperience: async (
     params: IUpdateWorkExperience
   ): Promise<IBaseResponse> => {
-    const { id, ...rest } = params;
-    return await axiosApi.patch(`/work-experiences/${id}`, rest);
+    const { id, ...others } = params;
+    return await axiosApi.patch(`/work-experiences/${id}`, others);
   },
   deleteWorkExperience: async (id: number): Promise<IBaseResponse> => {
     return await axiosApi.delete(`/work-experiences/${id}`);

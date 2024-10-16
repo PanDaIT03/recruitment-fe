@@ -70,7 +70,7 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   };
 
   const handleFinish = async (values: IUserProfileForm) => {
-    const { workingTime, ...rest } = values;
+    const { workingTime, ...others } = values;
     let startDate = null,
       endDate = null;
 
@@ -80,7 +80,7 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
       : (startDate = dayjs(workingTime).format('YYYY/MM/DD HH:mm:ss'));
 
     const params: IUserProfileData = {
-      ...rest,
+      ...others,
       startDate: startDate,
       endDate: endDate,
     };
