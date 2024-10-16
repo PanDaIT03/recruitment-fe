@@ -23,8 +23,6 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   });
 
   useEffect(() => {
-    console.log(data);
-
     if (!isOpen) return;
     form.setFieldValue('achievement', data);
 
