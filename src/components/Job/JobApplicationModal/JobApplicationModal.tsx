@@ -1,44 +1,86 @@
-import { Radio, Select, UploadProps } from 'antd';
+import { message, Radio, Select, Upload, UploadFile, UploadProps } from 'antd';
 import { useState } from 'react';
-import './JobApplicationModal.scss';
+import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
-import { message, Upload } from 'antd';
 import icons from '~/utils/icons';
+import './JobApplicationModal.scss';
+import { useFetch } from '~/hooks/useFetch';
+import UserApi from '~/apis/user';
 
+const { Option } = Select;
 const { Dragger } = Upload;
-
 const { CloudUploadOutlined } = icons;
 
 type JobApplicationModalProps = {
   jobTitle: string;
+  jobId: number;
   handleToggleModal: () => void;
-};
-
-const props: UploadProps = {
-  name: 'file',
-  multiple: true,
-  action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e) {
-    console.log('Dropped files', e.dataTransfer.files);
-  },
 };
 
 const JobApplicationModal = ({
   jobTitle,
   handleToggleModal,
+  jobId,
 }: JobApplicationModalProps) => {
   const [cvOption, setCvOption] = useState('existing');
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [selectedCvId, setSelectedCvId] = useState<number | null>(null);
+
+  const { data: myCV } = useFetch<any>(UserApi.getMyCv);
+
+  const handleUpload = async () => {
+    const formData = new FormData();
+
+    if (cvOption === 'new') {
+      fileList.forEach((file) => {
+        if (file.originFileObj) {
+          formData.append('file', file.originFileObj);
+          formData.append('jobsId', jobId.toString());
+        }
+      });
+      setUploading(true);
+    } else if (cvOption === 'existing' && selectedCvId) {
+      formData.append('jobsId', jobId.toString());
+      formData.append('file', selectedCvId?.toString());
+    }
+
+    try {
+      const response = await JobsAPI.ApplyJob(formData);
+
+      setFileList([]);
+
+      message.success(response?.message);
+    } catch (error: any) {
+      message.error(error.response.data.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const props: UploadProps = {
+    onRemove: (file) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: (file) => {
+      const isValidFormat =
+        file.type === 'application/pdf' ||
+        file.type === 'application/msword' ||
+        file.type ===
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+      if (!isValidFormat) {
+        message.error('Tệp tin không hợp lệ! Chỉ hỗ trợ PDF, DOC, DOCX.');
+      }
+
+      setFileList([...fileList, { ...file, originFileObj: file }]);
+      return false;
+    },
+    maxCount: 1,
+  };
 
   return (
     <div className="p-4 md:p-6">
@@ -63,14 +105,24 @@ const JobApplicationModal = ({
       {cvOption === 'existing' && (
         <div className="mb-4">
           <p className="mb-2 font-medium">Chọn CV ứng tuyển</p>
-          <Select placeholder="Chọn CV" style={{ width: '100%' }}></Select>
+          <Select
+            placeholder="Chọn CV"
+            style={{ width: '100%' }}
+            onChange={setSelectedCvId}
+          >
+            {myCV?.items?.map?.((cv: any) => (
+              <Option value={cv.id} key={cv.id}>
+                {cv.fileName.replace('.pdf', '')}
+              </Option>
+            ))}
+          </Select>
         </div>
       )}
 
       {cvOption === 'new' && (
         <div className="mb-4">
           <p className="mb-2 font-medium">Tải lên CV mới</p>
-          <Dragger {...props}>
+          <Dragger {...props} maxCount={1}>
             <p className="ant-upload-drag-icon">
               <CloudUploadOutlined style={{ color: '#f97316' }} />
             </p>
@@ -84,7 +136,13 @@ const JobApplicationModal = ({
 
       <div className="flex flex-col md:flex-row justify-end mt-6 gap-2">
         <Button title="Để sau" onClick={handleToggleModal} />
-        <Button title="Gửi hồ sơ" fill onClick={handleToggleModal} />
+        <Button
+          title="Gửi hồ sơ"
+          fill
+          onClick={handleUpload}
+          loading={uploading}
+          disabled={fileList.length === 0 && cvOption === 'new'}
+        />
       </div>
     </div>
   );

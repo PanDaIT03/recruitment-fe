@@ -1,13 +1,17 @@
 const PATH = {
   ROOT: '/',
+  BLOG: 'blog',
   JOB_DETAIL: '/job/:id',
   JOB_SEEKER: '/job-seeker',
   JOB_LIST: '/jobs',
   // Auth
-  SIGN_IN: '/sign-in',
-  SIGN_UP: '/sign-up',
-  FORGOT_PASSWORD: '/forgot-password',
-  RESET_PASSWORD: '/reset-password',
+  USER_SIGN_IN: '/user/sign-in',
+  USER_SIGN_UP: '/user/sign-up',
+  USER_FORGOT_PASSWORD: '/user/forgot-password',
+  USER_RESET_PASSWORD: '/user/reset-password',
+  EMPLOYER_SIGN_IN: '/employer/sign-in',
+  EMPLOYER_SIGN_UP: '/employer/sign-up',
+  UPDATE_JOB: '/employer/update-job',
   // Admin
   ADMIN_DASHBOARD: '/admin/dashboard',
   // Employer

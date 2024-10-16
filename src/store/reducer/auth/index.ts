@@ -8,15 +8,15 @@ import {
 } from '~/store/thunk/auth';
 import { IEmailStatus, IUser } from '~/types/Auth/index';
 
-export interface AuthState {
-  loading: boolean;
+export interface IAuthState {
+  loading?: boolean;
   currentUser: IUser;
-  accessToken: string | null;
-  refreshToken: string | null;
-  emailStatus: IEmailStatus | null;
+  accessToken?: string | null;
+  refreshToken?: string | null;
+  emailStatus?: IEmailStatus | null;
 }
 
-const initialState: AuthState = {
+const initialState: IAuthState = {
   loading: false,
   accessToken: null,
   refreshToken: null,

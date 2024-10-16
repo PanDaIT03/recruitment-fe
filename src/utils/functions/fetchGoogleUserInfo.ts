@@ -13,6 +13,7 @@ const fetchGoogleUserInfo = async ({ response }: IGoogleUserInfoResponse) => {
   const userInfoResponse = await fetch(userInfoURL, {
     headers: {
       Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
     },
   });
 

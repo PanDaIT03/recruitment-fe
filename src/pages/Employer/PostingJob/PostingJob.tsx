@@ -223,7 +223,7 @@ const PostingJob: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          name="placements"
+          name="placementIds"
           label="Địa điểm làm việc (tối đa 3 địa điểm)"
           rules={[{ required: true, validator: validateField('Địa điểm') }]}
         >

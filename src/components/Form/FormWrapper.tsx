@@ -3,6 +3,7 @@ import { memo, ReactNode } from 'react';
 
 import { useAppSelector } from '~/hooks/useStore';
 import Button from '../Button/Button';
+import { InternalNamePath } from 'antd/es/form/interface';
 
 interface IProps {
   loading?: boolean;
@@ -14,6 +15,11 @@ interface IProps {
   footer?: ReactNode;
   onCancel?: () => void;
   onFinish(values: any): void;
+}
+
+interface IErrorFields {
+  name: InternalNamePath;
+  errors: string[];
 }
 
 const FormWrapper = ({
@@ -43,14 +49,24 @@ const FormWrapper = ({
     onFinish(values);
   };
 
+  const handleFinishFailed = (errorFields: IErrorFields[]) => {
+    if (!errorFields.length) return;
+
+    form.scrollToField(errorFields[0].name, {
+      behavior: 'smooth',
+      block: 'center',
+    });
+  };
+
   return (
     <div className={className}>
       <Form
         form={form}
         size="small"
         layout="vertical"
-        autoComplete="off"
+        autoComplete="on"
         onFinish={handleFinish}
+        onFinishFailed={({ errorFields }) => handleFinishFailed(errorFields)}
       >
         {children}
         {footer || (

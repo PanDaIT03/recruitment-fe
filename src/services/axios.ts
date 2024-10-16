@@ -25,7 +25,7 @@ const instance: AxiosInstance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const accessToken = tokenService.getAccessToken();
+    const accessToken = localStorage.getItem('accessToken');
     const refreshToken = tokenService.getRefreshToken();
 
     if (accessToken && config.headers)
@@ -46,9 +46,7 @@ instance.interceptors.response.use(
   (response: AxiosResponse): any => {
     const { accessToken } = response.data;
 
-    if (accessToken) {
-      tokenService.setAccessToken(accessToken);
-    }
+    if (accessToken) localStorage.setItem('accessToken', accessToken);
 
     return response.data;
   },
@@ -65,18 +63,17 @@ instance.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const response = await instance.post<{
+        const response: any = await instance.post<{
           accessToken: string;
         }>('/auth/refresh');
-        const { accessToken } = response.data;
 
         if (originalRequest.headers)
-          originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-
-        tokenService.setAccessToken(accessToken);
+          originalRequest.headers['Authorization'] =
+            `Bearer ${response.accessToken}`;
 
         return instance(originalRequest);
       } catch (refreshError) {
+        console.log(refreshError);
         // window.location.href = PATH.SIGN_IN;
         toast.warning('Có lỗi xảy ra, xin vui lòng thử lại');
         return Promise.reject(refreshError);
@@ -85,6 +82,8 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+let isWarningShown = false;
 
 const retryRequest = async <T>(
   config: InternalAxiosRequestConfig,
@@ -101,7 +100,10 @@ const retryRequest = async <T>(
       error.code === 'ECONNABORTED'
     ) {
       if (retries === 1) {
-        toast.warning('Hết thời gian truy cập. Xin vui lòng thử lại.');
+        if (!isWarningShown) {
+          toast.warning('Hết thời gian truy cập. Xin vui lòng thử lại.');
+          isWarningShown = true;
+        }
         return Promise.reject(error);
       }
 
@@ -123,11 +125,7 @@ const axiosApi = {
       method: 'get',
       url,
     } as InternalAxiosRequestConfig),
-  post: <T = any>(
-    url: string,
-    data?: any,
-    config?: InternalAxiosRequestConfig
-  ) =>
+  post: <T = any>(url: string, data?: any, config?: any) =>
     retryRequest<T>({
       ...config,
       method: 'post',

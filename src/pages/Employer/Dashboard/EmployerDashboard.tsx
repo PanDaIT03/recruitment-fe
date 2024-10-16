@@ -26,10 +26,13 @@ const data = [
 
 const EmployerDashboard: React.FC = () => {
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
+    <div className="p-4 min-h-screen">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="col-span-2">
-          <Card title="Số lượng ứng tuyển từng tháng" className="h-full">
+          <Card
+            title="Số lượng ứng tuyển từng tháng"
+            className="h-full shadow-md"
+          >
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -41,13 +44,13 @@ const EmployerDashboard: React.FC = () => {
           </Card>
         </div>
         <div className="grid gap-1">
-          <Card title="Phỏng vấn sắp tới">
+          <Card title="Phỏng vấn sắp tới" className="shadow-md">
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description="Không có cuộc phỏng vấn nào sắp tới"
             />
           </Card>
-          <Card title="Ứng viên sắp đi làm">
+          <Card title="Ứng viên sắp đi làm" className="shadow-md">
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description="Không có ứng viên nào sắp đi làm"
@@ -56,7 +59,7 @@ const EmployerDashboard: React.FC = () => {
         </div>
       </div>
       <div className="mt-4">
-        <Card title="Phân bố ứng viên theo nguồn">
+        <Card title="Phân bố ứng viên theo nguồn" className="shadow-md">
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description="Chưa có dữ liệu"

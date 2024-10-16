@@ -1,14 +1,16 @@
-import { Card, Col, Divider, Row, Spin } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Card, Col, Divider, Row, Spin, Modal, Typography } from 'antd';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
 import { formatCurrencyVN } from '~/utils/functions/formatNumber';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
-import Modal from '../Modal/Modal';
 import JobApplicationModal from './JobApplicationModal/JobApplicationModal';
+import PATH from '~/utils/path';
+
+const { Title } = Typography;
 
 const {
   AppstoreOutlined,
@@ -23,9 +25,12 @@ const {
 } = icons;
 
 const JobDetail: React.FC = () => {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const rightColRef = useRef<HTMLDivElement>(null);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [isLoginModalVisible, setIsLoginModalVisible] =
+    useState<boolean>(false);
   const { currentJob, loading } = useAppSelector((state) => state.jobs);
   const dispatch = useAppDispatch();
 
@@ -33,7 +38,7 @@ const JobDetail: React.FC = () => {
     { path: '/jobs', label: 'Tin tuyển dụng' },
     {
       path: `/job/${id}`,
-      label: currentJob?.[0]?.title || 'Chi tiết công việc',
+      label: currentJob?.title || 'Chi tiết công việc',
     },
   ];
 
@@ -67,10 +72,21 @@ const JobDetail: React.FC = () => {
   }, []);
 
   const handleIsOpenModal = () => {
-    setIsOpenModal(!isOpenModal);
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      setIsLoginModalVisible(true);
+    } else {
+      setIsOpenModal(true);
+    }
   };
 
-  if (!currentJob || currentJob.length === 0 || loading) {
+  const handleLoginModalOk = () => {
+    setIsLoginModalVisible(false);
+    navigate(PATH.USER_SIGN_IN);
+  };
+
+  if (!currentJob || loading) {
     return (
       <div className="flex items-center justify-center">
         <Spin size="large" />;
@@ -90,9 +106,9 @@ const JobDetail: React.FC = () => {
             onClick={handleIsOpenModal}
           />
           <div className="mb-4 hidden md:block">
-            <h1 className="text-2xl font-bold mb-2">{currentJob[0]?.title}</h1>
+            <h1 className="text-2xl font-bold mb-2">{currentJob?.title}</h1>
             <p className="text-gray-500 mb-4">
-              {currentJob[0]?.user?.companyName}
+              {currentJob?.user?.companyName}
             </p>
             <div className="flex flex-wrap gap-2">
               <Button
@@ -120,7 +136,7 @@ const JobDetail: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-500">Địa điểm</p>
                   <p className="font-medium">
-                    {currentJob[0]?.jobsPlacements
+                    {currentJob?.jobsPlacements
                       ?.map((place) => place?.placement?.title)
                       .join(' - ')}
                   </p>
@@ -131,8 +147,8 @@ const JobDetail: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-500">Mức lương</p>
                   <p className="font-medium">
-                    {currentJob[0]?.salaryMin && currentJob[0]?.salaryMax
-                      ? `${formatCurrencyVN(Number(currentJob[0]?.salaryMin))} - ${formatCurrencyVN(Number(currentJob[0]?.salaryMax))}`
+                    {currentJob?.salaryMin && currentJob?.salaryMax
+                      ? `${formatCurrencyVN(Number(currentJob?.salaryMin))} - ${formatCurrencyVN(Number(currentJob?.salaryMax))}`
                       : 'Thương lượng'}
                   </p>
                 </div>
@@ -141,18 +157,14 @@ const JobDetail: React.FC = () => {
                 <LaptopOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Hình thức làm việc</p>
-                  <p className="font-medium">
-                    {currentJob[0]?.workType?.title}
-                  </p>
+                  <p className="font-medium">{currentJob?.workType?.title}</p>
                 </div>
               </div>
               <div className="flex items-center">
                 <ClockCircleOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Loại công việc</p>
-                  <p className="font-medium">
-                    {currentJob[0]?.jobCategory?.name}
-                  </p>
+                  <p className="font-medium">{currentJob?.jobCategory?.name}</p>
                 </div>
               </div>
               <div className="flex items-center">
@@ -160,9 +172,9 @@ const JobDetail: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-500">Kinh nghiệm</p>
                   <p className="font-medium">
-                    {currentJob[0]?.minExpYearRequired &&
-                    currentJob[0]?.maxExpYearRequired
-                      ? `${currentJob[0]?.minExpYearRequired} - ${currentJob[0]?.maxExpYearRequired} năm`
+                    {currentJob?.minExpYearRequired &&
+                    currentJob?.maxExpYearRequired
+                      ? `${currentJob?.minExpYearRequired} - ${currentJob?.maxExpYearRequired} năm`
                       : 'Không yêu cầu'}
                   </p>
                 </div>
@@ -171,7 +183,7 @@ const JobDetail: React.FC = () => {
                 <TeamOutlined className="text-2xl mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Số lượng</p>
-                  <p className="font-medium">{currentJob[0]?.quantity}</p>
+                  <p className="font-medium">{currentJob?.quantity}</p>
                 </div>
               </div>
             </div>
@@ -187,7 +199,7 @@ const JobDetail: React.FC = () => {
               <h2 className="text-xl font-bold mb-2">Mô tả công việc</h2>
               <ul
                 className="list-disc pl-5 space-y-2"
-                dangerouslySetInnerHTML={{ __html: currentJob[0]?.description }}
+                dangerouslySetInnerHTML={{ __html: currentJob?.description }}
               />
             </section>
 
@@ -198,7 +210,7 @@ const JobDetail: React.FC = () => {
               <ul
                 className="list-disc pl-5 space-y-2"
                 dangerouslySetInnerHTML={{
-                  __html: currentJob[0]?.requirements,
+                  __html: currentJob?.requirements,
                 }}
               />
             </section>
@@ -209,7 +221,7 @@ const JobDetail: React.FC = () => {
               <h2 className="text-xl font-bold mb-2">Quyền lợi</h2>
               <ul
                 className="list-disc pl-5 space-y-2"
-                dangerouslySetInnerHTML={{ __html: currentJob[0]?.benefits }}
+                dangerouslySetInnerHTML={{ __html: currentJob?.benefits }}
               />
             </section>
           </Card>
@@ -225,7 +237,7 @@ const JobDetail: React.FC = () => {
         <Col xs={24} md={8} className="hidden md:block">
           <Card className="shadow-md " ref={rightColRef}>
             <h2 className="text-lg font-semibold mb-4">
-              {currentJob[0]?.user?.fullName}
+              {currentJob?.user?.fullName}
             </h2>
 
             <div className="flex items-center mb-4">
@@ -233,9 +245,7 @@ const JobDetail: React.FC = () => {
                 <TeamOutlined className="text-2xl text-gray-500" />
               </div>
               <div>
-                <p className="font-medium">
-                  {currentJob[0]?.user?.companyName}
-                </p>
+                <p className="font-medium">{currentJob?.user?.companyName}</p>
                 <p className="text-orange-500">Chưa được xác minh</p>
               </div>
             </div>
@@ -245,7 +255,7 @@ const JobDetail: React.FC = () => {
               {[
                 {
                   label: 'Tên công ty :',
-                  value: currentJob[0]?.user?.companyName,
+                  value: currentJob?.user?.companyName,
                 },
                 {
                   label: 'Tình trạng xác minh : ',
@@ -262,7 +272,7 @@ const JobDetail: React.FC = () => {
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline flex items-center"
                     >
-                      ieltsvietop.vn/tuyen-dung
+                      {currentJob?.user?.companyUrl || 'Không xác định'}
                       <ExportOutlined className="ml-1" />
                     </Link>
                   ),
@@ -283,11 +293,34 @@ const JobDetail: React.FC = () => {
           </Card>
         </Col>
       </Row>
-      <Modal isOpen={isOpenModal} footer={null} closeIcon={false}>
+      <Modal
+        open={isOpenModal}
+        footer={null}
+        closeIcon={false}
+        onCancel={() => setIsOpenModal(false)}
+      >
         <JobApplicationModal
-          jobTitle={currentJob?.[0]?.title || ''}
-          handleToggleModal={handleIsOpenModal}
+          jobTitle={currentJob?.title || ''}
+          jobId={currentJob?.id}
+          handleToggleModal={() => setIsOpenModal(false)}
         />
+      </Modal>
+
+      <Modal
+        open={isLoginModalVisible}
+        footer={false}
+        className="flex justify-center items-center min-h-[50%]"
+      >
+        <Title level={4}>Thông báo</Title>
+        <Divider />
+        <p className="text-center text-lg font-bold">
+          Bạn cần đăng nhập để sử dụng chức năng tuyển dụng.
+        </p>
+
+        <div className="flex items-center justify-end mt-4 gap-2">
+          <Button title="Hủy" onClick={() => setIsLoginModalVisible(false)} />
+          <Button title="Đăng nhập" fill onClick={handleLoginModalOk} />
+        </div>
       </Modal>
     </div>
   );

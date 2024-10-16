@@ -8,13 +8,13 @@ type IProps = {
 } & FormItemProps;
 
 const FormItem = ({ children, childrenSelected = false, ...props }: IProps) => {
-  const customClass = classNames('w-full mb-3', props.className);
+  const customClass = classNames('w-full', props.className);
 
   return (
     <Form.Item
+      {...props}
       className={customClass}
       initialValue={childrenSelected ? 'all' : undefined}
-      {...props}
     >
       {children}
     </Form.Item>

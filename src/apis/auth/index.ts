@@ -15,6 +15,12 @@ export interface IVerifyOTP {
   otp: number;
 }
 
+export interface IResetPasswordParams {
+  email: string;
+  password: string;
+  token: string;
+}
+
 const AuthAPI = {
   signUp: async (payload: IBaseUser): Promise<Response> => {
     return await axiosApi.post('/auth/register', payload);
@@ -33,6 +39,17 @@ const AuthAPI = {
   },
   verifyOTP: async (payload: IVerifyOTP): Promise<IUser> => {
     return await axiosApi.post('/auth/verify-otp', payload);
+  },
+  changePassword: async () => {
+    return await axiosApi.patch('/users/change-password');
+  },
+  sendResetPasswordUrl: async (email: string): Promise<IBaseResponse> => {
+    return await axiosApi.post('/auth/send-reset-password-url', { email });
+  },
+  resetPassword: async (
+    payload: IResetPasswordParams
+  ): Promise<IBaseResponse> => {
+    return await axiosApi.patch('/users/reset-password', payload);
   },
 };
 

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { IPaginationParms, JobsAPI } from '~/apis/job';
 import { IParams } from '~/components/Job/JobList';
-import { IJob } from '~/types/Job';
+import { IJob, JobItem } from '~/types/Job';
 
 export const getAllJobs = createAsyncThunk<
   IJob,
@@ -17,7 +17,7 @@ export const getAllJobs = createAsyncThunk<
 });
 
 export const getJobById = createAsyncThunk<
-  IJob['items'],
+  JobItem,
   string | undefined,
   { rejectValue: string }
 >('job/getJobById', async (id, { rejectWithValue }) => {

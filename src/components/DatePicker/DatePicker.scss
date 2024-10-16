@@ -1,0 +1,8 @@
+.ant-picker:has(.ant-picker-prefix-icon)
+  .ant-picker-input
+  span.ant-picker-suffix,
+.ant-picker span.ant-picker-suffix {
+  margin-left: 1px;
+  margin-right: 10px;
+  order: -1;
+}

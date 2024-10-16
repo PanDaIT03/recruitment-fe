@@ -1,20 +1,23 @@
 import {
-  configureStore,
-  ThunkAction,
   Action,
   combineReducers,
+  configureStore,
   Middleware,
+  ThunkAction,
 } from '@reduxjs/toolkit';
-import { authReducer } from './reducer/auth';
+
 import {
   loadState,
   localStorageMiddleware,
 } from './middlewares/localStorageMiddleware';
+import { authReducer } from './reducer/auth';
 import { jobReducer } from './reducer/job';
+import { userReducer } from './reducer/user';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   jobs: jobReducer,
+  user: userReducer,
 });
 
 export const store = configureStore({
