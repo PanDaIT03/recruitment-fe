@@ -27,17 +27,27 @@ export const advanceOptions: DefaultOptionType[] = [
 const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const [form] = useForm();
 
-  const { data: languages } = useFetch(UserApi.getAllForeignLanguage);
-  const { mutate: createUserLanguage, isPending } = useMessageApi({
-    apiFn: (params: ILanguageParams) => UserApi.createForeignLanguage(params),
-    onSuccess: () => {
-      refetch();
-    },
-  });
-
+  const [isEdit, setIsEdit] = useState(false);
   const [languageOptions, setLanguageOptions] = useState<DefaultOptionType[]>(
     []
   );
+
+  const { data: languages } = useFetch(UserApi.getAllForeignLanguage);
+
+  const { mutate: createUserLanguage, isPending: isCreatePending } =
+    useMessageApi({
+      apiFn: (params: ILanguageParams) => UserApi.createForeignLanguage(params),
+      onSuccess: () => {
+        refetch();
+      },
+    });
+  const { mutate: updateUserLanguage, isPending: isUpdatePending } =
+    useMessageApi({
+      apiFn: (params: ILanguageParams) => UserApi.updateForeignLanguage(params),
+      onSuccess: () => {
+        refetch();
+      },
+    });
 
   const handleCancel = () => {
     form.resetFields();
@@ -50,13 +60,18 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
       level: Number(values.advanced),
     };
 
-    createUserLanguage(params);
+    isEdit ? updateUserLanguage(params) : createUserLanguage(params);
     handleCancel();
   };
 
   useEffect(() => {
+    if (!isOpen) return;
+    !Object.keys(data).length && form.setFieldValue('advanced', '2');
+  }, [isOpen]);
+
+  useEffect(() => {
     if (!Object.keys(data).length) {
-      form.setFieldValue('advanced', '2');
+      setIsEdit(false);
       return;
     }
 
@@ -64,6 +79,8 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
       language: data.foreignLanguagesId,
       advanced: data.level?.toString(),
     };
+
+    setIsEdit(true);
     form.setFieldsValue(fieldsValue);
   }, [data]);
 
@@ -82,7 +99,7 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
     <ProfileModal
       form={form}
       isOpen={isOpen}
-      loading={isPending}
+      loading={isCreatePending || isUpdatePending}
       title="Cập nhật tóm tắt"
       onCancel={handleCancel}
       onFinish={handleFinish}
@@ -94,6 +111,7 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
       >
         <Select
           allowClear
+          disabled={isEdit}
           options={languageOptions}
           placeholder="Chọn loại ngoại ngữ"
         />

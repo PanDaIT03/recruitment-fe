@@ -1,35 +1,26 @@
 import { Divider, Flex } from 'antd';
-import { Dispatch, SetStateAction, useCallback } from 'react';
+import { memo } from 'react';
 
+import UserApi from '~/apis/user';
+import useMessageApi from '~/hooks/useMessageApi';
 import { mockFileList } from '~/mocks/data';
 import { UserLanguage } from '~/types/User';
 import { advanceOptions } from '../Modal/LanguageModal';
-import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
   data: UserLanguage[];
   refetch: () => void;
   onEdit: (values: UserLanguage) => void;
-  setSelectedItem: Dispatch<SetStateAction<string>>;
 }
 
 const defaultImgUrl = mockFileList[0].url;
 
-const LanguageCard = ({ data, onEdit, setSelectedItem }: IProps) => {
-  // const { mutate: deleteUserLanguage } = useMessageApi({
-  //   apiFn: (id: number) => UserApi.deleteForeignLanguage(id),
-  // });
-
-  const handleEditItem = useCallback((values: UserLanguage) => {
-    onEdit(values);
-    setSelectedItem(ProfileSectionType.LANGUAGE);
-  }, []);
-
-  // const handleDeleteItem = useCallback((id: number) => {
-  //   console.log(id);
-
-  // }, []);
+const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
+  const { mutate: deleteUserLanguage } = useMessageApi({
+    apiFn: (id: number) => UserApi.deleteForeignLanguage(id),
+    onSuccess: () => refetch(),
+  });
 
   return (
     <Flex vertical gap={16}>
@@ -37,8 +28,8 @@ const LanguageCard = ({ data, onEdit, setSelectedItem }: IProps) => {
         <div key={index}>
           <ProfileCard
             imgUrl={defaultImgUrl}
-            onEdit={() => handleEditItem(item)}
-            // onDelete={() => handleDeleteItem(item.)}
+            onEdit={() => onEdit(item)}
+            onDelete={() => deleteUserLanguage(item.foreignLanguagesId)}
             content={
               <div className="space-y-1">
                 <p className="text-base font-semibold">
@@ -61,4 +52,4 @@ const LanguageCard = ({ data, onEdit, setSelectedItem }: IProps) => {
   );
 };
 
-export default LanguageCard;
+export default memo(LanguageCard);

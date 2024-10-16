@@ -1,24 +1,22 @@
 import { Divider } from 'antd';
 import dayjs from 'dayjs';
-import { Dispatch, memo, SetStateAction, useCallback } from 'react';
+import { memo } from 'react';
 
 import UserApi from '~/apis/user';
 import useMessageApi from '~/hooks/useMessageApi';
 import { mockFileList } from '~/mocks/data';
 import { WorkExperience } from '~/types/User';
-import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
   data: WorkExperience[];
   refetch: () => void;
   onEdit(values: WorkExperience): void;
-  setSelectedItem: Dispatch<SetStateAction<string>>;
 }
 
 const defaultImgUrl = mockFileList[0].url;
 
-const ExperienceCard = ({ data, refetch, onEdit, setSelectedItem }: IProps) => {
+const ExperienceCard = ({ data, refetch, onEdit }: IProps) => {
   const { mutate: deleteWorkExperience } = useMessageApi({
     apiFn: (id: number) => UserApi.deleteWorkExperience(id),
     onSuccess: () => {
@@ -26,23 +24,14 @@ const ExperienceCard = ({ data, refetch, onEdit, setSelectedItem }: IProps) => {
     },
   });
 
-  const handleEditItem = useCallback((values: WorkExperience) => {
-    onEdit(values);
-    setSelectedItem(ProfileSectionType.EXPERIENCE);
-  }, []);
-
-  const handleDeleteItem = useCallback(async (id: number) => {
-    deleteWorkExperience(id);
-  }, []);
-
   return (
     <>
       {data?.map((item, index) => (
         <div key={index}>
           <ProfileCard
             imgUrl={defaultImgUrl}
-            onEdit={() => handleEditItem(item)}
-            onDelete={() => handleDeleteItem(item.id)}
+            onEdit={() => onEdit(item)}
+            onDelete={() => deleteWorkExperience(item.id)}
             content={
               <div className="space-y-1">
                 <p className="text-base font-semibold">

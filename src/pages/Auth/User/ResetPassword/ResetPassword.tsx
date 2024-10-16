@@ -132,7 +132,7 @@ const ResetPassword = () => {
               name="reEnterPassword"
               label="Nhập lại mật khẩu"
               rules={[
-                { required: true, message: 'Vui lòng nhập mật lại khẩu' },
+                { required: true, message: 'Vui lòng nhập lại mật khẩu' },
               ]}
             >
               <InputPassword

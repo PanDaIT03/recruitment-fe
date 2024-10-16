@@ -9,10 +9,17 @@ html {
 :root {
   --header-bgColor: rgba(105 31 116 / 1);
 
+  --button-bg-hover-color: rgb(252 235 230);
+  --button-border-color: #f15224;
+
   --button-primary-bg: #f15224;
   --button-primary-color: #f15224;
   --button-primary-bgHover: #d94a20;
-  --button-primary-border-color: #f15224;
+
+  --button-outline-bg: white;
+  --button-outline-bgHover: #d94a20;
+  --button-outline-color: rgb(37, 35, 37);
+  --button-outline-border-color: rgb(209 213 219);
 }
 
 :root {

@@ -11,3 +11,6 @@ export { ReactComponent as Location } from './location.svg';
 export { ReactComponent as Calendar } from './calendar.svg';
 export { ReactComponent as Box } from './box.svg';
 export { ReactComponent as Success } from './success-icon.svg';
+export { ReactComponent as Question } from './question.svg';
+export { ReactComponent as Document } from './document.svg';
+export { ReactComponent as Fly } from './fly.svg';

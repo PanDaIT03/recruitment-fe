@@ -15,8 +15,10 @@ const {
   UserOutlined,
   CloseOutlined,
   LogoutOutlined,
-  ProfileOutlined,
-  SnippetsOutlined,
+  FilePdfOutlined,
+  CalendarOutlined,
+  KeyOutlined,
+  ShopOutlined,
 } = icons;
 
 const HeaderDropDown = () => {
@@ -70,34 +72,80 @@ const HeaderDropDown = () => {
       ...(currentUser.role.id === 1
         ? [
             {
-              key: '1',
-              label: 'Hồ sơ',
-              icon: <ProfileOutlined />,
-              onClick: () => navigate(PATH.USER_PROFILE),
+              key: 'profile-group',
+              className: '[&>div]:!text-[#1c1917]',
+              label: <span className="font-semibold">Hồ sơ</span>,
+              type: 'group' as const,
+              children: [
+                {
+                  key: '1',
+                  label: (
+                    <span className="text-neutral-600 font-medium">
+                      Cá nhân
+                    </span>
+                  ),
+                  icon: <UserOutlined />,
+                  onClick: () => navigate(PATH.USER_PROFILE),
+                },
+                {
+                  key: '2',
+                  label: (
+                    <span className="text-neutral-600 font-medium">
+                      Công việc mong muốn
+                    </span>
+                  ),
+                  icon: <CalendarOutlined />,
+                  onClick: () => navigate(PATH.USER_DESIRED_JOB),
+                },
+                {
+                  key: '3',
+                  label: (
+                    <span className="text-neutral-600 font-medium">CV</span>
+                  ),
+                  icon: <FilePdfOutlined />,
+                },
+              ],
             },
             {
-              key: '2',
-              label: 'CV',
-              icon: <SnippetsOutlined />,
-              onClick: () => navigate(PATH.ROOT),
+              key: 'work-group',
+              className: '[&>div]:!text-[#1c1917]',
+              label: <span className="font-semibold">Công việc</span>,
+              type: 'group' as const,
+              children: [
+                {
+                  key: '4',
+                  label: (
+                    <span className="text-neutral-600 font-medium">
+                      Doanh nghiệp tiếp cận
+                    </span>
+                  ),
+                  icon: <ShopOutlined />,
+                },
+              ],
             },
             { type: 'divider' as const },
             {
-              key: '3',
-              label: 'Tài khoản',
-              icon: <UserOutlined />,
+              key: '5',
+              label: (
+                <span className="text-neutral-600 font-medium">Tài khoản</span>
+              ),
+              icon: <KeyOutlined />,
               onClick: () => navigate(PATH.USER_ACCOUNT),
             },
           ]
         : [
             {
               key: '1',
-              label: 'Dashboard',
+              label: (
+                <span className="text-neutral-600 font-medium">Dashboard</span>
+              ),
               onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
             },
             {
               key: '2',
-              label: 'Đăng tin',
+              label: (
+                <span className="text-neutral-600 font-medium">Đăng tin</span>
+              ),
               onClick: () => navigate(PATH.EMPLOYER_POSTING),
             },
           ]),
@@ -106,7 +154,7 @@ const HeaderDropDown = () => {
         key: 'logout',
         className: 'hover:!bg-light-warning',
         icon: <LogoutOutlined className="text-warning" />,
-        label: <span className="text-warning">Đăng xuất</span>,
+        label: <span className="text-warning font-medium">Đăng xuất</span>,
         onClick: () => setIsOpen(true),
       },
     ];
@@ -121,7 +169,7 @@ const HeaderDropDown = () => {
             height={40}
             preview={false}
             src={USER_AVATAR}
-            className="border border-white rounded-[50%]"
+            className="border border-white rounded-[50%] text-"
           />
         </a>
       </Dropdown>

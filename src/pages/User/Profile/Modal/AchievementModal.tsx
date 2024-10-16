@@ -1,10 +1,10 @@
 import { useForm } from 'antd/es/form/Form';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect } from 'react';
 
-import UserApi from '~/apis/user';
+import UserApi, { IAchievementParams } from '~/apis/user';
 import Editor from '~/components/Editor/Editor';
 import FormItem from '~/components/Form/FormItem';
-import toast from '~/utils/functions/toast';
+import useMessageApi from '~/hooks/useMessageApi';
 import ProfileModal from './ProfileModal';
 
 interface IProps {
@@ -16,7 +16,18 @@ interface IProps {
 
 const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const [form] = useForm();
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { mutate: createAchievement, isPending } = useMessageApi({
+    apiFn: (params: IAchievementParams) => UserApi.createAchievement(params),
+    onSuccess: () => refetch(),
+  });
+
+  useEffect(() => {
+    if (!isOpen) return;
+    form.setFieldValue('achievement', data);
+
+    console.log(form.getFieldsValue());
+  }, [isOpen]);
 
   const handleCancel = () => {
     form.resetFields();
@@ -24,29 +35,18 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   };
 
   const handleFinish = async (values: any) => {
-    setIsLoading(true);
-
     const { achievement } = values;
-    const { message, statusCode } = await UserApi.createAchievement({
+    createAchievement({
       description: achievement?.level?.content,
     });
-
-    if (statusCode === 200) refetch();
-    toast[statusCode === 200 ? 'success' : 'error'](message || 'Có lỗi xảy ra');
-
-    setIsLoading(false);
     handleCancel();
   };
-
-  useEffect(() => {
-    form.setFieldValue('achievement', data);
-  }, []);
 
   return (
     <ProfileModal
       form={form}
       isOpen={isOpen}
-      loading={isLoading}
+      loading={isPending}
       title="Cập nhật tóm tắt"
       onCancel={handleCancel}
       onFinish={handleFinish}
@@ -61,7 +61,7 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
           </p>
         }
       >
-        <Editor initialValue={data} />
+        <Editor initialValue={data} onChange={(val) => console.log(val)} />
       </FormItem>
     </ProfileModal>
   );
