@@ -54,7 +54,7 @@ const items: Items[] = [
       {
         title: 'Công việc mong muốn',
         icon: <CalendarOutlined />,
-        href: PATH.USER_PROFILE,
+        href: PATH.USER_DESIRED_JOB,
       },
       {
         title: 'CV',
