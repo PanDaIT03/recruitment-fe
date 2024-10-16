@@ -27,6 +27,7 @@ const FormSignIn = ({ form, onFinish }: IProps) => {
         <FormItem
           name="email"
           label="Địa chỉ email"
+          className="mb-3"
           rules={[
             { required: true, message: 'Hãy nhập email' },
             { pattern: emailRegex, message: 'Email không hợp lệ' },

@@ -10,3 +10,4 @@ export { ReactComponent as LeftArrow } from './left-arrow.svg';
 export { ReactComponent as Location } from './location.svg';
 export { ReactComponent as Calendar } from './calendar.svg';
 export { ReactComponent as Box } from './box.svg';
+export { ReactComponent as Success } from './success-icon.svg';

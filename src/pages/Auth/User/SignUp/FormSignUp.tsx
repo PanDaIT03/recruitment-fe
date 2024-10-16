@@ -1,6 +1,7 @@
-import { Form, FormInstance } from 'antd';
+import { FormInstance } from 'antd';
 import { Link } from 'react-router-dom';
 
+import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
@@ -22,14 +23,14 @@ const FormSignUp = ({ form, onFinish, loading }: IProps) => {
         onFinish={onFinish}
         loading={loading}
       >
-        <Form.Item
+        <FormItem
           name="fullName"
           label="Chúng tôi nên gọi bạn là gì?"
           rules={[{ required: true, message: 'Họ và tên không được để trống' }]}
         >
           <Input name="fullName" placeholder="Nguyễn Văn A" />
-        </Form.Item>
-        <Form.Item
+        </FormItem>
+        <FormItem
           name="email"
           label="Địa chỉ email"
           rules={[
@@ -38,8 +39,8 @@ const FormSignUp = ({ form, onFinish, loading }: IProps) => {
           ]}
         >
           <Input name="email" placeholder="abc@example.com" />
-        </Form.Item>
-        <Form.Item
+        </FormItem>
+        <FormItem
           name="password"
           label="Mật khẩu"
           rules={[
@@ -51,7 +52,7 @@ const FormSignUp = ({ form, onFinish, loading }: IProps) => {
           ]}
         >
           <InputPassword name="password" placeholder="Nhập mật khẩu" />
-        </Form.Item>
+        </FormItem>
       </FormWrapper>
       <div className="flex gap-x-1">
         <span>Đã có tài khoản?</span>
