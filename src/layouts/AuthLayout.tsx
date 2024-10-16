@@ -51,7 +51,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
               displayType="text"
               title="Quay lại trang chủ"
               iconBefore={<ArrowLeftOutlined />}
-              className="text-[#2563eb] hover:underline hover:text-[#2563eb]"
+              className="text-[#2563eb] hover:underline hover:text-[#2563eb] font-semibold"
               onClick={() => navigate(PATH.ROOT)}
             />
           </div>

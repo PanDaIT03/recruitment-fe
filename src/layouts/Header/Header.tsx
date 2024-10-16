@@ -147,7 +147,7 @@ const Header = ({ items = defaultItems }: IProps) => {
                 displayType="text"
                 className="px-3 py-2 hover:bg-header-bgHover"
                 title={
-                  <div className="flex flex-col text-start">
+                  <div className="flex flex-col text-start font-semibold">
                     <span className="text-xs">Người tìm việc</span>
                     <span className="text-sm">Đăng ký/ Đăng nhập</span>
                   </div>
