@@ -9,6 +9,7 @@ import AuthAPI from '~/apis/auth';
 import { LeftArrow } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
+import useMessageApi from '~/hooks/useMessageApi';
 import { useAppSelector } from '~/hooks/useStore';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
@@ -32,6 +33,10 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
   const [countdown, setCountdown] = useState(initCountdown);
 
   const { emailStatus } = useAppSelector((state) => state.auth);
+
+  const { mutate: senOTPToEmail } = useMessageApi({
+    apiFn: (email: string) => AuthAPI.sendOTPToEmail(email),
+  });
 
   const handleChange = (otp: string) => {
     setOtp(otp);
@@ -63,7 +68,7 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
       deadline: Date.now() + 1000 * 10,
     });
 
-    await AuthAPI.sendOTPToEmail(emailStatus.email);
+    senOTPToEmail(emailStatus.email);
   };
 
   const handleCountDownFinish = () => {

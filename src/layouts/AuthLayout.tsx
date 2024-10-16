@@ -18,8 +18,8 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
     const { pathname } = location;
 
     if (
-      pathname ===
-      (PATH.USER_FORGOT_PASSWORD || pathname === PATH.USER_RESET_PASSWORD)
+      pathname === PATH.USER_FORGOT_PASSWORD ||
+      pathname === PATH.USER_RESET_PASSWORD
     )
       isVisible = false;
 
