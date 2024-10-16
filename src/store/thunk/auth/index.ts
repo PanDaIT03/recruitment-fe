@@ -76,17 +76,3 @@ export const signOut = createAsyncThunk(
     }
   }
 );
-
-export const forgotPassword = createAsyncThunk(
-  'auth/forgotPassword',
-  async (email: string, { rejectWithValue }) => {
-    try {
-      const response = await AuthAPI.forgotPassword(email);
-
-      return response;
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message);
-      return rejectWithValue(error?.message || 'Có lỗi xảy ra');
-    }
-  }
-);

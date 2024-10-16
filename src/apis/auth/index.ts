@@ -2,7 +2,6 @@ import axiosApi from '~/services/axios';
 import {
   IBaseUser,
   IEmailStatus,
-  IForgotPassword,
   IUser,
   IUserSignInWithGoogle,
 } from '~/types/Auth/index';
@@ -14,6 +13,12 @@ type Response = IBaseResponse<{
 export interface IVerifyOTP {
   email: string;
   otp: number;
+}
+
+export interface IResetPasswordParams {
+  email: string;
+  password: string;
+  token: string;
 }
 
 const AuthAPI = {
@@ -38,8 +43,13 @@ const AuthAPI = {
   changePassword: async () => {
     return await axiosApi.patch('/users/change-password');
   },
-  forgotPassword: async (email: string):Promise<IForgotPassword> => {
-    return await axiosApi.post('/auth/forgot-password', { email });
+  sendResetPasswordUrl: async (email: string): Promise<IBaseResponse> => {
+    return await axiosApi.post('/auth/send-reset-password-url', { email });
+  },
+  resetPassword: async (
+    payload: IResetPasswordParams
+  ): Promise<IBaseResponse> => {
+    return await axiosApi.patch('/users/reset-password', payload);
   },
 };
 

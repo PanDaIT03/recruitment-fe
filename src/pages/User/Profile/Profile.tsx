@@ -19,6 +19,8 @@ import { UserLanguage, UserSkill, WorkExperience } from '~/types/User';
 import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
+import { useNavigate } from 'react-router-dom';
+import PATH from '~/utils/path';
 
 const { PlusOutlined, EditOutlined } = icons;
 
@@ -27,6 +29,7 @@ const initLanguage = {} as UserLanguage;
 const initSkill = {} as UserSkill;
 
 const Profile = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [selectedItem, setSelectedItem] = useState('');
@@ -38,8 +41,8 @@ const Profile = () => {
   const [skillItemSelected, setSkillItemSelected] =
     useState<UserSkill>(initSkill);
 
-  const { userProfile, loading } = useAppSelector((state) => state.user);
   const { currentUser } = useAppSelector((state) => state.auth);
+  const { userProfile, loading } = useAppSelector((state) => state.user);
 
   const refetchUserProfile = useCallback(() => {
     const { accessToken, refreshToken } = currentUser;
@@ -161,6 +164,10 @@ const Profile = () => {
   useEffect(() => {
     refetchUserProfile();
   }, []);
+
+  useEffect(() => {
+    !currentUser.accessToken && navigate(PATH.ROOT);
+  }, [currentUser]);
 
   return (
     <>

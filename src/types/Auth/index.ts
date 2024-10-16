@@ -15,10 +15,6 @@ export interface IEmailStatus extends IBaseAuthResponse {
   signInWith: string;
 }
 
-export interface IForgotPassword extends IBaseAuthResponse {
-  email?: string;
-}
-
 interface IPosition {
   id: number;
   title: string;

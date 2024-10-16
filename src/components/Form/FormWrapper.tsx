@@ -64,7 +64,7 @@ const FormWrapper = ({
         form={form}
         size="small"
         layout="vertical"
-        autoComplete="off"
+        autoComplete="on"
         onFinish={handleFinish}
         onFinishFailed={({ errorFields }) => handleFinishFailed(errorFields)}
       >
