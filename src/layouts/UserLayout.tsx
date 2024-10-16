@@ -10,10 +10,12 @@ import {
 import Meta from 'antd/es/card/Meta';
 import { Content } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+
+import { ProfileCoverImage } from '~/assets/img';
 import { useAppSelector } from '~/hooks/useStore';
-import { defaultCoverImage, mockFileList } from '~/mocks/data';
+import { mockFileList } from '~/mocks/data';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
@@ -79,12 +81,6 @@ const UserLayout = () => {
   const { currentUser } = useAppSelector((state) => state.auth);
   const [fileList, setFileList] = useState<UploadFile[]>(mockFileList);
 
-  const coverImageUrl = useMemo(() => {
-    return fileList.length > 0 && fileList[0].url
-      ? fileList[0].url
-      : defaultCoverImage;
-  }, [fileList]);
-
   const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
@@ -119,7 +115,7 @@ const UserLayout = () => {
             cover={
               <img
                 alt="example"
-                src={coverImageUrl}
+                src={ProfileCoverImage}
                 style={{ height: 200, objectFit: 'cover', borderRadius: 0 }}
               />
             }
