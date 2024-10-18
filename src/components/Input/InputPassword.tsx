@@ -6,9 +6,9 @@ import icons from '~/utils/icons';
 
 const { EyeTwoTone, EyeInvisibleOutlined } = icons;
 
-const InputPassword = (props: InputProps) => {
+const InputPassword = ({ className, ...props }: InputProps) => {
   const { allowClear = false } = props;
-  const customClass = classNames('w-full h-10', props.className);
+  const customClass = classNames('w-full h-10', className);
 
   return (
     <Input.Password
