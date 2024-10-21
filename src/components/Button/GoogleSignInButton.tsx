@@ -4,7 +4,7 @@ import { memo } from 'react';
 
 import { GOOGLE_LOGO } from '~/assets/img';
 import { IUserSignInWithGoogle } from '~/types/Auth';
-import { fetchGoogleUserInfo } from '~/utils/functions/fetchGoogleUserInfo';
+import { fetchGoogleUserInfo } from '~/utils/functions';
 import toast from '~/utils/functions/toast';
 import Button from './Button';
 

@@ -4,11 +4,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
-import { formatCurrencyVN } from '~/utils/functions/formatNumber';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
 import JobApplicationModal from './JobApplicationModal/JobApplicationModal';
 import PATH from '~/utils/path';
+import { formatCurrencyVN } from '~/utils/functions';
 
 const { Title } = Typography;
 

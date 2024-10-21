@@ -5,13 +5,13 @@ import { JobsAPI } from '~/apis/job';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
 import { JobItem } from '~/types/Job';
-import { formatCurrencyVN } from '~/utils/functions/formatNumber';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import ModalBen from './ModalUpdate/ModalBen';
 import ModalDesc from './ModalUpdate/ModalDesc';
 import ModalInfo from './ModalUpdate/ModalInfo';
 import ModalReq from './ModalUpdate/ModalReq';
+import { formatCurrencyVN } from '~/utils/functions';
 
 const { EditOutlined, ArrowLeftOutlined } = icons;
 
