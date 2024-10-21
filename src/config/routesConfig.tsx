@@ -6,11 +6,13 @@ import MainLayout from '~/layouts/MainLayout';
 import UserLayout from '~/layouts/UserLayout';
 import EmployerLayout from '~/pages/Employer/EmployerLayout';
 import ProtectedRoute from '~/routes/ProtectedRoute';
+import JobApplicationLayout from '~/layouts/JobApplicationLayout';
 
 import PATH from '~/utils/path';
 
 const Home = lazy(() => import('~/pages/Home/Home'));
 const Blog = lazy(() => import('~/pages/Blog/Blogs'));
+const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
 const JobDetail = lazy(() => import('~/components/Job/JobDetail'));
 const JobListPage = lazy(() => import('~/components/Job/JobList'));
 const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
@@ -18,6 +20,7 @@ const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
 const PostingJob = lazy(() => import('~/pages/Employer/PostingJob/PostingJob'));
+const UserDesiredJob = lazy(() => import('~/pages/User/DesiredJob/DesiredJob'));
 const EmployerDashboard = lazy(
   () => import('~/pages/Employer/Dashboard/EmployerDashboard')
 );
@@ -44,7 +47,9 @@ const EmployerSignIn = lazy(
 const EmployerSignUp = lazy(
   () => import('~/pages/Auth/Employer/SignUp/SignUp')
 );
-const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
+const UserJobApplication = lazy(
+  () => import('~/pages/User/JobApplication/JobApplication')
+);
 
 type CustomRouteObject = RouteObject & {
   layout?: React.ComponentType<{ children: React.ReactNode }>;
@@ -136,6 +141,16 @@ const routesConfig: CustomRouteObject[] = [
     createProtectedRoute('', ['user'], <UserProfile />),
     createProtectedRoute(PATH.USER_PROFILE, ['user'], <UserProfile />),
     createProtectedRoute(PATH.USER_ACCOUNT, ['user'], <UserAccount />),
+    createProtectedRoute(PATH.USER_DESIRED_JOB, ['user'], <UserDesiredJob />),
+  ]),
+
+  //Job Application
+  createRoute('/user', undefined, JobApplicationLayout, [
+    createProtectedRoute(
+      PATH.USER_JOB_APPLICATION,
+      ['user'],
+      <UserJobApplication />
+    ),
   ]),
 
   // Auth

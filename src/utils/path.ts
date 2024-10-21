@@ -22,6 +22,8 @@ const PATH = {
   // User
   USER_PROFILE: '/user/profile',
   USER_ACCOUNT: '/user/account',
+  USER_DESIRED_JOB: '/user/desired-job',
+  USER_JOB_APPLICATION: '/user/job-application',
   NOT_FOUND: '*',
 };
 

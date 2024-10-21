@@ -10,10 +10,12 @@ import {
 import Meta from 'antd/es/card/Meta';
 import { Content } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+
+import { ProfileCoverImage } from '~/assets/img';
 import { useAppSelector } from '~/hooks/useStore';
-import { defaultCoverImage, mockFileList } from '~/mocks/data';
+import { mockFileList } from '~/mocks/data';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
@@ -52,7 +54,7 @@ const items: Items[] = [
       {
         title: 'Công việc mong muốn',
         icon: <CalendarOutlined />,
-        href: PATH.USER_PROFILE,
+        href: PATH.USER_DESIRED_JOB,
       },
       {
         title: 'CV',
@@ -78,12 +80,6 @@ const UserLayout = () => {
 
   const { currentUser } = useAppSelector((state) => state.auth);
   const [fileList, setFileList] = useState<UploadFile[]>(mockFileList);
-
-  const coverImageUrl = useMemo(() => {
-    return fileList.length > 0 && fileList[0].url
-      ? fileList[0].url
-      : defaultCoverImage;
-  }, [fileList]);
 
   const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -119,7 +115,7 @@ const UserLayout = () => {
             cover={
               <img
                 alt="example"
-                src={coverImageUrl}
+                src={ProfileCoverImage}
                 style={{ height: 200, objectFit: 'cover', borderRadius: 0 }}
               />
             }
@@ -157,15 +153,14 @@ const UserLayout = () => {
                 <div key={index}>
                   <h3 className="font-bold">{item.title}</h3>
                   {item.children.map((child, index) => (
-                    <p
+                    <Link
                       key={index}
-                      className="flex p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5]"
+                      to={child.href}
+                      className="flex p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5] hover:text-[#000000E0]"
                     >
                       <span>{child.icon}</span>
-                      <Link to={child.href} className="hover:text-[#000000E0]">
-                        {child.title}
-                      </Link>
-                    </p>
+                      <span>{child.title}</span>
+                    </Link>
                   ))}
                 </div>
               ))}

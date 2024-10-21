@@ -41,10 +41,10 @@ const Header = ({ items = defaultItems }: IProps) => {
   const menuItems: MenuItem[] = useMemo(
     () =>
       items.map((item) => {
-        const { ...rest } = item;
+        const { ...others } = item;
 
         return {
-          ...rest,
+          ...others,
           style: {
             fontWeight: 600,
             width: 'max-content',
@@ -147,7 +147,7 @@ const Header = ({ items = defaultItems }: IProps) => {
                 displayType="text"
                 className="px-3 py-2 hover:bg-header-bgHover"
                 title={
-                  <div className="flex flex-col text-start">
+                  <div className="flex flex-col text-start font-semibold">
                     <span className="text-xs">Người tìm việc</span>
                     <span className="text-sm">Đăng ký/ Đăng nhập</span>
                   </div>
