@@ -69,7 +69,7 @@ const HeaderDropDown = () => {
   const menuItems: MenuProps['items'] = useMemo(() => {
     return [
       ...baseMenu,
-      ...(currentUser.role.id === 1
+      ...(currentUser?.role?.id === 1
         ? [
             {
               key: 'profile-group',
