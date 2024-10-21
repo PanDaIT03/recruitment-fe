@@ -1,17 +1,26 @@
-import { ComponentType, lazy, ReactNode } from 'react';
+import React, { ComponentType, lazy, ReactNode } from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import AuthLayout from '~/layouts/AuthLayout';
 import MainLayout from '~/layouts/MainLayout';
 import UserLayout from '~/layouts/UserLayout';
 import EmployerLayout from '~/pages/Employer/EmployerLayout';
+import ProtectedRoute from '~/routes/ProtectedRoute';
 
 import PATH from '~/utils/path';
 
-import ProtectedRoute from '~/routes/ProtectedRoute';
-import Blog from '~/pages/Blog/Blogs';
-
 const Home = lazy(() => import('~/pages/Home/Home'));
+const Blog = lazy(() => import('~/pages/Blog/Blogs'));
+const JobDetail = lazy(() => import('~/components/Job/JobDetail'));
+const JobListPage = lazy(() => import('~/components/Job/JobList'));
+const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
+const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
+const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
+const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
+const PostingJob = lazy(() => import('~/pages/Employer/PostingJob/PostingJob'));
+const EmployerDashboard = lazy(
+  () => import('~/pages/Employer/Dashboard/EmployerDashboard')
+);
 const CandicateDashboard = lazy(
   () => import('~/pages/Employer/Candicates/CandicateDashboard')
 );
@@ -21,7 +30,6 @@ const RecruitmentList = lazy(
 const UpdateJob = lazy(
   () => import('~/pages/Employer/RecruitmentList/UpdateJob')
 );
-
 const UserSignIn = lazy(() => import('~/pages/Auth/User/SignIn/SignIn'));
 const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
 const UserForgotPassword = lazy(
@@ -36,18 +44,7 @@ const EmployerSignIn = lazy(
 const EmployerSignUp = lazy(
   () => import('~/pages/Auth/Employer/SignUp/SignUp')
 );
-
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
-const JobDetail = lazy(() => import('~/components/Job/JobDetail'));
-const JobListPage = lazy(() => import('~/components/Job/JobList'));
-const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
-const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
-const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
-const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
-const PostingJob = lazy(() => import('~/pages/Employer/PostingJob/PostingJob'));
-const EmployerDashboard = lazy(
-  () => import('~/pages/Employer/Dashboard/EmployerDashboard')
-);
 
 type CustomRouteObject = RouteObject & {
   layout?: React.ComponentType<{ children: React.ReactNode }>;
@@ -87,15 +84,13 @@ const createRoutes = (
 const createProtectedRoute = (
   path: string,
   allowedRoles: string[],
-  layout?: React.ComponentType<{ children: React.ReactNode }>,
-  ...children: (string | Partial<CustomRouteObject>)[]
+  element: React.ReactNode,
+  layout?: React.ComponentType<{ children: React.ReactNode }>
 ): CustomRouteObject => ({
   path,
   element: <ProtectedRoute allowedRoles={allowedRoles} />,
   ...(layout !== undefined && { layout }),
-  children: children.map((child) =>
-    typeof child === 'string' ? createRoute(child) : createRoute(child)
-  ),
+  children: [{ path: '', element }],
 });
 
 const routesConfig: CustomRouteObject[] = [
@@ -109,35 +104,39 @@ const routesConfig: CustomRouteObject[] = [
   ),
 
   // Admin
-  createProtectedRoute(
-    '/admin',
-    ['admin'],
-    undefined,
-    { index: true, element: <AdminDashboard /> },
-    createRoute(PATH.ADMIN_DASHBOARD, <AdminDashboard />)
-  ),
+  createRoute('/admin', undefined, undefined, [
+    createProtectedRoute('', ['admin'], <AdminDashboard />),
+    createProtectedRoute(PATH.ADMIN_DASHBOARD, ['admin'], <AdminDashboard />),
+  ]),
 
   // Employer
-  createProtectedRoute(
-    '/employer',
-    ['employer'],
-    EmployerLayout,
-    { index: true, element: <EmployerDashboard /> },
-    createRoute(PATH.EMPLOYER_DASHBOARD, <EmployerDashboard />),
-    createRoute(PATH.EMPLOYER_POSTING, <PostingJob />),
-    createRoute(PATH.EMPLOYER_CANDICATES_DASHBOARD, <CandicateDashboard />),
-    createRoute(PATH.EMPLOYER_RECRUITMENT_LIST, <RecruitmentList />),
-    createRoute(PATH.UPDATE_JOB, <UpdateJob />)
-  ),
+  createRoute('/employer', undefined, EmployerLayout, [
+    createProtectedRoute('', ['employer'], <EmployerDashboard />),
+    createProtectedRoute(
+      PATH.EMPLOYER_DASHBOARD,
+      ['employer'],
+      <EmployerDashboard />
+    ),
+    createProtectedRoute(PATH.EMPLOYER_POSTING, ['employer'], <PostingJob />),
+    createProtectedRoute(
+      PATH.EMPLOYER_CANDICATES_DASHBOARD,
+      ['employer'],
+      <CandicateDashboard />
+    ),
+    createProtectedRoute(
+      PATH.EMPLOYER_RECRUITMENT_LIST,
+      ['employer'],
+      <RecruitmentList />
+    ),
+    createProtectedRoute(PATH.UPDATE_JOB, ['employer'], <UpdateJob />),
+  ]),
+
   // User
-  createProtectedRoute(
-    '/user',
-    ['user'],
-    UserLayout,
-    { index: true, element: <UserProfile /> },
-    createRoute(PATH.USER_PROFILE, <UserProfile />),
-    createRoute(PATH.USER_ACCOUNT, <UserAccount />)
-  ),
+  createRoute('/user', undefined, UserLayout, [
+    createProtectedRoute('', ['user'], <UserProfile />),
+    createProtectedRoute(PATH.USER_PROFILE, ['user'], <UserProfile />),
+    createProtectedRoute(PATH.USER_ACCOUNT, ['user'], <UserAccount />),
+  ]),
 
   // Auth
   createRoutes(
