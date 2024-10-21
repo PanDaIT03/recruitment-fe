@@ -1,24 +1,31 @@
-import { SelectProps } from 'antd';
+import { ConfigProvider, MappingAlgorithm, SelectProps } from 'antd';
+import { AliasToken } from 'antd/es/theme/internal';
+import { ComponentToken } from 'antd/lib/select/style';
 import { memo, ReactNode, useEffect, useRef, useState } from 'react';
 
 import classNames from 'classnames';
+import { applyTailwindClass } from '~/utils/functions';
 import Icon from '../Icon/Icon';
 import './CustomSelect.scss';
 import Select from './Select';
 
 type ISelectDisplayedType = 'text' | 'default';
+type ISelectConfigProvider =
+  | (Partial<ComponentToken> &
+      Partial<AliasToken> & {
+        algorithm?: boolean | MappingAlgorithm | MappingAlgorithm[];
+      })
+  | undefined;
 
 type TProps = {
-  colorBgContainer?: string;
-  colorBorderContainer?: string;
   prefixIcon?: string | ReactNode;
   displayedType?: ISelectDisplayedType;
+  configProvider?: ISelectConfigProvider;
 } & SelectProps;
 
 const CustomSelect = ({
   prefixIcon,
-  colorBgContainer,
-  colorBorderContainer,
+  configProvider,
   displayedType = 'default',
   ...props
 }: TProps) => {
@@ -27,10 +34,11 @@ const CustomSelect = ({
 
   const customClass = classNames(
     'custom-select',
-    'flex pl-[11px] items-center border rounded-lg',
+    'flex pl-[11px] items-center',
     displayedType,
-    colorBgContainer && `bg-[${colorBgContainer}]`,
-    colorBorderContainer && `border-[${colorBorderContainer}]`
+    configProvider?.colorBgContainer,
+    configProvider?.colorBorder &&
+      applyTailwindClass({ type: 'border', value: configProvider.colorBorder })
   );
 
   const getPopupContainer = () => containerRef.current!;
@@ -57,12 +65,20 @@ const CustomSelect = ({
           prefixIcon
         )}
       </span>
-      <Select
-        popupMatchSelectWidth={false}
-        dropdownStyle={{ width: dropDownWidth }}
-        getPopupContainer={getPopupContainer}
-        {...props}
-      />
+      <ConfigProvider
+        theme={{
+          components: {
+            Select: configProvider,
+          },
+        }}
+      >
+        <Select
+          popupMatchSelectWidth={false}
+          dropdownStyle={{ width: dropDownWidth }}
+          getPopupContainer={getPopupContainer}
+          {...props}
+        />
+      </ConfigProvider>
     </div>
   );
 };
