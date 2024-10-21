@@ -20,8 +20,6 @@ import PATH from '~/utils/path';
 
 const { CloseOutlined, LogoutOutlined } = icons;
 
-const fakeCurrentUserRoleId = 1;
-
 const HeaderDropDown = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -70,8 +68,7 @@ const HeaderDropDown = () => {
   const menuItems: MenuProps['items'] = useMemo(() => {
     return [
       ...baseMenu,
-      ...// currentUser?.role?.id === 1
-      (fakeCurrentUserRoleId === 1
+      ...(currentUser?.role?.id === 1
         ? [
             {
               key: 'profile-group',
