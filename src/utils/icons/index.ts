@@ -33,7 +33,9 @@ import {
   LoginOutlined,
   LogoutOutlined,
   MailOutlined,
+  MinusCircleOutlined,
   MinusOutlined,
+  PlusCircleOutlined,
   PlusOutlined,
   ProfileOutlined,
   QuestionCircleOutlined,
@@ -98,6 +100,8 @@ const icons = {
   CommentOutlined,
   LikeOutlined,
   KeyOutlined,
+  PlusCircleOutlined,
+  MinusCircleOutlined,
 };
 
 export default icons;

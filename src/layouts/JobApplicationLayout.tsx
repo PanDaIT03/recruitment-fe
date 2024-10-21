@@ -16,6 +16,7 @@ interface Item {
 
 const JobApplicationLayout = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
+
   const items: Item[] = useMemo(
     () => [
       {
@@ -52,8 +53,8 @@ const JobApplicationLayout = ({ children }: { children: ReactNode }) => {
             />
             <h1 className="text-3xl font-semibold">Tạo hồ sơ tìm việc</h1>
             <div className="space-y-6">
-              {items.map((item) => (
-                <Flex gap={24} align="start">
+              {items.map((item, index) => (
+                <Flex key={index} gap={24} align="start">
                   <div
                     className={`h-max text-white p-1 mt-1 rounded-md shadow-sm ${item.bgColor}`}
                   >
