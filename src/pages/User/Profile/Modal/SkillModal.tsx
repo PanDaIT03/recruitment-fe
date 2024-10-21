@@ -18,41 +18,60 @@ interface IProps {
   onCancel: () => void;
 }
 
-const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
-  const [form] = useForm();
+interface IForm {
+  skill: number;
+  level: number;
+}
 
+const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
+  const [form] = useForm<IForm>();
+
+  const [isEdit, setIsEdit] = useState(false);
   const [skillOptions, setSkillOptions] = useState<DefaultOptionType[]>([]);
 
   const { data: skillComboBox } = useFetch(UserApi.getAllSkill);
-  const { mutate: createUserSkill } = useMessageApi({
-    apiFn: (params: ISkillParams) => UserApi.createUserSkill(params),
-    onSuccess: () => {
-      refetch();
-    },
-  });
+
+  const { mutate: createUserSkill, isPending: isCreatePending } = useMessageApi(
+    {
+      apiFn: (params: ISkillParams) => UserApi.createUserSkill(params),
+      onSuccess: () => refetch(),
+    }
+  );
+
+  const { mutate: updateUserSkill, isPending: isUpdatePending } = useMessageApi(
+    {
+      apiFn: (params: ISkillParams) => UserApi.updateUserSkill(params),
+      onSuccess: () => refetch(),
+    }
+  );
 
   const handleCancel = () => {
     form.resetFields();
     onCancel();
   };
 
-  const handleFinish = (values: any) => {
+  const handleFinish = (values: IForm) => {
     const params: ISkillParams = {
       skillsId: values.skill,
       level: values.level,
     };
 
-    createUserSkill(params);
+    isEdit ? updateUserSkill(params) : createUserSkill(params);
     handleCancel();
   };
 
   useEffect(() => {
-    if (!Object.keys(data).length) return;
+    if (!Object.keys(data).length) {
+      setIsEdit(false);
+      return;
+    }
 
     const fieldsValue = {
-      skill: data.skill.title,
-      level: data.level.toString(),
+      skill: data.skill.id,
+      level: data.level,
     };
+
+    setIsEdit(true);
     form.setFieldsValue(fieldsValue);
   }, [data]);
 
@@ -70,6 +89,7 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
     <ProfileModal
       form={form}
       isOpen={isOpen}
+      loading={isCreatePending || isUpdatePending}
       title="Thêm kỹ năng"
       onCancel={handleCancel}
       onFinish={handleFinish}
@@ -80,6 +100,7 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
         rules={[{ required: true, message: 'Hãy chọn kỹ năng của bạn' }]}
       >
         <Select
+          disabled={isEdit}
           options={skillOptions}
           placeholder="Ví dụ: Microsoft Excel..."
         />

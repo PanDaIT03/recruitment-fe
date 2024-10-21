@@ -10,6 +10,7 @@ import {
   ClockCircleOutlined,
   CloseOutlined,
   CloudUploadOutlined,
+  CommentOutlined,
   ContainerOutlined,
   DeleteOutlined,
   DollarCircleOutlined,
@@ -18,18 +19,23 @@ import {
   EnvironmentOutlined,
   ExportOutlined,
   EyeInvisibleOutlined,
+  EyeOutlined,
   EyeTwoTone,
   FilePdfOutlined,
   HomeOutlined,
   IdcardOutlined,
   InfoCircleOutlined,
+  KeyOutlined,
   LaptopOutlined,
+  LikeOutlined,
   LoadingOutlined,
   LockOutlined,
   LoginOutlined,
   LogoutOutlined,
   MailOutlined,
+  MinusCircleOutlined,
   MinusOutlined,
+  PlusCircleOutlined,
   PlusOutlined,
   ProfileOutlined,
   QuestionCircleOutlined,
@@ -43,9 +49,6 @@ import {
   TeamOutlined,
   UserAddOutlined,
   UserOutlined,
-  EyeOutlined,
-  CommentOutlined,
-  LikeOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -96,6 +99,9 @@ const icons = {
   EyeOutlined,
   CommentOutlined,
   LikeOutlined,
+  KeyOutlined,
+  PlusCircleOutlined,
+  MinusCircleOutlined,
 };
 
 export default icons;
