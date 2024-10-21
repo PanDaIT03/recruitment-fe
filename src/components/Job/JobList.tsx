@@ -2,7 +2,7 @@ import { List } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
-import { BlockChain, PortFolio, Calendar, PencilSkill } from '~/assets/svg';
+import { Box, File, PencilSkill, Salary, Television } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
@@ -163,62 +163,70 @@ const JobListPage = () => {
     <div className="w-full">
       <TopSearchBar
         onSearch={handleFilterChange}
-        placeHolder="Vị trí công việc"
+        placeHolder="Vị trí công việc/tên công ty"
       >
         <FormItem
           childrenSelected
           name="workTypesId"
-          className="w-full h-10 max-w-56 mb-0"
+          className="w-full h-10 max-w-44 mb-0"
         >
           <CustomSelect
             showSearch={false}
             displayedType="text"
             className="w-full h-full"
             options={workTypeOptions}
-            prefixIcon={<BlockChain className="w-5 h-5" />}
+            prefixIcon={<Television />}
           />
         </FormItem>
         <FormItem
           childrenSelected
           name="categoriesId"
-          className="w-full max-w-56 mb-0"
+          className="w-full max-w-44 mb-0"
         >
           <CustomSelect
             showSearch={false}
             displayedType="text"
             className="w-full h-full"
             options={jobCategoriesOptions}
-            prefixIcon={<PortFolio className="w-5 h-5" />}
+            prefixIcon={<File />}
           />
         </FormItem>
         <FormItem
           childrenSelected
           name="salaryRange"
-          className="w-full max-w-56 mb-0"
+          className="w-full max-w-44 mb-0"
         >
           <CustomSelect
             showSearch={false}
             displayedType="text"
-            className="w-full h-full"
             options={optionsSalary}
-            prefixIcon={<Calendar className="w-5 h-5" />}
+            prefixIcon={<Salary />}
+            className="w-full h-full font-semibold"
           />
         </FormItem>
         <FormItem
           childrenSelected
           name="jobFieldsId"
-          className="w-full max-w-56 mb-0"
+          className="w-full max-w-44 mb-0"
         >
           <CustomSelect
             showSearch={false}
             displayedType="text"
             className="w-full h-full"
             options={jobFieldsOptions}
-            prefixIcon={<PencilSkill className="w-5 h-5" />}
+            prefixIcon={<Box />}
           />
         </FormItem>
       </TopSearchBar>
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto p-4">
+        <div>
+          <h2 className="text-base font-medium">Tin tuyển dụng</h2>
+          <div className="text-sm text-sub">
+            Tìm thấy
+            <strong className="text-primary"> {allJobs?.items?.length} </strong>
+            tin tuyển dụng
+          </div>
+        </div>
         <List
           loading={loading}
           itemLayout="vertical"

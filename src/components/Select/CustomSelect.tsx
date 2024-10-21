@@ -4,10 +4,10 @@ import { ComponentToken } from 'antd/lib/select/style';
 import { memo, ReactNode, useEffect, useRef, useState } from 'react';
 
 import classNames from 'classnames';
+import { applyTailwindClass } from '~/utils/functions';
 import Icon from '../Icon/Icon';
 import './CustomSelect.scss';
 import Select from './Select';
-import { applyTailwindClass } from '~/utils/functions';
 
 type ISelectDisplayedType = 'text' | 'default';
 type ISelectConfigProvider =

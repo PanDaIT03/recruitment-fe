@@ -3,14 +3,12 @@ import { DefaultOptionType } from 'antd/es/select';
 import React, { memo, ReactNode } from 'react';
 
 import { JobsAPI } from '~/apis/job';
-import { LOCATION } from '~/assets/img';
-import { Search } from '~/assets/svg';
+import { Location, Search } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import { JobPlacement } from '~/types/Job';
 import Button from '../Button/Button';
 import FormItem from '../Form/FormItem';
 import FormWrapper from '../Form/FormWrapper';
-import Icon from '../Icon/Icon';
 import Input from '../Input/Input';
 import CustomSelect from '../Select/CustomSelect';
 
@@ -67,6 +65,7 @@ const TopSearchBar: React.FC<IProps> = ({
                 className="h-10"
                 defaultValue="all"
                 placeholder="Chọn khu vực"
+                prefixIcon={<Location />}
                 configProvider={{
                   colorBgContainer: 'bg-light-gray',
                 }}
@@ -76,7 +75,6 @@ const TopSearchBar: React.FC<IProps> = ({
                     label: place?.title,
                   })) || optionLocations
                 }
-                prefixIcon={<Icon icon={LOCATION} width={16} height={16} />}
               />
             </FormItem>
             <Button fill type="submit" title="Tìm kiếm" />
