@@ -5,7 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { JobItem } from '~/types/Job';
-import { formatCurrencyVN } from '~/utils/functions/formatNumber';
+import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
 

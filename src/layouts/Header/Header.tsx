@@ -138,6 +138,9 @@ const Header = ({ items = defaultItems }: IProps) => {
             />
           </ConfigProvider>
         </Col>
+
+        <HeaderDropDown />
+
         {refreshToken ? (
           <HeaderDropDown />
         ) : (

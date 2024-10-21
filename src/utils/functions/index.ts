@@ -5,7 +5,18 @@ interface IGoogleUserInfoResponse {
   response: Omit<TokenResponse, 'error' | 'error_description' | 'error_uri'>;
 }
 
-const fetchGoogleUserInfo = async ({ response }: IGoogleUserInfoResponse) => {
+export const applyTailwindClass = (props: { type?: string; value: string }) => {
+  const { type, value } = props;
+
+  if (!type) return value;
+  const isHexColor = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/.test(value);
+
+  return isHexColor ? `${type}-[${value}]` : value;
+};
+
+export const fetchGoogleUserInfo = async ({
+  response,
+}: IGoogleUserInfoResponse) => {
   const token = response.access_token;
   if (!token) return;
 
@@ -21,4 +32,7 @@ const fetchGoogleUserInfo = async ({ response }: IGoogleUserInfoResponse) => {
   return userInfo;
 };
 
-export { fetchGoogleUserInfo };
+export function formatCurrencyVN(amount: number) {
+  if (isNaN(amount)) return '';
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}

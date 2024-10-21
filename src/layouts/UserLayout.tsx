@@ -14,6 +14,7 @@ import { ReactNode, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 import { ProfileCoverImage } from '~/assets/img';
+import { DualLayerFile, File, PersonCard, SkyScraper } from '~/assets/svg';
 import { useAppSelector } from '~/hooks/useStore';
 import { mockFileList } from '~/mocks/data';
 import icons from '~/utils/icons';
@@ -33,14 +34,7 @@ interface Items {
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const {
-  CalendarOutlined,
-  FilePdfOutlined,
-  SettingOutlined,
-  ShopOutlined,
-  UserOutlined,
-  HomeOutlined,
-} = icons;
+const { SettingOutlined, UserOutlined, HomeOutlined } = icons;
 
 const items: Items[] = [
   {
@@ -48,18 +42,18 @@ const items: Items[] = [
     children: [
       {
         title: 'Cá nhân',
-        icon: <UserOutlined />,
         href: PATH.USER_PROFILE,
+        icon: <PersonCard width={18} height={18} />,
       },
       {
         title: 'Công việc mong muốn',
-        icon: <CalendarOutlined />,
         href: PATH.USER_DESIRED_JOB,
+        icon: <DualLayerFile width={18} height={18} />,
       },
       {
         title: 'CV',
-        icon: <FilePdfOutlined />,
         href: PATH.USER_PROFILE,
+        icon: <File width={16} height={16} />,
       },
     ],
   },
@@ -68,8 +62,8 @@ const items: Items[] = [
     children: [
       {
         title: 'Doanh nghiệp tiếp cận',
-        icon: <ShopOutlined />,
         href: PATH.USER_PROFILE,
+        icon: <SkyScraper width={18} height={18} />,
       },
     ],
   },

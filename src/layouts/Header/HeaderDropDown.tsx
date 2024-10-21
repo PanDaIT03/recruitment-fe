@@ -4,6 +4,13 @@ import { memo, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { DISCONNECTED, USER_AVATAR } from '~/assets/img';
+import {
+  DualLayerFile,
+  File,
+  PersonCard,
+  SkyScraper,
+  UserAccount,
+} from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -11,15 +18,9 @@ import { signOut } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
-const {
-  UserOutlined,
-  CloseOutlined,
-  LogoutOutlined,
-  FilePdfOutlined,
-  CalendarOutlined,
-  KeyOutlined,
-  ShopOutlined,
-} = icons;
+const { CloseOutlined, LogoutOutlined } = icons;
+
+const fakeCurrentUserRoleId = 1;
 
 const HeaderDropDown = () => {
   const navigate = useNavigate();
@@ -69,13 +70,14 @@ const HeaderDropDown = () => {
   const menuItems: MenuProps['items'] = useMemo(() => {
     return [
       ...baseMenu,
-      ...(currentUser?.role?.id === 1
+      ...// currentUser?.role?.id === 1
+      (fakeCurrentUserRoleId === 1
         ? [
             {
               key: 'profile-group',
+              type: 'group' as const,
               className: '[&>div]:!text-[#1c1917]',
               label: <span className="font-semibold">Hồ sơ</span>,
-              type: 'group' as const,
               children: [
                 {
                   key: '1',
@@ -84,7 +86,7 @@ const HeaderDropDown = () => {
                       Cá nhân
                     </span>
                   ),
-                  icon: <UserOutlined />,
+                  icon: <PersonCard width={18} height={18} />,
                   onClick: () => navigate(PATH.USER_PROFILE),
                 },
                 {
@@ -94,7 +96,7 @@ const HeaderDropDown = () => {
                       Công việc mong muốn
                     </span>
                   ),
-                  icon: <CalendarOutlined />,
+                  icon: <DualLayerFile width={18} height={18} />,
                   onClick: () => navigate(PATH.USER_DESIRED_JOB),
                 },
                 {
@@ -102,7 +104,7 @@ const HeaderDropDown = () => {
                   label: (
                     <span className="text-neutral-600 font-medium">CV</span>
                   ),
-                  icon: <FilePdfOutlined />,
+                  icon: <File width={16} height={16} />,
                 },
               ],
             },
@@ -119,7 +121,7 @@ const HeaderDropDown = () => {
                       Doanh nghiệp tiếp cận
                     </span>
                   ),
-                  icon: <ShopOutlined />,
+                  icon: <SkyScraper width={18} height={18} />,
                 },
               ],
             },
@@ -129,7 +131,7 @@ const HeaderDropDown = () => {
               label: (
                 <span className="text-neutral-600 font-medium">Tài khoản</span>
               ),
-              icon: <KeyOutlined />,
+              icon: <UserAccount width={18} height={18} />,
               onClick: () => navigate(PATH.USER_ACCOUNT),
             },
           ]
