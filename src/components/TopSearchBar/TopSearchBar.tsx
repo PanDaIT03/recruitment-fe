@@ -4,17 +4,15 @@ import React, { memo, ReactNode } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { LOCATION } from '~/assets/img';
+import { Search } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import { JobPlacement } from '~/types/Job';
-import icons from '~/utils/icons';
 import Button from '../Button/Button';
 import FormItem from '../Form/FormItem';
 import FormWrapper from '../Form/FormWrapper';
 import Icon from '../Icon/Icon';
 import Input from '../Input/Input';
 import CustomSelect from '../Select/CustomSelect';
-
-const { SearchOutlined } = icons;
 
 const optionLocations: DefaultOptionType[] = [
   {
@@ -54,8 +52,8 @@ const TopSearchBar: React.FC<IProps> = ({
             <FormItem name="title" className="flex-1 max-w-[957px] mb-3">
               <Input
                 size="large"
+                prefix={<Search />}
                 placeholder={placeHolder}
-                prefix={<SearchOutlined />}
                 className="bg-light-gray"
               />
             </FormItem>
@@ -67,9 +65,11 @@ const TopSearchBar: React.FC<IProps> = ({
               <CustomSelect
                 allowClear
                 className="h-10"
-                colorBgContainer="#FAFAFA"
-                placeholder="Chọn khu vực"
                 defaultValue="all"
+                placeholder="Chọn khu vực"
+                configProvider={{
+                  colorBgContainer: 'bg-light-gray',
+                }}
                 options={
                   placements?.items?.map((place) => ({
                     value: place?.id,
