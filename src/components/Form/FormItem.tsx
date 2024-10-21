@@ -8,6 +8,7 @@ type IProps = {
 } & FormItemProps;
 
 const FormItem = ({
+  label,
   children,
   className,
   childrenSelected = false,
@@ -17,11 +18,11 @@ const FormItem = ({
 
   return (
     <Form.Item
-      {...props}
       className={customClass}
-      labelCol={{ span: props.label ? 24 : 0 }}
+      labelCol={{ span: label ? 24 : 0 }}
       initialValue={childrenSelected ? 'all' : undefined}
-      label={<span className="font-medium">{props.label}</span>}
+      label={<span className="font-medium">{label}</span>}
+      {...props}
     >
       {children}
     </Form.Item>
