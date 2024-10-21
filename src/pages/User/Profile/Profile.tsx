@@ -174,10 +174,6 @@ const Profile = () => {
     refetchUserProfile();
   }, []);
 
-  useEffect(() => {
-    !currentUser.accessToken && navigate(PATH.ROOT);
-  }, [currentUser]);
-
   return (
     <>
       {items.map((item, index) => (
