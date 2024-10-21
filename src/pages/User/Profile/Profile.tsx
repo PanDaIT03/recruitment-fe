@@ -15,12 +15,11 @@ import LanguageCard from './Card/LanguageCard';
 import SkillCard from './Card/SkillCard';
 import AchievementModal from './Modal/AchievementModal';
 
+import { useNavigate } from 'react-router-dom';
 import { UserLanguage, UserSkill, WorkExperience } from '~/types/User';
 import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
-import { useNavigate } from 'react-router-dom';
-import PATH from '~/utils/path';
 
 const { PlusOutlined, EditOutlined } = icons;
 

@@ -2,7 +2,7 @@ import { List } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
-import { Box, File, PencilSkill, Salary, Television } from '~/assets/svg';
+import { Box, File, Salary, Television } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';

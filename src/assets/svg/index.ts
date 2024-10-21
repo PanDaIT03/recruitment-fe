@@ -1,4 +1,5 @@
 export { ReactComponent as Achievement } from './achievement.svg';
+export { ReactComponent as BackPack } from './backpack.svg';
 export { ReactComponent as Bag } from './bag.svg';
 export { ReactComponent as BlockChain } from './block-chain.svg';
 export { ReactComponent as Box } from './box.svg';

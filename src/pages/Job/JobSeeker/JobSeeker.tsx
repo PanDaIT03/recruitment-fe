@@ -1,6 +1,6 @@
 import { DefaultOptionType } from 'antd/es/select';
 
-import { BlockChain, PortFolio } from '~/assets/svg';
+import { BackPack, BlockChain, Box, PortFolio } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import CustomSelect from '~/components/Select/CustomSelect';
 import TopSearchBar from '~/components/TopSearchBar/TopSearchBar';
@@ -60,20 +60,20 @@ const JobSeeker = () => {
             displayedType="text"
             className="w-full h-full"
             options={optionsExperience}
-            prefixIcon={<PortFolio className="w-5 h-5" />}
+            prefixIcon={<BackPack />}
           />
         </FormItem>
         <FormItem
           childrenSelected
           name="field"
-          className="w-full h-10 max-w-56 mb-0"
+          className="w-full h-10 max-w-44 mb-0"
         >
           <CustomSelect
             showSearch={false}
             displayedType="text"
             className="w-full h-full"
             options={optionsField}
-            prefixIcon={<BlockChain className="w-5 h-5" />}
+            prefixIcon={<Box />}
           />
         </FormItem>
       </TopSearchBar>
