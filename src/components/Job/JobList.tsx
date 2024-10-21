@@ -181,7 +181,7 @@ const JobListPage = () => {
         <FormItem
           childrenSelected
           name="categoriesId"
-          className="w-full h-10 max-w-56 mb-0"
+          className="w-full max-w-56 mb-0"
         >
           <CustomSelect
             showSearch={false}
@@ -194,7 +194,7 @@ const JobListPage = () => {
         <FormItem
           childrenSelected
           name="salaryRange"
-          className="w-full h-10 max-w-56 mb-0"
+          className="w-full max-w-56 mb-0"
         >
           <CustomSelect
             showSearch={false}
@@ -207,7 +207,7 @@ const JobListPage = () => {
         <FormItem
           childrenSelected
           name="jobFieldsId"
-          className="w-full h-10 max-w-56 mb-0"
+          className="w-full max-w-56 mb-0"
         >
           <CustomSelect
             showSearch={false}
