@@ -7,13 +7,19 @@ type IProps = {
   childrenSelected?: boolean;
 } & FormItemProps;
 
-const FormItem = ({ children, className, childrenSelected = false, ...props }: IProps) => {
+const FormItem = ({
+  children,
+  className,
+  childrenSelected = false,
+  ...props
+}: IProps) => {
   const customClass = classNames('w-full', className);
 
   return (
     <Form.Item
       {...props}
       className={customClass}
+      labelCol={{ span: props.label ? 24 : 0 }}
       initialValue={childrenSelected ? 'all' : undefined}
       label={<span className="font-medium">{props.label}</span>}
     >
