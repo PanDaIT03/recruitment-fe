@@ -9,6 +9,7 @@ import AuthAPI from '~/apis/auth';
 import { LeftArrow } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
+import { useUser } from '~/contexts/useContext';
 import useMessageApi from '~/hooks/useMessageApi';
 import { useAppSelector } from '~/hooks/useStore';
 import toast from '~/utils/functions/toast';
@@ -32,8 +33,8 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
   const [otp, setOtp] = useState('');
   const [countdown, setCountdown] = useState(initCountdown);
 
-  const { emailStatus } = useAppSelector((state) => state.auth);
-
+  const { user } = useUser();
+  console.log(user?.emailStatus);
   const { mutate: senOTPToEmail } = useMessageApi({
     apiFn: (email: string) => AuthAPI.sendOTPToEmail(email),
   });
@@ -58,7 +59,7 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
   };
 
   const handleReSendOTP = async () => {
-    if (!emailStatus?.email) {
+    if (!user?.emailStatus?.email) {
       toast.error('Lỗi không tìm thấy email');
       return;
     }
@@ -68,7 +69,7 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
       deadline: Date.now() + 1000 * 10,
     });
 
-    senOTPToEmail(emailStatus.email);
+    senOTPToEmail(user?.emailStatus.email);
   };
 
   const handleCountDownFinish = () => {
@@ -88,7 +89,7 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
       <div className="rounded-lg bg-green-50 p-4">
         <p className="text-success font-semibold">
           Mã xác minh đã được gửi tới email
-          <strong> {emailStatus?.email}</strong> của bạn.
+          <strong> {user?.emailStatus?.email}</strong> của bạn.
         </p>
         <p className="mt-2 text-sub">
           * Kiểm tra mục spam/quảng cáo nếu không tìm thấy email.

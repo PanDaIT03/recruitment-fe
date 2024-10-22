@@ -7,6 +7,7 @@ import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
+import { useUser } from '~/contexts/useContext';
 import { useAppSelector } from '~/hooks/useStore';
 import { IFormAccount } from '~/types/Account';
 import { passwordRegex } from '~/utils/constant';
@@ -21,15 +22,16 @@ interface IProps {
 const FormAccount = ({ onFinish }: IProps) => {
   const [form] = useForm<IFormAccount>();
 
-  const { currentUser } = useAppSelector((state) => state.auth);
+  const { user } = useUser();
 
   const [isChangeName, setIsChangeName] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
 
   const handleSetFormDefault = () => {
+    if (!user) return;
     const formValues: IFormAccount = {
-      email: currentUser.email,
-      fullName: currentUser.fullName,
+      email: user?.email,
+      fullName: user?.fullName,
     };
 
     form.setFieldsValue(formValues);
@@ -37,7 +39,7 @@ const FormAccount = ({ onFinish }: IProps) => {
 
   useEffect(() => {
     handleSetFormDefault();
-  }, [currentUser]);
+  }, [user]);
 
   const handleCancel = () => {
     form.resetFields();

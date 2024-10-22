@@ -10,6 +10,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import icons from '~/utils/icons';
 import { useNavigate } from 'react-router-dom';
 import PATH from '~/utils/path';
+import { useUser } from '~/contexts/useContext';
 
 const { EditOutlined } = icons;
 
@@ -51,8 +52,7 @@ interface IParams {
 const RecruitmentList: React.FC = () => {
   const navigate = useNavigate();
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
-  const { userProfile } = useAppSelector((state) => state.user);
-
+  const { user } = useUser();
   const [filters, setFilters] = useState<
     Partial<Omit<IParams, 'page' | 'pageSize'>>
   >({});
@@ -72,8 +72,9 @@ const RecruitmentList: React.FC = () => {
   });
 
   useEffect(() => {
+    if (!user) return;
     const params: Partial<Omit<IParams, 'page' | 'pageSize'>> = {
-      id: userProfile?.id,
+      id: +user?.id,
     };
 
     setFilters(params);
