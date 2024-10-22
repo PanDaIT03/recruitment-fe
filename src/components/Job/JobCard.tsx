@@ -61,11 +61,10 @@ const JobHeader: React.FC<
 
 const JobTags: React.FC<{
   quantity: number;
-  priceRange: string;
   placement: JobItem['jobsPlacements'];
   workType: JobItem['workType'];
   category: JobItem['jobCategory'];
-}> = ({ quantity, priceRange, placement, workType, category }) => (
+}> = ({ quantity, placement, workType, category }) => (
   <Row className="flex items-center gap-2 text-sm text-gray-200 mb-3">
     <Tag icon={<ReconciliationOutlined />} color="purple">
       {workType.title}
@@ -76,9 +75,7 @@ const JobTags: React.FC<{
     <Tag icon={<EnvironmentOutlined />} color="red">
       {placement?.map((place) => place?.placement?.title).join(' - ')}
     </Tag>
-    <Tag icon={<DollarOutlined />} color="green">
-      {priceRange}
-    </Tag>
+
     <Tag icon={<TeamOutlined />} color="blue">
       {quantity}
     </Tag>
@@ -86,15 +83,6 @@ const JobTags: React.FC<{
 );
 
 const JobCard: React.FC<JobItem> = (job) => {
-  const priceRange =
-    job.salaryMin && job.salaryMax
-      ? `${formatCurrencyVN(Number(job.salaryMin))} - ${formatCurrencyVN(Number(job.salaryMax))}`
-      : job.salaryMin
-        ? ` ${formatCurrencyVN(Number(job.salaryMin))}`
-        : job.salaryMax
-          ? ` ${formatCurrencyVN(Number(job.salaryMax))}`
-          : 'Thương lượng';
-
   return (
     <Card
       hoverable
@@ -109,7 +97,6 @@ const JobCard: React.FC<JobItem> = (job) => {
         />
         <JobTags
           quantity={job.quantity}
-          priceRange={priceRange}
           placement={job.jobsPlacements}
           category={job.jobCategory}
           workType={job.workType}

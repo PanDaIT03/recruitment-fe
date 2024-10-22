@@ -4,7 +4,7 @@ import AuthAPI, { IVerifyOTP } from '~/apis/auth';
 import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
 import toast from '~/utils/functions/toast';
 
-enum TYPE_LOGIN {
+export enum TYPE_LOGIN {
   TYPE_SYSTEM = 'system',
   TYPE_GOOGLE = 'google',
 }

@@ -20,6 +20,7 @@ import { mockFileList } from '~/mocks/data';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
+import { useUser } from '~/contexts/useContext';
 
 interface IChildren {
   title: string;
@@ -72,7 +73,7 @@ const items: Items[] = [
 const UserLayout = () => {
   const navigate = useNavigate();
 
-  const { currentUser } = useAppSelector((state) => state.auth);
+  const { user } = useUser();
   const [fileList, setFileList] = useState<UploadFile[]>(mockFileList);
 
   const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
@@ -138,7 +139,7 @@ const UserLayout = () => {
                   {fileList.length < 1 && <UserOutlined />}
                 </Upload>
               }
-              title={currentUser.fullName}
+              title={user?.fullName}
               description="This is the description"
             />
             <Divider dashed />

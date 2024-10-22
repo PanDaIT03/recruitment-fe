@@ -6,7 +6,6 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 import toast from '~/utils/functions/toast';
-import { tokenService } from './tokenService';
 
 interface CustomAxiosResponse extends AxiosResponse {
   action?: string;
@@ -26,13 +25,12 @@ const instance: AxiosInstance = axios.create({
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = tokenService.getRefreshToken();
+    const token = localStorage.getItem('token');
 
     if (accessToken && config.headers)
       config.headers.Authorization = `Bearer ${accessToken}`;
 
-    if (refreshToken && config.headers)
-      config.headers.Cookies = `${refreshToken}`;
+    if (token && config.headers) config.headers.Cookies = `${token}`;
 
     return config;
   },
@@ -44,9 +42,10 @@ instance.interceptors.request.use(
 // Add a response interceptor
 instance.interceptors.response.use(
   (response: AxiosResponse): any => {
-    const { accessToken } = response.data;
+    const { accessToken, refreshToken } = response.data;
 
     if (accessToken) localStorage.setItem('accessToken', accessToken);
+    if (refreshToken) localStorage.setItem('token', refreshToken);
 
     return response.data;
   },
@@ -67,9 +66,10 @@ instance.interceptors.response.use(
           accessToken: string;
         }>('/auth/refresh');
 
-        if (originalRequest.headers)
+        if (originalRequest.headers) {
           originalRequest.headers['Authorization'] =
             `Bearer ${response.accessToken}`;
+        }
 
         return instance(originalRequest);
       } catch (refreshError) {
