@@ -23,8 +23,8 @@ const rootReducer = combineReducers({
 export const store = configureStore({
   preloadedState: loadState(),
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(localStorageMiddleware as Middleware),
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware().concat(localStorageMiddleware as Middleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

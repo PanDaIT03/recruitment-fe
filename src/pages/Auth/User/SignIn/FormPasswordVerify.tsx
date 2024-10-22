@@ -9,6 +9,7 @@ import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
+import { useUser } from '~/contexts/useContext';
 import { useAppSelector } from '~/hooks/useStore';
 import PATH from '~/utils/path';
 
@@ -29,12 +30,12 @@ const FormPasswordVerify = ({
   setIsSignInWithOTP,
 }: IProps) => {
   const [form] = useForm<IVerifyForm>();
-  const { emailStatus } = useAppSelector((state) => state.auth);
+  const { user } = useUser();
 
   useEffect(() => {
-    if (!emailStatus) return;
-    form.setFieldValue('email', emailStatus.email);
-  }, [emailStatus]);
+    if (!user) return;
+    form.setFieldValue('email', user.emailStatus?.email);
+  }, [user]);
 
   return (
     <>

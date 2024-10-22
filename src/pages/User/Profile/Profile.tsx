@@ -20,6 +20,7 @@ import { UserLanguage, UserSkill, WorkExperience } from '~/types/User';
 import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
+import { useUser } from '~/contexts/useContext';
 
 const { PlusOutlined, EditOutlined } = icons;
 
@@ -40,13 +41,14 @@ const Profile = () => {
   const [skillItemSelected, setSkillItemSelected] =
     useState<UserSkill>(initSkill);
 
-  const { currentUser } = useAppSelector((state) => state.auth);
+  const { user } = useUser();
   const { userProfile, loading } = useAppSelector((state) => state.user);
 
   const refetchUserProfile = useCallback(() => {
-    const { accessToken, refreshToken } = currentUser;
+    if (!user) return;
+    const { accessToken, refreshToken } = user;
     dispatch(getUserProfile({ accessToken, refreshToken }));
-  }, [currentUser]);
+  }, [user]);
 
   const handleEditExperience = useCallback((values: WorkExperience) => {
     setExperienceItemSelected(values);
