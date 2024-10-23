@@ -100,7 +100,6 @@ const authSlice = createSlice({
         state.refreshToken = null;
         state.currentUser = action.payload;
         localStorage.removeItem('accessToken');
-        localStorage.removeItem('token');
       })
       .addCase(signOut.rejected, (state) => {
         state.loading = false;
