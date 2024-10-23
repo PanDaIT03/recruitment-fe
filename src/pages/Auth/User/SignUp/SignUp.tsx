@@ -12,7 +12,6 @@ import { IBaseUser } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
 import path from '~/utils/path';
 import FormSignUp from './FormSignUp';
-import { useUser } from '~/contexts/useContext';
 
 enum ROLE {
   USER = 1,
@@ -26,15 +25,16 @@ const SignUp = () => {
   const [form] = useForm();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { user } = useUser();
+  const { currentUser } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (!user || !Object.values(user).length) return;
+    if (!Object.values(currentUser).length) return;
 
-    user?.statusCode === 200
-      ? (toast.success(user.message), navigate(path.ROOT))
-      : (toast.error(user?.message || 'Có lỗi xảy ra'), dispatch(resetUser()));
-  }, [user]);
+    currentUser?.statusCode === 200
+      ? (toast.success(currentUser.message), navigate(path.ROOT))
+      : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
+        dispatch(resetUser()));
+  }, [currentUser]);
 
   const handleFinish = useCallback(async (values: IBaseUser) => {
     const payload = { ...values, roleId: ROLE.USER };

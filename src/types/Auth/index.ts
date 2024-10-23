@@ -38,7 +38,6 @@ export interface IUser extends IBaseAuthResponse {
   role: IPosition;
   accessToken: string;
   refreshToken: string;
-  emailStatus?: IEmailStatus;
 }
 
 export interface IUserSignIn extends IBaseUser {
