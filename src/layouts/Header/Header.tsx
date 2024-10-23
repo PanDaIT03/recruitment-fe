@@ -139,8 +139,6 @@ const Header = ({ items = defaultItems }: IProps) => {
           </ConfigProvider>
         </Col>
 
-        <HeaderDropDown />
-
         {user ? (
           <HeaderDropDown />
         ) : (
