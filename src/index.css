@@ -9,7 +9,7 @@ html {
 :root {
   --header-bgColor: rgba(105 31 116 / 1);
 
-  --button-bg-hover-color: rgb(252 235 230);
+  --button-bg-hover-color: #fcebe6;
   --button-border-color: #f15224;
 
   --button-primary-bg: #f15224;
