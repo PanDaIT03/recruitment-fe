@@ -23,4 +23,5 @@ export { ReactComponent as Success } from './success-icon.svg';
 export { ReactComponent as Television } from './television.svg';
 export { ReactComponent as UserAccount } from './user-account.svg';
 export { ReactComponent as UserAvatar } from './user_avatar.svg';
+export { ReactComponent as SunRise } from './sunrise.svg';
 
