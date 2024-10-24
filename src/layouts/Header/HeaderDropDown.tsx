@@ -13,8 +13,7 @@ import {
 } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
-import { useUser } from '~/contexts/useContext';
-import { useAppDispatch } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signOut } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -26,7 +25,7 @@ const HeaderDropDown = () => {
   const dispatch = useAppDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useUser();
+  const { currentUser } = useAppSelector((state) => state.auth);
 
   const handleCancelModal = () => {
     setIsOpen(false);
@@ -48,8 +47,8 @@ const HeaderDropDown = () => {
         className: 'pointer-events-none',
         label: (
           <div>
-            <h1 className="font-semibold">{user?.fullName}</h1>
-            <span className="text-sm text-gray-600">{user?.email}</span>
+            <h1 className="font-semibold">{currentUser.fullName}</h1>
+            <span className="text-sm text-gray-600">{currentUser.email}</span>
           </div>
         ),
         icon: (
@@ -64,12 +63,12 @@ const HeaderDropDown = () => {
       },
       { type: 'divider' },
     ];
-  }, [user]);
+  }, [currentUser]);
 
   const menuItems: MenuProps['items'] = useMemo(() => {
     return [
       ...baseMenu,
-      ...(user?.role?.id === 1
+      ...(currentUser?.role?.id === 1
         ? [
             {
               key: 'profile-group',

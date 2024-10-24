@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { HeaderLogo } from '~/assets/svg';
 import Button from '~/components/Button/Button';
-import { useUser } from '~/contexts/useContext';
+import { useAppSelector } from '~/hooks/useStore';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
@@ -36,7 +36,7 @@ const Header = ({ items = defaultItems }: IProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user } = useUser();
+  const { refreshToken } = useAppSelector((state) => state.auth.currentUser);
 
   const menuItems: MenuItem[] = useMemo(
     () =>
@@ -139,7 +139,7 @@ const Header = ({ items = defaultItems }: IProps) => {
           </ConfigProvider>
         </Col>
 
-        {user ? (
+        {refreshToken ? (
           <HeaderDropDown />
         ) : (
           <Col className="flex gap-3 justify-between items-center relative">
