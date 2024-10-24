@@ -8,7 +8,6 @@ import { Success } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import InputPassword from '~/components/Input/InputPassword';
-import { useUser } from '~/contexts/useContext';
 import useMessageApi from '~/hooks/useMessageApi';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -34,7 +33,7 @@ const ResetPassword = () => {
   const email = params.get('email');
   const token = params.get('token');
 
-  const { user } = useUser();
+  const { currentUser } = useAppSelector((state) => state.auth);
   const [isResetPasswordSuccess, setIsResetPasswordSuccess] = useState(false);
 
   const { mutate: resetPassword } = useMessageApi({
@@ -59,12 +58,12 @@ const ResetPassword = () => {
   }, [email, token]);
 
   useEffect(() => {
-    if (!user || !Object.values(user).length) return;
+    if (!Object.values(currentUser).length) return;
 
-    user?.statusCode === 200
-      ? (toast.success(user?.message), navigate(PATH.ROOT))
-      : toast.error(user?.message || 'Có lỗi xảy ra');
-  }, [user]);
+    currentUser?.statusCode === 200
+      ? (toast.success(currentUser.message), navigate(PATH.ROOT))
+      : toast.error(currentUser.message || 'Có lỗi xảy ra');
+  }, [currentUser]);
 
   const handleFinish = useCallback(
     (values: IForm) => {

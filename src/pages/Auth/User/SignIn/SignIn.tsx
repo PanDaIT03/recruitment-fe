@@ -5,21 +5,20 @@ import { useNavigate } from 'react-router-dom';
 
 import AuthAPI, { IVerifyOTP } from '~/apis/auth';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
-import { useUser } from '~/contexts/useContext';
-import { useAppDispatch } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetEmailStatus, resetUser } from '~/store/reducer/auth';
 import {
+  checkExistedEmail,
   signIn,
   signInWithGoogle,
-  TYPE_LOGIN,
   verifyOTP,
 } from '~/store/thunk/auth';
-import { IBaseUser, IUser } from '~/types/Auth';
+import { IBaseUser } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
 import path from '~/utils/path';
+import FormSignIn from './FormSignIn';
 import FormOTPVerify from './FormOTPVerify';
 import FormPasswordVerify, { IVerifyForm } from './FormPasswordVerify';
-import FormSignIn from './FormSignIn';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -28,7 +27,7 @@ const SignIn = () => {
   const [form] = useForm<IBaseUser>();
 
   const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
-  const { user, setUser } = useUser();
+  const { currentUser, emailStatus } = useAppSelector((state) => state.auth);
 
   const handleBackToSignIn = useCallback(() => {
     dispatch(resetEmailStatus());
@@ -36,18 +35,27 @@ const SignIn = () => {
   }, []);
 
   useEffect(() => {
-    if (!user?.emailStatus?.statusCode) return;
+    if (!emailStatus?.statusCode) return;
     handleBackToSignIn();
   }, []);
 
   useEffect(() => {
-    if (!user?.emailStatus) return;
+    if (!Object.values(currentUser).length) return;
 
-    const { email, statusCode } = user?.emailStatus;
+    currentUser?.statusCode === 200
+      ? (toast.success(currentUser.message), navigate(path.ROOT))
+      : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
+        dispatch(resetUser()));
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (!emailStatus) return;
+
+    const { email, statusCode } = emailStatus;
     const sendOTP = async () => await AuthAPI.sendOTPToEmail(email);
 
     statusCode === 200 && isSignInWithOTP && sendOTP();
-  }, [user?.emailStatus, isSignInWithOTP]);
+  }, [emailStatus, isSignInWithOTP]);
 
   const handleSignInWithGoogle = useCallback((userInfo: any) => {
     try {
@@ -56,33 +64,23 @@ const SignIn = () => {
       console.log(error);
     }
   }, []);
-  console.log(user);
+
   const handleCheckExistedEmail = useCallback(
-    async (value: any) => {
+    (value: any) => {
       try {
         const { email } = value;
-        const response = await AuthAPI.checkExistedEmail(email);
-
-        setUser((prevUser: IUser | null) => ({
-          ...prevUser,
-          emailStatus: response,
-        }));
+        dispatch(checkExistedEmail(email));
       } catch (error: any) {
         console.log(error);
       }
     },
-    [user?.emailStatus]
+    [emailStatus]
   );
 
-  const handlePasswordVerify = async (values: IVerifyForm) => {
+  const handlePasswordVerify = (values: IVerifyForm) => {
     try {
-      const payload = { ...values, type: TYPE_LOGIN.TYPE_SYSTEM };
-      const response = await AuthAPI.signIn(payload);
-
-      response?.statusCode === 200
-        ? (toast.success(response.message), navigate(path.ROOT))
-        : (toast.error(response?.message || 'Có lỗi xảy ra'),
-          dispatch(resetUser()));
+      const { email, password } = values;
+      dispatch(signIn({ email: email, password: password }));
     } catch (error: any) {
       console.log(error);
     }
@@ -90,11 +88,11 @@ const SignIn = () => {
 
   const handleOTPVerify = useCallback(
     (value: any) => {
-      if (!user?.emailStatus) return;
+      if (!emailStatus) return;
 
       try {
         const params: IVerifyOTP = {
-          email: user?.emailStatus.email,
+          email: emailStatus.email,
           otp: parseInt(value.verifyCode),
         };
 
@@ -103,14 +101,14 @@ const SignIn = () => {
         console.log(error);
       }
     },
-    [user?.emailStatus]
+    [emailStatus]
   );
 
   return (
     <>
-      {user?.emailStatus?.statusCode === 200 ? (
+      {emailStatus?.statusCode === 200 ? (
         <>
-          {user?.emailStatus.hasPassword && !isSignInWithOTP ? (
+          {emailStatus.hasPassword && !isSignInWithOTP ? (
             <FormPasswordVerify
               onReset={handleBackToSignIn}
               onFinish={handlePasswordVerify}

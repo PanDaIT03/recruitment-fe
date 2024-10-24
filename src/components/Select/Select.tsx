@@ -36,9 +36,6 @@ const Select = ({ className, ...props }: SelectProps) => {
       size="middle"
       className={customClass}
       optionFilterProp="children"
-      labelRender={(props) => (
-        <span className="font-medium">{props.label}</span>
-      )}
       filterSort={handleFilterSort}
       filterOption={handleFilterOption}
       {...props}

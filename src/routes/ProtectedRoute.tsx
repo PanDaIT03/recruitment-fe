@@ -1,16 +1,16 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useUser } from '~/contexts/useContext';
+import { useAppSelector } from '~/hooks/useStore';
 
 interface ProtectedRouteProps {
   allowedRoles: string[];
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
-  const { user } = useUser();
+  const { currentUser } = useAppSelector((state) => state.auth);
 
-  const userRole = user?.role?.title || 'guest';
-  console.log(userRole);
+  const userRole = currentUser?.role?.title || 'guest';
+
   return allowedRoles.includes(userRole || 'guest') ? (
     <Outlet />
   ) : (
