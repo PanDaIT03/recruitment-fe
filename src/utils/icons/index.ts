@@ -24,6 +24,7 @@ import {
   FilePdfOutlined,
   HomeOutlined,
   IdcardOutlined,
+  InboxOutlined,
   InfoCircleOutlined,
   KeyOutlined,
   LaptopOutlined,
@@ -102,6 +103,7 @@ const icons = {
   KeyOutlined,
   PlusCircleOutlined,
   MinusCircleOutlined,
+  InboxOutlined,
 };
 
 export default icons;
