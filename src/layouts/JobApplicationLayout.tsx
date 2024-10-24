@@ -1,12 +1,13 @@
 import { Flex, Layout } from 'antd';
 import { ReactNode, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Document, Fly, Question } from '~/assets/svg';
+
+import { Document, Question } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
-const { CloseOutlined, ArrowLeftOutlined } = icons;
+const { ArrowLeftOutlined } = icons;
 
 interface Item {
   bgColor: string;
@@ -66,23 +67,7 @@ const JobApplicationLayout = ({ children }: { children: ReactNode }) => {
             </div>
           </div>
         </div>
-        <Flex vertical gap={24} className="col-span-3 md:col-span-2">
-          <div className="w-full">{children}</div>
-          <Flex gap={12}>
-            <Button
-              title="Để sau"
-              displayType="outline"
-              iconBefore={<CloseOutlined />}
-              onClick={() => navigate(PATH.USER_PROFILE)}
-            />
-            <Button
-              fill
-              title="Tạo hồ sơ"
-              className="w-full"
-              iconAfter={<Fly />}
-            />
-          </Flex>
-        </Flex>
+        <div className="w-full col-span-3 md:col-span-2">{children}</div>
       </div>
     </Layout>
   );
