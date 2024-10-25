@@ -157,7 +157,7 @@ const HeaderDropDown = () => {
         onClick: () => setIsOpen(true),
       },
     ];
-  }, []);
+  }, [baseMenu, currentUser]);
 
   return (
     <>

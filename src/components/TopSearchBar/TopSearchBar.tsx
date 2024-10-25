@@ -58,12 +58,12 @@ const TopSearchBar: React.FC<IProps> = ({
             <FormItem
               childrenSelected
               name="placmentsId"
+              initialValue="all"
               className="w-full max-w-[198px] mb-3"
             >
               <CustomSelect
                 allowClear
                 className="h-10"
-                defaultValue="all"
                 placeholder="Chọn khu vực"
                 prefixIcon={<Location />}
                 configProvider={{
