@@ -12,15 +12,11 @@ import { IEmailStatus, IUser } from '~/types/Auth/index';
 export interface IAuthState {
   loading?: boolean;
   currentUser: IUser;
-  // accessToken?: string | null;
-  // refreshToken?: string | null;
   emailStatus?: IEmailStatus | null;
 }
 
 const initialState: IAuthState = {
   loading: false,
-  // accessToken: null,
-  // refreshToken: null,
   emailStatus: null,
   currentUser: {} as IUser,
 };
@@ -30,16 +26,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     resetUser: (state) => {
-      // state.accessToken = null;
-      // state.refreshToken = null;
       state.currentUser = {} as IUser;
     },
     resetEmailStatus: (state) => {
       state.emailStatus = null;
     },
-    // setAccessToken: (state, action: PayloadAction<string>) => {
-    //   state.accessToken = action.payload;
-    // },
   },
   extraReducers(builder) {
     builder
@@ -81,11 +72,7 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signInWithGoogle.fulfilled, (state, action) => {
-        // const { accessToken, refreshToken } = action.payload;
-
         state.loading = false;
-        // state.accessToken = accessToken;
-        // state.refreshToken = refreshToken;
         state.currentUser = action.payload;
       })
       .addCase(signInWithGoogle.rejected, (state) => {
@@ -96,8 +83,6 @@ const authSlice = createSlice({
       })
       .addCase(signOut.fulfilled, (state, action) => {
         state.loading = false;
-        // state.accessToken = null;
-        // state.refreshToken = null;
         state.currentUser = action.payload;
 
         localStorage.removeItem('token1');
@@ -111,8 +96,6 @@ const authSlice = createSlice({
       })
       .addCase(getMe.fulfilled, (state, action) => {
         state.loading = false;
-        // state.accessToken = null;
-        // state.refreshToken = null;
         state.currentUser = action.payload;
       })
       .addCase(getMe.rejected, (state) => {
