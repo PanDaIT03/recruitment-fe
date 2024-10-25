@@ -25,7 +25,7 @@ const HeaderDropDown = () => {
   const dispatch = useAppDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
-  const { currentUser } = useAppSelector((state) => state.auth);
+  const { currentUser, loading } = useAppSelector((state) => state.auth);
 
   const handleCancelModal = () => {
     setIsOpen(false);
@@ -181,6 +181,7 @@ const HeaderDropDown = () => {
           <div className="flex justify-end gap-3">
             <Button
               title="Huỷ"
+              loading={loading}
               iconBefore={<CloseOutlined />}
               className="w-full max-w-[143px]"
               onClick={handleCancelModal}
@@ -188,6 +189,7 @@ const HeaderDropDown = () => {
             <Button
               fill
               title="Đăng xuất"
+              loading={loading}
               iconAfter={<LogoutOutlined />}
               className="w-full max-w-[143px]"
               onClick={handleOkModal}

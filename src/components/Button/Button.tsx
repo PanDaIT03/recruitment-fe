@@ -64,7 +64,11 @@ const Button = ({
       {...props}
     >
       <div className="flex items-center gap-3">
-        {loading ? <Spin indicator={<LoadingOutlined />} /> : iconBefore}
+        {loading && fill ? (
+          <Spin indicator={<LoadingOutlined />} />
+        ) : (
+          iconBefore
+        )}
         <span className="w-max">{title}</span>
         {iconAfter}
       </div>

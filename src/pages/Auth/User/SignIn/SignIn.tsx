@@ -27,7 +27,9 @@ const SignIn = () => {
   const [form] = useForm<IBaseUser>();
 
   const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
-  const { currentUser, emailStatus } = useAppSelector((state) => state.auth);
+  const { currentUser, emailStatus, loading } = useAppSelector(
+    (state) => state.auth
+  );
 
   const handleBackToSignIn = useCallback(() => {
     dispatch(resetEmailStatus());
@@ -110,6 +112,7 @@ const SignIn = () => {
         <>
           {emailStatus.hasPassword && !isSignInWithOTP ? (
             <FormPasswordVerify
+              isLoading={loading}
               onReset={handleBackToSignIn}
               onFinish={handlePasswordVerify}
               setIsSignInWithOTP={setIsSignInWithOTP}
