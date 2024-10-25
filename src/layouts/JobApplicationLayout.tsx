@@ -1,6 +1,6 @@
 import { Flex, Layout } from 'antd';
 import { ReactNode, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import { Document, Question } from '~/assets/svg';
 import Button from '~/components/Button/Button';
@@ -15,7 +15,7 @@ interface Item {
   content: string;
 }
 
-const JobApplicationLayout = ({ children }: { children: ReactNode }) => {
+const JobApplicationLayout = () => {
   const navigate = useNavigate();
 
   const items: Item[] = useMemo(
@@ -67,7 +67,9 @@ const JobApplicationLayout = ({ children }: { children: ReactNode }) => {
             </div>
           </div>
         </div>
-        <div className="w-full col-span-3 md:col-span-2">{children}</div>
+        <div className="w-full col-span-3 md:col-span-2">
+          <Outlet />
+        </div>
       </div>
     </Layout>
   );
