@@ -24,13 +24,14 @@ const instance: AxiosInstance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const accessToken = localStorage.getItem('accessToken');
-    const token = localStorage.getItem('token');
+    const accessToken = localStorage.getItem('token1');
+    const refreshToken = localStorage.getItem('token2');
 
     if (accessToken && config.headers)
       config.headers.Authorization = `Bearer ${accessToken}`;
 
-    if (token && config.headers) config.headers.Cookies = `${token}`;
+    if (refreshToken && config.headers)
+      config.headers.Cookies = `${refreshToken}`;
 
     return config;
   },
@@ -44,8 +45,8 @@ instance.interceptors.response.use(
   (response: AxiosResponse): any => {
     const { accessToken, refreshToken } = response.data;
 
-    if (accessToken) localStorage.setItem('accessToken', accessToken);
-    if (refreshToken) localStorage.setItem('token', refreshToken);
+    if (accessToken) localStorage.setItem('token1', accessToken);
+    if (refreshToken) localStorage.setItem('token2', refreshToken);
 
     return response.data;
   },

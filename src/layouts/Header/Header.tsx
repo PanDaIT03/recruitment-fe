@@ -36,7 +36,7 @@ const Header = ({ items = defaultItems }: IProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { refreshToken } = useAppSelector((state) => state.auth.currentUser);
+  const refreshToken = localStorage.getItem('token2');
 
   const menuItems: MenuItem[] = useMemo(
     () =>

@@ -58,7 +58,7 @@ const ResetPassword = () => {
   }, [email, token]);
 
   useEffect(() => {
-    if (!Object.values(currentUser).length) return;
+    if (!currentUser || !Object.values(currentUser).length) return;
 
     currentUser?.statusCode === 200
       ? (toast.success(currentUser.message), navigate(PATH.ROOT))
