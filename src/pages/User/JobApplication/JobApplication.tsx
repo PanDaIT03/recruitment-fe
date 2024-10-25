@@ -16,7 +16,7 @@ import {
   Fly,
   Location,
   Salary,
-  SunRise
+  SunRise,
 } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import { DatePicker } from '~/components/DatePicker/DatePicker';
@@ -162,6 +162,7 @@ const JobApplication = () => {
               label: 'Mức lương kỳ vọng (VNĐ)',
               item: (
                 <InputNumber
+                  inputMode="numeric"
                   prefix={<Salary />}
                   placeholder="Ví dụ: 30,000,000"
                 />

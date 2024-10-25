@@ -70,6 +70,8 @@ export const signOut = createAsyncThunk(
   'auth/signOut',
   async (_, { rejectWithValue }) => {
     try {
+      await AuthAPI.signOut();
+
       return {} as IUser;
     } catch (error: any) {
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');

@@ -28,6 +28,9 @@ const AuthAPI = {
   signIn: async (payload: IBaseUser): Promise<IUser> => {
     return await axiosApi.post('/auth/sign-in', payload);
   },
+  signOut: async (): Promise<IBaseResponse> => {
+    return await axiosApi.post('/auth/log-out');
+  },
   signInWithGoogle: async (payload: IUserSignInWithGoogle): Promise<IUser> => {
     return await axiosApi.post('/auth/sign-in', payload);
   },
