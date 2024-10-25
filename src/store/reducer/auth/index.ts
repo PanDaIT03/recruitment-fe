@@ -1,26 +1,26 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import {
   checkExistedEmail,
+  getMe,
   signIn,
   signInWithGoogle,
   signOut,
   verifyOTP,
 } from '~/store/thunk/auth';
-import { getMe } from '~/store/thunk/user';
 import { IEmailStatus, IUser } from '~/types/Auth/index';
 
 export interface IAuthState {
   loading?: boolean;
   currentUser: IUser;
-  accessToken?: string | null;
-  refreshToken?: string | null;
+  // accessToken?: string | null;
+  // refreshToken?: string | null;
   emailStatus?: IEmailStatus | null;
 }
 
 const initialState: IAuthState = {
   loading: false,
-  accessToken: null,
-  refreshToken: null,
+  // accessToken: null,
+  // refreshToken: null,
   emailStatus: null,
   currentUser: {} as IUser,
 };
@@ -30,16 +30,16 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     resetUser: (state) => {
-      state.accessToken = null;
-      state.refreshToken = null;
+      // state.accessToken = null;
+      // state.refreshToken = null;
       state.currentUser = {} as IUser;
     },
     resetEmailStatus: (state) => {
       state.emailStatus = null;
     },
-    setAccessToken: (state, action: PayloadAction<string>) => {
-      state.accessToken = action.payload;
-    },
+    // setAccessToken: (state, action: PayloadAction<string>) => {
+    //   state.accessToken = action.payload;
+    // },
   },
   extraReducers(builder) {
     builder
@@ -68,11 +68,11 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signIn.fulfilled, (state, action) => {
-        const { accessToken, refreshToken } = action.payload;
+        const { message, statusCode } = action.payload;
 
         state.loading = false;
-        state.accessToken = accessToken;
-        state.refreshToken = refreshToken;
+        state.currentUser.message = message;
+        state.currentUser.statusCode = statusCode;
       })
       .addCase(signIn.rejected, (state) => {
         state.loading = false;
@@ -81,11 +81,11 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(signInWithGoogle.fulfilled, (state, action) => {
-        const { accessToken, refreshToken } = action.payload;
+        // const { accessToken, refreshToken } = action.payload;
 
         state.loading = false;
-        state.accessToken = accessToken;
-        state.refreshToken = refreshToken;
+        // state.accessToken = accessToken;
+        // state.refreshToken = refreshToken;
         state.currentUser = action.payload;
       })
       .addCase(signInWithGoogle.rejected, (state) => {
@@ -96,9 +96,10 @@ const authSlice = createSlice({
       })
       .addCase(signOut.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessToken = null;
-        state.refreshToken = null;
+        // state.accessToken = null;
+        // state.refreshToken = null;
         state.currentUser = action.payload;
+
         localStorage.removeItem('token1');
         localStorage.removeItem('token2');
       })
@@ -110,8 +111,8 @@ const authSlice = createSlice({
       })
       .addCase(getMe.fulfilled, (state, action) => {
         state.loading = false;
-        state.accessToken = null;
-        state.refreshToken = null;
+        // state.accessToken = null;
+        // state.refreshToken = null;
         state.currentUser = action.payload;
       })
       .addCase(getMe.rejected, (state) => {
@@ -121,5 +122,4 @@ const authSlice = createSlice({
 });
 
 export const authReducer = authSlice.reducer;
-export const { resetUser, resetEmailStatus, setAccessToken } =
-  authSlice.actions;
+export const { resetUser, resetEmailStatus } = authSlice.actions;

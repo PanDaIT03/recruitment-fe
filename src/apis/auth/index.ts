@@ -22,10 +22,13 @@ export interface IResetPasswordParams {
 }
 
 const AuthAPI = {
+  getMe: async (): Promise<IUser> => {
+    return await axiosApi.get('/users/me');
+  },
   signUp: async (payload: IBaseUser): Promise<Response> => {
     return await axiosApi.post('/auth/register', payload);
   },
-  signIn: async (payload: IBaseUser): Promise<IUser> => {
+  signIn: async (payload: IBaseUser): Promise<IBaseResponse> => {
     return await axiosApi.post('/auth/sign-in', payload);
   },
   signOut: async (): Promise<IBaseResponse> => {
