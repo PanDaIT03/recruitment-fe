@@ -13,7 +13,7 @@ import toast from '~/utils/functions/toast';
 import path from '~/utils/path';
 import FormSignUp from './FormSignUp';
 
-enum ROLE {
+export enum ROLE {
   USER = 1,
   EMPLOYER = 3,
 }
