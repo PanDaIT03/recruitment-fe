@@ -34,7 +34,9 @@ const AuthAPI = {
   signOut: async (): Promise<IBaseResponse> => {
     return await axiosApi.post('/auth/log-out');
   },
-  signInWithGoogle: async (payload: IUserSignInWithGoogle): Promise<IUser> => {
+  signInWithGoogle: async (
+    payload: IUserSignInWithGoogle
+  ): Promise<IBaseResponse> => {
     return await axiosApi.post('/auth/sign-in', payload);
   },
   checkExistedEmail: async (email: string): Promise<IEmailStatus> => {

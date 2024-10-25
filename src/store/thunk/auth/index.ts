@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import AuthAPI, { IVerifyOTP } from '~/apis/auth';
+import AuthAPI from '~/apis/auth';
 import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
 import toast from '~/utils/functions/toast';
 
@@ -23,28 +23,14 @@ export const checkExistedEmail = createAsyncThunk(
   }
 );
 
-export const verifyOTP = createAsyncThunk(
-  'auth/verifyOTP',
-  async (data: IVerifyOTP, { rejectWithValue }) => {
-    try {
-      const response = await AuthAPI.verifyOTP(data);
-
-      return response;
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message);
-      return rejectWithValue(error?.message || 'Có lỗi xảy ra');
-    }
-  }
-);
-
 export const signInWithGoogle = createAsyncThunk(
   'auth/signInWithGoogle',
-  async (data: IUserSignInWithGoogle, { rejectWithValue }) => {
+  async (data: IUserSignInWithGoogle, { rejectWithValue, dispatch }) => {
     try {
       const payload = { ...data, type: TYPE_LOGIN.TYPE_GOOGLE };
-      const user = await AuthAPI.signInWithGoogle(payload);
+      const { statusCode } = await AuthAPI.signInWithGoogle(payload);
 
-      return user;
+      if (statusCode === 200) dispatch(getMe());
     } catch (error: any) {
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
     }
@@ -53,12 +39,12 @@ export const signInWithGoogle = createAsyncThunk(
 
 export const signIn = createAsyncThunk(
   'auth/signIn',
-  async (data: IBaseUser, { rejectWithValue }) => {
+  async (data: IBaseUser, { rejectWithValue, dispatch }) => {
     try {
       const payload = { ...data, type: TYPE_LOGIN.TYPE_SYSTEM };
-      const response = await AuthAPI.signIn(payload);
+      const { statusCode } = await AuthAPI.signIn(payload);
 
-      return response;
+      if (statusCode === 200) dispatch(getMe());
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
