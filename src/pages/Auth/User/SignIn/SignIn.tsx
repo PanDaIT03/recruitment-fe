@@ -1,7 +1,7 @@
 import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import AuthAPI, { IVerifyOTP } from '~/apis/auth';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
@@ -22,6 +22,7 @@ import FormSignIn from './FormSignIn';
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const [form] = useForm<IBaseUser>();
@@ -48,6 +49,11 @@ const SignIn = () => {
     if (!emailStatus?.statusCode) return;
     handleBackToSignIn();
   }, []);
+
+  useEffect(() => {
+    const { state } = location;
+    if (state && state?.email) form.setFieldValue('email', state.email);
+  }, [location]);
 
   useEffect(() => {
     if (!Object.values(currentUser).length) return;

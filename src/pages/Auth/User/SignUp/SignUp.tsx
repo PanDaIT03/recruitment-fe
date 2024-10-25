@@ -1,56 +1,46 @@
-import { Divider } from 'antd';
+import { Divider, Flex, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import AuthAPI from '~/apis/auth';
+import AuthAPI, { ISignUpParams } from '~/apis/auth';
+import Button from '~/components/Button/Button';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
+import Modal from '~/components/Modal/Modal';
+import useMessageApi from '~/hooks/useMessageApi';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetUser } from '~/store/reducer/auth';
 import { signInWithGoogle } from '~/store/thunk/auth';
-import { IBaseUser } from '~/types/Auth';
+import { IBaseUser, ROLE } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
-import path from '~/utils/path';
+import PATH from '~/utils/path';
 import FormSignUp from './FormSignUp';
-
-enum ROLE {
-  USER = 1,
-  EMPLOYER = 3,
-}
 
 const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [form] = useForm();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const { currentUser } = useAppSelector((state) => state.auth);
+
+  const { mutate: signUp, isPending } = useMessageApi({
+    apiFn: (params: ISignUpParams) => AuthAPI.signUp(params),
+    onSuccess: () => setIsOpenModal(true),
+  });
 
   useEffect(() => {
     if (!Object.values(currentUser).length) return;
 
     currentUser?.statusCode === 200
-      ? (toast.success(currentUser.message), navigate(path.ROOT))
-      : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
-        dispatch(resetUser()));
+      ? (toast.success('Đăng nhập thành công'), navigate(PATH.ROOT))
+      : (toast.error('Có lỗi xảy ra'), dispatch(resetUser()));
   }, [currentUser]);
 
   const handleFinish = useCallback(async (values: IBaseUser) => {
-    const payload = { ...values, roleId: ROLE.USER };
-    setIsLoading(true);
-
-    try {
-      const response = await AuthAPI.signUp(payload);
-      const { statusCode, message } = response;
-
-      toast[statusCode === 200 ? 'success' : 'error'](message);
-      if (statusCode === 200) form.resetFields();
-
-      setIsLoading(false);
-    } catch (error: any) {
-      console.log('Unexpected error', error);
-    }
+    const params: ISignUpParams = { ...values, roleId: ROLE.USER };
+    signUp(params);
   }, []);
 
   const handleSignUpWithGoogle = useCallback((userInfo: any) => {
@@ -60,6 +50,13 @@ const SignUp = () => {
       console.log(error);
     }
   }, []);
+
+  const handleRedirectToSignIn = useCallback(() => {
+    const email = form.getFieldValue('email');
+
+    setIsOpenModal(false);
+    navigate(PATH.USER_SIGN_IN, { state: { email } });
+  }, [form]);
 
   return (
     <>
@@ -75,7 +72,31 @@ const SignUp = () => {
       <Divider className="!my-0">
         <p className="text-sub text-sm">hoặc</p>
       </Divider>
-      <FormSignUp loading={isLoading} form={form} onFinish={handleFinish} />
+      <FormSignUp loading={isPending} form={form} onFinish={handleFinish} />
+      <Modal
+        isOpen={isOpenModal}
+        title="Đăng ký thành công"
+        className="min-w-[550px]"
+        footer={
+          <Flex justify="end" gap={12}>
+            <Button title="Đóng" onClick={() => setIsOpenModal(false)} />
+            <Button
+              fill
+              title="Đến trang đăng nhập"
+              onClick={handleRedirectToSignIn}
+            />
+          </Flex>
+        }
+      >
+        <Space direction="vertical" className="text-center" size="middle">
+          <p className="text-lg font-semibold text-green-600">
+            Chúc mừng bạn đã đăng ký tài khoản thành công!
+          </p>
+          <span className="text-sm text-sub font-medium">
+            Bạn có thể chuyển đến trang đăng nhập để sử dụng tài khoản của mình.
+          </span>
+        </Space>
+      </Modal>
     </>
   );
 };

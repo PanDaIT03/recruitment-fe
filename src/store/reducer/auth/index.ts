@@ -1,9 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {
-  checkExistedEmail,
-  getMe,
-  signOut
-} from '~/store/thunk/auth';
+import { checkExistedEmail, getMe, signIn, signOut } from '~/store/thunk/auth';
 import { IEmailStatus, IUser } from '~/types/Auth/index';
 
 export interface IAuthState {
@@ -41,6 +37,15 @@ const authSlice = createSlice({
       .addCase(checkExistedEmail.rejected, (state) => {
         state.loading = false;
         state.emailStatus = null;
+      })
+      .addCase(signIn.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(signIn.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(signIn.rejected, (state) => {
+        state.loading = false;
       })
       .addCase(signOut.pending, (state) => {
         state.loading = true;
