@@ -9,9 +9,10 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { currentUser } = useAppSelector((state) => state.auth);
 
+  if (!Object.keys(currentUser).length) return <Outlet />;
   const userRole = currentUser?.role?.title || 'guest';
 
-  return allowedRoles.includes(userRole || 'guest') ? (
+  return allowedRoles.includes(userRole) ? (
     <Outlet />
   ) : (
     <Navigate to="/" replace />
