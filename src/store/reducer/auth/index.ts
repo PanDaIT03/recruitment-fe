@@ -6,6 +6,7 @@ import {
   signOut,
   verifyOTP,
 } from '~/store/thunk/auth';
+import { getMe } from '~/store/thunk/user';
 import { IEmailStatus, IUser } from '~/types/Auth/index';
 
 export interface IAuthState {
@@ -72,7 +73,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.accessToken = accessToken;
         state.refreshToken = refreshToken;
-        state.currentUser = action.payload;
       })
       .addCase(signIn.rejected, (state) => {
         state.loading = false;
@@ -102,6 +102,18 @@ const authSlice = createSlice({
         localStorage.removeItem('accessToken');
       })
       .addCase(signOut.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(getMe.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getMe.fulfilled, (state, action) => {
+        state.loading = false;
+        state.accessToken = null;
+        state.refreshToken = null;
+        state.currentUser = action.payload;
+      })
+      .addCase(getMe.rejected, (state) => {
         state.loading = false;
       });
   },

@@ -72,7 +72,7 @@ const JobDetail: React.FC = () => {
   }, []);
 
   const handleIsOpenModal = () => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem('token1');
 
     if (!token) {
       setIsLoginModalVisible(true);
