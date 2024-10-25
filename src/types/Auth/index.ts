@@ -15,29 +15,23 @@ export interface IEmailStatus extends IBaseAuthResponse {
   signInWith: string;
 }
 
-interface IPosition {
+export interface IUser {
   id: number;
-  title: string;
-}
-
-export interface IUser extends IBaseAuthResponse {
-  id: string;
-  createBy?: string;
-  createAt?: string;
-  updateBy?: string;
-  updateAt?: string;
+  email: string;
   fullName: string;
   phoneNumber: string;
-  email: string;
-  avatarUrl?: string;
+  avatarUrl: string;
   companyName: string;
   companyUrl: string;
   isActive: boolean;
-  userSkills: any[];
-  position: IPosition;
-  role: IPosition;
-  accessToken: string;
-  refreshToken: string;
+  role: Role;
+  jobPosition: string;
+  statusCode: number;
+}
+
+export interface Role {
+  id: number;
+  title: string;
 }
 
 export interface IUserSignIn extends IBaseUser {

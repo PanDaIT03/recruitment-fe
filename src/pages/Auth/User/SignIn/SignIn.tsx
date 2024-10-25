@@ -53,9 +53,8 @@ const SignIn = () => {
     if (!Object.values(currentUser).length) return;
 
     currentUser?.statusCode === 200
-      ? (toast.success(currentUser.message), navigate(path.ROOT))
-      : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
-        dispatch(resetUser()));
+      ? (toast.success('Đăng nhập thành công'), navigate(path.ROOT))
+      : (toast.error('Có lỗi xảy ra'), dispatch(resetUser()));
   }, [currentUser]);
 
   useEffect(() => {
