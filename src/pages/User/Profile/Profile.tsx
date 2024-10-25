@@ -9,14 +9,12 @@ import ProfileSection, {
   ProfileSectionType,
 } from '~/pages/User/Profile/ProfileSection';
 import { getUserProfile } from '~/store/thunk/user';
+import { UserLanguage, UserSkill, WorkExperience } from '~/types/User';
 import icons from '~/utils/icons';
 import ExperienceCard from './Card/ExperienceCard';
 import LanguageCard from './Card/LanguageCard';
 import SkillCard from './Card/SkillCard';
 import AchievementModal from './Modal/AchievementModal';
-
-import { useNavigate } from 'react-router-dom';
-import { UserLanguage, UserSkill, WorkExperience } from '~/types/User';
 import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
@@ -28,7 +26,6 @@ const initLanguage = {} as UserLanguage;
 const initSkill = {} as UserSkill;
 
 const Profile = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [selectedItem, setSelectedItem] = useState('');
