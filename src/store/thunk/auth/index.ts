@@ -56,15 +56,27 @@ export const signIn = createAsyncThunk(
   async (data: IBaseUser, { rejectWithValue }) => {
     try {
       const payload = { ...data, type: TYPE_LOGIN.TYPE_SYSTEM };
-      const user = await AuthAPI.signIn(payload);
+      const response = await AuthAPI.signIn(payload);
 
-      return user;
+      return response;
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
     }
   }
 );
+
+export const getMe = createAsyncThunk<IUser>('auth/getMe', async () => {
+  try {
+    const response = await AuthAPI.getMe();
+    if (!response) throw new Error('Có lỗi xảy ra');
+
+    return response;
+  } catch (error: any) {
+    toast.error(error?.response?.data?.message);
+    throw error;
+  }
+});
 
 export const signOut = createAsyncThunk(
   'auth/signOut',

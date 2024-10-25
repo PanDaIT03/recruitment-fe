@@ -18,12 +18,14 @@ export interface IVerifyForm {
 }
 
 interface IProps {
+  isLoading?: boolean;
   onReset: () => void;
   onFinish(values: IVerifyForm): void;
   setIsSignInWithOTP: Dispatch<SetStateAction<boolean>>;
 }
 
 const FormPasswordVerify = ({
+  isLoading,
   onReset,
   onFinish,
   setIsSignInWithOTP,
@@ -67,6 +69,7 @@ const FormPasswordVerify = ({
       <Flex justify="center">
         <Button
           displayType="text"
+          loading={isLoading}
           title="Đăng nhập bằng mã OTP"
           className="text-[#691F74] hover:underline"
           onClick={() => setIsSignInWithOTP(true)}

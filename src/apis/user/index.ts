@@ -33,9 +33,6 @@ const UserApi = {
   getMyCv: async (): Promise<any> => {
     return await axiosApi.get('/curriculum-vitaes/my-CVs');
   },
-  getMe: async (): Promise<IUser> => {
-    return await axiosApi.get('/users/me');
-  },
   createAchievement: async (
     params: IAchievementParams
   ): Promise<IBaseResponse> => {
