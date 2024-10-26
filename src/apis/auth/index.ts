@@ -4,11 +4,16 @@ import {
   IEmailStatus,
   IUser,
   IUserSignInWithGoogle,
+  ROLE,
 } from '~/types/Auth/index';
 
 type Response = IBaseResponse<{
   data: IUser;
 }>;
+
+export interface ISignUpParams extends IBaseUser {
+  roleId: ROLE;
+}
 
 export interface IVerifyOTP {
   email: string;
@@ -25,7 +30,7 @@ const AuthAPI = {
   getMe: async (): Promise<IUser> => {
     return await axiosApi.get('/users/me');
   },
-  signUp: async (payload: IBaseUser): Promise<Response> => {
+  signUp: async (payload: ISignUpParams): Promise<Response> => {
     return await axiosApi.post('/auth/register', payload);
   },
   signIn: async (payload: IBaseUser): Promise<IBaseResponse> => {
@@ -34,7 +39,9 @@ const AuthAPI = {
   signOut: async (): Promise<IBaseResponse> => {
     return await axiosApi.post('/auth/log-out');
   },
-  signInWithGoogle: async (payload: IUserSignInWithGoogle): Promise<IUser> => {
+  signInWithGoogle: async (
+    payload: IUserSignInWithGoogle
+  ): Promise<IBaseResponse> => {
     return await axiosApi.post('/auth/sign-in', payload);
   },
   checkExistedEmail: async (email: string): Promise<IEmailStatus> => {

@@ -18,6 +18,7 @@ import AchievementModal from './Modal/AchievementModal';
 import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
+import toast from '~/utils/functions/toast';
 
 const { PlusOutlined, EditOutlined } = icons;
 
@@ -41,7 +42,14 @@ const Profile = () => {
   const { userProfile, loading } = useAppSelector((state) => state.user);
 
   const refetchUserProfile = useCallback(() => {
-    const { accessToken, refreshToken } = currentUser;
+    const accessToken = localStorage.getItem('token1');
+    const refreshToken = localStorage.getItem('token2');
+
+    if (!accessToken || !refreshToken) {
+      toast.error('Lỗi không tìm thấy token');
+      return;
+    }
+
     dispatch(getUserProfile({ accessToken, refreshToken }));
   }, [currentUser]);
 

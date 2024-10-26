@@ -1,6 +1,7 @@
 import { Divider, Flex, Layout, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AuthAPI from '~/apis/auth';
 import { JobsAPI } from '~/apis/job';
 
@@ -11,15 +12,14 @@ import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useFetch } from '~/hooks/useFetch';
+import { useAppDispatch } from '~/hooks/useStore';
 import FormApplication from '~/pages/User/JobApplication/FormApplication';
 import { IJobApplicationForm } from '~/pages/User/JobApplication/JobApplication';
+import { checkExistedEmail } from '~/store/thunk/auth';
+import { ROLE } from '~/types/Auth';
 import { PaginatedJobFields, PaginatedJobPositions } from '~/types/Job';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
-import { ROLE } from '../../User/SignUp/SignUp';
-import { checkExistedEmail } from '~/store/thunk/auth';
-import { useAppDispatch } from '~/hooks/useStore';
-import { useNavigate } from 'react-router-dom';
 import PATH from '~/utils/path';
 
 const { Title, Text } = Typography;
