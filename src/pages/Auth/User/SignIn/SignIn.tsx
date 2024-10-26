@@ -1,27 +1,28 @@
 import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import AuthAPI, { IVerifyOTP } from '~/apis/auth';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
+import useMessageApi from '~/hooks/useMessageApi';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetEmailStatus, resetUser } from '~/store/reducer/auth';
 import {
   checkExistedEmail,
   signIn,
   signInWithGoogle,
-  verifyOTP,
 } from '~/store/thunk/auth';
 import { IBaseUser } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
 import path from '~/utils/path';
-import FormSignIn from './FormSignIn';
 import FormOTPVerify from './FormOTPVerify';
 import FormPasswordVerify, { IVerifyForm } from './FormPasswordVerify';
+import FormSignIn from './FormSignIn';
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const [form] = useForm<IBaseUser>();
@@ -30,6 +31,14 @@ const SignIn = () => {
   const { currentUser, emailStatus, loading } = useAppSelector(
     (state) => state.auth
   );
+
+  const { mutate: verifyOTP } = useMessageApi({
+    apiFn: (email: IVerifyOTP) => AuthAPI.verifyOTP(email),
+  });
+
+  const { mutate: sendOTPToEmail } = useMessageApi({
+    apiFn: (email: string) => AuthAPI.sendOTPToEmail(email),
+  });
 
   const handleBackToSignIn = useCallback(() => {
     dispatch(resetEmailStatus());
@@ -42,21 +51,23 @@ const SignIn = () => {
   }, []);
 
   useEffect(() => {
+    const { state } = location;
+    if (state && state?.email) form.setFieldValue('email', state.email);
+  }, [location]);
+
+  useEffect(() => {
     if (!Object.values(currentUser).length) return;
 
     currentUser?.statusCode === 200
-      ? (toast.success(currentUser.message), navigate(path.ROOT))
-      : (toast.error(currentUser?.message || 'Có lỗi xảy ra'),
-        dispatch(resetUser()));
+      ? (toast.success('Đăng nhập thành công'), navigate(path.ROOT))
+      : (toast.error('Có lỗi xảy ra'), dispatch(resetUser()));
   }, [currentUser]);
 
   useEffect(() => {
     if (!emailStatus) return;
 
     const { email, statusCode } = emailStatus;
-    const sendOTP = async () => await AuthAPI.sendOTPToEmail(email);
-
-    statusCode === 200 && isSignInWithOTP && sendOTP();
+    statusCode === 200 && isSignInWithOTP && sendOTPToEmail(email);
   }, [emailStatus, isSignInWithOTP]);
 
   const handleSignInWithGoogle = useCallback((userInfo: any) => {
@@ -92,16 +103,12 @@ const SignIn = () => {
     (value: any) => {
       if (!emailStatus) return;
 
-      try {
-        const params: IVerifyOTP = {
-          email: emailStatus.email,
-          otp: parseInt(value.verifyCode),
-        };
+      const params: IVerifyOTP = {
+        email: emailStatus.email,
+        otp: parseInt(value.verifyCode),
+      };
 
-        dispatch(verifyOTP(params));
-      } catch (error: any) {
-        console.log(error);
-      }
+      verifyOTP(params);
     },
     [emailStatus]
   );

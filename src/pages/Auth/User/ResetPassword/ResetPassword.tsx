@@ -61,8 +61,8 @@ const ResetPassword = () => {
     if (!currentUser || !Object.values(currentUser).length) return;
 
     currentUser?.statusCode === 200
-      ? (toast.success(currentUser.message), navigate(PATH.ROOT))
-      : toast.error(currentUser.message || 'Có lỗi xảy ra');
+      ? (toast.success('Cập nhật mật khẩu thành coong'), navigate(PATH.ROOT))
+      : toast.error('Có lỗi xảy ra');
   }, [currentUser]);
 
   const handleFinish = useCallback(
