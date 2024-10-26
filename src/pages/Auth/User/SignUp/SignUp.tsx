@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AuthAPI, { ISignUpParams } from '~/apis/auth';
-import { SuccessIconV2 } from '~/assets/svg';
+import { Success } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
 import Modal from '~/components/Modal/Modal';
@@ -90,7 +90,7 @@ const SignUp = () => {
         }
       >
         <Flex vertical align="center" className="text-center" gap={8}>
-          <SuccessIconV2 width={100} height={100} />
+          <Success width={100} height={100} />
           <p className="text-lg font-semibold text-green-600">
             Chúc mừng bạn đã đăng ký tài khoản thành công!
           </p>

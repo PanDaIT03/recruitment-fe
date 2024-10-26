@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthAPI, { IResetPasswordParams } from '~/apis/auth';
 
-import { SuccessIconV2 } from '~/assets/svg';
+import { Success } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import InputPassword from '~/components/Input/InputPassword';
@@ -96,7 +96,7 @@ const ResetPassword = () => {
     <>
       {isResetPasswordSuccess ? (
         <Flex vertical justify="center" align="center" className="gap-6">
-          <SuccessIconV2 width={64} height={64} />
+          <Success width={64} height={64} />
           <div className="text-center space-y-3">
             <h2 className="text-lg text-green-500 font-semibold">
               Mật khẩu đã được cập nhật
