@@ -26,6 +26,11 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
     return isVisible;
   }, [location]);
 
+  const maxWidth =
+    location.pathname === PATH.EMPLOYER_SIGN_UP
+      ? 'max-w-3xl'
+      : 'shadow-md max-w-sm bg-white p-6 border rounded-xl';
+
   return (
     <Layout className="w-full min-h-screen p-8 justify-center items-center">
       <Row justify={'center'} align={'middle'} className="flex w-full gap-x-32">
@@ -42,10 +47,8 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
             </Paragraph>
           </Col>
         )}
-        <Col className="w-full max-w-sm">
-          <div className="flex w-full flex-col gap-y-6 bg-white p-6 border rounded-xl shadow-md">
-            {children}
-          </div>
+        <Col className={`w-full ${maxWidth}`}>
+          <div className="flex w-full flex-col gap-y-6  ">{children}</div>
           <div className="w-full flex justify-center mt-6">
             <Button
               displayType="text"

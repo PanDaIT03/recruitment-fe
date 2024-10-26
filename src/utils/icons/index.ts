@@ -50,6 +50,10 @@ import {
   TeamOutlined,
   UserAddOutlined,
   UserOutlined,
+  LinkOutlined,
+  CreditCardOutlined,
+  PhoneOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -92,6 +96,7 @@ const icons = {
   MinusOutlined,
   LoginOutlined,
   UserAddOutlined,
+  LinkOutlined,
   SaveOutlined,
   BankOutlined,
   IdcardOutlined,
@@ -104,6 +109,9 @@ const icons = {
   PlusCircleOutlined,
   MinusCircleOutlined,
   InboxOutlined,
+  CreditCardOutlined,
+  PhoneOutlined,
+  WalletOutlined,
 };
 
 export default icons;
