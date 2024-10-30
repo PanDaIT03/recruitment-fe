@@ -14,11 +14,6 @@ function App() {
   const token = localStorage.getItem('token1');
   const clientId = import.meta.env.VITE_APP_CLIENT_ID;
 
-  if (!clientId) {
-    toast.error('Google Client ID is missing!');
-    return <div>Error: Google Client ID is not set.</div>;
-  }
-
   useEffect(() => {
     if (!token) return;
 
@@ -28,6 +23,10 @@ function App() {
     }
   }, [token]);
 
+  if (!clientId) {
+    toast.error('Google Client ID is missing!');
+    return <div>Error: Google Client ID is not set.</div>;
+  }
   return (
     <GoogleOAuthProvider clientId={clientId}>
       <MessageProvider>

@@ -246,7 +246,6 @@ const JobDetail: React.FC = () => {
               </div>
               <div>
                 <p className="font-medium">{currentJob?.user?.companyName}</p>
-                <p className="text-orange-500">Chưa được xác minh</p>
               </div>
             </div>
 
@@ -267,7 +266,7 @@ const JobDetail: React.FC = () => {
                   label: 'Website:',
                   value: (
                     <Link
-                      to="https://recruitment-fe-vi.vercel.app/"
+                      to={currentJob?.user?.companyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-500 hover:underline flex items-center"
