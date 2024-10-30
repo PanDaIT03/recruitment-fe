@@ -108,7 +108,10 @@ const retryRequest = async <T>(
         return Promise.reject(error);
       }
 
-      if (retries === 0) return Promise.reject(error);
+      if (retries === 0) {
+        isWarningShown = true
+        return Promise.reject(error)
+      };
 
       await new Promise((resolve) => setTimeout(resolve, delay));
 
