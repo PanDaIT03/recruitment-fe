@@ -19,9 +19,8 @@ export { ReactComponent as Question } from './question.svg';
 export { ReactComponent as Salary } from './salary.svg';
 export { ReactComponent as Search } from './search.svg';
 export { ReactComponent as SkyScraper } from './skyscraper.svg';
-export { ReactComponent as Success } from './success-icon.svg';
+export { ReactComponent as Success } from './success.svg';
+export { ReactComponent as SunRise } from './sunrise.svg';
 export { ReactComponent as Television } from './television.svg';
 export { ReactComponent as UserAccount } from './user-account.svg';
 export { ReactComponent as UserAvatar } from './user_avatar.svg';
-export { ReactComponent as SunRise } from './sunrise.svg';
-

@@ -3,8 +3,8 @@ import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthAPI, { IResetPasswordParams } from '~/apis/auth';
-import { Success } from '~/assets/svg';
 
+import { Success } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import InputPassword from '~/components/Input/InputPassword';
@@ -36,7 +36,7 @@ const ResetPassword = () => {
   const { currentUser } = useAppSelector((state) => state.auth);
   const [isResetPasswordSuccess, setIsResetPasswordSuccess] = useState(false);
 
-  const { mutate: resetPassword } = useMessageApi({
+  const { mutate: resetPassword, isPending } = useMessageApi({
     apiFn: (params: IResetPasswordParams) => AuthAPI.resetPassword(params),
     onSuccess: () => {
       setIsResetPasswordSuccess(true);
@@ -61,8 +61,8 @@ const ResetPassword = () => {
     if (!currentUser || !Object.values(currentUser).length) return;
 
     currentUser?.statusCode === 200
-      ? (toast.success(currentUser.message), navigate(PATH.ROOT))
-      : toast.error(currentUser.message || 'Có lỗi xảy ra');
+      ? (toast.success('Đăng nhập thành công'), navigate(PATH.ROOT))
+      : toast.error('Có lỗi xảy ra');
   }, [currentUser]);
 
   const handleFinish = useCallback(
@@ -98,12 +98,16 @@ const ResetPassword = () => {
         <Flex vertical justify="center" align="center" className="gap-6">
           <Success width={64} height={64} />
           <div className="text-center space-y-3">
-            <h2 className="text-lg font-semibold">Mật khẩu đã được cập nhật</h2>
+            <h2 className="text-lg text-green-500 font-semibold">
+              Mật khẩu đã được cập nhật
+            </h2>
             <p className="text-sm text-sub">
               Bây giờ bạn có thể đăng nhập bằng mật khẩu mới của mình
             </p>
           </div>
-          <p className="text-sm animate-pulse">Đang tự động chuyển hướng...</p>
+          <p className="text-sm text-green-500 animate-pulse">
+            Đang tự động chuyển hướng...
+          </p>
         </Flex>
       ) : (
         <>
@@ -115,6 +119,7 @@ const ResetPassword = () => {
           </div>
           <FormWrapper
             form={form}
+            loading={isPending}
             onFinish={handleFinish}
             submitTitle="Xác nhận"
           >

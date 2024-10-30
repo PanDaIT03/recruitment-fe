@@ -1,10 +1,26 @@
-import { Divider, Flex, Layout, Space, UploadProps } from 'antd';
+import {
+  Divider,
+  Flex,
+  Layout,
+  message,
+  Space,
+  UploadFile,
+  UploadProps,
+} from 'antd';
 import { FormInstance, useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
 import { DefaultOptionType } from 'antd/es/select';
 import Title from 'antd/es/typography/Title';
 import { FormItemProps } from 'antd/lib';
-import { ReactElement, ReactNode, useEffect, useMemo } from 'react';
+import {
+  ChangeEvent,
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { JobsAPI } from '~/apis/job';
@@ -25,11 +41,11 @@ import FormItem from '~/components/Form/FormItem';
 import { IFormListProps } from '~/components/Form/FormList';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
-import InputNumber from '~/components/Input/InputNumber';
 import CustomSelect from '~/components/Select/CustomSelect';
 import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
 import { JobPlacement } from '~/types/Job';
+import { formatCurrencyVN } from '~/utils/functions';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -63,27 +79,78 @@ const JobApplication = () => {
   const navigate = useNavigate();
   const [form] = useForm();
 
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
   const { data: languages } = useFetch(UserApi.getAllForeignLanguage);
   const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
 
+  console.log(fileList);
+
   const props: UploadProps = useMemo(
     () => ({
-      name: 'file',
-      multiple: true,
-      action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-      onChange: (info) => {
-        const { status } = info.file;
-        if (status !== 'uploading') console.log(info.file, info.fileList);
+      fileList,
+      maxCount: 1,
+      onRemove: (file) => {
+        console.log('onRemove', file);
 
-        if (status === 'done')
-          toast.success(`${info.file.name} file uploaded successfully.`);
-        else if (status === 'error')
-          toast.error(`${info.file.name} file upload failed.`);
+        const index = fileList.indexOf(file);
+        const newFileList = fileList.slice();
+        newFileList.splice(index, 1);
+
+        setFileList(newFileList);
       },
-      onDrop: (e) => {
-        console.log('Dropped files', e.dataTransfer.files);
+      beforeUpload: (file) => {
+        console.log('beforeUpload', file);
+
+        const isValidFormat =
+          file.type === 'application/pdf' ||
+          file.type === 'application/msword' ||
+          file.type ===
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+        if (!isValidFormat)
+          message.error('Tệp tin không hợp lệ! Chỉ hỗ trợ PDF, DOC, DOCX.');
+
+        setFileList([...fileList, { ...file, originFileObj: file }]);
+        return false;
       },
     }),
+    [fileList]
+  );
+
+  const handleSalaryChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value,
+        numericValue = value.replace(/[^0-9]/g, '');
+
+      let formattedValue = '';
+      if (numericValue) formattedValue = formatCurrencyVN(Number(numericValue));
+
+      form.setFieldValue('salary', formattedValue);
+    },
+    []
+  );
+
+  const handleTotalYearChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value,
+        numericValue = value.replace(/[^0-9]/g, '');
+
+      form.setFieldValue('totalYearsOfExp', numericValue);
+    },
+    []
+  );
+
+  const handleBlurTotalYear = useCallback(
+    (event: React.FocusEvent<HTMLInputElement, Element>) => {
+      let formattedValue = '';
+      const value = Number(event.target.value);
+
+      if (value >= 50) formattedValue = '50';
+      else formattedValue = value.toString();
+
+      form.setFieldValue('totalYearsOfExp', formattedValue);
+    },
     []
   );
 
@@ -161,10 +228,11 @@ const JobApplication = () => {
               name: 'salary',
               label: 'Mức lương kỳ vọng (VNĐ)',
               item: (
-                <InputNumber
+                <Input
                   inputMode="numeric"
                   prefix={<Salary />}
                   placeholder="Ví dụ: 30,000,000"
+                  onChange={handleSalaryChange}
                 />
               ),
               extra: 'Để trống nếu bạn muốn thương lượng sau.',
@@ -196,7 +264,15 @@ const JobApplication = () => {
             {
               name: 'totalYearsOfExp',
               label: 'Tổng số năm kinh nghiệm của bạn',
-              item: <InputNumber prefix={<SunRise />} placeholder="Ví dụ: 7" />,
+              item: (
+                <Input
+                  inputMode="numeric"
+                  prefix={<SunRise />}
+                  placeholder="Ví dụ: 7"
+                  onChange={handleTotalYearChange}
+                  onBlur={(e) => handleBlurTotalYear(e)}
+                />
+              ),
               rules: [
                 { required: true, message: 'Hãy nhập số năm kinh nghiệm' },
               ],

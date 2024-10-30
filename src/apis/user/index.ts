@@ -1,5 +1,4 @@
 import axiosApi from '~/services/axios';
-import { IUser } from '~/types/Auth';
 import {
   Achivement,
   ILanguageComboBox,
@@ -10,7 +9,7 @@ import {
   UserSkill,
 } from '~/types/User';
 
-export type IUserProfileParams = Pick<IUser, 'accessToken' | 'refreshToken'>;
+export type IUserProfileParams = { accessToken: string; refreshToken: string };
 export type IUserSkillParams = Pick<UserSkill, 'skillsId' | 'level'>;
 export type ISkillParams = Pick<UserSkill, 'skillsId' | 'level'>;
 export type IAchievementParams = Pick<Achivement, 'description'>;

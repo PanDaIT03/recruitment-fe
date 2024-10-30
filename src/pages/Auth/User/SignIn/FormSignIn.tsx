@@ -14,13 +14,6 @@ interface IProps {
 }
 
 const FormSignIn = ({ form, onFinish }: IProps) => {
-  useEffect(() => {
-    form.setFieldsValue({
-      email: 'daiphucduongvinh203@gmail.com',
-      password: 'Duc@05102003',
-    });
-  }, []);
-
   return (
     <>
       <FormWrapper form={form} submitTitle="Tiếp tục" onFinish={onFinish}>
