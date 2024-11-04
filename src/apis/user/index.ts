@@ -23,6 +23,7 @@ export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
 export type IPaginatedSkill = IPaginatedData<ISkillComboBox[]>;
 
 const UserApi = {
+  // GET
   getUserProfile: async (params: IUserProfileParams): Promise<IUserProfile> => {
     const { accessToken, refreshToken } = params;
     return await axiosApi.get('/users/profile', {
@@ -32,6 +33,14 @@ const UserApi = {
   getMyCv: async (): Promise<any> => {
     return await axiosApi.get('/curriculum-vitaes/my-CVs');
   },
+  getAllForeignLanguage: async (): Promise<IPaginatedLanguage> => {
+    return await axiosApi.get('/foreign-languages/all');
+  },
+  getAllSkill: async (): Promise<IPaginatedSkill> => {
+    return await axiosApi.get('/skills/all');
+  },
+
+  // POST
   createAchievement: async (
     params: IAchievementParams
   ): Promise<IBaseResponse> => {
@@ -42,22 +51,21 @@ const UserApi = {
   ): Promise<IBaseResponse> => {
     return await axiosApi.post('/work-experiences', params);
   },
-  updateWorkExperience: async (
-    params: IUpdateWorkExperience
-  ): Promise<IBaseResponse> => {
-    const { id, ...others } = params;
-    return await axiosApi.patch(`/work-experiences/${id}`, others);
-  },
-  deleteWorkExperience: async (id: number): Promise<IBaseResponse> => {
-    return await axiosApi.delete(`/work-experiences/${id}`);
-  },
-  getAllForeignLanguage: async (): Promise<IPaginatedLanguage> => {
-    return await axiosApi.get('/foreign-languages/all');
+  createUserSkill: async (params: ISkillParams): Promise<IBaseResponse> => {
+    return await axiosApi.post('/users-skills', params);
   },
   createForeignLanguage: async (
     params: ILanguageParams
   ): Promise<IBaseResponse> => {
     return await axiosApi.post('/users-foreign-languages', params);
+  },
+
+  // PATCH
+  updateWorkExperience: async (
+    params: IUpdateWorkExperience
+  ): Promise<IBaseResponse> => {
+    const { id, ...others } = params;
+    return await axiosApi.patch(`/work-experiences/${id}`, others);
   },
   updateForeignLanguage: async (
     params: ILanguageParams
@@ -65,18 +73,17 @@ const UserApi = {
     const { foreignLanguagesId: id, level } = params;
     return await axiosApi.patch(`/users-foreign-languages/${id}`, { level });
   },
-  deleteForeignLanguage: async (id: number): Promise<IBaseResponse> => {
-    return await axiosApi.delete(`/users-foreign-languages/${id}`);
-  },
-  getAllSkill: async (): Promise<IPaginatedSkill> => {
-    return await axiosApi.get('/skills/all');
-  },
-  createUserSkill: async (params: ISkillParams): Promise<IBaseResponse> => {
-    return await axiosApi.post('/users-skills', params);
-  },
   updateUserSkill: async (params: ISkillParams): Promise<IBaseResponse> => {
     const { skillsId, level } = params;
     return await axiosApi.patch(`/users-skills/${skillsId}`, { level });
+  },
+
+  // DELETE
+  deleteWorkExperience: async (id: number): Promise<IBaseResponse> => {
+    return await axiosApi.delete(`/work-experiences/${id}`);
+  },
+  deleteForeignLanguage: async (id: number): Promise<IBaseResponse> => {
+    return await axiosApi.delete(`/users-foreign-languages/${id}`);
   },
   deleteUserSkill: async (id: number): Promise<IBaseResponse> => {
     return await axiosApi.delete(`/users-skills/${id}`);

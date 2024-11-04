@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import FormItem from '~/components/Form/FormItem';
 import FormList from '~/components/Form/FormList';
 import { IApplicationFormItem } from './JobApplication';
@@ -6,7 +8,7 @@ interface IProps {
   formItems: IApplicationFormItem[];
 }
 
-const FormApplication = ({ formItems }: IProps) => {
+const FormJobApplication = ({ formItems }: IProps) => {
   return formItems.map((formItem) => {
     if ('name' in formItem) {
       const { item, listItem, ...others } = formItem;
@@ -29,4 +31,4 @@ const FormApplication = ({ formItems }: IProps) => {
   });
 };
 
-export default FormApplication;
+export default memo(FormJobApplication);
