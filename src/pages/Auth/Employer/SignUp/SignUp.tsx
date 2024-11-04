@@ -13,7 +13,7 @@ import InputPassword from '~/components/Input/InputPassword';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppDispatch } from '~/hooks/useStore';
-import FormApplication from '~/pages/User/JobApplication/FormApplication';
+import FormApplication from '~/pages/User/JobApplication/FormJobApplication';
 import { IJobApplicationForm } from '~/pages/User/JobApplication/JobApplication';
 import { checkExistedEmail } from '~/store/thunk/auth';
 import { ROLE } from '~/types/Auth';
