@@ -32,21 +32,19 @@ const FormList = ({ formItem, length, buttonTitle, render }: IFormList) => {
   return (
     <List name={name}>
       {(fields, func) => (
-        <>
-          <FormItem label={label} {...otherItems}>
-            <>
-              {render({ fields, func })}
-              {fields.length < length ? (
-                <Button
-                  borderType="dashed"
-                  title={buttonTitle}
-                  iconBefore={<PlusCircleOutlined className="text-base" />}
-                  onClick={() => func.add()}
-                />
-              ) : null}
-            </>
-          </FormItem>
-        </>
+        <FormItem label={label} {...otherItems}>
+          <>
+            {render({ fields, func })}
+            {fields.length < length ? (
+              <Button
+                borderType="dashed"
+                title={buttonTitle}
+                iconBefore={<PlusCircleOutlined className="text-base" />}
+                onClick={() => func.add()}
+              />
+            ) : null}
+          </>
+        </FormItem>
       )}
     </List>
   );
