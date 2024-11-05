@@ -1,4 +1,7 @@
-import { Modal as ModalAntd, ModalProps } from 'antd';
+import { Flex, Modal as ModalAntd, ModalProps } from 'antd';
+
+import icons from '~/utils/icons';
+import Button from '../Button/Button';
 import './Modal.scss';
 
 type AnimationType = 'slide-down' | 'default';
@@ -21,11 +24,16 @@ const customAnimation: CustomAnimation = {
   default: {},
 };
 
+const { CloseOutlined, SaveOutlined } = icons;
+
 const Modal = ({
   isOpen,
   children,
+  loading,
   classNames,
   animationType = 'default',
+  onOk,
+  onCancel,
   ...props
 }: IProps) => {
   const { transitionName } = customAnimation[animationType];
@@ -45,7 +53,34 @@ const Modal = ({
   };
 
   return (
-    <ModalAntd open={isOpen} classNames={customClassNames} {...combinedProps}>
+    <ModalAntd
+      open={isOpen}
+      classNames={customClassNames}
+      footer={
+        props.footer || (
+          <Flex gap={16}>
+            <Button
+              title="Để sau"
+              disabled={loading}
+              className="basis-1/2"
+              iconBefore={<CloseOutlined />}
+              onClick={onCancel}
+            />
+            <Button
+              fill
+              title="Lưu"
+              loading={loading}
+              disabled={loading}
+              className="basis-1/2"
+              iconBefore={<SaveOutlined />}
+              onClick={onOk}
+            />
+          </Flex>
+        )
+      }
+      onCancel={onCancel}
+      {...combinedProps}
+    >
       {children}
     </ModalAntd>
   );

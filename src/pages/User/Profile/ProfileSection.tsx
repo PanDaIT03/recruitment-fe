@@ -23,6 +23,7 @@ export interface IProfileSection {
   hint: string;
   loading?: boolean;
   content?: ReactNode;
+  tooltipTitle?: string;
   buttonTitle: ReactNode;
   buttonActionTitle?: ReactNode;
   onClick?: () => void;
@@ -37,6 +38,7 @@ const ProfileSection = ({
   loading,
   content,
   buttonTitle,
+  tooltipTitle,
   buttonActionTitle,
   onClick,
 }: IProfileSection) => {
@@ -58,7 +60,11 @@ const ProfileSection = ({
           )}
         </div>
         {buttonActionTitle && (
-          <ButtonAction title={buttonActionTitle} onClick={onClick} />
+          <ButtonAction
+            tooltipTitle={tooltipTitle}
+            title={buttonActionTitle}
+            onClick={onClick}
+          />
         )}
       </div>
       {loading ? (
