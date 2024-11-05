@@ -9,7 +9,7 @@ import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
-import PingIcon from './components/pingIcon';
+import PingIcon from './components/PingIcon';
 import ModalDesiredJob from './ModalDesiredJob';
 
 interface IDesiredJobInfo {
