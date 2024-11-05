@@ -1,4 +1,4 @@
-import { Input as InputAntd, InputProps } from 'antd';
+import { ConfigProvider, Input as InputAntd, InputProps } from 'antd';
 import classNames from 'classnames';
 import { memo } from 'react';
 
@@ -7,12 +7,22 @@ const Input = ({ className, ...props }: InputProps) => {
   const customClass = classNames('w-full h-10', className);
 
   return (
-    <InputAntd
-      size="middle"
-      allowClear={allowClear}
-      className={customClass}
-      {...props}
-    />
+    <ConfigProvider
+      theme={{
+        components: {
+          Input: {
+            colorBgContainer: '#fafafa',
+          },
+        },
+      }}
+    >
+      <InputAntd
+        size="middle"
+        allowClear={allowClear}
+        className={customClass}
+        {...props}
+      />
+    </ConfigProvider>
   );
 };
 

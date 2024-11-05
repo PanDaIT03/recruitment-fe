@@ -29,7 +29,16 @@ const DatePicker = memo(
     );
 
     return (
-      <ConfigProvider locale={viVN}>
+      <ConfigProvider
+        locale={viVN}
+        theme={{
+          components: {
+            DatePicker: {
+              colorBgContainer: '#fafafa',
+            },
+          },
+        }}
+      >
         <DatePickerAntd className={customClass} {...props} />
       </ConfigProvider>
     );
@@ -45,7 +54,16 @@ const RangePicker = memo(
     );
 
     return (
-      <ConfigProvider locale={viVN}>
+      <ConfigProvider
+        locale={viVN}
+        theme={{
+          components: {
+            DatePicker: {
+              colorBgContainer: '#fafafa',
+            },
+          },
+        }}
+      >
         <RangePickerAntd className={customClass} {...props} />
       </ConfigProvider>
     );
