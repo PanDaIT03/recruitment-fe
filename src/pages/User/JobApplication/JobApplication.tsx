@@ -46,7 +46,6 @@ import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
 import { JobPlacement } from '~/types/Job';
 import { formatCurrencyVN } from '~/utils/functions';
-import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import { advanceOptions } from '../Profile/Modal/LanguageModal';

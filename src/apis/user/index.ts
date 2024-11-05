@@ -29,6 +29,9 @@ const UserApi = {
       headers: { Authorization: accessToken, Cookies: refreshToken },
     });
   },
+  getAllUser: async (): Promise<IUserProfile> => {
+    return await axiosApi.get('/users/all');
+  },
   getMyCv: async (): Promise<any> => {
     return await axiosApi.get('/curriculum-vitaes/my-CVs');
   },

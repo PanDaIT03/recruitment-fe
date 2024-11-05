@@ -30,3 +30,11 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+:where(.css-dev-only-do-not-override-5wsri9) a:active {
+  color: #f15224;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9) a:hover {
+  color: #f15224;
+}
