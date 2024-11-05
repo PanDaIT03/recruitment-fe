@@ -96,6 +96,7 @@ const Profile = () => {
         },
         buttonTitle: 'Cập nhật tóm tắt',
         hint: 'Tóm tắt về thành tích / kỹ năng nổi bật giúp hồ sơ của bạn tăng 3.9 lần lượt tiếp cận từ nhà tuyển dụng.',
+        tooltipTitle: 'Cập nhật',
         buttonActionTitle: (
           <EditOutlined className="text-[#691f74] cursor-pointer" />
         ),
@@ -117,6 +118,7 @@ const Profile = () => {
         },
         buttonTitle: 'Thêm kinh nghiệm',
         hint: 'Thêm kinh nghiệm làm việc để giúp nhà tuyển dụng hiểu hơn về bạn',
+        tooltipTitle: 'Thêm kinh nghiệm',
         buttonActionTitle: (
           <PlusOutlined className="text-[#691f74] cursor-pointer" />
         ),
@@ -135,6 +137,7 @@ const Profile = () => {
           title: 'Ngoại ngữ',
           suffixIcon: <Language width={20} height={20} className="font-bold" />,
         },
+        tooltipTitle: 'Thêm ngoại ngữ',
         buttonTitle: 'Thêm ngoại ngữ',
         hint: 'Bạn biết những ngoại ngữ nào? Hãy thêm vào để tăng độ "hot" cho hồ sơ nhé.',
         buttonActionTitle: (
@@ -157,6 +160,7 @@ const Profile = () => {
             <PencilSkill width={20} height={20} className="font-bold" />
           ),
         },
+        tooltipTitle: 'Thêm kỹ năng',
         buttonTitle: 'Thêm kỹ năng',
         hint: 'Kỹ năng / công cụ giúp bạn nổi bật hơn trong mắt nhà tuyển dụng.',
         buttonActionTitle: (

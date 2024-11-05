@@ -1,12 +1,10 @@
-import { Flex, ModalProps } from 'antd';
+import { ModalProps } from 'antd';
 import { FormInstance } from 'antd/es/form/Form';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 
-import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Modal from '~/components/Modal/Modal';
-import icons from '~/utils/icons';
 
 type IProps = {
   isOpen: boolean;
@@ -16,8 +14,6 @@ type IProps = {
   onCancel: () => void;
   onFinish(values: any): void;
 } & ModalProps;
-
-const { CloseOutlined, SaveOutlined } = icons;
 
 const ProfileModal = ({
   form,
@@ -44,28 +40,10 @@ const ProfileModal = ({
     <Modal
       centered
       isOpen={isOpen}
+      loading={loading}
       className={customClass}
-      footer={
-        <Flex gap={16}>
-          <Button
-            title="Để sau"
-            disabled={loading}
-            className="basis-1/2"
-            iconBefore={<CloseOutlined />}
-            onClick={handleCancel}
-          />
-          <Button
-            fill
-            title="Lưu"
-            loading={loading}
-            disabled={loading}
-            className="basis-1/2"
-            iconBefore={<SaveOutlined />}
-            onClick={() => form.submit()}
-          />
-        </Flex>
-      }
       onCancel={handleCancel}
+      onOk={() => form.submit()}
       {...props}
     >
       <FormWrapper

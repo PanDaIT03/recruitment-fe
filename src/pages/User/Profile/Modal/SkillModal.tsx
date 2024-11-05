@@ -56,7 +56,9 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
       level: values.level,
     };
 
-    isEdit ? updateUserSkill(params) : createUserSkill(params);
+    if (isEdit) updateUserSkill(params);
+    else createUserSkill(params);
+
     handleCancel();
   };
 
@@ -108,7 +110,9 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
       <FormItem
         name="level"
         label="Thành thạo"
-        rules={[{ required: true, message: 'Hãy mức độ thành thạo của bạn' }]}
+        rules={[
+          { required: true, message: 'Hãy chọn mức độ thành thạo của bạn' },
+        ]}
       >
         <Rate />
       </FormItem>
