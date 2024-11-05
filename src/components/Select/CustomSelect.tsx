@@ -34,7 +34,7 @@ const CustomSelect = ({
 
   const customClass = classNames(
     'custom-select',
-    'flex pl-[11px] items-center',
+    'flex pl-[11px] items-center bg-light-gray',
     displayedType,
     configProvider?.colorBgContainer,
     configProvider?.colorBorder &&

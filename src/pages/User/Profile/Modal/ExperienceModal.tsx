@@ -220,7 +220,7 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
       >
         <TextArea
           name="description"
-          className="p-3 rounded-lg !min-h-20"
+          className="p-3 rounded-lg !min-h-20 bg-light-gray"
           placeholder="Ví dụ: Quản lý nhân sự, tuyển dụng, đào tạo, chấm công, xử lý kỷ luật"
         />
       </FormItem>
