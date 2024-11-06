@@ -23,6 +23,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
 import { JobsAPI } from '~/apis/job';
 import UserApi from '~/apis/user';
 import {
@@ -43,16 +44,12 @@ import { IFormListProps } from '~/components/Form/FormList';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import CustomSelect from '~/components/Select/CustomSelect';
-import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
-import { JobPlacement } from '~/types/Job';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import { advanceOptions } from '../Profile/Modal/LanguageModal';
 import FormJobApplication from './FormJobApplication';
-import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
-import { IJobField } from '~/types/DesiredJob/DesiredJob';
 
 export type IApplicationFormItem = {
   name: string;

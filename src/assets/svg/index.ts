@@ -4,6 +4,7 @@ export { ReactComponent as BackPack } from './backpack.svg';
 export { ReactComponent as Bag } from './bag.svg';
 export { ReactComponent as BlockChain } from './block-chain.svg';
 export { ReactComponent as Box } from './box.svg';
+export { ReactComponent as BusinessCard } from './business-card.svg';
 export { ReactComponent as Calendar } from './calendar.svg';
 export { ReactComponent as Document } from './document.svg';
 export { ReactComponent as DualLayerFile } from './dual-layer-file.svg';
