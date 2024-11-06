@@ -53,20 +53,20 @@ const UserManagement: React.FC = () => {
       dataIndex: ['role', 'title'],
       className: 'capitalize',
     },
-    {
-      title: 'Hành động',
-      key: 'actions',
-      render: () => (
-        <Space>
-          <Popconfirm title="Bạn chắc chắn rằng muốn chặn người dùng này?">
-            <Button title="Edit" />
-          </Popconfirm>
-          <Popconfirm title="Bạn chắc chắn muốn xóa người dùng này?">
-            <Button title="Delete" fill />
-          </Popconfirm>
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Hành động',
+    //   key: 'actions',
+    //   render: () => (
+    //     <Space>
+    //       <Popconfirm title="Bạn chắc chắn rằng muốn chặn người dùng này?">
+    //         <Button title="Edit" />
+    //       </Popconfirm>
+    //       <Popconfirm title="Bạn chắc chắn muốn xóa người dùng này?">
+    //         <Button title="Delete" fill />
+    //       </Popconfirm>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   const sorttedUserById = allUser?.items.sort((a, b) => a.id - b.id);
