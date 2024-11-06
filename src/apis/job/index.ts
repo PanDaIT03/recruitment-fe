@@ -21,7 +21,7 @@ export const JobsAPI = {
   // GET
   getAllJobs: (data: IPaginationParms & Partial<IParams>): Promise<IJob> => {
     const payload: AxiosRequestConfig = {
-      params: data,
+      params: data || {},
     };
     return axiosApi.get('/jobs/all', payload);
   },

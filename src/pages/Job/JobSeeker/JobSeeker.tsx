@@ -1,6 +1,6 @@
 import { DefaultOptionType } from 'antd/es/select';
 
-import { BackPack, BlockChain, Box, PortFolio } from '~/assets/svg';
+import { BackPack, Box } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import CustomSelect from '~/components/Select/CustomSelect';
 import TopSearchBar from '~/components/TopSearchBar/TopSearchBar';
@@ -9,7 +9,7 @@ import icons from '~/utils/icons';
 import Button from '~/components/Button/Button.tsx';
 import { ColumnsType } from 'antd/es/table';
 import { useAppSelector } from '~/hooks/useStore.ts';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 const { EnvironmentOutlined, ClockCircleOutlined } = icons;
 
@@ -63,6 +63,16 @@ const optionsField: DefaultOptionType[] = [
 
 const JobSeeker = () => {
   const { role } = useAppSelector((state) => state.auth.currentUser);
+
+  const [expandedRow, setExpandedRow] = useState<string[]>([]);
+
+  const toggleExpand = (key: string) => {
+    setExpandedRow((prevExpandedRows) =>
+      prevExpandedRows.includes(key)
+        ? prevExpandedRows.filter((rowKey) => rowKey !== key)
+        : [...prevExpandedRows, key]
+    );
+  };
 
   const data: JobListing[] = [
     {
@@ -168,19 +178,34 @@ const JobSeeker = () => {
     {
       title: 'Thành tích/kỹ năng nổi bật',
       key: 'requirements',
-      render: (record: JobListing) => (
-        <div>
-          {record.requirements.slice(0, 2).map((req, index) => (
-            <div key={index} className="mb-2">
-              • {req}
-            </div>
-          ))}
-          <a className="text-blue-500">Xem thêm </a>
-        </div>
-      ),
+      render: (record: JobListing) => {
+        const isExpanded = expandedRow.includes(record.key);
+
+        return (
+          <div>
+            {isExpanded
+              ? record.requirements.map((req, index) => (
+                  <div key={index} className="mb-2">
+                    • {req}
+                  </div>
+                ))
+              : record.requirements.slice(0, 2).map((req, index) => (
+                  <div key={index} className="mb-2">
+                    • {req}
+                  </div>
+                ))}
+
+            <a
+              className="text-accent cursor-pointer"
+              onClick={() => toggleExpand(record.key)}
+            >
+              {isExpanded ? 'Thu gọn' : 'Xem thêm'}
+            </a>
+          </div>
+        );
+      },
     },
   ];
-
   const handleSearch = (values: any) => {
     console.log(values);
   };
