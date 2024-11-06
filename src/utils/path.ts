@@ -14,6 +14,8 @@ const PATH = {
   UPDATE_JOB: '/employer/update-job',
   // Admin
   ADMIN_DASHBOARD: '/admin/dashboard',
+  ADMIN_USER_MANAGEMENT: '/admin/user-management',
+  ADMIN_JOB_MANAGEMENT: '/admin/job-management',
   // Employer
   EMPLOYER_DASHBOARD: '/employer/dashboard',
   EMPLOYER_POSTING: '/employer/posting',
