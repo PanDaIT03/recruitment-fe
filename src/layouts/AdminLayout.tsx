@@ -18,9 +18,9 @@ const AdminLayout: React.FC = () => {
   const menu = (
     <Menu>
       <Menu.Item key="profile">
-        <Link to="/admin/profile">Profile</Link>
+        <Link to="/admin/profile">Trang cá nhân</Link>
       </Menu.Item>
-      <Menu.Item key="logout">Logout</Menu.Item>
+      <Menu.Item key="logout">Đăng xuất</Menu.Item>
     </Menu>
   );
 
@@ -36,17 +36,25 @@ const AdminLayout: React.FC = () => {
         <Menu theme="light" mode="inline">
           <SubMenu key="dashboard" icon={<BellOutlined />} title="Dashboard">
             <Menu.Item key="overview">
-              <Link to={PATH.ADMIN_DASHBOARD}>Overview</Link>
+              <Link to={PATH.ADMIN_DASHBOARD}>Tổng quan</Link>
             </Menu.Item>
           </SubMenu>
-          <SubMenu key="jobs" icon={<SettingOutlined />} title="Job Management">
+          <SubMenu
+            key="jobs"
+            icon={<SettingOutlined />}
+            title="Quản lý công việc"
+          >
             <Menu.Item key="job-list">
-              <Link to={PATH.ADMIN_JOB_MANAGEMENT}>Job List</Link>
+              <Link to={PATH.ADMIN_JOB_MANAGEMENT}>Danh sách công việc</Link>
             </Menu.Item>
           </SubMenu>
-          <SubMenu key="users" icon={<UserOutlined />} title="User Management">
+          <SubMenu
+            key="users"
+            icon={<UserOutlined />}
+            title="Quản lý người dùng"
+          >
             <Menu.Item key="user-list">
-              <Link to={PATH.ADMIN_USER_MANAGEMENT}>User List</Link>
+              <Link to={PATH.ADMIN_USER_MANAGEMENT}>Danh sách người dùng</Link>
             </Menu.Item>
           </SubMenu>
         </Menu>

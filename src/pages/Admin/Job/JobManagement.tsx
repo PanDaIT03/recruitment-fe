@@ -1,4 +1,5 @@
 import { Popconfirm, Space, Table } from 'antd';
+import dayjs from 'dayjs';
 import React from 'react';
 import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
@@ -8,7 +9,15 @@ import { IJob } from '~/types/Job';
 const JobManagement: React.FC = () => {
   const { data: allJobs } = useFetch<IJob>(JobsAPI.getAllJobs);
 
+  const currentPage = allJobs?.pageInfo?.currentPage || 1;
+  const pageSize = allJobs?.pageInfo?.itemsPerPage || 10;
+
   const columns = [
+    {
+      title: 'STT',
+      render: (_: any, __: any, index: number) =>
+        (currentPage - 1) * pageSize + index + 1,
+    },
     {
       title: 'Tiêu đề công việc',
       dataIndex: 'title',
@@ -38,16 +47,21 @@ const JobManagement: React.FC = () => {
           .join(', '),
     },
     {
-      title: 'Hành động',
-      key: 'actions',
-      render: () => (
-        <Space>
-          <Popconfirm title="Are you sure to delete?">
-            <Button title="Delete" fill />
-          </Popconfirm>
-        </Space>
-      ),
+      title: 'Ngày đăng tin',
+      dataIndex: 'createAt',
+      render: (value: string) => dayjs(value).format('DD/MM/YYYY HH:MM'),
     },
+    // {
+    //   title: 'Hành động',
+    //   key: 'actions',
+    //   render: () => (
+    //     <Space>
+    //       <Popconfirm title="Are you sure to delete?">
+    //         <Button title="Delete" fill />
+    //       </Popconfirm>
+    //     </Space>
+    //   ),
+    // },
   ];
 
   return (
@@ -57,6 +71,7 @@ const JobManagement: React.FC = () => {
         dataSource={allJobs?.items}
         columns={columns}
         rowKey="id"
+        scroll={{ x: 'max-content' }}
       />
     </div>
   );
