@@ -38,3 +38,26 @@ html {
 :where(.css-dev-only-do-not-override-5wsri9) a:hover {
   color: #f15224;
 }
+:where(.css-dev-only-do-not-override-5wsri9).ant-pagination
+  .ant-pagination-item-active {
+  font-weight: 600;
+  background-color: #ffffff;
+  border-color: #f15224;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-pagination
+  .ant-pagination-item-active
+  a {
+  color: #f15224;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-btn-variant-solid {
+  color: #fff;
+  background: #f15224;
+}
+:where(.css-dev-only-do-not-override-5wsri9).ant-btn-variant-solid:not(
+    :disabled
+  ):not(.ant-btn-disabled):hover {
+  background: #f15224;
+  color: #fff;
+}

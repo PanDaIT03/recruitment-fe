@@ -6,6 +6,7 @@ import {
   IUserProfile,
   IUserProfileData,
   UserLanguage,
+  UserListResponse,
   UserSkill,
 } from '~/types/User';
 
@@ -30,7 +31,7 @@ const UserApi = {
       headers: { Authorization: accessToken, Cookies: refreshToken },
     });
   },
-  getAllUser: async (): Promise<IUserProfile> => {
+  getAllUser: async (): Promise<UserListResponse> => {
     return await axiosApi.get('/users/all');
   },
   getMyCv: async (): Promise<any> => {
