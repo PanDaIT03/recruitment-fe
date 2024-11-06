@@ -68,86 +68,100 @@ const HeaderDropDown = () => {
   const menuItems: MenuProps['items'] = useMemo(() => {
     return [
       ...baseMenu,
-      ...(currentUser?.role?.id === 1
+      ...(currentUser?.role?.id === 2
         ? [
             {
-              key: 'profile-group',
-              type: 'group' as const,
-              className: '[&>div]:!text-[#1c1917]',
-              label: <span className="font-semibold">Hồ sơ</span>,
-              children: [
-                {
-                  key: '1',
-                  label: (
-                    <span className="text-neutral-600 font-medium">
-                      Cá nhân
-                    </span>
-                  ),
-                  icon: <PersonCard width={18} height={18} />,
-                  onClick: () => navigate(PATH.USER_PROFILE),
-                },
-                {
-                  key: '2',
-                  label: (
-                    <span className="text-neutral-600 font-medium">
-                      Công việc mong muốn
-                    </span>
-                  ),
-                  icon: <DualLayerFile width={18} height={18} />,
-                  onClick: () => navigate(PATH.USER_DESIRED_JOB),
-                },
-                {
-                  key: '3',
-                  label: (
-                    <span className="text-neutral-600 font-medium">CV</span>
-                  ),
-                  icon: <File width={16} height={16} />,
-                },
-              ],
-            },
-            {
-              key: 'work-group',
-              className: '[&>div]:!text-[#1c1917]',
-              label: <span className="font-semibold">Công việc</span>,
-              type: 'group' as const,
-              children: [
-                {
-                  key: '4',
-                  label: (
-                    <span className="text-neutral-600 font-medium">
-                      Doanh nghiệp tiếp cận
-                    </span>
-                  ),
-                  icon: <SkyScraper width={18} height={18} />,
-                },
-              ],
-            },
-            { type: 'divider' as const },
-            {
-              key: '5',
+              key: 'admin-menu',
               label: (
-                <span className="text-neutral-600 font-medium">Tài khoản</span>
+                <span className="text-neutral-600 font-medium">Admin</span>
               ),
-              icon: <UserAccount width={18} height={18} />,
-              onClick: () => navigate(PATH.USER_ACCOUNT),
+              onClick: () => navigate(PATH.ADMIN_DASHBOARD),
             },
           ]
-        : [
-            {
-              key: '1',
-              label: (
-                <span className="text-neutral-600 font-medium">Dashboard</span>
-              ),
-              onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
-            },
-            {
-              key: '2',
-              label: (
-                <span className="text-neutral-600 font-medium">Đăng tin</span>
-              ),
-              onClick: () => navigate(PATH.EMPLOYER_POSTING),
-            },
-          ]),
+        : currentUser?.role?.id === 1
+          ? [
+              {
+                key: 'profile-group',
+                type: 'group' as const,
+                className: '[&>div]:!text-[#1c1917]',
+                label: <span className="font-semibold">Hồ sơ</span>,
+                children: [
+                  {
+                    key: '1',
+                    label: (
+                      <span className="text-neutral-600 font-medium">
+                        Cá nhân
+                      </span>
+                    ),
+                    icon: <PersonCard width={18} height={18} />,
+                    onClick: () => navigate(PATH.USER_PROFILE),
+                  },
+                  {
+                    key: '2',
+                    label: (
+                      <span className="text-neutral-600 font-medium">
+                        Công việc mong muốn
+                      </span>
+                    ),
+                    icon: <DualLayerFile width={18} height={18} />,
+                    onClick: () => navigate(PATH.USER_DESIRED_JOB),
+                  },
+                  {
+                    key: '3',
+                    label: (
+                      <span className="text-neutral-600 font-medium">CV</span>
+                    ),
+                    icon: <File width={16} height={16} />,
+                  },
+                ],
+              },
+              {
+                key: 'work-group',
+                className: '[&>div]:!text-[#1c1917]',
+                label: <span className="font-semibold">Công việc</span>,
+                type: 'group' as const,
+                children: [
+                  {
+                    key: '4',
+                    label: (
+                      <span className="text-neutral-600 font-medium">
+                        Doanh nghiệp tiếp cận
+                      </span>
+                    ),
+                    icon: <SkyScraper width={18} height={18} />,
+                  },
+                ],
+              },
+              { type: 'divider' as const },
+              {
+                key: '5',
+                label: (
+                  <span className="text-neutral-600 font-medium">
+                    Tài khoản
+                  </span>
+                ),
+                icon: <UserAccount width={18} height={18} />,
+                onClick: () => navigate(PATH.USER_ACCOUNT),
+              },
+            ]
+          : [
+              {
+                key: '1',
+                label: (
+                  <span className="text-neutral-600 font-medium">
+                    Dashboard
+                  </span>
+                ),
+                onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
+              },
+              {
+                key: '2',
+                label: (
+                  <span className="text-neutral-600 font-medium">Đăng tin</span>
+                ),
+                onClick: () => navigate(PATH.EMPLOYER_POSTING),
+              },
+            ]),
       { type: 'divider' as const },
       {
         key: 'logout',
@@ -157,7 +171,7 @@ const HeaderDropDown = () => {
         onClick: () => setIsOpen(true),
       },
     ];
-  }, [baseMenu, currentUser]);
+  }, [baseMenu, currentUser, navigate]);
 
   return (
     <>
