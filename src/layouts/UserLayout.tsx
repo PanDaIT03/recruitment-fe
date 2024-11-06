@@ -1,22 +1,13 @@
-import {
-  Card,
-  Divider,
-  GetProp,
-  Layout,
-  Upload,
-  UploadFile,
-  UploadProps,
-} from 'antd';
-import Meta from 'antd/es/card/Meta';
+import { Divider, Flex, Image, Layout } from 'antd';
 import { Content } from 'antd/es/layout/layout';
-import Sider from 'antd/es/layout/Sider';
-import { ReactNode, useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Dispatch, ReactNode, useCallback } from 'react';
+import { Link, Outlet } from 'react-router-dom';
 
-import { ProfileCoverImage } from '~/assets/img';
 import { DualLayerFile, File, PersonCard, SkyScraper } from '~/assets/svg';
+import Button from '~/components/Button/Button';
+import ButtonAction from '~/components/Button/ButtonAction';
 import { useAppSelector } from '~/hooks/useStore';
-import { mockFileList } from '~/mocks/data';
+import { defaultCoverImage } from '~/mocks/data';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
@@ -32,9 +23,9 @@ interface Items {
   children: IChildren[];
 }
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+interface ISiderProps {}
 
-const { SettingOutlined, UserOutlined, HomeOutlined } = icons;
+const { EditOutlined } = icons;
 
 const items: Items[] = [
   {
@@ -69,104 +60,87 @@ const items: Items[] = [
   },
 ];
 
-const UserLayout = () => {
-  const navigate = useNavigate();
-
+const Sider = ({}: ISiderProps) => {
   const { currentUser } = useAppSelector((state) => state.auth);
-  const [fileList, setFileList] = useState<UploadFile[]>(mockFileList);
-
-  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-  };
-
-  const onPreview = async (file: UploadFile) => {
-    let src = file.url as string;
-
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj as FileType);
-        reader.onload = () => resolve(reader.result as string);
-      });
-    }
-
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
-  };
 
   return (
-    <Layout className="min-h-screen">
-      <Header />
-      <Layout className="w-full py-4 px-8 mx-auto max-w-7xl min-h-screen">
-        <Sider
-          width={400}
-          theme="light"
-          className="h-max rounded-xl overflow-hidden shadow-md"
-        >
-          <Card
-            cover={
-              <img
-                alt="example"
-                src={ProfileCoverImage}
-                style={{ height: 200, objectFit: 'cover', borderRadius: 0 }}
-              />
-            }
-            actions={[
-              <HomeOutlined
-                key="home"
-                style={{ fontSize: 24 }}
-                onClick={() => navigate(PATH.ROOT)}
-              />,
-              <SettingOutlined
-                key="setting"
-                style={{ fontSize: 24 }}
-                onClick={() => navigate(PATH.USER_ACCOUNT)}
-              />,
-            ]}
-          >
-            <Meta
-              avatar={
-                <Upload
-                  fileList={fileList}
-                  listType="picture-card"
-                  onChange={onChange}
-                  onPreview={onPreview}
-                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                >
-                  {fileList.length < 1 && <UserOutlined />}
-                </Upload>
-              }
-              title={currentUser.fullName}
-              description="This is the description"
-            />
-            <Divider dashed />
-            <div className="flex flex-col gap-4 mt-3">
-              {items.map((item, index) => (
-                <div key={index}>
-                  <h3 className="font-bold">{item.title}</h3>
-                  {item.children.map((child, index) => (
-                    <Link
-                      key={index}
-                      to={child.href}
-                      className="flex p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5] hover:text-[#000000E0]"
-                    >
-                      <span>{child.icon}</span>
-                      <span>{child.title}</span>
-                    </Link>
-                  ))}
+    <Flex vertical className="lg:col-span-3" gap={16}>
+      <div className="overflow-hidden rounded-xl bg-white shadow-card p-0">
+        <div className="w-full">
+          <div className="h-[9rem] bg-[url('assets/img/profile_cover_image.jpg')] bg-cover bg-center bg-no-repeat"></div>
+          <div className="-mt-[59px] px-6 pb-6">
+            <Flex align="end" justify="space-between" gap={16}>
+              <div className="relative w-fit rounded-full border-[3px] border-white">
+                <div className="rounded-full bg-white w-[108px] h-[108px]">
+                  <div className="inline-block aspect-square h-full w-full rounded-full border border-gray-200 overflow-hidden">
+                    <Image width={108} height={108} src={defaultCoverImage} />
+                  </div>
                 </div>
-              ))}
+                <ButtonAction
+                  tooltipTitle="Sửa"
+                  title={<EditOutlined className="text-white cursor-pointer" />}
+                  className="bg-[#691f74] py-[2px] px-[6px] absolute bottom-0 right-0 hover:bg-[#461a53]"
+                  // onClick={handleClickEditThumbNail}
+                />
+              </div>
+              <Button
+                title="Sửa"
+                borderType="dashed"
+                iconBefore={<EditOutlined />}
+                // onClick={handleClickEditInfo}
+              />
+            </Flex>
+            <div className="mt-4">
+              <p className="text-lg font-semibold">{currentUser.fullName}</p>
+              <p className="text-sm text-sub font-normal">
+                {currentUser.email}
+              </p>
             </div>
-          </Card>
-        </Sider>
-        <Content className="pl-6 bg-gray-100">
+          </div>
+          <Divider dashed className="!m-0" />
+          <div className="flex flex-col gap-4 mt-3 px-6 py-6">
+            {items.map((item, index) => (
+              <div key={index}>
+                <h3 className="font-bold">{item.title}</h3>
+                {item.children.map((child, index) => (
+                  <Link
+                    key={index}
+                    to={child.href}
+                    className="flex p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5] hover:text-[#000000E0]"
+                  >
+                    <span>{child.icon}</span>
+                    <span>{child.title}</span>
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Flex>
+  );
+};
+
+const UserLayout = () => {
+  const handleClickEditThumbNail = useCallback(() => {
+    console.log('edit thumbnail');
+  }, []);
+
+  const handleClickEditInfo = useCallback(() => {
+    console.log('edit info');
+  }, []);
+
+  return (
+    <Layout>
+      <Header />
+      <div className="w-full py-4 px-8 mx-auto max-w-7xl min-h-screen grid grid-cols-1 lg:grid-cols-10">
+        <Sider />
+        <Content className="pl-6 bg-gray-100 lg:col-span-7">
           <div className="bg-white p-4 rounded-lg shadow">
             <Outlet />
           </div>
         </Content>
-      </Layout>
+      </div>
     </Layout>
   );
 };
