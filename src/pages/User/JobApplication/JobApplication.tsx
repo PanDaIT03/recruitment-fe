@@ -65,15 +65,14 @@ export type IJobApplicationForm = {
   }>;
 };
 
-const { CloseOutlined, MinusCircleOutlined } = icons;
-
-const startTimeOptions: DefaultOptionType[] = [
+export const startTimeOptions: DefaultOptionType[] = [
   { label: 'Bắt đầu ngay', value: 'immediately' },
   { label: '1-2 tuần', value: '1-2_weeks' },
   { label: '30 ngày', value: '30_days' },
   { label: 'Sẽ thông báo khi có offer', value: 'upon_offer' },
 ];
 
+const { CloseOutlined, MinusCircleOutlined } = icons;
 const initUploadFile = {} as UploadFile;
 
 const JobApplication = () => {
@@ -171,17 +170,7 @@ const JobApplication = () => {
                   const { fields, func } = params;
 
                   return fields.map((field) => (
-                    <FormItem
-                      {...field}
-                      key={field.key}
-                      className="mb-3"
-                      // rules={[
-                      //   {
-                      //     required: true,
-                      //     message: 'Vui lòng nhập vị trí ứng tuyển',
-                      //   },
-                      // ]}
-                    >
+                    <FormItem {...field} key={field.key} className="mb-3">
                       <Input
                         allowClear
                         className="w-full"
@@ -202,10 +191,24 @@ const JobApplication = () => {
               },
             },
             {
-              name: 'placement',
+              name: 'placements',
               label: 'Nơi bạn mong muốn tìm việc? (Tối đa 3 địa điểm)',
+              rules: [
+                {
+                  validator: (_, value) => {
+                    if (!value.length) return Promise.resolve();
+
+                    if (value.length > 3)
+                      return Promise.reject('Chỉ được chọn tối đa 3 địa điểm');
+
+                    return Promise.resolve();
+                  },
+                },
+              ],
               item: (
                 <CustomSelect
+                  allowClear
+                  mode="multiple"
                   placeholder="Chọn thành phố"
                   options={placements?.items?.map((place) => ({
                     value: place?.id,
@@ -328,7 +331,7 @@ const JobApplication = () => {
               item: (
                 <TextArea
                   placeholder={`Ví dụ:\n- Tốt nghiệp loại giỏi chuyên ngành Quản trị Nhân lực với GPA 3.53/4.00\n- Đạt 100% KPI trong thời gian thử việc, vượt 119% KPI chung trong Quý 2.2022\n- Mang về mỗi tháng lên tới 30 khách hàng tương đương 40% doanh thu năm 2023`}
-                  className="p-3 !min-h-32"
+                  className="p-3 !min-h-32 bg-light-gray"
                 />
               ),
               // rules: [{ required: true, message: 'Vui lòng nhập tóm tắt' }],

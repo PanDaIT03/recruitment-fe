@@ -1,4 +1,4 @@
-import { Select as SelectAntd, SelectProps } from 'antd';
+import { ConfigProvider, Select as SelectAntd, SelectProps } from 'antd';
 import classNames from 'classnames';
 import { memo } from 'react';
 
@@ -31,15 +31,25 @@ const Select = ({ className, ...props }: SelectProps) => {
   };
 
   return (
-    <SelectAntd
-      showSearch
-      size="middle"
-      className={customClass}
-      optionFilterProp="children"
-      filterSort={handleFilterSort}
-      filterOption={handleFilterOption}
-      {...props}
-    />
+    <ConfigProvider
+      theme={{
+        components: {
+          Select: {
+            colorBgContainer: '#fafafa',
+          },
+        },
+      }}
+    >
+      <SelectAntd
+        showSearch
+        size="middle"
+        className={customClass}
+        optionFilterProp="children"
+        filterSort={handleFilterSort}
+        filterOption={handleFilterOption}
+        {...props}
+      />
+    </ConfigProvider>
   );
 };
 
