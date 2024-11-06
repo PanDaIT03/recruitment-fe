@@ -30,6 +30,7 @@ import {
   Box,
   Calendar,
   Fly,
+  Language,
   Location,
   Salary,
   SunRise,
@@ -50,6 +51,8 @@ import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import { advanceOptions } from '../Profile/Modal/LanguageModal';
 import FormJobApplication from './FormJobApplication';
+import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
+import { IJobField } from '~/types/DesiredJob/DesiredJob';
 
 export type IApplicationFormItem = {
   name: string;
@@ -72,8 +75,8 @@ export const startTimeOptions: DefaultOptionType[] = [
   { label: 'Sẽ thông báo khi có offer', value: 'upon_offer' },
 ];
 
-const { CloseOutlined, MinusCircleOutlined } = icons;
 const initUploadFile = {} as UploadFile;
+const { CloseOutlined, MinusCircleOutlined, StarOutlined } = icons;
 
 const JobApplication = () => {
   const navigate = useNavigate();
@@ -82,8 +85,9 @@ const JobApplication = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState<UploadFile>(initUploadFile);
 
+  const { data: placements } = useFetch(JobsAPI.getAllPlacements);
+  const { data: jobFields } = useFetch(DesiredJobAPI.getAllJobFields);
   const { data: languages } = useFetch(UserApi.getAllForeignLanguage);
-  const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
 
   const props: UploadProps = useMemo(
     () => ({
@@ -155,7 +159,15 @@ const JobApplication = () => {
               name: 'field',
               label: 'Lĩnh vực bạn muốn ứng tuyển?',
               item: (
-                <CustomSelect placeholder="Lĩnh vực" prefixIcon={<Box />} />
+                <CustomSelect
+                  allowClear
+                  placeholder="Lĩnh vực"
+                  prefixIcon={<Box />}
+                  options={jobFields?.items.map((jobField) => ({
+                    label: jobField.title,
+                    value: jobField.id,
+                  }))}
+                />
               ),
               // rules: [{ required: true, message: 'Hãy nhập email' }],
             },
@@ -226,7 +238,7 @@ const JobApplication = () => {
                 <Input
                   inputMode="numeric"
                   prefix={<Salary />}
-                  placeholder="Ví dụ: 30,000,000"
+                  placeholder="Ví dụ: 30.000.000"
                   onChange={handleSalaryChange}
                 />
               ),
@@ -294,21 +306,23 @@ const JobApplication = () => {
                           name={[name, 'language']}
                           className="col-span-1 m-0"
                         >
-                          <Select
+                          <CustomSelect
                             placeholder="Chọn ngoại ngữ"
                             options={languages?.items.map((language) => ({
                               label: language.title,
                               value: language.id,
                             }))}
+                            prefixIcon={<Language width={14} height={14} />}
                           />
                         </FormItem>
                         <FormItem
                           name={[name, 'advance']}
                           className="col-span-3 m-0"
                         >
-                          <Select
+                          <CustomSelect
                             options={advanceOptions}
                             placeholder="Chọn trình độ"
+                            prefixIcon={<StarOutlined width={14} height={14} />}
                           />
                         </FormItem>
                       </div>
@@ -349,7 +363,7 @@ const JobApplication = () => {
         },
       ],
     };
-  }, [form, props, languages, placements]);
+  }, [form, props, languages, jobFields, placements]);
 
   useEffect(() => {
     const positions = form.getFieldValue('positions');

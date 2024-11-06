@@ -170,7 +170,12 @@ const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
         {formItems.map((formItem) => {
           const { item, listItem, ...others } = formItem;
 
-          if (item) return <FormItem {...others}>{item}</FormItem>;
+          if (item)
+            return (
+              <FormItem key={formItem.name} {...others}>
+                {item}
+              </FormItem>
+            );
           else if (listItem)
             return (
               <FormList

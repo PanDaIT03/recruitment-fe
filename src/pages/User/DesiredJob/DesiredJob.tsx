@@ -51,7 +51,7 @@ const DesiredJob = () => {
   }, []);
 
   useEffect(() => {
-    setState(true);
+    setState(false);
   }, []);
 
   const handleCancel = useCallback(() => {

@@ -12,6 +12,7 @@ import {
   CloudUploadOutlined,
   CommentOutlined,
   ContainerOutlined,
+  CreditCardOutlined,
   DeleteOutlined,
   DollarCircleOutlined,
   DollarOutlined,
@@ -29,6 +30,7 @@ import {
   KeyOutlined,
   LaptopOutlined,
   LikeOutlined,
+  LinkOutlined,
   LoadingOutlined,
   LockOutlined,
   LoginOutlined,
@@ -36,6 +38,7 @@ import {
   MailOutlined,
   MinusCircleOutlined,
   MinusOutlined,
+  PhoneOutlined,
   PlusCircleOutlined,
   PlusOutlined,
   ProfileOutlined,
@@ -47,12 +50,10 @@ import {
   ShareAltOutlined,
   ShopOutlined,
   SnippetsOutlined,
+  StarOutlined,
   TeamOutlined,
   UserAddOutlined,
   UserOutlined,
-  LinkOutlined,
-  CreditCardOutlined,
-  PhoneOutlined,
   WalletOutlined,
 } from '@ant-design/icons';
 
@@ -112,6 +113,7 @@ const icons = {
   CreditCardOutlined,
   PhoneOutlined,
   WalletOutlined,
+  StarOutlined,
 };
 
 export default icons;
