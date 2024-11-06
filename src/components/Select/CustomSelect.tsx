@@ -34,8 +34,7 @@ const CustomSelect = ({
 
   const customClass = classNames(
     'custom-select',
-    'flex pl-[11px] items-center bg-light-gray gap-[10px]',
-    'hover:border-[#4096ff] transition-all duration-[0.2s]',
+    'flex pl-[11px] items-center gap-[10px]',
     displayedType,
     configProvider?.colorBgContainer,
     configProvider?.colorBorder &&

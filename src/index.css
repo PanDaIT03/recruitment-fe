@@ -7,7 +7,7 @@ html {
 }
 
 :root {
-  --header-bgColor: rgba(105 31 116 / 1);
+  --header-bgColor: #691f74;
 
   --button-bg-hover-color: #fcebe6;
   --button-border-color: #f15224;
@@ -18,8 +18,13 @@ html {
 
   --button-outline-bg: white;
   --button-outline-bgHover: #d94a20;
-  --button-outline-color: rgb(37, 35, 37);
-  --button-outline-border-color: rgb(209 213 219);
+  --button-outline-color: #252325;
+  --button-outline-border-color: #d1d5db;
+
+  --select-bg-primary: #fafafa;
+  --select-bg-hover: #4096ff;
+  --select-border-color-primary: #4096ff;
+  --select-box-shadow-primary: 0 0 0 2px rgba(5, 145, 255, 0.1);
 }
 
 :root {

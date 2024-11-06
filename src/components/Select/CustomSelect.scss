@@ -1,4 +1,6 @@
 .custom-select {
+  transition: all 0.2s;
+
   .ant-select-selector {
     border: none !important;
     padding-left: 4px !important;
@@ -19,6 +21,10 @@
     width: 100% !important;
     margin-top: 6px;
   }
+}
+
+.custom-select:not(.text) {
+  background: var(--select-bg-primary);
 
   &:has(.ant-select-status-error) {
     border-color: #ff4d4f !important;
@@ -26,8 +32,12 @@
 
   &:has(.ant-select-focused) {
     outline: 0;
-    border-color: #1677ff;
-    box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
+    border-color: var(--select-border-color-primary);
+    box-shadow: var(--select-box-shadow-primary);
+  }
+
+  &:hover {
+    border-color: var(--select-bg-hover);
   }
 }
 
