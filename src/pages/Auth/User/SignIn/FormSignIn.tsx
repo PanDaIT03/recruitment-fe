@@ -1,5 +1,5 @@
 import { FormInstance } from 'antd';
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 
 import FormItem from '~/components/Form/FormItem';

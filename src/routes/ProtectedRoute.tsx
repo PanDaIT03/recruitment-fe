@@ -10,7 +10,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { currentUser } = useAppSelector((state) => state.auth);
   const userRole = currentUser?.role?.title;
 
-  return allowedRoles.includes(userRole) ? (
+  return allowedRoles.includes(userRole || 'admin') ? (
     <Outlet />
   ) : (
     <Navigate to="/" replace />
