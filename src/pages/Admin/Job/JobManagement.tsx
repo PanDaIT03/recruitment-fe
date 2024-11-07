@@ -16,7 +16,8 @@ const JobManagement: React.FC = () => {
   };
 
   const { data: allJobs } = useFetch<IJob, IPaginationParms & Partial<IParams>>(
-    fetchAllJobs
+    fetchAllJobs,
+    {}
   );
 
   const currentPage = allJobs?.pageInfo?.currentPage || 1;

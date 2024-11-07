@@ -10,6 +10,7 @@ import ProfileSection, {
 } from '~/pages/User/Profile/ProfileSection';
 import { getUserProfile } from '~/store/thunk/user';
 import { UserLanguage, UserSkill, WorkExperience } from '~/types/User';
+import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import ExperienceCard from './Card/ExperienceCard';
 import LanguageCard from './Card/LanguageCard';
@@ -18,7 +19,6 @@ import AchievementModal from './Modal/AchievementModal';
 import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
-import toast from '~/utils/functions/toast';
 
 const { PlusOutlined, EditOutlined } = icons;
 
@@ -30,7 +30,6 @@ const Profile = () => {
   const dispatch = useAppDispatch();
 
   const [selectedItem, setSelectedItem] = useState('');
-
   const [experienceItemSelected, setExperienceItemSelected] =
     useState<WorkExperience>(initExperience);
   const [languageItemSelected, setLanguageItemSelected] =
