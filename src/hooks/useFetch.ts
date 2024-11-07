@@ -23,29 +23,34 @@ export const useFetch = <T, P>(
 
   const mountedRef = useRef(true);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const firstRenderRef = useRef(true);
+  const paramsRef = useRef<P>(initialParams);
 
   const fetchData = useCallback(
     async (currentParams: P) => {
-      setState((prev) => ({ ...prev, loading: true }));
+      if (JSON.stringify(currentParams) !== JSON.stringify(paramsRef.current)) {
+        setState((prev) => ({ ...prev, loading: true }));
 
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      abortControllerRef.current = new AbortController();
-
-      try {
-        const response = await fetchFunction(currentParams);
-        if (mountedRef.current) {
-          setState({ data: response, loading: false, error: null });
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
         }
-      } catch (err) {
-        if (mountedRef.current) {
-          setState({
-            data: null,
-            loading: false,
-            error: err instanceof Error ? err : new Error('Có lỗi xảy ra'),
-          });
+
+        abortControllerRef.current = new AbortController();
+
+        try {
+          const response = await fetchFunction(currentParams);
+          if (mountedRef.current) {
+            setState({ data: response, loading: false, error: null });
+            paramsRef.current = currentParams;
+          }
+        } catch (err) {
+          if (mountedRef.current) {
+            setState({
+              data: null,
+              loading: false,
+              error: err instanceof Error ? err : new Error('Có lỗi xảy ra'),
+            });
+          }
         }
       }
     },
@@ -53,7 +58,14 @@ export const useFetch = <T, P>(
   );
 
   useEffect(() => {
-    fetchData(params);
+    if (
+      !firstRenderRef.current &&
+      JSON.stringify(params) !== JSON.stringify(paramsRef.current)
+    ) {
+      fetchData(params);
+    } else {
+      firstRenderRef.current = false;
+    }
 
     return () => {
       if (abortControllerRef.current) {
