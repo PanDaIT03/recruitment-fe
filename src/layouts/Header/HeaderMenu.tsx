@@ -46,6 +46,13 @@ const HeaderMenu = ({
     navigate(path);
   }, []);
 
+  const handleSignOut = useCallback(async () => {
+    setIsOpenMenuModal(false);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    onSingOut();
+  }, []);
+
   const userMenu = useMemo(() => {
     return [
       ...(currentUser?.role?.id === 2
@@ -149,7 +156,7 @@ const HeaderMenu = ({
         className: 'hover:!bg-light-warning',
         icon: <LogoutOutlined className="!text-warning" />,
         label: <span className="text-warning font-medium">Đăng xuất</span>,
-        onClick: onSingOut,
+        onClick: handleSignOut,
       },
     ];
   }, [currentUser]);
