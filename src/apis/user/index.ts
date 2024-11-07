@@ -1,4 +1,5 @@
 import axiosApi from '~/services/axios';
+import { UserListResponse } from '~/types/User';
 import {
   Achivement,
   ILanguageComboBox,
@@ -6,9 +7,8 @@ import {
   IUserProfile,
   IUserProfileData,
   UserLanguage,
-  UserListResponse,
   UserSkill,
-} from '~/types/User';
+} from '~/types/User/profile';
 
 export type IUserProfileParams = { accessToken: string; refreshToken: string };
 export type IUserSkillParams = Pick<UserSkill, 'skillsId' | 'level'>;
@@ -42,6 +42,9 @@ const UserApi = {
   },
   getAllSkill: async (): Promise<IPaginatedSkill> => {
     return await axiosApi.get('/skills/all');
+  },
+  getAchievementById: async (id: string) => {
+    return await axiosApi.get(`/achivements?id=${id}`);
   },
 
   // POST

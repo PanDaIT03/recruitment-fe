@@ -4,7 +4,7 @@ import { memo } from 'react';
 import UserApi from '~/apis/user';
 import useMessageApi from '~/hooks/useMessageApi';
 import { mockFileList } from '~/mocks/data';
-import { UserLanguage } from '~/types/User';
+import { UserLanguage } from '~/types/User/profile';
 import { advanceOptions } from '../Modal/LanguageModal';
 import ProfileCard from './ProfileCard';
 

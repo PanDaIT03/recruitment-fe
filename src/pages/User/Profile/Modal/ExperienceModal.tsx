@@ -21,7 +21,7 @@ import {
   IUserProfileData,
   IUserProfileForm,
   WorkExperience,
-} from '~/types/User';
+} from '~/types/User/profile';
 import icons from '~/utils/icons';
 import ProfileModal from './ProfileModal';
 

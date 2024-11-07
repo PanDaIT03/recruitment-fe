@@ -3,7 +3,7 @@ import { memo } from 'react';
 
 import UserApi from '~/apis/user';
 import useMessageApi from '~/hooks/useMessageApi';
-import { UserSkill } from '~/types/User';
+import { UserSkill } from '~/types/User/profile';
 import ProfileCard from './ProfileCard';
 
 interface IProps {

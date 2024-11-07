@@ -5,7 +5,7 @@ import { memo } from 'react';
 import UserApi from '~/apis/user';
 import useMessageApi from '~/hooks/useMessageApi';
 import { mockFileList } from '~/mocks/data';
-import { WorkExperience } from '~/types/User';
+import { WorkExperience } from '~/types/User/profile';
 import ProfileCard from './ProfileCard';
 
 interface IProps {

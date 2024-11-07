@@ -7,7 +7,7 @@ import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
 import useMessageApi from '~/hooks/useMessageApi';
-import { UserLanguage } from '~/types/User';
+import { UserLanguage } from '~/types/User/profile';
 import ProfileModal from './ProfileModal';
 
 interface IProps {

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getUserProfile } from '~/store/thunk/user';
-import { IUserProfile } from '~/types/User';
+import { IUserProfile } from '~/types/User/profile';
 
 export interface IUserProfileState {
   loading?: boolean;
