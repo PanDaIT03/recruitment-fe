@@ -12,7 +12,10 @@ const { UserOutlined, EyeOutlined, EditOutlined } = icons;
 
 const UserManagement: React.FC = () => {
   const navigate = useNavigate();
-  const { data: allUser } = useFetch<UserListResponse>(UserApi.getAllUser);
+  const { data: allUser } = useFetch<UserListResponse, {}>(
+    UserApi.getAllUser,
+    {}
+  );
 
   const columns = [
     {

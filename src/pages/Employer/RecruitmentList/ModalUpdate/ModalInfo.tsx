@@ -30,17 +30,21 @@ const ModalInfo: React.FC<ModalProps> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const { data: jobCategories } = useFetch<PaginatedJobCategories>(
-    JobsAPI.getAllJobCategories
+  const { data: jobCategories } = useFetch<PaginatedJobCategories, {}>(
+    JobsAPI.getAllJobCategories,
+    {}
   );
-  const { data: workType } = useFetch<PaginatedWorkTypes>(
-    JobsAPI.getAllWorkTypes
+  const { data: workType } = useFetch<PaginatedWorkTypes, {}>(
+    JobsAPI.getAllWorkTypes,
+    {}
   );
-  const { data: jobPlacements } = useFetch<JobPlacement>(
-    JobsAPI.getAllPlacements
+  const { data: jobPlacements } = useFetch<JobPlacement, {}>(
+    JobsAPI.getAllPlacements,
+    {}
   );
-  const { data: jobFields } = useFetch<PaginatedJobFields>(
-    JobsAPI.getAllJobFields
+  const { data: jobFields } = useFetch<PaginatedJobFields, {}>(
+    JobsAPI.getAllJobFields,
+    {}
   );
 
   const formatter = (value: string | undefined): string => {

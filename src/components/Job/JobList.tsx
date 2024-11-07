@@ -90,16 +90,22 @@ const JobListPage = () => {
     extraParams: filters,
   });
 
-  const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
+  const { data: placements } = useFetch<JobPlacement, {}>(
+    JobsAPI.getAllPlacements,
+    {}
+  );
 
-  const { data: jobCategories } = useFetch<PaginatedJobCategories>(
-    JobsAPI.getAllJobCategories
+  const { data: jobCategories } = useFetch<PaginatedJobCategories, {}>(
+    JobsAPI.getAllJobCategories,
+    {}
   );
-  const { data: workType } = useFetch<PaginatedWorkTypes>(
-    JobsAPI.getAllWorkTypes
+  const { data: workType } = useFetch<PaginatedWorkTypes, {}>(
+    JobsAPI.getAllWorkTypes,
+    {}
   );
-  const { data: jobFields } = useFetch<PaginatedJobFields>(
-    JobsAPI.getAllJobFields
+  const { data: jobFields } = useFetch<PaginatedJobFields, {}>(
+    JobsAPI.getAllJobFields,
+    {}
   );
 
   const jobCategoriesOptions = useMemo(

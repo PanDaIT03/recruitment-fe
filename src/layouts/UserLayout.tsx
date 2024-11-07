@@ -173,7 +173,7 @@ const UserLayout = () => {
   const [isOpenAvatarModal, setIsOpenAvatarModal] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  const { data: placements } = useFetch(JobsAPI.getAllPlacements);
+  const { data: placements } = useFetch(JobsAPI.getAllPlacements, {});
 
   const props: UploadProps = useMemo(
     () => ({
