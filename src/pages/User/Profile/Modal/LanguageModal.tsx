@@ -32,7 +32,7 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
     []
   );
 
-  const { data: languages } = useFetch(UserApi.getAllForeignLanguage);
+  const { data: languages } = useFetch(UserApi.getAllForeignLanguage, {});
 
   const { mutate: createUserLanguage, isPending: isCreatePending } =
     useMessageApi({

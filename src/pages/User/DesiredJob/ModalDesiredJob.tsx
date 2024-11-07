@@ -37,7 +37,10 @@ const { CloseOutlined } = icons;
 const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
   const [form] = useForm();
 
-  const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
+  const { data: placements } = useFetch<JobPlacement, {}>(
+    JobsAPI.getAllPlacements,
+    {}
+  );
 
   const handleSalaryChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {

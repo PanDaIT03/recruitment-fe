@@ -82,9 +82,9 @@ const JobApplication = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadFile, setUploadFile] = useState<UploadFile>(initUploadFile);
 
-  const { data: placements } = useFetch(JobsAPI.getAllPlacements);
-  const { data: jobFields } = useFetch(DesiredJobAPI.getAllJobFields);
-  const { data: languages } = useFetch(UserApi.getAllForeignLanguage);
+  const { data: placements } = useFetch(JobsAPI.getAllPlacements, {});
+  const { data: jobFields } = useFetch(DesiredJobAPI.getAllJobFields, {});
+  const { data: languages } = useFetch(UserApi.getAllForeignLanguage, {});
 
   const props: UploadProps = useMemo(
     () => ({

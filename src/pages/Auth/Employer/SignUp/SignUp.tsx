@@ -50,8 +50,9 @@ const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data: jobFields } = useFetch<PaginatedJobFields>(
-    JobsAPI.getAllJobFields
+  const { data: jobFields } = useFetch<PaginatedJobFields, {}>(
+    JobsAPI.getAllJobFields,
+    {}
   );
 
   const jobFieldsOptions = useMemo(
@@ -64,8 +65,9 @@ const SignUp = () => {
     [jobFields]
   );
 
-  const { data: jobPositions } = useFetch<PaginatedJobPositions>(
-    JobsAPI.getAllJobPositions
+  const { data: jobPositions } = useFetch<PaginatedJobPositions, {}>(
+    JobsAPI.getAllJobPositions,
+    {}
   );
 
   const jobPositionOptions = useMemo(
