@@ -17,9 +17,7 @@ const Dragger = ({ children, className, ...props }: UploadProps) => {
       }}
     >
       <DraggerAntd className={customeClass} {...props}>
-        {children ? (
-          children
-        ) : (
+        {children || (
           <>
             <p className="ant-upload-drag-icon">
               <CloudUploadOutlined />
