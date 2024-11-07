@@ -9,14 +9,21 @@ import { emailRegex } from '~/utils/constant';
 import PATH from '~/utils/path';
 
 interface IProps {
+  loading?: boolean;
   form: FormInstance<any>;
   onFinish(values: any): void;
 }
 
-const FormSignIn = ({ form, onFinish }: IProps) => {
+const FormSignIn = ({ form, loading, onFinish }: IProps) => {
   return (
     <>
-      <FormWrapper form={form} submitTitle="Tiếp tục" onFinish={onFinish}>
+      <FormWrapper
+        form={form}
+        // loading={true}
+        loading={loading}
+        submitTitle="Tiếp tục"
+        onFinish={onFinish}
+      >
         <FormItem
           name="email"
           label="Địa chỉ email"
