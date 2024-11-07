@@ -1,17 +1,18 @@
 import { Avatar, Popconfirm, Space, Table, Tag, Tooltip } from 'antd';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import UserApi from '~/apis/user';
 import Button from '~/components/Button/Button';
 import { useFetch } from '~/hooks/useFetch';
 import { UserListResponse } from '~/types/User';
 import icons from '~/utils/icons';
+import PATH from '~/utils/path';
 
 const { UserOutlined, EyeOutlined, EditOutlined } = icons;
 
 const UserManagement: React.FC = () => {
-  const { data: allUser, loading } = useFetch<UserListResponse>(
-    UserApi.getAllUser
-  );
+  const navigate = useNavigate();
+  const { data: allUser } = useFetch<UserListResponse>(UserApi.getAllUser);
 
   const columns = [
     {
@@ -58,16 +59,25 @@ const UserManagement: React.FC = () => {
     {
       title: 'Hành động',
       key: 'actions',
-      render: () => (
-        <Space>
-          <Popconfirm title="Bạn chắc chắn rằng muốn chặn người dùng này?">
-            <Button title={<EditOutlined />} />
-          </Popconfirm>
-          <Tooltip title="Xem chi tiết">
-            <Button title={<EyeOutlined />} fill />
-          </Tooltip>
-        </Space>
-      ),
+      render: (record: any) => {
+        console.log(record);
+        return (
+          <Space>
+            <Popconfirm title="Bạn chắc chắn rằng muốn chặn người dùng này?">
+              <Button title={<EditOutlined />} />
+            </Popconfirm>
+            <Tooltip title="Xem chi tiết">
+              <Button
+                title={<EyeOutlined />}
+                fill
+                onClick={() =>
+                  navigate(PATH.ADMIN_USER_DETAIL, { state: record })
+                }
+              />
+            </Tooltip>
+          </Space>
+        );
+      },
     },
   ];
 
