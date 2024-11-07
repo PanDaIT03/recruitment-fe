@@ -1,3 +1,5 @@
+export { default as ACB } from './acb.png';
+export { default as ACFC } from './acfc.png';
 export { default as BriefCase } from './briefcase.png';
 export { default as DISCONNECTED } from './disconnected.png';
 export { default as LanguageCenter } from './language-center.png';
@@ -5,6 +7,9 @@ export { default as GOOGLE_LOGO } from './logo_google.png';
 export { default as MagicHat } from './magic-hat.png';
 export { default as NetWorking } from './networking.png';
 export { default as ProfileCoverImage } from './profile_cover_image.jpg';
+export { default as SamSung } from './samsung.png';
+export { default as Shopee } from './shopee.png';
 export { default as Summary } from './summary.png';
 export { default as USER_AVATAR } from './user_avatar.png';
-
+export { default as VIB } from './vib.png';
+export { default as VinMec } from './vinmec.png';

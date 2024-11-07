@@ -115,6 +115,9 @@ export default {
       boxShadow: {
         select: '0 0 0 2px rgba(5, 145, 255, 0.1)',
       },
+      screens: {
+        '812px': '812px',
+      },
     },
   },
   plugins: [],

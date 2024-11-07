@@ -26,11 +26,12 @@ const SignIn = () => {
   const dispatch = useAppDispatch();
 
   const [form] = useForm<IBaseUser>();
-
-  const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
   const { currentUser, emailStatus, loading } = useAppSelector(
     (state) => state.auth
   );
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
 
   const { mutate: verifyOTP } = useMessageApi({
     apiFn: (email: IVerifyOTP) => AuthAPI.verifyOTP(email),
@@ -71,9 +72,11 @@ const SignIn = () => {
   }, [emailStatus, isSignInWithOTP]);
 
   const handleSignInWithGoogle = useCallback((userInfo: any) => {
+    setIsLoading(true);
     try {
-      dispatch(signInWithGoogle(userInfo));
+      dispatch(signInWithGoogle(userInfo)).then(() => setIsLoading(false));
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   }, []);
@@ -147,7 +150,11 @@ const SignIn = () => {
           <Divider className="!my-0">
             <p className="text-sub text-sm">hoặc</p>
           </Divider>
-          <FormSignIn form={form} onFinish={handleCheckExistedEmail} />
+          <FormSignIn
+            form={form}
+            loading={loading || isLoading}
+            onFinish={handleCheckExistedEmail}
+          />
         </>
       )}
     </>
