@@ -147,7 +147,7 @@ const HeaderMenu = ({
       {
         key: 'logout',
         className: 'hover:!bg-light-warning',
-        icon: <LogoutOutlined className="[&>*]:fill-warning" />,
+        icon: <LogoutOutlined className="!text-warning" />,
         label: <span className="text-warning font-medium">Đăng xuất</span>,
         onClick: onSingOut,
       },
