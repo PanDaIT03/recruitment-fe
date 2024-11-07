@@ -9,9 +9,7 @@ import icons from '~/utils/icons';
 const { UserOutlined, EyeOutlined, EditOutlined } = icons;
 
 const UserManagement: React.FC = () => {
-  const { data: allUser, loading } = useFetch<UserListResponse>(
-    UserApi.getAllUser
-  );
+  const { data: allUser } = useFetch<UserListResponse>(UserApi.getAllUser);
 
   const columns = [
     {
