@@ -18,7 +18,6 @@ export enum ProfileSectionType {
 
 export interface IProfileSection {
   imgUrl: string;
-  id: ProfileSectionType;
   header: TitleType;
   hint: string;
   loading?: boolean;

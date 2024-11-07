@@ -27,8 +27,6 @@ export const signInWithGoogle = createAsyncThunk(
   'auth/signInWithGoogle',
   async (data: IUserSignInWithGoogle, { rejectWithValue, dispatch }) => {
     try {
-      console.log('auth / signInWithGoogle');
-
       const payload = { ...data, type: TYPE_LOGIN.TYPE_GOOGLE };
       const { statusCode } = await AuthAPI.signInWithGoogle(payload);
 
