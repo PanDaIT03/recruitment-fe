@@ -1,9 +1,8 @@
-import { googleLogout } from '@react-oauth/google';
 import { Dropdown, Image, MenuProps } from 'antd';
-import { memo, useMemo, useState } from 'react';
+import { Dispatch, memo, SetStateAction, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { DISCONNECTED, USER_AVATAR } from '~/assets/img';
+import { USER_AVATAR } from '~/assets/img';
 import {
   DualLayerFile,
   File,
@@ -11,34 +10,19 @@ import {
   SkyScraper,
   UserAccount,
 } from '~/assets/svg';
-import Button from '~/components/Button/Button';
-import Modal from '~/components/Modal/Modal';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { signOut } from '~/store/thunk/auth';
+import { useAppSelector } from '~/hooks/useStore';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
-const { CloseOutlined, LogoutOutlined } = icons;
+const { LogoutOutlined } = icons;
 
-const HeaderDropDown = () => {
+interface IProps {
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+const HeaderDropDown = ({ setIsOpen }: IProps) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
-  const [isOpen, setIsOpen] = useState(false);
-  const { currentUser, loading } = useAppSelector((state) => state.auth);
-
-  const handleCancelModal = () => {
-    setIsOpen(false);
-  };
-
-  const handleOkModal = () => {
-    googleLogout();
-
-    dispatch(signOut()).then(() => {
-      setIsOpen(false);
-      navigate(PATH.ROOT);
-    });
-  };
+  const { currentUser } = useAppSelector((state) => state.auth);
 
   const baseMenu: MenuProps['items'] = useMemo(() => {
     return [
@@ -186,38 +170,6 @@ const HeaderDropDown = () => {
           />
         </a>
       </Dropdown>
-      <Modal
-        isOpen={isOpen}
-        title="Đăng xuất"
-        animationType="slide-down"
-        onCancel={handleCancelModal}
-        footer={
-          <div className="flex justify-end gap-3">
-            <Button
-              title="Huỷ"
-              loading={loading}
-              iconBefore={<CloseOutlined />}
-              className="w-full max-w-[143px]"
-              onClick={handleCancelModal}
-            />
-            <Button
-              fill
-              title="Đăng xuất"
-              loading={loading}
-              iconAfter={<LogoutOutlined />}
-              className="w-full max-w-[143px]"
-              onClick={handleOkModal}
-            />
-          </div>
-        }
-      >
-        <div className="flex flex-col items-center gap-3">
-          <Image width={112} height={112} preview={false} src={DISCONNECTED} />
-          <p className="text-center font-semibold text-[#334155]">
-            Bạn có chắc chắn muốn đăng xuất khỏi tài khoản của mình?
-          </p>
-        </div>
-      </Modal>
     </>
   );
 };

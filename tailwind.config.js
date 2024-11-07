@@ -109,6 +109,7 @@ export default {
       },
       fill: {
         dark: '#0A0A0A',
+        warning: '#DC2626',
         'light-gray': '#FAFAFA',
       },
       boxShadow: {
