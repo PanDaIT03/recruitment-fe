@@ -5,13 +5,14 @@ import { memo } from 'react';
 import UserApi from '~/apis/user';
 import useMessageApi from '~/hooks/useMessageApi';
 import { mockFileList } from '~/mocks/data';
-import { WorkExperience } from '~/types/User/profile';
+import { IWorkExperience } from '~/types/User/profile';
+import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
-  data: WorkExperience[];
+  data: IWorkExperience[];
   refetch: () => void;
-  onEdit(values: WorkExperience): void;
+  onEdit: (index: number, sectionType: ProfileSectionType) => void;
 }
 
 const defaultImgUrl = mockFileList[0].url;
@@ -30,8 +31,8 @@ const ExperienceCard = ({ data, refetch, onEdit }: IProps) => {
         <div key={index}>
           <ProfileCard
             imgUrl={defaultImgUrl}
-            onEdit={() => onEdit(item)}
             onDelete={() => deleteWorkExperience(item.id)}
+            onEdit={() => onEdit(index, ProfileSectionType.EXPERIENCE)}
             content={
               <div className="space-y-1">
                 <p className="text-base font-semibold">

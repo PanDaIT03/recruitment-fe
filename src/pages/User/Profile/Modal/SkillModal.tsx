@@ -63,7 +63,7 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   };
 
   useEffect(() => {
-    if (!Object.keys(data).length) {
+    if (!data) {
       setIsEdit(false);
       return;
     }

@@ -19,38 +19,23 @@ interface JobCategory {
   description: null;
 }
 
+interface ForeignLanguage {
+  id: number;
+  imageUrl: null;
+  title: string;
+}
+
+interface Skill {
+  id: number;
+  title: string;
+}
+
+interface JobPosition {
+  id: number;
+  title: string;
+}
+
 //----------------
-
-export interface UserSkill {
-  level: number;
-  usersId: number;
-  skillsId: number;
-  skill: Role;
-}
-
-export interface Achivement {
-  id: number;
-  description: string;
-}
-
-export interface UserLanguage {
-  level: number;
-  usersId: number;
-  foreignLanguagesId: number;
-  foreignLanguage: Role;
-}
-
-export interface WorkExperience {
-  id: number;
-  companyName: string;
-  isWorking: boolean;
-  startDate: Date;
-  endDate: null;
-  description: string;
-  placement: Role;
-  jobPosition: Role;
-  jobCategory: JobCategory;
-}
 
 export interface IUserProfile {
   message?: string;
@@ -65,10 +50,10 @@ export interface IUserProfile {
   isActive: boolean;
   role: Role;
   jobPosition: string;
-  userSkills: UserSkill[];
-  achivement: Achivement;
-  userLanguages: UserLanguage[];
-  workExperiences: WorkExperience[];
+  userSkills: IUserSkill[];
+  achivement: IAchievement;
+  userLanguages: IForeignLanguage[];
+  workExperiences: IWorkExperience[];
 }
 
 export interface IUserProfileData extends IBaseUserProfile {
@@ -77,11 +62,6 @@ export interface IUserProfileData extends IBaseUserProfile {
 }
 
 export interface IUserProfileForm extends IBaseUserProfile {
-  companyName: string;
-  positionId: number;
-  jobCategoriesId: number;
-  placementsId: number;
-  description: string;
   workingTime: Dayjs | Dayjs[];
 }
 
@@ -103,58 +83,33 @@ export interface ISkillComboBox {
   title: string;
 }
 
-// --------------
-
-interface ForeignLanguage {
-  id: number;
-  imageUrl: null;
-  title: string;
-}
-
-interface Skill {
-  id: number;
-  title: string;
-}
-
-interface JobPosition {
-  id: number;
-  title: string;
-}
-
 export interface IAchievement {
   id: number;
-  statusCode: number;
   description: string;
 }
 
-export type IForeignLanguage = IPaginatedData<
-  {
-    level: number;
-    usersId: number;
-    foreignLanguagesId: number;
-    foreignLanguage: ForeignLanguage;
-  }[]
->;
+export interface IForeignLanguage {
+  level: number;
+  usersId: number;
+  foreignLanguagesId: number;
+  foreignLanguage: ForeignLanguage;
+}
 
-export type IUserSkill = IPaginatedData<
-  {
-    level: number;
-    usersId: number;
-    skillsId: number;
-    skill: Skill;
-  }[]
->;
+export interface IUserSkill {
+  level: number;
+  usersId: number;
+  skillsId: number;
+  skill: Skill;
+}
 
-export type IWorkExperience = IPaginatedData<
-  {
-    id: number;
-    companyName: string;
-    isWorking: boolean;
-    startDate: Date;
-    endDate: null;
-    description: string;
-    jobCategory: JobCategory;
-    jobPosition: JobPosition;
-    placement: JobPosition;
-  }[]
->;
+export interface IWorkExperience {
+  id: number;
+  companyName: string;
+  isWorking: boolean;
+  startDate: Date;
+  endDate: null;
+  description: string;
+  jobCategory: JobCategory;
+  jobPosition: JobPosition;
+  placement: JobPosition;
+}

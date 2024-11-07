@@ -3,13 +3,14 @@ import { memo } from 'react';
 
 import UserApi from '~/apis/user';
 import useMessageApi from '~/hooks/useMessageApi';
-import { UserSkill } from '~/types/User/profile';
+import { IUserSkill } from '~/types/User/profile';
+import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
-  data: UserSkill[];
+  data: IUserSkill[];
   refetch: () => void;
-  onEdit: (values: UserSkill) => void;
+  onEdit: (index: number, sectionType: ProfileSectionType) => void;
 }
 
 const SkillCard = ({ data, refetch, onEdit }: IProps) => {
@@ -22,8 +23,8 @@ const SkillCard = ({ data, refetch, onEdit }: IProps) => {
     <Flex vertical gap={16}>
       {data?.map((item, index) => (
         <ProfileCard
-          onEdit={() => onEdit(item)}
           onDelete={() => deleteUserSkill(item.skillsId)}
+          onEdit={() => onEdit(index, ProfileSectionType.SKILL)}
           key={index}
           content={
             <div className="space-y-2">

@@ -66,11 +66,11 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
 
   useEffect(() => {
     if (!isOpen) return;
-    !Object.keys(data).length && form.setFieldValue('advanced', '2');
+    !data && form.setFieldValue('advanced', '2');
   }, [isOpen]);
 
   useEffect(() => {
-    if (!Object.keys(data).length) {
+    if (!data) {
       setIsEdit(false);
       return;
     }

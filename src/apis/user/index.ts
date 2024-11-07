@@ -1,7 +1,6 @@
 import axiosApi from '~/services/axios';
 import { UserListResponse } from '~/types/User';
 import {
-  Achivement,
   IAchievement,
   IForeignLanguage,
   ILanguageComboBox,
@@ -9,16 +8,13 @@ import {
   IUserProfile,
   IUserProfileData,
   IUserSkill,
-  UserLanguage,
-  UserSkill,
 } from '~/types/User/profile';
 
 export type IUserProfileParams = { accessToken: string; refreshToken: string };
-export type IUserSkillParams = Pick<UserSkill, 'skillsId' | 'level'>;
-export type ISkillParams = Pick<UserSkill, 'skillsId' | 'level'>;
-export type IAchievementParams = Pick<Achivement, 'description'>;
+export type ISkillParams = Pick<IUserSkill, 'skillsId' | 'level'>;
+export type IAchievementParams = Pick<IAchievement, 'description'>;
 export type ILanguageParams = Pick<
-  UserLanguage,
+  IForeignLanguage,
   'foreignLanguagesId' | 'level'
 >;
 
@@ -46,16 +42,16 @@ const UserApi = {
   getAllSkill: async (): Promise<IPaginatedSkill> => {
     return await axiosApi.get('/skills/all');
   },
-  getAchievementByUserId: async (id: string): Promise<IAchievement> => {
+  getAchievementByUserId: async (id: number): Promise<IAchievement> => {
     return await axiosApi.get(`/achivements?id=${id}`);
   },
-  getLanguageByUserId: async (id: string): Promise<IForeignLanguage> => {
+  getLanguageByUserId: async (id: number): Promise<IForeignLanguage> => {
     return await axiosApi.get(`/users-foreign-languages/all?usersId=${id}`);
   },
-  getUserSkillByUserId: async (id: string): Promise<IUserSkill> => {
+  getUserSkillByUserId: async (id: number): Promise<IUserSkill> => {
     return await axiosApi.get(`/users-skills/all?usersId=${id}`);
   },
-  getWorkExperienceByUserId: async (id: string): Promise<IForeignLanguage> => {
+  getWorkExperienceByUserId: async (id: number): Promise<IForeignLanguage> => {
     return await axiosApi.get(`/work-experiences/all?usersId=${id}`);
   },
 
@@ -80,6 +76,10 @@ const UserApi = {
   },
 
   // PATCH
+  updateAchievement: async (params: IAchievement): Promise<IBaseResponse> => {
+    const { id, ...others } = params;
+    return await axiosApi.patch(`/achivements/${id}`, others);
+  },
   updateWorkExperience: async (
     params: IUpdateWorkExperience
   ): Promise<IBaseResponse> => {

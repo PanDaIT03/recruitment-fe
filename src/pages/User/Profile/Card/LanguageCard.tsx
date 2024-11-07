@@ -4,14 +4,15 @@ import { memo } from 'react';
 import UserApi from '~/apis/user';
 import useMessageApi from '~/hooks/useMessageApi';
 import { mockFileList } from '~/mocks/data';
-import { UserLanguage } from '~/types/User/profile';
+import { IForeignLanguage } from '~/types/User/profile';
 import { advanceOptions } from '../Modal/LanguageModal';
+import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
-  data: UserLanguage[];
+  data: IForeignLanguage[];
   refetch: () => void;
-  onEdit: (values: UserLanguage) => void;
+  onEdit: (index: number, sectionType: ProfileSectionType) => void;
 }
 
 const defaultImgUrl = mockFileList[0].url;
@@ -28,7 +29,7 @@ const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
         <div key={index}>
           <ProfileCard
             imgUrl={defaultImgUrl}
-            onEdit={() => onEdit(item)}
+            onEdit={() => onEdit(index, ProfileSectionType.LANGUAGE)}
             onDelete={() => deleteUserLanguage(item.foreignLanguagesId)}
             content={
               <div className="space-y-1">
