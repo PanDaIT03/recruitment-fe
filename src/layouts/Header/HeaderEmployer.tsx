@@ -3,7 +3,7 @@ import { googleLogout } from '@react-oauth/google';
 import { Col, Divider, Image, Modal, Row } from 'antd';
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { USER_AVATAR } from '~/assets/img';
+import { DISCONNECTED, USER_AVATAR } from '~/assets/img';
 import { HeaderLogo } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -44,11 +44,13 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenH, setIsOpenH] = useState(false);
 
   const { currentUser } = useAppSelector((state) => state.auth);
 
   const handleCloseModal = () => {
     setIsOpen(false);
+    setIsOpenH(false);
   };
 
   const handleOkModal = useCallback(() => {
@@ -140,9 +142,40 @@ const Header = () => {
               />
             </div>
           </Modal>
+
+          <Modal
+            open={isOpenH}
+            onCancel={handleCloseModal}
+            footer={null}
+            closable={false}
+            className="w-full"
+          >
+            <div className="text-center">
+              <div className="flex flex-col items-center gap-3">
+                <Image
+                  width={112}
+                  height={112}
+                  preview={false}
+                  src={DISCONNECTED}
+                />
+                <p className="text-center font-semibold text-[#334155]">
+                  Bạn có chắc chắn muốn đăng xuất khỏi tài khoản của mình?
+                </p>
+              </div>
+              <div className="flex justify-center mt-6">
+                <Button
+                  onClick={handleCloseModal}
+                  className="mr-2"
+                  title="Hủy"
+                />
+
+                <Button title="Đăng xuất" fill onClick={handleOkModal} />
+              </div>
+            </div>
+          </Modal>
         </Col>
         <div className="hidden md:block">
-          <HeaderDropDown setIsOpen={setIsOpen} />
+          <HeaderDropDown setIsOpen={setIsOpenH} />
         </div>
       </Row>
     </div>
