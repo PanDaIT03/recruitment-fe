@@ -61,3 +61,10 @@ html {
   background: #f15224;
   color: #fff;
 }
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-radio-wrapper
+  .ant-radio-checked
+  .ant-radio-inner {
+  border-color: #f15224;
+  background-color: #f15224;
+}

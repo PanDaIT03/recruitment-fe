@@ -56,6 +56,7 @@ import {
   WalletOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
+  FilterOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -116,6 +117,7 @@ const icons = {
   WalletOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
+  FilterOutlined,
 };
 
 export default icons;
