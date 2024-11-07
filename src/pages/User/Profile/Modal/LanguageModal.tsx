@@ -7,12 +7,12 @@ import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
 import useMessageApi from '~/hooks/useMessageApi';
-import { UserLanguage } from '~/types/User/profile';
+import { IForeignLanguage } from '~/types/User/profile';
 import ProfileModal from './ProfileModal';
 
 interface IProps {
   isOpen: boolean;
-  data: UserLanguage;
+  data: IForeignLanguage;
   refetch: () => void;
   onCancel: () => void;
 }
