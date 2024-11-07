@@ -1,4 +1,4 @@
-import { Col, Layout, Row, Typography, Image, Flex } from 'antd';
+import { Col, Flex, Image, Layout, Row } from 'antd';
 import { ReactNode, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ACB, ACFC, SamSung, Shopee, VIB, VinMec } from '~/assets/img';

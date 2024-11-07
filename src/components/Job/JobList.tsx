@@ -1,4 +1,4 @@
-import { Divider, Drawer, Form, List, Radio, Space } from 'antd';
+import { Divider, Drawer, Form, List, Radio } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
