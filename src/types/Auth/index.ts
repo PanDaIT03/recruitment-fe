@@ -8,6 +8,10 @@ interface IBaseAuthResponse {
   statusCode: number;
 }
 
+interface Achievement {
+  id: number;
+}
+
 export interface IBaseUser {
   email: string;
   userName?: string;
@@ -32,6 +36,7 @@ export interface IUser {
   role: Role;
   jobPosition: string;
   statusCode: number;
+  achivement: Achievement;
 }
 
 export interface Role {

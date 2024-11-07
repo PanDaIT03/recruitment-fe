@@ -1,15 +1,16 @@
 import { useForm } from 'antd/es/form/Form';
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import UserApi, { IAchievementParams } from '~/apis/user';
 import Editor from '~/components/Editor/Editor';
 import FormItem from '~/components/Form/FormItem';
 import useMessageApi from '~/hooks/useMessageApi';
+import { IAchievement } from '~/types/User/profile';
 import ProfileModal from './ProfileModal';
 
 interface IProps {
-  data: string;
   isOpen: boolean;
+  data: IAchievement;
   refetch: () => void;
   onCancel: () => void;
 }
@@ -17,17 +18,29 @@ interface IProps {
 const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const [form] = useForm();
 
-  const { mutate: createAchievement, isPending } = useMessageApi({
-    apiFn: (params: IAchievementParams) => UserApi.createAchievement(params),
-    onSuccess: () => refetch(),
-  });
+  const [isEdit, setIsEdit] = useState(false);
+
+  const { mutate: createAchievement, isPending: createAchievementPending } =
+    useMessageApi({
+      apiFn: (params: IAchievementParams) => UserApi.createAchievement(params),
+      onSuccess: () => refetch(),
+    });
+
+  const { mutate: updateAchievement, isPending: updateAchievementPending } =
+    useMessageApi({
+      apiFn: (params: IAchievement) => UserApi.updateAchievement(params),
+      onSuccess: () => refetch(),
+    });
 
   useEffect(() => {
-    if (!isOpen) return;
-    form.setFieldValue('achievement', data);
+    if (!data) {
+      setIsEdit(false);
+      return;
+    }
 
-    console.log(form.getFieldsValue());
-  }, [isOpen]);
+    setIsEdit(true);
+    isOpen && form.setFieldValue('achievement', data);
+  }, [data, isOpen]);
 
   const handleCancel = () => {
     form.resetFields();
@@ -36,9 +49,16 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
 
   const handleFinish = async (values: any) => {
     const { achievement } = values;
-    createAchievement({
-      description: achievement?.level?.content,
-    });
+
+    isEdit
+      ? updateAchievement({
+          id: data.id,
+          description: achievement?.level?.content,
+        })
+      : createAchievement({
+          description: achievement?.level?.content,
+        });
+
     handleCancel();
   };
 
@@ -46,7 +66,7 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     <ProfileModal
       form={form}
       isOpen={isOpen}
-      loading={isPending}
+      loading={createAchievementPending || updateAchievementPending}
       title="Cập nhật tóm tắt"
       onCancel={handleCancel}
       onFinish={handleFinish}
@@ -61,7 +81,10 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
           </p>
         }
       >
-        <Editor initialValue={data} onChange={(val) => console.log(val)} />
+        <Editor
+          initialValue={data.description}
+          onChange={(val) => console.log(val)}
+        />
       </FormItem>
     </ProfileModal>
   );
