@@ -5,7 +5,6 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { JobItem } from '~/types/Job';
-import { formatCurrencyVN } from '~/utils/functions/formatNumber';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
 
@@ -15,7 +14,6 @@ dayjs.locale('vi');
 const { Paragraph } = Typography;
 
 const {
-  DollarOutlined,
   EnvironmentOutlined,
   TeamOutlined,
   AccountBookOutlined,
@@ -29,7 +27,7 @@ const JobHeader: React.FC<
 > = ({ id, title, user, jobPosition }) => (
   <Row className="flex items-start gap-4 mb-3">
     <Col className="flex-shrink-0 w-12 h-12 mt-1">
-      {user.avatarUrl ? (
+      {user?.avatarUrl ? (
         <img
           alt={title}
           src={user.avatarUrl}
@@ -61,11 +59,10 @@ const JobHeader: React.FC<
 
 const JobTags: React.FC<{
   quantity: number;
-  priceRange: string;
   placement: JobItem['jobsPlacements'];
   workType: JobItem['workType'];
   category: JobItem['jobCategory'];
-}> = ({ quantity, priceRange, placement, workType, category }) => (
+}> = ({ quantity, placement, workType, category }) => (
   <Row className="flex items-center gap-2 text-sm text-gray-200 mb-3">
     <Tag icon={<ReconciliationOutlined />} color="purple">
       {workType.title}
@@ -76,9 +73,7 @@ const JobTags: React.FC<{
     <Tag icon={<EnvironmentOutlined />} color="red">
       {placement?.map((place) => place?.placement?.title).join(' - ')}
     </Tag>
-    <Tag icon={<DollarOutlined />} color="green">
-      {priceRange}
-    </Tag>
+
     <Tag icon={<TeamOutlined />} color="blue">
       {quantity}
     </Tag>
@@ -86,15 +81,6 @@ const JobTags: React.FC<{
 );
 
 const JobCard: React.FC<JobItem> = (job) => {
-  const priceRange =
-    job.salaryMin && job.salaryMax
-      ? `${formatCurrencyVN(Number(job.salaryMin))} - ${formatCurrencyVN(Number(job.salaryMax))}`
-      : job.salaryMin
-        ? ` ${formatCurrencyVN(Number(job.salaryMin))}`
-        : job.salaryMax
-          ? ` ${formatCurrencyVN(Number(job.salaryMax))}`
-          : 'Thương lượng';
-
   return (
     <Card
       hoverable
@@ -109,7 +95,6 @@ const JobCard: React.FC<JobItem> = (job) => {
         />
         <JobTags
           quantity={job.quantity}
-          priceRange={priceRange}
           placement={job.jobsPlacements}
           category={job.jobCategory}
           workType={job.workType}

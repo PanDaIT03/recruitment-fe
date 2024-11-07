@@ -19,13 +19,15 @@ export interface IPaginationParms {
 
 export const JobsAPI = {
   // GET
-  getAllJobs: (data: IPaginationParms & Partial<IParams>): Promise<IJob> => {
+  getAllJobs: (
+    data: IPaginationParms & Partial<IParams> = { page: 1, pageSize: 10 }
+  ): Promise<IJob> => {
     const payload: AxiosRequestConfig = {
       params: data,
     };
     return axiosApi.get('/jobs/all', payload);
   },
-  getJobById: (id: string): Promise<IJob['items']> => {
+  getJobById: (id: string): Promise<JobItem> => {
     return axiosApi.get(`/jobs?id=${id}`);
   },
   getAllJobPositions: (): Promise<PaginatedJobPositions> => {
@@ -43,8 +45,21 @@ export const JobsAPI = {
   getAllJobFields: (): Promise<PaginatedJobFields> => {
     return axiosApi.get(`/job-fields/all`);
   },
+
   // POST
   postJob: (data: PostingJobFormValues): Promise<JobItem> => {
     return axiosApi.post('/jobs', data);
+  },
+  ApplyJob: (data: any): Promise<any> => {
+    return axiosApi.post('/users-jobs', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+
+  // PATCH
+  updateJob: (id: string, data: Partial<JobItem>): Promise<JobItem> => {
+    return axiosApi.patch(`/jobs/${id}`, data);
   },
 };

@@ -1,6 +1,6 @@
 import { Spin } from 'antd';
 import classNames from 'classnames/bind';
-import { ReactNode, memo, useMemo } from 'react';
+import { ReactNode, memo } from 'react';
 
 import icons from '~/utils/icons';
 import styles from './Button.module.scss';
@@ -9,8 +9,14 @@ const { LoadingOutlined } = icons;
 
 type ButtonBorderType = 'solid' | 'dashed';
 type ButtonType = 'button' | 'submit' | 'reset';
-type DisplayType = 'error' | 'approve' | 'primary' | 'text' | 'dashed';
 type ButtonClickHandler = (event: React.MouseEvent<HTMLButtonElement>) => void;
+type DisplayType =
+  | 'outline'
+  | 'error'
+  | 'approve'
+  | 'primary'
+  | 'text'
+  | 'dashed';
 
 export interface IButtonProps {
   fill?: boolean;
@@ -50,27 +56,20 @@ const Button = ({
     [displayType]: displayType,
   });
 
-  const buttonState = useMemo(() => {
-    return {
-      loading: loading && displayType !== 'text',
-      disabled: (disabled || loading) && displayType !== 'text',
-    };
-  }, [loading, disabled]);
-
   return (
     <button
       type={type}
+      disabled={disabled || loading}
       className={classes}
-      disabled={buttonState.disabled}
       {...props}
     >
       <div className="flex items-center gap-3">
-        {buttonState.loading ? (
+        {loading && fill ? (
           <Spin indicator={<LoadingOutlined />} />
         ) : (
           iconBefore
         )}
-        <b className="w-max">{title}</b>
+        <span className="w-max">{title}</span>
         {iconAfter}
       </div>
     </button>

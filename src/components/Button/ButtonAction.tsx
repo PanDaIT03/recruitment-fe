@@ -1,14 +1,23 @@
 import { memo } from 'react';
 import Button, { IButtonProps } from './Button';
 import classNames from 'classnames';
+import { Tooltip } from 'antd';
 
-const ButtonAction = ({ title, className, ...props }: IButtonProps) => {
+interface IProps extends IButtonProps {
+  tooltipTitle?: string;
+}
+
+const ButtonAction = ({ title, tooltipTitle, className, ...props }: IProps) => {
   const customClasses = classNames(
     'px-3 py-2 border-none !rounded-[50%] hover:bg-button-color hover:opacity-100',
     className
   );
 
-  return <Button title={title} className={customClasses} {...props} />;
+  return (
+    <Tooltip title={tooltipTitle}>
+      <Button title={title} className={customClasses} {...props} />
+    </Tooltip>
+  );
 };
 
 export default memo(ButtonAction);

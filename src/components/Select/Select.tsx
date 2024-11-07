@@ -1,7 +1,10 @@
-import { Select as SelectAntd, SelectProps } from 'antd';
+import { ConfigProvider, Select as SelectAntd, SelectProps } from 'antd';
+import classNames from 'classnames';
 import { memo } from 'react';
 
-const Select = (props: SelectProps) => {
+const Select = ({ className, ...props }: SelectProps) => {
+  const customClass = classNames('h-10', className);
+
   const handleFilterOption = (input: any, option: any) => {
     if (typeof option?.label === 'number')
       return option.label.toString().includes(input);
@@ -28,14 +31,25 @@ const Select = (props: SelectProps) => {
   };
 
   return (
-    <SelectAntd
-      showSearch
-      size="middle"
-      optionFilterProp="children"
-      filterSort={handleFilterSort}
-      filterOption={handleFilterOption}
-      {...props}
-    />
+    <ConfigProvider
+      theme={{
+        components: {
+          Select: {
+            colorBgContainer: '#fafafa',
+          },
+        },
+      }}
+    >
+      <SelectAntd
+        showSearch
+        size="middle"
+        className={customClass}
+        optionFilterProp="children"
+        filterSort={handleFilterSort}
+        filterOption={handleFilterOption}
+        {...props}
+      />
+    </ConfigProvider>
   );
 };
 

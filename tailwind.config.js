@@ -89,12 +89,13 @@ export default {
       },
       textColor: {
         main: '#fff',
+        primary: '#f15224',
         sub: '#78726de6',
         accent: '#f15224',
         dark: '#0A0A0A',
-        warning: '#DC2626',
         blue: '#1677FF',
-        success: "#15803D",
+        warning: '#DC2626',
+        success: '#15803D',
       },
       backgroundColor: {
         main: '#f7f6f2',
@@ -106,8 +107,16 @@ export default {
         'bright-orange': '#F15224',
         'button-color': 'rgba(105, 31, 116, 0.1)',
       },
+      fill: {
+        dark: '#0A0A0A',
+        warning: '#DC2626',
+        'light-gray': '#FAFAFA',
+      },
       boxShadow: {
         select: '0 0 0 2px rgba(5, 145, 255, 0.1)',
+      },
+      screens: {
+        '812px': '812px',
       },
     },
   },

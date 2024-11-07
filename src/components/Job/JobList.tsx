@@ -1,22 +1,27 @@
-import { List } from 'antd';
+import { Divider, Drawer, Form, List, Radio } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
-import { BlockChain, PortFolio } from '~/assets/svg';
+import { Box, File, Location, Salary, Television } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
 import { getAllJobs } from '~/store/thunk/job';
 import {
   JobItem,
+  JobPlacement,
   PaginatedJobCategories,
   PaginatedJobFields,
   PaginatedWorkTypes,
 } from '~/types/Job';
+import icons from '~/utils/icons';
+import Button from '../Button/Button';
 import FormItem from '../Form/FormItem';
 import CustomSelect from '../Select/CustomSelect';
 import TopSearchBar from '../TopSearchBar/TopSearchBar';
 import JobCard from './JobCard';
+
+const { FilterOutlined } = icons;
 
 export interface IParams {
   page: number;
@@ -28,32 +33,48 @@ export interface IParams {
   placmentsId?: number;
   workTypesId?: number;
   title?: string;
+  salaryRange?: any;
 }
 
-const optionsExperience: DefaultOptionType[] = [
+const optionsSalary: DefaultOptionType[] = [
   {
     label: 'Tất cả mức lương',
     value: 'all',
   },
   {
-    label: 'Dưới 10 triệu',
-    value: 'less',
+    label: '1 - 10 triệu',
+    value: 'below10',
   },
   {
     label: '10 - 20 triệu',
-    value: 'less than 1 year',
+    value: '10to20',
   },
   {
-    label: '23 - 30 triệu ',
-    value: '1-3 year',
+    label: '20 - 30 triệu ',
+    value: '20to30',
+  },
+  {
+    label: 'Trên 30 triệu ',
+    value: 'adove30',
   },
 ];
 
 const JobListPage = () => {
+  const [form] = Form.useForm();
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
   const [filters, setFilters] = useState<
     Partial<Omit<IParams, 'page' | 'pageSize'>>
   >({});
+
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+
+  const showFilter = () => {
+    setIsFilterVisible(true);
+  };
+
+  const hideFilter = () => {
+    setIsFilterVisible(false);
+  };
 
   const { currentPage, itemsPerPage, handlePageChange } = usePagination<
     JobItem,
@@ -68,6 +89,8 @@ const JobListPage = () => {
     items: allJobs?.items,
     extraParams: filters,
   });
+
+  const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
 
   const { data: jobCategories } = useFetch<PaginatedJobCategories>(
     JobsAPI.getAllJobCategories
@@ -113,8 +136,37 @@ const JobListPage = () => {
   );
 
   const handleSearch = (values: IParams) => {
+    let salaryMin: number | undefined;
+    let salaryMax: number | undefined;
+
+    switch (values.salaryRange) {
+      case 'below10':
+        salaryMin = 1000000;
+        salaryMax = 10000000;
+        break;
+      case '10to20':
+        salaryMin = 10000000;
+        salaryMax = 20000000;
+        break;
+      case '20to30':
+        salaryMin = 20000000;
+        salaryMax = 30000000;
+        break;
+      case 'above30':
+        salaryMin = 30000000;
+        break;
+      default:
+        break;
+    }
+
+    const { salaryRange, ...valuesWithoutSalaryRange } = values;
+
     const cleanedFilters = Object.fromEntries(
-      Object.entries(values).filter(([_, value]) => value && value !== 'all')
+      Object.entries({
+        ...valuesWithoutSalaryRange,
+        salaryMin,
+        salaryMax,
+      }).filter(([_, value]) => value && value !== 'all')
     ) as Partial<IParams>;
 
     setFilters(cleanedFilters);
@@ -125,66 +177,178 @@ const JobListPage = () => {
     handleSearch(values);
   };
 
+  const handleFilterSubmit = () => {
+    form.validateFields().then((values) => {
+      handleSearch(values);
+    });
+  };
+
+  const resetFilters = () => {
+    form.resetFields();
+    setFilters({});
+    handlePageChange(1);
+  };
+
+  const FilterContent = () => (
+    <>
+      <Form.Item label="Địa điểm" layout="vertical">
+        <CustomSelect
+          allowClear
+          className="h-10"
+          placeholder="Chọn khu vực"
+          prefixIcon={<Location />}
+          configProvider={{
+            colorBgContainer: 'bg-light-gray',
+          }}
+          options={
+            placements?.items?.map((place) => ({
+              value: place?.id,
+              label: place?.title,
+            })) || []
+          }
+        />
+      </Form.Item>
+      <Form.Item label="Lĩnh vực" layout="vertical">
+        <CustomSelect
+          showSearch={false}
+          placeholder="Chọn lĩnh vực"
+          displayedType="text"
+          className="w-full h-full"
+          options={jobFieldsOptions}
+          prefixIcon={<Box />}
+        />
+      </Form.Item>
+      <Form.Item name="workTypesId" label="Hình thức làm việc">
+        <Radio.Group className="flex flex-col gap-4">
+          {workType?.items.map?.((type) => (
+            <Radio value={type.id} key={type.id}>
+              {type.title}
+            </Radio>
+          ))}
+        </Radio.Group>
+      </Form.Item>
+      <Form.Item name="categoriesId" label="Loại công việc">
+        <Radio.Group className="flex flex-col gap-4">
+          {jobCategories?.items.map?.((category) => (
+            <Radio value={category.id} key={category.id}>
+              {category.name}
+            </Radio>
+          ))}
+        </Radio.Group>
+      </Form.Item>
+      <Form.Item name="salaryRange" label="Tất cả mức lương">
+        <Radio.Group className="flex flex-col">
+          {optionsSalary.map((option) => (
+            <Radio key={option.value} value={option.value}>
+              {option.label}
+            </Radio>
+          ))}
+        </Radio.Group>
+      </Form.Item>
+      <Divider />
+      <div className="w-full flex gap-1">
+        <Button title="Hủy" onClick={resetFilters} className="w-full" />
+        <Button
+          title="Lọc"
+          onClick={handleFilterSubmit}
+          className="w-full"
+          fill
+        />
+      </div>
+    </>
+  );
+
   return (
     <div className="w-full">
-      <TopSearchBar
-        onSearch={handleFilterChange}
-        placeHolder="Vị trí công việc"
-      >
-        <FormItem
-          childrenSelected
-          name="workTypesId"
-          className="w-full h-10 max-w-56 mb-0"
+      <div className="lg:hidden my-4">
+        <Button
+          title="Lọc"
+          onClick={showFilter}
+          iconBefore={<FilterOutlined />}
+          className="w-full"
+        />
+        <Drawer
+          title="Bộ lọc"
+          placement="right"
+          onClose={hideFilter}
+          visible={isFilterVisible}
+          width="80%"
         >
-          <CustomSelect
-            showSearch={false}
-            displayedType="text"
-            className="w-full h-full"
-            options={workTypeOptions}
-            prefixIcon={<BlockChain className="w-5 h-5" />}
-          />
-        </FormItem>
-        <FormItem
-          childrenSelected
-          name="categoriesId"
-          className="w-full h-10 max-w-56 mb-0"
+          <Form form={form}>
+            <FilterContent />
+          </Form>
+        </Drawer>
+      </div>
+
+      <div className="hidden lg:block">
+        <TopSearchBar
+          onSearch={handleFilterChange}
+          placeHolder="Vị trí công việc/tên công ty"
         >
-          <CustomSelect
-            showSearch={false}
-            displayedType="text"
-            className="w-full h-full"
-            options={jobCategoriesOptions}
-            prefixIcon={<PortFolio className="w-5 h-5" />}
-          />
-        </FormItem>
-        <FormItem
-          childrenSelected
-          name="field"
-          className="w-full h-10 max-w-56 mb-0"
-        >
-          <CustomSelect
-            showSearch={false}
-            displayedType="text"
-            className="w-full h-full"
-            options={optionsExperience}
-            prefixIcon={<BlockChain className="w-5 h-5" />}
-          />
-        </FormItem>
-        <FormItem
-          childrenSelected
-          name="jobFieldsId"
-          className="w-full h-10 max-w-56 mb-0"
-        >
-          <CustomSelect
-            showSearch={false}
-            displayedType="text"
-            className="w-full h-full"
-            options={jobFieldsOptions}
-            prefixIcon={<BlockChain className="w-5 h-5" />}
-          />
-        </FormItem>
-      </TopSearchBar>
-      <div className="container mx-auto px-4">
+          <FormItem
+            childrenSelected
+            name="workTypesId"
+            className="w-full h-10 max-w-44 mb-0"
+          >
+            <CustomSelect
+              showSearch={false}
+              displayedType="text"
+              className="w-full h-full"
+              options={workTypeOptions}
+              prefixIcon={<Television />}
+            />
+          </FormItem>
+          <FormItem
+            childrenSelected
+            name="categoriesId"
+            className="w-full max-w-44 mb-0"
+          >
+            <CustomSelect
+              showSearch={false}
+              displayedType="text"
+              className="w-full h-full"
+              options={jobCategoriesOptions}
+              prefixIcon={<File />}
+            />
+          </FormItem>
+          <FormItem
+            childrenSelected
+            name="salaryRange"
+            className="w-full max-w-44 mb-0"
+          >
+            <CustomSelect
+              showSearch={false}
+              displayedType="text"
+              options={optionsSalary}
+              prefixIcon={<Salary />}
+              className="w-full h-full font-semibold"
+            />
+          </FormItem>
+          <FormItem
+            childrenSelected
+            name="jobFieldsId"
+            className="w-full max-w-44 mb-0"
+          >
+            <CustomSelect
+              showSearch={false}
+              displayedType="text"
+              className="w-full h-full"
+              options={jobFieldsOptions}
+              prefixIcon={<Box />}
+            />
+          </FormItem>
+        </TopSearchBar>
+      </div>
+
+      <div className="container mx-auto p-4">
+        <div>
+          <h2 className="text-base font-medium">Tin tuyển dụng</h2>
+          <div className="text-sm text-sub">
+            Tìm thấy
+            <strong className="text-primary"> {allJobs?.items?.length} </strong>
+            tin tuyển dụng
+          </div>
+        </div>
         <List
           loading={loading}
           itemLayout="vertical"

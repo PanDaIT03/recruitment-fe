@@ -7,12 +7,24 @@ html {
 }
 
 :root {
-  --header-bgColor: rgba(105 31 116 / 1);
+  --header-bgColor: #691f74;
+
+  --button-bg-hover-color: #fcebe6;
+  --button-border-color: #f15224;
 
   --button-primary-bg: #f15224;
   --button-primary-color: #f15224;
   --button-primary-bgHover: #d94a20;
-  --button-primary-border-color: #f15224;
+
+  --button-outline-bg: white;
+  --button-outline-bgHover: #d94a20;
+  --button-outline-color: #252325;
+  --button-outline-border-color: #d1d5db;
+
+  --select-bg-primary: #fafafa;
+  --select-bg-hover: #4096ff;
+  --select-border-color-primary: #4096ff;
+  --select-box-shadow-primary: 0 0 0 2px rgba(5, 145, 255, 0.1);
 }
 
 :root {
@@ -22,4 +34,42 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9) a:active {
+  color: #f15224;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9) a:hover {
+  color: #f15224;
+}
+:where(.css-dev-only-do-not-override-5wsri9).ant-pagination
+  .ant-pagination-item-active {
+  font-weight: 600;
+  background-color: #ffffff;
+  border-color: #f15224;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-pagination
+  .ant-pagination-item-active
+  a {
+  color: #f15224;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-btn-variant-solid {
+  color: #fff;
+  background: #f15224;
+}
+:where(.css-dev-only-do-not-override-5wsri9).ant-btn-variant-solid:not(
+    :disabled
+  ):not(.ant-btn-disabled):hover {
+  background: #f15224;
+  color: #fff;
+}
+
+:where(.css-dev-only-do-not-override-5wsri9).ant-radio-wrapper
+  .ant-radio-checked
+  .ant-radio-inner {
+  border-color: #f15224;
+  background-color: #f15224;
 }

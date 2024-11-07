@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getAllJobs, getJobById } from '~/store/thunk/job';
-import { IJob } from '~/types/Job';
+import { IJob, JobItem } from '~/types/Job';
 
 export interface JobState {
   loading: boolean;
   allJobs: IJob | null;
   error: string | null;
-  currentJob: IJob['items'] | null;
+  currentJob: JobItem | null;
 }
 
 const initialState: JobState = {
@@ -41,7 +41,7 @@ const jobSlice = createSlice({
       })
       .addCase(
         getJobById.fulfilled,
-        (state, action: PayloadAction<IJob['items']>) => {
+        (state, action: PayloadAction<JobItem>) => {
           state.loading = false;
           state.currentJob = action.payload;
         }

@@ -1,8 +1,13 @@
-import { Col, Row } from 'antd';
-import { memo } from 'react';
+import { MenuOutlined } from '@ant-design/icons';
+import { googleLogout } from '@react-oauth/google';
+import { Col, Divider, Image, Modal, Row } from 'antd';
+import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { USER_AVATAR } from '~/assets/img';
 import { HeaderLogo } from '~/assets/svg';
+import Button from '~/components/Button/Button';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { signOut } from '~/store/thunk/auth';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
 
@@ -37,16 +42,37 @@ const menuItems: IMenuItems[] = [
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { currentUser } = useAppSelector((state) => state.auth);
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleOkModal = useCallback(() => {
+    googleLogout();
+
+    dispatch(signOut()).then(() => {
+      setIsOpen(false);
+      navigate(PATH.ROOT);
+    });
+  }, []);
 
   return (
     <div className="sticky bg-secondary px-8 left-0 top-0 z-40">
-      <Row align={'middle'} justify={'space-between'} className="h-16 mx-12">
-        <Col className="flex justify-between gap-x-12">
+      <Row
+        align={'middle'}
+        justify={'space-between'}
+        className="h-16 mx-12 flex-wrap md:flex-nowrap"
+      >
+        <Col className="hidden md:flex justify-between gap-x-12 w-full md:w-auto">
           <HeaderLogo
             className="max-w-[139px] h-full object-cover cursor-pointer"
             onClick={() => navigate(PATH.ROOT)}
           />
-          <div className="flex text-main text-sm gap-x-4">
+          <div className="hidden md:flex text-main text-sm gap-x-4">
             {menuItems.map((item, index) => (
               <Link
                 key={index}
@@ -58,10 +84,69 @@ const Header = () => {
             ))}
           </div>
         </Col>
-        <HeaderDropDown />
+
+        <Col className="md:hidden flex justify-between items-center w-full">
+          <MenuOutlined
+            className="text-main text-xl"
+            onClick={() => setIsOpen(!isOpen)}
+          />
+          <Modal
+            open={isOpen}
+            onCancel={handleCloseModal}
+            footer={null}
+            closable={false}
+            className="w-full max-w-xs mx-auto"
+          >
+            <div className="flex gap-2">
+              <Image
+                width={40}
+                height={40}
+                preview={false}
+                src={USER_AVATAR}
+                className="border border-white rounded-[50%] select-none"
+              />
+              <div className="flex flex-col">
+                <h1 className="font-semibold">{currentUser.fullName}</h1>
+                <span className="text-sm text-gray-600">
+                  {currentUser.email}
+                </span>
+              </div>
+            </div>
+            <Divider />
+            <div className="flex flex-col items-center mt-4 ">
+              {menuItems.map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.href}
+                  className={`w-full block p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main ${item.active ? 'bg-header-active' : ''}`}
+                  onClick={handleCloseModal}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+            <Divider />
+            <div className="flex flex-col gap-2">
+              <Button
+                title="Đăng xuất"
+                onClick={handleOkModal}
+                fill
+                className="w-full"
+              />
+              <Button
+                title="Đóng"
+                onClick={handleCloseModal}
+                className="w-full"
+              />
+            </div>
+          </Modal>
+        </Col>
+        <div className="hidden md:block">
+          <HeaderDropDown setIsOpen={setIsOpen} />
+        </div>
       </Row>
     </div>
   );
 };
 
-export default memo(Header);
+export default Header;
