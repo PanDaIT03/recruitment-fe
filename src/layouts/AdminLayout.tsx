@@ -1,12 +1,15 @@
 // layouts/AdminLayout.tsx
 import { BellOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Badge, Dropdown, Layout, Menu } from 'antd';
+import { Avatar, Badge, Button, Dropdown, Layout, Menu } from 'antd';
 import React, { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
+
+const { MenuUnfoldOutlined, MenuFoldOutlined } = icons;
 
 const AdminLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -31,6 +34,8 @@ const AdminLayout: React.FC = () => {
         collapsed={collapsed}
         onCollapse={toggleCollapsed}
         theme="light"
+        width={250}
+        trigger={null}
       >
         <div className="p-4 text-center">LOGO</div>
         <Menu theme="light" mode="inline">
@@ -60,7 +65,17 @@ const AdminLayout: React.FC = () => {
         </Menu>
       </Sider>
       <Layout>
-        <Header className="bg-white px-4 shadow-md">
+        <Header className="flex items-center justify-between bg-white px-4 shadow-md">
+          <div>
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: '16px',
+              }}
+            />
+          </div>
           <div className="flex items-center justify-end mt-2 gap-4">
             <Badge count={5}>
               <BellOutlined style={{ fontSize: '18px' }} />

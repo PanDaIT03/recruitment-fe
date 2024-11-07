@@ -54,6 +54,8 @@ import {
   CreditCardOutlined,
   PhoneOutlined,
   WalletOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -112,6 +114,8 @@ const icons = {
   CreditCardOutlined,
   PhoneOutlined,
   WalletOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 };
 
 export default icons;
