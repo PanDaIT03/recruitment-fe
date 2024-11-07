@@ -15,7 +15,7 @@ const { EditOutlined, CloseOutlined, QuestionCircleOutlined } = icons;
 
 const ProfileCard = ({ imgUrl, content, onEdit, onDelete }: IProps) => {
   return (
-    <Flex gap={24}>
+    <Flex className="gap-x-4 gap-y-2 max-md:flex-col">
       {imgUrl && (
         <Image
           width={64}
