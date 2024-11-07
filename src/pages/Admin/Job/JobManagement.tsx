@@ -1,8 +1,9 @@
 import { Space, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
-import { JobsAPI } from '~/apis/job';
+import { IPaginationParms, JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
+import { IParams } from '~/components/Job/JobList';
 import { useFetch } from '~/hooks/useFetch';
 import { IJob } from '~/types/Job';
 import icons from '~/utils/icons';
@@ -10,7 +11,13 @@ import icons from '~/utils/icons';
 const { EyeOutlined } = icons;
 
 const JobManagement: React.FC = () => {
-  const { data: allJobs } = useFetch<IJob>(JobsAPI.getAllJobs);
+  const fetchAllJobs = (params?: IPaginationParms & Partial<IParams>) => {
+    return JobsAPI.getAllJobs(params || { page: 1, pageSize: 10 });
+  };
+
+  const { data: allJobs } = useFetch<IJob, IPaginationParms & Partial<IParams>>(
+    fetchAllJobs
+  );
 
   const currentPage = allJobs?.pageInfo?.currentPage || 1;
   const pageSize = allJobs?.pageInfo?.itemsPerPage || 10;
