@@ -8,9 +8,9 @@ type FetchState<T> = {
 
 type FetchFunction<T, P = void> = (params?: P) => Promise<T>;
 
-export const useFetch = <T, P = undefined>(
-  fetchFunction: FetchFunction<T, P>, // Allow params to be optional
-  initialParams?: P, // Params are optional
+export const useFetch = <T, P = void>(
+  fetchFunction: FetchFunction<T, P>,
+  initialParams?: P,
   dependencies: any[] = []
 ) => {
   const [state, setState] = useState<FetchState<T>>({
