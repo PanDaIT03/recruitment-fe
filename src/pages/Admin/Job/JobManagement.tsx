@@ -1,10 +1,13 @@
-import { Popconfirm, Space, Table } from 'antd';
+import { Space, Table, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
 import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
 import { useFetch } from '~/hooks/useFetch';
 import { IJob } from '~/types/Job';
+import icons from '~/utils/icons';
+
+const { EyeOutlined } = icons;
 
 const JobManagement: React.FC = () => {
   const { data: allJobs } = useFetch<IJob>(JobsAPI.getAllJobs);
@@ -51,17 +54,17 @@ const JobManagement: React.FC = () => {
       dataIndex: 'createAt',
       render: (value: string) => dayjs(value).format('DD/MM/YYYY HH:MM'),
     },
-    // {
-    //   title: 'Hành động',
-    //   key: 'actions',
-    //   render: () => (
-    //     <Space>
-    //       <Popconfirm title="Are you sure to delete?">
-    //         <Button title="Delete" fill />
-    //       </Popconfirm>
-    //     </Space>
-    //   ),
-    // },
+    {
+      title: 'Hành động',
+      key: 'actions',
+      render: () => (
+        <Space>
+          <Tooltip title="Xem chi tiết">
+            <Button title={<EyeOutlined />} fill />
+          </Tooltip>
+        </Space>
+      ),
+    },
   ];
 
   return (

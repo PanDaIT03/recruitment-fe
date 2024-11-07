@@ -116,7 +116,6 @@ const JobDetail: React.FC = () => {
                 className="mb-2 sm:mb-0"
                 title="Chia sẻ"
               />
-
               <Button
                 fill
                 className="w-full sm:w-auto"
@@ -125,14 +124,13 @@ const JobDetail: React.FC = () => {
               />
             </div>
           </div>
-          <Card className="shadow-md">
+          <Card className="shadow-md w-full">
             <h3 className="text-xl font-bold mb-4 border-b pb-2">
               Chi tiết tin tuyển dụng
             </h3>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6 bg-purple-100 rounded-md p-4">
-              <div className="flex items-center">
-                <EnvironmentOutlined className="text-2xl mr-2 text-purple-600" />
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6 bg-purple-100 rounded-md p-4">
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <EnvironmentOutlined className="text-2xl mb-1 md:mb-0 md:mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Địa điểm</p>
                   <p className="font-medium">
@@ -142,8 +140,8 @@ const JobDetail: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center">
-                <DollarCircleOutlined className="text-2xl mr-2 text-purple-600" />
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <DollarCircleOutlined className="text-2xl mb-1 md:mb-0 md:mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Mức lương</p>
                   <p className="font-medium">
@@ -153,22 +151,22 @@ const JobDetail: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center">
-                <LaptopOutlined className="text-2xl mr-2 text-purple-600" />
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <LaptopOutlined className="text-2xl mb-1 md:mb-0 md:mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Hình thức làm việc</p>
                   <p className="font-medium">{currentJob?.workType?.title}</p>
                 </div>
               </div>
-              <div className="flex items-center">
-                <ClockCircleOutlined className="text-2xl mr-2 text-purple-600" />
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <ClockCircleOutlined className="text-2xl mb-1 md:mb-0 md:mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Loại công việc</p>
                   <p className="font-medium">{currentJob?.jobCategory?.name}</p>
                 </div>
               </div>
-              <div className="flex items-center">
-                <AppstoreOutlined className="text-2xl mr-2 text-purple-600" />
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <AppstoreOutlined className="text-2xl mb-1 md:mb-0 md:mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Kinh nghiệm</p>
                   <p className="font-medium">
@@ -179,14 +177,15 @@ const JobDetail: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center">
-                <TeamOutlined className="text-2xl mr-2 text-purple-600" />
+              <div className="flex flex-col md:flex-row items-start md:items-center">
+                <TeamOutlined className="text-2xl mb-1 md:mb-0 md:mr-2 text-purple-600" />
                 <div>
                   <p className="text-sm text-gray-500">Số lượng</p>
                   <p className="font-medium">{currentJob?.quantity}</p>
                 </div>
               </div>
             </div>
+
             <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
               <InfoCircleOutlined className="text-blue-500 mr-2" />
               <span className="text-blue-700">
@@ -194,7 +193,6 @@ const JobDetail: React.FC = () => {
               </span>
             </div>
             <Divider />
-
             <section className="mb-6">
               <h2 className="text-xl font-bold mb-2">Mô tả công việc</h2>
               <ul
@@ -202,21 +200,15 @@ const JobDetail: React.FC = () => {
                 dangerouslySetInnerHTML={{ __html: currentJob?.description }}
               />
             </section>
-
             <Divider />
-
             <section className="mb-6">
               <h2 className="text-xl font-bold mb-2">Yêu cầu công việc</h2>
               <ul
                 className="list-disc pl-5 space-y-2"
-                dangerouslySetInnerHTML={{
-                  __html: currentJob?.requirements,
-                }}
+                dangerouslySetInnerHTML={{ __html: currentJob?.requirements }}
               />
             </section>
-
             <Divider />
-
             <section>
               <h2 className="text-xl font-bold mb-2">Quyền lợi</h2>
               <ul
@@ -235,7 +227,7 @@ const JobDetail: React.FC = () => {
           onClick={handleIsOpenModal}
         />
         <Col xs={24} md={8} className="hidden md:block">
-          <Card className="shadow-md " ref={rightColRef}>
+          <Card className="shadow-md w-full" ref={rightColRef}>
             <h2 className="text-lg font-semibold mb-4">
               {currentJob?.user?.fullName}
             </h2>
@@ -297,6 +289,7 @@ const JobDetail: React.FC = () => {
         footer={null}
         closeIcon={false}
         onCancel={() => setIsOpenModal(false)}
+        className="w-full max-w-lg"
       >
         <JobApplicationModal
           jobTitle={currentJob?.title || ''}
@@ -304,7 +297,6 @@ const JobDetail: React.FC = () => {
           handleToggleModal={() => setIsOpenModal(false)}
         />
       </Modal>
-
       <Modal
         open={isLoginModalVisible}
         footer={false}
