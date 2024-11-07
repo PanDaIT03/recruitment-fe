@@ -32,7 +32,10 @@ const TopSearchBar: React.FC<IProps> = ({
 }) => {
   const [form] = useForm();
 
-  const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
+  const { data: placements } = useFetch<JobPlacement, {}>(
+    JobsAPI.getAllPlacements,
+    {}
+  );
 
   const handleFinish = (values: any) => {
     onSearch(values);

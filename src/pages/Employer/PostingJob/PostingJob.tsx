@@ -61,20 +61,25 @@ const PostingJob: React.FC = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems);
 
-  const { data: jobPositions } = useFetch<PaginatedJobPositions>(
-    JobsAPI.getAllJobPositions
+  const { data: jobPositions } = useFetch<PaginatedJobPositions, {}>(
+    JobsAPI.getAllJobPositions,
+    {}
   );
-  const { data: jobCategories } = useFetch<PaginatedJobCategories>(
-    JobsAPI.getAllJobCategories
+  const { data: jobCategories } = useFetch<PaginatedJobCategories, {}>(
+    JobsAPI.getAllJobCategories,
+    {}
   );
-  const { data: workType } = useFetch<PaginatedWorkTypes>(
-    JobsAPI.getAllWorkTypes
+  const { data: workType } = useFetch<PaginatedWorkTypes, {}>(
+    JobsAPI.getAllWorkTypes,
+    {}
   );
-  const { data: jobPlacements } = useFetch<JobPlacement>(
-    JobsAPI.getAllPlacements
+  const { data: jobPlacements } = useFetch<JobPlacement, {}>(
+    JobsAPI.getAllPlacements,
+    {}
   );
-  const { data: jobFields } = useFetch<PaginatedJobFields>(
-    JobsAPI.getAllJobFields
+  const { data: jobFields } = useFetch<PaginatedJobFields, {}>(
+    JobsAPI.getAllJobFields,
+    {}
   );
 
   const cleanFormValues = (values: any) => {

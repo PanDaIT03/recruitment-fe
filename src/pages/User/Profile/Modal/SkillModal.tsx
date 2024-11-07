@@ -8,12 +8,12 @@ import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
 import useMessageApi from '~/hooks/useMessageApi';
-import { UserSkill } from '~/types/User';
+import { IUserSkill } from '~/types/User/profile';
 import ProfileModal from './ProfileModal';
 
 interface IProps {
   isOpen: boolean;
-  data: UserSkill;
+  data: IUserSkill;
   refetch: () => void;
   onCancel: () => void;
 }
@@ -29,7 +29,7 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const [skillOptions, setSkillOptions] = useState<DefaultOptionType[]>([]);
 
-  const { data: skillComboBox } = useFetch(UserApi.getAllSkill);
+  const { data: skillComboBox } = useFetch(UserApi.getAllSkill, {});
 
   const { mutate: createUserSkill, isPending: isCreatePending } = useMessageApi(
     {
@@ -63,7 +63,7 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   };
 
   useEffect(() => {
-    if (!Object.keys(data).length) {
+    if (!data) {
       setIsEdit(false);
       return;
     }

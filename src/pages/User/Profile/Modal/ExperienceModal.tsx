@@ -20,16 +20,16 @@ import {
 import {
   IUserProfileData,
   IUserProfileForm,
-  WorkExperience,
-} from '~/types/User';
+  IWorkExperience,
+} from '~/types/User/profile';
 import icons from '~/utils/icons';
 import ProfileModal from './ProfileModal';
 
 interface IProps {
   isOpen: boolean;
-  data: WorkExperience;
-  refetch: () => void;
+  data: IWorkExperience;
   onCancel: () => void;
+  refetch: () => void;
 }
 
 const { BankOutlined } = icons;
@@ -40,28 +40,30 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const [isChecked, setIsChecked] = useState(true);
 
-  const { data: placements } = useFetch<JobPlacement>(JobsAPI.getAllPlacements);
-  const { data: jobPositions } = useFetch<PaginatedJobPositions>(
-    JobsAPI.getAllJobPositions
+  const { data: placements } = useFetch<JobPlacement, {}>(
+    JobsAPI.getAllPlacements,
+    {}
   );
-  const { data: jobCategories } = useFetch<PaginatedJobCategories>(
-    JobsAPI.getAllJobCategories
+  const { data: jobPositions } = useFetch<PaginatedJobPositions, {}>(
+    JobsAPI.getAllJobPositions,
+    {}
+  );
+  const { data: jobCategories } = useFetch<PaginatedJobCategories, {}>(
+    JobsAPI.getAllJobCategories,
+    {}
   );
 
   const { mutate: createWorkExperience, isPending: isCreateWorkPending } =
     useMessageApi({
       apiFn: (params: IUserProfileData) => UserApi.createWorkExperience(params),
-      onSuccess: () => {
-        refetch();
-      },
+      onSuccess: () => refetch(),
     });
 
   const { mutate: updateWorkExperience } = useMessageApi({
     apiFn: (params: IUpdateWorkExperience) =>
       UserApi.updateWorkExperience(params),
-    onSuccess: () => {
-      refetch();
-    },
+    onSuccess: () => refetch(),
+    onError: (error) => console.log(error),
   });
 
   const handleCancel = () => {
@@ -93,24 +95,26 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   };
 
   useEffect(() => {
-    if (Object.keys(data).length) {
-      setIsEdit(true);
+    if (!data) {
+      setIsEdit(false);
+      return;
+    }
 
-      const workingTime = data.endDate
-        ? [dayjs(data.startDate), dayjs(data.endDate)]
-        : dayjs(data.startDate);
+    const workingTime = data.endDate
+      ? [dayjs(data.startDate), dayjs(data.endDate)]
+      : dayjs(data.startDate);
 
-      const fieldsValue: IUserProfileForm = {
-        companyName: data.companyName,
-        positionId: data.jobPosition.id,
-        jobCategoriesId: data.jobCategory.id,
-        workingTime: workingTime,
-        placementsId: data.placement.id,
-        description: data.description,
-      };
+    const fieldsValue: IUserProfileForm = {
+      companyName: data.companyName,
+      positionId: data.jobPosition.id,
+      jobCategoriesId: data.jobCategory.id,
+      workingTime: workingTime,
+      placementsId: data.placement.id,
+      description: data.description,
+    };
 
-      form.setFieldsValue(fieldsValue);
-    } else setIsEdit(false);
+    setIsEdit(true);
+    form.setFieldsValue(fieldsValue);
   }, [data]);
 
   return (

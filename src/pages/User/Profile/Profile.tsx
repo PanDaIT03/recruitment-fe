@@ -1,15 +1,21 @@
 import { Divider } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import UserApi from '~/apis/user';
 import { BriefCase, LanguageCenter, MagicHat, Summary } from '~/assets/img';
 import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import useMessageApi from '~/hooks/useMessageApi';
+import { useAppSelector } from '~/hooks/useStore';
 import ProfileSection, {
   IProfileSection,
   ProfileSectionType,
 } from '~/pages/User/Profile/ProfileSection';
-import { getUserProfile } from '~/store/thunk/user';
-import { UserLanguage, UserSkill, WorkExperience } from '~/types/User';
+import {
+  IAchievement,
+  IForeignLanguage,
+  IUserSkill,
+  IWorkExperience,
+} from '~/types/User/profile';
 import icons from '~/utils/icons';
 import ExperienceCard from './Card/ExperienceCard';
 import LanguageCard from './Card/LanguageCard';
@@ -18,205 +24,240 @@ import AchievementModal from './Modal/AchievementModal';
 import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
-import toast from '~/utils/functions/toast';
 
 const { PlusOutlined, EditOutlined } = icons;
 
-const initExperience = {} as WorkExperience;
-const initLanguage = {} as UserLanguage;
-const initSkill = {} as UserSkill;
+const initSkill = [] as IUserSkill[];
+const initAchievement = {} as IAchievement;
+const initLanguage = [] as IForeignLanguage[];
+const initExperience = [] as IWorkExperience[];
 
 const Profile = () => {
-  const dispatch = useAppDispatch();
+  const { currentUser } = useAppSelector((state) => state.auth);
 
+  const [editIndex, setEditIndex] = useState<number>(-1);
   const [selectedItem, setSelectedItem] = useState('');
 
-  const [experienceItemSelected, setExperienceItemSelected] =
-    useState<WorkExperience>(initExperience);
-  const [languageItemSelected, setLanguageItemSelected] =
-    useState<UserLanguage>(initLanguage);
-  const [skillItemSelected, setSkillItemSelected] =
-    useState<UserSkill>(initSkill);
+  const [userSkills, setUserSkills] = useState<IUserSkill[]>(initSkill);
+  const [achievement, setAchievement] = useState<IAchievement>(initAchievement);
+  const [workExperiences, setWorkExperiences] =
+    useState<IWorkExperience[]>(initExperience);
+  const [foreignLanguages, setForeignLanguages] =
+    useState<IForeignLanguage[]>(initLanguage);
 
-  const { currentUser } = useAppSelector((state) => state.auth);
-  const { userProfile, loading } = useAppSelector((state) => state.user);
-
-  const refetchUserProfile = useCallback(() => {
-    const accessToken = localStorage.getItem('token1');
-    const refreshToken = localStorage.getItem('token2');
-
-    if (!accessToken || !refreshToken) {
-      toast.error('Lỗi không tìm thấy token');
-      return;
-    }
-
-    dispatch(getUserProfile({ accessToken, refreshToken }));
-  }, [currentUser]);
-
-  const handleEditExperience = useCallback((values: WorkExperience) => {
-    setExperienceItemSelected(values);
-    setSelectedItem(ProfileSectionType.EXPERIENCE);
-  }, []);
-
-  const handleCancelExperience = useCallback(() => {
-    setSelectedItem('');
-    setExperienceItemSelected(initExperience);
-  }, []);
-
-  const handleEditLanguage = useCallback((values: UserLanguage) => {
-    setLanguageItemSelected(values);
-    setSelectedItem(ProfileSectionType.LANGUAGE);
-  }, []);
-
-  const handleCancelLanguage = useCallback(() => {
-    setSelectedItem('');
-    setLanguageItemSelected(initLanguage);
-  }, []);
-
-  const handleEditSkill = useCallback((values: UserSkill) => {
-    setSkillItemSelected(values);
-    setSelectedItem(ProfileSectionType.SKILL);
-  }, []);
-
-  const handleCancelSkill = useCallback(() => {
-    setSelectedItem('');
-    setSkillItemSelected(initSkill);
-  }, []);
-
-  const items: IProfileSection[] = useMemo(
-    () => [
-      {
-        id: ProfileSectionType.ACHIEVEMENT,
-        imgUrl: Summary,
-        header: {
-          title: 'Thành tích / Kỹ năng nổi bật',
-          suffixIcon: (
-            <Achievement width={20} height={20} className="font-bold" />
-          ),
-        },
-        buttonTitle: 'Cập nhật tóm tắt',
-        hint: 'Tóm tắt về thành tích / kỹ năng nổi bật giúp hồ sơ của bạn tăng 3.9 lần lượt tiếp cận từ nhà tuyển dụng.',
-        tooltipTitle: 'Cập nhật',
-        buttonActionTitle: (
-          <EditOutlined className="text-[#691f74] cursor-pointer" />
-        ),
-        content: userProfile?.achivement?.description && (
-          <div
-            className="text-sm font-medium"
-            dangerouslySetInnerHTML={{
-              __html: userProfile.achivement.description,
-            }}
-          />
-        ),
+  const { mutate: getAchievementByUserId, isPending: getAchievementPending } =
+    useMessageApi({
+      showProcessMessage: false,
+      apiFn: (id: number) => UserApi.getAchievementByUserId(id),
+      onSuccess: (res) => {
+        setAchievement(res);
       },
-      {
-        id: ProfileSectionType.EXPERIENCE,
-        imgUrl: BriefCase,
-        header: {
-          title: 'Kinh nghiệm',
-          suffixIcon: <Bag width={20} height={20} className="font-bold" />,
-        },
-        buttonTitle: 'Thêm kinh nghiệm',
-        hint: 'Thêm kinh nghiệm làm việc để giúp nhà tuyển dụng hiểu hơn về bạn',
-        tooltipTitle: 'Thêm kinh nghiệm',
-        buttonActionTitle: (
-          <PlusOutlined className="text-[#691f74] cursor-pointer" />
-        ),
-        content: userProfile.workExperiences?.length && (
-          <ExperienceCard
-            data={userProfile.workExperiences}
-            refetch={refetchUserProfile}
-            onEdit={handleEditExperience}
-          />
-        ),
+    });
+
+  const { mutate: getLanguageByUserId, isPending: getLanguagePending } =
+    useMessageApi({
+      showProcessMessage: false,
+      apiFn: (id: number) => UserApi.getLanguageByUserId(id),
+      onSuccess: (res) => {
+        const items = res?.items;
+        setForeignLanguages(items);
       },
-      {
-        id: ProfileSectionType.LANGUAGE,
-        imgUrl: LanguageCenter,
-        header: {
-          title: 'Ngoại ngữ',
-          suffixIcon: <Language width={20} height={20} className="font-bold" />,
-        },
-        tooltipTitle: 'Thêm ngoại ngữ',
-        buttonTitle: 'Thêm ngoại ngữ',
-        hint: 'Bạn biết những ngoại ngữ nào? Hãy thêm vào để tăng độ "hot" cho hồ sơ nhé.',
-        buttonActionTitle: (
-          <PlusOutlined className="text-[#691f74] cursor-pointer" />
-        ),
-        content: userProfile.userLanguages?.length && (
-          <LanguageCard
-            data={userProfile.userLanguages}
-            refetch={refetchUserProfile}
-            onEdit={handleEditLanguage}
-          />
-        ),
+    });
+
+  const { mutate: getUserSkillByUserId, isPending: getUserSkillPending } =
+    useMessageApi({
+      showProcessMessage: false,
+      apiFn: (id: number) => UserApi.getUserSkillByUserId(id),
+      onSuccess: (res) => {
+        const items = res?.items;
+        setUserSkills(items);
       },
-      {
-        id: ProfileSectionType.SKILL,
-        imgUrl: MagicHat,
-        header: {
-          title: 'Kỹ năng / Công cụ',
-          suffixIcon: (
-            <PencilSkill width={20} height={20} className="font-bold" />
-          ),
-        },
-        tooltipTitle: 'Thêm kỹ năng',
-        buttonTitle: 'Thêm kỹ năng',
-        hint: 'Kỹ năng / công cụ giúp bạn nổi bật hơn trong mắt nhà tuyển dụng.',
-        buttonActionTitle: (
-          <PlusOutlined className="text-[#691f74] cursor-pointer" />
-        ),
-        content: userProfile.userSkills?.length && (
-          <SkillCard
-            data={userProfile.userSkills}
-            refetch={refetchUserProfile}
-            onEdit={handleEditSkill}
-          />
-        ),
+    });
+
+  const { mutate: getWorkExperienceByUserId, isPending: getExperiencePending } =
+    useMessageApi({
+      showProcessMessage: false,
+      apiFn: (id: number) => UserApi.getWorkExperienceByUserId(id),
+      onSuccess: (res) => {
+        const items = res?.items;
+        setWorkExperiences(items);
       },
-    ],
-    [userProfile]
-  );
+    });
 
   useEffect(() => {
-    refetchUserProfile();
+    const id = currentUser.id;
+
+    getLanguageByUserId(id);
+    getUserSkillByUserId(id);
+    getAchievementByUserId(id);
+    getWorkExperienceByUserId(id);
+  }, [currentUser]);
+
+  const handleEditItem = useCallback(
+    (index: number, sectionType: ProfileSectionType) => {
+      setEditIndex(index);
+      setSelectedItem(sectionType);
+    },
+    []
+  );
+
+  const handleCancelEdit = useCallback(() => {
+    setEditIndex(-1);
+    setSelectedItem('');
   }, []);
+
+  const achievementSection: IProfileSection = useMemo(
+    () => ({
+      imgUrl: Summary,
+      header: {
+        title: 'Thành tích / Kỹ năng nổi bật',
+        suffixIcon: (
+          <Achievement width={20} height={20} className="font-bold" />
+        ),
+      },
+      buttonTitle: 'Cập nhật tóm tắt',
+      hint: 'Tóm tắt về thành tích / kỹ năng nổi bật giúp hồ sơ của bạn tăng 3.9 lần lượt tiếp cận từ nhà tuyển dụng.',
+      tooltipTitle: 'Cập nhật',
+      buttonActionTitle: (
+        <EditOutlined className="text-[#691f74] cursor-pointer" />
+      ),
+      content: achievement?.description && (
+        <div
+          className="text-sm font-medium"
+          dangerouslySetInnerHTML={{
+            __html: achievement.description,
+          }}
+        />
+      ),
+    }),
+    [achievement]
+  );
+
+  const workExperienceSection: IProfileSection = useMemo(
+    () => ({
+      imgUrl: BriefCase,
+      header: {
+        title: 'Kinh nghiệm',
+        suffixIcon: <Bag width={20} height={20} className="font-bold" />,
+      },
+      buttonTitle: 'Thêm kinh nghiệm',
+      hint: 'Thêm kinh nghiệm làm việc để giúp nhà tuyển dụng hiểu hơn về bạn',
+      tooltipTitle: 'Thêm kinh nghiệm',
+      buttonActionTitle: (
+        <PlusOutlined className="text-[#691f74] cursor-pointer" />
+      ),
+      content: workExperiences?.length && (
+        <ExperienceCard
+          data={workExperiences}
+          onEdit={handleEditItem}
+          refetch={() => getWorkExperienceByUserId(currentUser.id)}
+        />
+      ),
+    }),
+    [workExperiences, currentUser]
+  );
+
+  const foreignLanguageSection = useMemo(
+    () => ({
+      id: ProfileSectionType.LANGUAGE,
+      imgUrl: LanguageCenter,
+      header: {
+        title: 'Ngoại ngữ',
+        suffixIcon: <Language width={20} height={20} className="font-bold" />,
+      },
+      tooltipTitle: 'Thêm ngoại ngữ',
+      buttonTitle: 'Thêm ngoại ngữ',
+      hint: 'Bạn biết những ngoại ngữ nào? Hãy thêm vào để tăng độ "hot" cho hồ sơ nhé.',
+      buttonActionTitle: (
+        <PlusOutlined className="text-[#691f74] cursor-pointer" />
+      ),
+      content: foreignLanguages?.length && (
+        <LanguageCard
+          data={foreignLanguages}
+          onEdit={handleEditItem}
+          refetch={() => getLanguageByUserId(currentUser.id)}
+        />
+      ),
+    }),
+    [foreignLanguages, currentUser]
+  );
+
+  const userSkillSection = useMemo(
+    () => ({
+      id: ProfileSectionType.SKILL,
+      imgUrl: MagicHat,
+      header: {
+        title: 'Kỹ năng / Công cụ',
+        suffixIcon: (
+          <PencilSkill width={20} height={20} className="font-bold" />
+        ),
+      },
+      tooltipTitle: 'Thêm kỹ năng',
+      buttonTitle: 'Thêm kỹ năng',
+      hint: 'Kỹ năng / công cụ giúp bạn nổi bật hơn trong mắt nhà tuyển dụng.',
+      buttonActionTitle: (
+        <PlusOutlined className="text-[#691f74] cursor-pointer" />
+      ),
+      content: userSkills?.length && (
+        <SkillCard
+          data={userSkills}
+          onEdit={handleEditItem}
+          refetch={() => getUserSkillByUserId(currentUser.id)}
+        />
+      ),
+    }),
+    [userSkills, currentUser]
+  );
 
   return (
     <>
-      {items.map((item, index) => (
-        <div key={index}>
-          <ProfileSection
-            {...item}
-            loading={loading}
-            onClick={() => setSelectedItem(item.id)}
-          />
-          {index !== items.length - 1 && <Divider />}
-        </div>
-      ))}
+      <ProfileSection
+        {...achievementSection}
+        loading={getAchievementPending}
+        onClick={() => setSelectedItem(ProfileSectionType.ACHIEVEMENT)}
+      />
+      <Divider />
+      <ProfileSection
+        {...workExperienceSection}
+        loading={getExperiencePending}
+        onClick={() => setSelectedItem(ProfileSectionType.EXPERIENCE)}
+      />
+      <Divider />
+      <ProfileSection
+        {...foreignLanguageSection}
+        loading={getLanguagePending}
+        onClick={() => setSelectedItem(ProfileSectionType.LANGUAGE)}
+      />
+      <Divider />
+      <ProfileSection
+        {...userSkillSection}
+        loading={getUserSkillPending}
+        onClick={() => setSelectedItem(ProfileSectionType.SKILL)}
+      />
+
       <AchievementModal
-        data={userProfile?.achivement?.description}
+        data={achievement}
         isOpen={selectedItem === ProfileSectionType.ACHIEVEMENT}
-        refetch={refetchUserProfile}
         onCancel={() => setSelectedItem('')}
+        refetch={() => getAchievementByUserId(currentUser.id)}
       />
       <ExperienceModal
-        data={experienceItemSelected}
+        data={workExperiences[editIndex]}
         isOpen={selectedItem === ProfileSectionType.EXPERIENCE}
-        refetch={refetchUserProfile}
-        onCancel={handleCancelExperience}
+        onCancel={handleCancelEdit}
+        refetch={() => getWorkExperienceByUserId(currentUser.id)}
       />
       <LanguageModal
-        data={languageItemSelected}
+        data={foreignLanguages[editIndex]}
         isOpen={selectedItem === ProfileSectionType.LANGUAGE}
-        refetch={refetchUserProfile}
-        onCancel={handleCancelLanguage}
+        onCancel={handleCancelEdit}
+        refetch={() => getLanguageByUserId(currentUser.id)}
       />
       <SkillModal
-        data={skillItemSelected}
+        data={userSkills[editIndex]}
         isOpen={selectedItem === ProfileSectionType.SKILL}
-        refetch={refetchUserProfile}
-        onCancel={handleCancelSkill}
+        onCancel={handleCancelEdit}
+        refetch={() => getUserSkillByUserId(currentUser.id)}
       />
     </>
   );
