@@ -23,73 +23,46 @@ export const useFetch = <T, P>(
 
   const mountedRef = useRef(true);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const firstRenderRef = useRef(true);
-  const paramsRef = useRef<P>(initialParams);
 
-  const fetchData = useCallback(
-    async (currentParams: P) => {
-      if (JSON.stringify(currentParams) !== JSON.stringify(paramsRef.current)) {
-        setState((prev) => ({ ...prev, loading: true }));
+  const fetchData = useCallback(async () => {
+    setState((prevState) => ({ ...prevState, loading: true }));
 
-        if (abortControllerRef.current) {
-          abortControllerRef.current.abort();
-        }
+    try {
+      abortControllerRef.current?.abort();
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
 
-        abortControllerRef.current = new AbortController();
-
-        try {
-          const response = await fetchFunction(currentParams);
-          if (mountedRef.current) {
-            setState({ data: response, loading: false, error: null });
-            paramsRef.current = currentParams;
-          }
-        } catch (err) {
-          if (mountedRef.current) {
-            setState({
-              data: null,
-              loading: false,
-              error: err instanceof Error ? err : new Error('Có lỗi xảy ra'),
-            });
-          }
-        }
+      const data = await fetchFunction(params);
+      if (mountedRef.current) {
+        setState({ data, loading: false, error: null });
       }
-    },
-    [fetchFunction]
-  );
-
-  useEffect(() => {
-    if (
-      !firstRenderRef.current &&
-      JSON.stringify(params) !== JSON.stringify(paramsRef.current)
-    ) {
-      fetchData(params);
-    } else {
-      firstRenderRef.current = false;
+    } catch (error) {
+      if (mountedRef.current) {
+        setState({ data: null, loading: false, error: error as Error });
+      }
     }
-
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-  }, [fetchData, params, ...dependencies]);
+  }, [fetchFunction, params]);
 
   useEffect(() => {
+    mountedRef.current = true;
+    fetchData();
+
     return () => {
       mountedRef.current = false;
+      abortControllerRef.current?.abort();
     };
-  }, []);
+  }, [...dependencies, params]);
 
   const refetch = useCallback(
-    (newParams: P) => {
+    (newParams?: P) => {
       if (newParams !== undefined) {
         setParams(newParams);
       } else {
-        fetchData(params);
+        fetchData();
       }
     },
     [fetchData, params]
   );
 
-  return { ...state, refetch, setParams };
+  return { ...state, setParams, refetch };
 };
