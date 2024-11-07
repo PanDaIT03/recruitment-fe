@@ -19,6 +19,8 @@ import AchievementModal from './Modal/AchievementModal';
 import ExperienceModal from './Modal/ExperienceModal';
 import LanguageModal from './Modal/LanguageModal';
 import SkillModal from './Modal/SkillModal';
+import { useFetch } from '~/hooks/useFetch';
+import UserApi from '~/apis/user';
 
 const { PlusOutlined, EditOutlined } = icons;
 
@@ -40,6 +42,8 @@ const Profile = () => {
 
   const { currentUser } = useAppSelector((state) => state.auth);
   const { userProfile, loading } = useAppSelector((state) => state.user);
+
+  // const {} = useFetch(UserApi.getAchievementByUserId);
 
   const refetchUserProfile = useCallback(() => {
     const accessToken = localStorage.getItem('token1');

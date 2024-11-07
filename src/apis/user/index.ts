@@ -2,10 +2,13 @@ import axiosApi from '~/services/axios';
 import { UserListResponse } from '~/types/User';
 import {
   Achivement,
+  IAchievement,
+  IForeignLanguage,
   ILanguageComboBox,
   ISkillComboBox,
   IUserProfile,
   IUserProfileData,
+  IUserSkill,
   UserLanguage,
   UserSkill,
 } from '~/types/User/profile';
@@ -43,8 +46,17 @@ const UserApi = {
   getAllSkill: async (): Promise<IPaginatedSkill> => {
     return await axiosApi.get('/skills/all');
   },
-  getAchievementById: async (id: string) => {
+  getAchievementByUserId: async (id: string): Promise<IAchievement> => {
     return await axiosApi.get(`/achivements?id=${id}`);
+  },
+  getLanguageByUserId: async (id: string): Promise<IForeignLanguage> => {
+    return await axiosApi.get(`/users-foreign-languages/all?usersId=${id}`);
+  },
+  getUserSkillByUserId: async (id: string): Promise<IUserSkill> => {
+    return await axiosApi.get(`/users-skills/all?usersId=${id}`);
+  },
+  getWorkExperienceByUserId: async (id: string): Promise<IForeignLanguage> => {
+    return await axiosApi.get(`/work-experiences/all?usersId=${id}`);
   },
 
   // POST

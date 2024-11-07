@@ -102,3 +102,59 @@ export interface ISkillComboBox {
   updateAt: string;
   title: string;
 }
+
+// --------------
+
+interface ForeignLanguage {
+  id: number;
+  imageUrl: null;
+  title: string;
+}
+
+interface Skill {
+  id: number;
+  title: string;
+}
+
+interface JobPosition {
+  id: number;
+  title: string;
+}
+
+export interface IAchievement {
+  id: number;
+  statusCode: number;
+  description: string;
+}
+
+export type IForeignLanguage = IPaginatedData<
+  {
+    level: number;
+    usersId: number;
+    foreignLanguagesId: number;
+    foreignLanguage: ForeignLanguage;
+  }[]
+>;
+
+export type IUserSkill = IPaginatedData<
+  {
+    level: number;
+    usersId: number;
+    skillsId: number;
+    skill: Skill;
+  }[]
+>;
+
+export type IWorkExperience = IPaginatedData<
+  {
+    id: number;
+    companyName: string;
+    isWorking: boolean;
+    startDate: Date;
+    endDate: null;
+    description: string;
+    jobCategory: JobCategory;
+    jobPosition: JobPosition;
+    placement: JobPosition;
+  }[]
+>;
