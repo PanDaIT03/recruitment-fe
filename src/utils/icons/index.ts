@@ -36,6 +36,8 @@ import {
   LoginOutlined,
   LogoutOutlined,
   MailOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
   MinusCircleOutlined,
   MinusOutlined,
   PhoneOutlined,
@@ -114,6 +116,8 @@ const icons = {
   PhoneOutlined,
   WalletOutlined,
   StarOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 };
 
 export default icons;

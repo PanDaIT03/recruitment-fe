@@ -1,10 +1,12 @@
-import { UserOutlined } from '@ant-design/icons';
-import { Avatar, Popconfirm, Space, Table, Tag } from 'antd';
+import { Avatar, Popconfirm, Space, Table, Tag, Tooltip } from 'antd';
 import React from 'react';
 import UserApi from '~/apis/user';
 import Button from '~/components/Button/Button';
 import { useFetch } from '~/hooks/useFetch';
 import { UserListResponse } from '~/types/User';
+import icons from '~/utils/icons';
+
+const { UserOutlined, EyeOutlined, EditOutlined } = icons;
 
 const UserManagement: React.FC = () => {
   const { data: allUser, loading } = useFetch<UserListResponse>(
@@ -43,7 +45,7 @@ const UserManagement: React.FC = () => {
       dataIndex: 'isActive',
       render: (isActive: boolean) =>
         isActive ? (
-          <Tag color="green">Hoạt động</Tag>
+          <Tag color="orange">Hoạt động</Tag>
         ) : (
           <Tag color="red">Bị chặn</Tag>
         ),
@@ -59,11 +61,11 @@ const UserManagement: React.FC = () => {
       render: () => (
         <Space>
           <Popconfirm title="Bạn chắc chắn rằng muốn chặn người dùng này?">
-            <Button title="Edit" />
+            <Button title={<EditOutlined />} />
           </Popconfirm>
-          <Popconfirm title="Bạn chắc chắn muốn xóa người dùng này?">
-            <Button title="Delete" fill />
-          </Popconfirm>
+          <Tooltip title="Xem chi tiết">
+            <Button title={<EyeOutlined />} fill />
+          </Tooltip>
         </Space>
       ),
     },
@@ -74,7 +76,7 @@ const UserManagement: React.FC = () => {
   return (
     <div className="p-6 bg-white rounded-xl shadow-md">
       <Table
-        loading={loading}
+        // loading={loading}
         dataSource={sorttedUserById}
         columns={columns}
         rowKey="id"
