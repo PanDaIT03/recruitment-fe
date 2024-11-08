@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { Flex } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react';
@@ -7,7 +8,7 @@ import { Success } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
-import useMessageApi from '~/hooks/useMessageApi';
+import { useMessage } from '~/contexts/MessageProvider';
 import { emailRegex } from '~/utils/constant';
 
 interface IForm {
@@ -16,13 +17,14 @@ interface IForm {
 
 const ForgotPassword = () => {
   const [form] = useForm<IForm>();
+  const { messageApi } = useMessage();
+
   const [isSendUrlSuccess, setIsSendUrlSuccess] = useState(false);
 
-  const { isPending, mutate: sendResetPasswordUrl } = useMessageApi({
-    apiFn: (email: string) => AuthAPI.sendResetPasswordUrl(email),
-    onSuccess: () => {
-      setIsSendUrlSuccess(true);
-    },
+  const { isPending, mutate: sendResetPasswordUrl } = useMutation({
+    mutationFn: (email: string) => AuthAPI.sendResetPasswordUrl(email),
+    onSuccess: () => setIsSendUrlSuccess(true),
+    onError: (error: any) => messageApi.error(error?.response?.data?.message),
   });
 
   const handleFinish = async (value: IForm) => {

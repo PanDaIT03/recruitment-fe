@@ -1,10 +1,11 @@
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'antd/es/form/Form';
 import { memo, useEffect, useState } from 'react';
 
 import UserApi, { IAchievementParams } from '~/apis/user';
 import Editor from '~/components/Editor/Editor';
 import FormItem from '~/components/Form/FormItem';
-import useMessageApi from '~/hooks/useMessageApi';
+import { useMessage } from '~/contexts/MessageProvider';
 import { IAchievement } from '~/types/User/profile';
 import ProfileModal from './ProfileModal';
 
@@ -17,19 +18,35 @@ interface IProps {
 
 const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const [form] = useForm();
+  const { messageApi } = useMessage();
 
   const [isEdit, setIsEdit] = useState(false);
 
-  const { mutate: createAchievement, isPending: createAchievementPending } =
-    useMessageApi({
-      apiFn: (params: IAchievementParams) => UserApi.createAchievement(params),
-      onSuccess: () => refetch(),
+  const { mutate: createAchievement, isPending: isCreateAchievementPending } =
+    useMutation({
+      mutationFn: (params: IAchievementParams) =>
+        UserApi.createAchievement(params),
+      onSuccess: () => {
+        messageApi.success('Tạo thành tựu thành công');
+        refetch();
+      },
+      onError: (error: any) =>
+        messageApi.error(
+          error?.response?.data?.message || 'Lỗi khi tạo thành tựu'
+        ),
     });
 
-  const { mutate: updateAchievement, isPending: updateAchievementPending } =
-    useMessageApi({
-      apiFn: (params: IAchievement) => UserApi.updateAchievement(params),
-      onSuccess: () => refetch(),
+  const { mutate: updateAchievement, isPending: isUpdateAchievementPending } =
+    useMutation({
+      mutationFn: (params: IAchievement) => UserApi.updateAchievement(params),
+      onSuccess: () => {
+        messageApi.success('Cập nhật thành tựu thành công');
+        refetch();
+      },
+      onError: (error: any) =>
+        messageApi.error(
+          error?.response?.data?.message || 'Lỗi khi cập nhật thành tựu'
+        ),
     });
 
   useEffect(() => {
@@ -66,7 +83,7 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     <ProfileModal
       form={form}
       isOpen={isOpen}
-      loading={createAchievementPending || updateAchievementPending}
+      loading={isCreateAchievementPending || isUpdateAchievementPending}
       title="Cập nhật tóm tắt"
       onCancel={handleCancel}
       onFinish={handleFinish}
