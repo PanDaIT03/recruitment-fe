@@ -34,7 +34,7 @@ export interface IUser {
   companyUrl: string;
   isActive: boolean;
   role: Role;
-  jobPosition: string;
+  jobPosition: { id: number; title: string };
   statusCode: number;
   achivement: Achievement;
 }
