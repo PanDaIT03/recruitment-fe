@@ -11,6 +11,7 @@ import JobApplicationLayout from '~/layouts/JobApplicationLayout';
 import PATH from '~/utils/path';
 import AdminLayout from '~/layouts/AdminLayout';
 import UserDetail from '~/pages/Admin/User/UserDetail';
+import EmployerAccountPage from '~/pages/Employer/Personal/EmployerAccountPage';
 
 const Home = lazy(() => import('~/pages/Home/Home'));
 const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
@@ -132,6 +133,11 @@ const routesConfig: CustomRouteObject[] = [
   // Employer
   createRoute('/employer', undefined, EmployerLayout, [
     createProtectedRoute('', ['employer'], <EmployerDashboard />),
+    createProtectedRoute(
+      PATH.EMPLOYER_PERSONAL,
+      ['employer'],
+      <EmployerAccountPage />
+    ),
     createProtectedRoute(
       PATH.EMPLOYER_DASHBOARD,
       ['employer'],

@@ -6,10 +6,12 @@ import { useAppDispatch } from './hooks/useStore';
 import AppRouter from './routes/AppRouter';
 import { getMe } from './store/thunk/auth';
 import toast from './utils/functions/toast';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
   const flagRef = useRef(false);
   const dispatch = useAppDispatch();
+  const queryClient = new QueryClient();
 
   const token = localStorage.getItem('token1');
   const clientId = import.meta.env.VITE_APP_CLIENT_ID;
@@ -31,7 +33,9 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={clientId}>
       <MessageProvider>
-        <AppRouter />
+        <QueryClientProvider client={queryClient}>
+          <AppRouter />
+        </QueryClientProvider>
       </MessageProvider>
     </GoogleOAuthProvider>
   );

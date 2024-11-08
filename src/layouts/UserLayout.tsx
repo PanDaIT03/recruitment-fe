@@ -48,6 +48,7 @@ import { defaultCoverImage } from '~/mocks/data';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
+import { JobPlacement } from '~/types/Job';
 
 interface IChildren {
   title: string;
@@ -173,7 +174,10 @@ const UserLayout = () => {
   const [isOpenAvatarModal, setIsOpenAvatarModal] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  const { data: placements } = useFetch(JobsAPI.getAllPlacements, {});
+  const jobPlacements = useFetch<JobPlacement>(
+    ['placements'],
+    JobsAPI.getAllPlacements
+  );
 
   const props: UploadProps = useMemo(
     () => ({
@@ -291,7 +295,7 @@ const UserLayout = () => {
           <Select
             allowClear
             placeholder="Chọn thành phố"
-            options={placements?.items?.map((place) => ({
+            options={jobPlacements?.data?.items?.map((place) => ({
               value: place?.id,
               label: place?.title,
             }))}
@@ -299,7 +303,7 @@ const UserLayout = () => {
         ),
       },
     ];
-  }, [placements]);
+  }, [jobPlacements]);
 
   return (
     <Layout className="min-h-screen">

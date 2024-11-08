@@ -50,34 +50,14 @@ const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { data: jobFields } = useFetch<PaginatedJobFields, {}>(
-    JobsAPI.getAllJobFields,
-    {}
+  const { data: jobFields } = useFetch<PaginatedJobFields>(
+    ['allJobsFields'],
+    JobsAPI.getAllJobFields
   );
 
-  const jobFieldsOptions = useMemo(
-    () => [
-      ...(jobFields?.items?.map((item) => ({
-        label: item.title,
-        value: item.id,
-      })) || []),
-    ],
-    [jobFields]
-  );
-
-  const { data: jobPositions } = useFetch<PaginatedJobPositions, {}>(
-    JobsAPI.getAllJobPositions,
-    {}
-  );
-
-  const jobPositionOptions = useMemo(
-    () => [
-      ...(jobPositions?.items?.map((item) => ({
-        label: item.title,
-        value: item.id,
-      })) || []),
-    ],
-    [jobFields]
+  const { data: jobPositions } = useFetch<PaginatedJobPositions>(
+    ['allJobsPositions'],
+    JobsAPI.getAllJobPositions
   );
 
   const formItem: IJobApplicationForm = useMemo(() => {
@@ -126,7 +106,12 @@ const SignUp = () => {
               item: (
                 <CustomSelect
                   placeholder="Lĩnh vực"
-                  options={jobFieldsOptions}
+                  options={
+                    jobFields?.items.map((el) => ({
+                      value: el.id,
+                      label: el.title,
+                    })) || []
+                  }
                   prefixIcon={<ContainerOutlined />}
                 />
               ),
@@ -162,7 +147,12 @@ const SignUp = () => {
               item: (
                 <CustomSelect
                   placeholder="Chức vụ"
-                  options={jobPositionOptions}
+                  options={
+                    jobPositions?.items.map((el) => ({
+                      value: el.id,
+                      label: el.title,
+                    })) || []
+                  }
                   prefixIcon={<CreditCardOutlined />}
                 />
               ),
@@ -219,7 +209,7 @@ const SignUp = () => {
         },
       ],
     };
-  }, []);
+  }, [jobFields, jobPositions]);
 
   const handleFinish = async (values: SignUpFormValues) => {
     try {

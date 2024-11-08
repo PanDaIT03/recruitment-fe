@@ -29,7 +29,7 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const [skillOptions, setSkillOptions] = useState<DefaultOptionType[]>([]);
 
-  const { data: skillComboBox } = useFetch(UserApi.getAllSkill, {});
+  const { data: skillComboBox } = useFetch(['allSkills'], UserApi.getAllSkill);
 
   const { mutate: createUserSkill, isPending: isCreatePending } = useMessageApi(
     {

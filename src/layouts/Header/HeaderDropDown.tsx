@@ -133,13 +133,23 @@ const HeaderDropDown = ({ setIsOpen }: IProps) => {
                 key: '1',
                 label: (
                   <span className="text-neutral-600 font-medium">
+                    Tài khoản
+                  </span>
+                ),
+                onClick: () => navigate(PATH.EMPLOYER_PERSONAL),
+              },
+              { type: 'divider' as const },
+              {
+                key: '2',
+                label: (
+                  <span className="text-neutral-600 font-medium">
                     Dashboard
                   </span>
                 ),
                 onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
               },
               {
-                key: '2',
+                key: '3',
                 label: (
                   <span className="text-neutral-600 font-medium">Đăng tin</span>
                 ),
