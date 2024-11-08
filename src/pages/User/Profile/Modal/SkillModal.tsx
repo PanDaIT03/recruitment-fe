@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { Rate } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
@@ -6,8 +7,8 @@ import { memo, useEffect, useState } from 'react';
 import UserApi, { ISkillParams } from '~/apis/user';
 import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
+import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
-import useMessageApi from '~/hooks/useMessageApi';
 import { IUserSkill } from '~/types/User/profile';
 import ProfileModal from './ProfileModal';
 
@@ -25,25 +26,36 @@ interface IForm {
 
 const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const [form] = useForm<IForm>();
+  const { messageApi } = useMessage();
 
   const [isEdit, setIsEdit] = useState(false);
   const [skillOptions, setSkillOptions] = useState<DefaultOptionType[]>([]);
 
   const { data: skillComboBox } = useFetch(['allSkills'], UserApi.getAllSkill);
 
-  const { mutate: createUserSkill, isPending: isCreatePending } = useMessageApi(
-    {
-      apiFn: (params: ISkillParams) => UserApi.createUserSkill(params),
-      onSuccess: () => refetch(),
-    }
-  );
+  const { mutate: createUserSkill, isPending: isCreatePending } = useMutation({
+    mutationFn: (params: ISkillParams) => UserApi.createUserSkill(params),
+    onSuccess: () => {
+      messageApi.success('Thêm kỹ năng thành công');
+      refetch();
+    },
+    onError: (error: any) =>
+      messageApi.error(
+        error?.response?.data?.message || 'Lỗi khi thêm kỹ năng'
+      ),
+  });
 
-  const { mutate: updateUserSkill, isPending: isUpdatePending } = useMessageApi(
-    {
-      apiFn: (params: ISkillParams) => UserApi.updateUserSkill(params),
-      onSuccess: () => refetch(),
-    }
-  );
+  const { mutate: updateUserSkill, isPending: isUpdatePending } = useMutation({
+    mutationFn: (params: ISkillParams) => UserApi.updateUserSkill(params),
+    onSuccess: () => {
+      messageApi.success('Cập nhật kỹ năng thành công');
+      refetch();
+    },
+    onError: (error: any) =>
+      messageApi.error(
+        error?.response?.data?.message || 'Lỗi khi cập nhật kỹ năng'
+      ),
+  });
 
   const handleCancel = () => {
     form.resetFields();

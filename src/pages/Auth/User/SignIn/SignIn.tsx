@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
@@ -5,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import AuthAPI, { IVerifyOTP } from '~/apis/auth';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
-import useMessageApi from '~/hooks/useMessageApi';
+import { useMessage } from '~/contexts/MessageProvider';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetEmailStatus, resetUser } from '~/store/reducer/auth';
 import {
@@ -24,6 +25,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
+  const { messageApi } = useMessage();
 
   const [form] = useForm<IBaseUser>();
   const { currentUser, emailStatus, loading } = useAppSelector(
@@ -33,12 +35,15 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
 
-  const { mutate: verifyOTP } = useMessageApi({
-    apiFn: (email: IVerifyOTP) => AuthAPI.verifyOTP(email),
+  const { mutate: verifyOTP } = useMutation({
+    mutationFn: (params: IVerifyOTP) => AuthAPI.verifyOTP(params),
+    onError: (error: any) => messageApi.error(error?.response?.data?.message),
   });
 
-  const { mutate: sendOTPToEmail } = useMessageApi({
-    apiFn: (email: string) => AuthAPI.sendOTPToEmail(email),
+  const { mutate: sendOTPToEmail } = useMutation({
+    mutationFn: (email: string) => AuthAPI.sendOTPToEmail(email),
+    onSuccess: (res) => messageApi.success(res?.message),
+    onError: (error: any) => messageApi.error(error?.response?.data?.message),
   });
 
   const handleBackToSignIn = useCallback(() => {

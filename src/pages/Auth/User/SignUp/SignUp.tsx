@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { Divider, Flex } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
@@ -8,7 +9,7 @@ import { Success } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
 import Modal from '~/components/Modal/Modal';
-import useMessageApi from '~/hooks/useMessageApi';
+import { useMessage } from '~/contexts/MessageProvider';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetUser } from '~/store/reducer/auth';
 import { signInWithGoogle } from '~/store/thunk/auth';
@@ -20,15 +21,18 @@ import FormSignUp from './FormSignUp';
 const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { messageApi } = useMessage();
 
   const [form] = useForm();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { currentUser } = useAppSelector((state) => state.auth);
 
-  const { mutate: signUp, isPending } = useMessageApi({
-    apiFn: (params: ISignUpParams) => AuthAPI.signUp(params),
+  const { mutate: signUp, isPending } = useMutation({
+    mutationFn: (params: ISignUpParams) => AuthAPI.signUp(params),
     onSuccess: () => setIsOpenModal(true),
+    onError: (error: any) =>
+      messageApi.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`),
   });
 
   useEffect(() => {
