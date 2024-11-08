@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { useEffect, useState } from 'react';
@@ -5,8 +6,8 @@ import { useEffect, useState } from 'react';
 import UserApi, { ILanguageParams } from '~/apis/user';
 import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
+import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
-import useMessageApi from '~/hooks/useMessageApi';
 import { IForeignLanguage } from '~/types/User/profile';
 import ProfileModal from './ProfileModal';
 
@@ -26,6 +27,7 @@ export const advanceOptions: DefaultOptionType[] = [
 
 const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const [form] = useForm();
+  const { messageApi } = useMessage();
 
   const [isEdit, setIsEdit] = useState(false);
   const [languageOptions, setLanguageOptions] = useState<DefaultOptionType[]>(
@@ -38,18 +40,31 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   );
 
   const { mutate: createUserLanguage, isPending: isCreatePending } =
-    useMessageApi({
-      apiFn: (params: ILanguageParams) => UserApi.createForeignLanguage(params),
+    useMutation({
+      mutationFn: (params: ILanguageParams) =>
+        UserApi.createForeignLanguage(params),
       onSuccess: () => {
+        messageApi.success('Thêm ngoại ngữ thành công');
         refetch();
       },
+      onError: (error: any) =>
+        messageApi.error(
+          error?.response?.data?.message || 'Lỗi khi thêm ngoại ngữ'
+        ),
     });
+
   const { mutate: updateUserLanguage, isPending: isUpdatePending } =
-    useMessageApi({
-      apiFn: (params: ILanguageParams) => UserApi.updateForeignLanguage(params),
+    useMutation({
+      mutationFn: (params: ILanguageParams) =>
+        UserApi.updateForeignLanguage(params),
       onSuccess: () => {
+        messageApi.success('Cập nhật ngoại ngữ thành công');
         refetch();
       },
+      onError: (error: any) =>
+        messageApi.error(
+          error?.response?.data?.message || 'Lỗi khi cập nhật ngoại ngữ'
+        ),
     });
 
   const handleCancel = () => {

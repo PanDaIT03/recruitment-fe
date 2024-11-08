@@ -8,6 +8,7 @@ import {
   IUserProfile,
   IUserProfileData,
   IUserSkill,
+  IWorkExperience,
 } from '~/types/User/profile';
 
 export type IUserProfileParams = { accessToken: string; refreshToken: string };
@@ -17,6 +18,10 @@ export type ILanguageParams = Pick<
   IForeignLanguage,
   'foreignLanguagesId' | 'level'
 >;
+
+export type IGetForeignLanguage = IPaginatedData<IForeignLanguage[]>;
+export type IGetWorkExperience = IPaginatedData<IWorkExperience[]>;
+export type IGetUserSkill = IPaginatedData<IUserSkill[]>;
 
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
@@ -45,13 +50,15 @@ const UserApi = {
   getAchievementByUserId: async (id: number): Promise<IAchievement> => {
     return await axiosApi.get(`/achivements?id=${id}`);
   },
-  getLanguageByUserId: async (id: number): Promise<IForeignLanguage> => {
+  getLanguageByUserId: async (id: number): Promise<IGetForeignLanguage> => {
     return await axiosApi.get(`/users-foreign-languages/all?usersId=${id}`);
   },
-  getUserSkillByUserId: async (id: number): Promise<IUserSkill> => {
+  getUserSkillByUserId: async (id: number): Promise<IGetUserSkill> => {
     return await axiosApi.get(`/users-skills/all?usersId=${id}`);
   },
-  getWorkExperienceByUserId: async (id: number): Promise<IForeignLanguage> => {
+  getWorkExperienceByUserId: async (
+    id: number
+  ): Promise<IGetWorkExperience> => {
     return await axiosApi.get(`/work-experiences/all?usersId=${id}`);
   },
 

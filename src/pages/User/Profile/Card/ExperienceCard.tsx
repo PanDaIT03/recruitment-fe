@@ -1,9 +1,10 @@
+import { useMutation } from '@tanstack/react-query';
 import { Divider } from 'antd';
 import dayjs from 'dayjs';
 import { memo } from 'react';
 
 import UserApi from '~/apis/user';
-import useMessageApi from '~/hooks/useMessageApi';
+import { useMessage } from '~/contexts/MessageProvider';
 import { mockFileList } from '~/mocks/data';
 import { IWorkExperience } from '~/types/User/profile';
 import { ProfileSectionType } from '../ProfileSection';
@@ -18,11 +19,18 @@ interface IProps {
 const defaultImgUrl = mockFileList[0].url;
 
 const ExperienceCard = ({ data, refetch, onEdit }: IProps) => {
-  const { mutate: deleteWorkExperience } = useMessageApi({
-    apiFn: (id: number) => UserApi.deleteWorkExperience(id),
+  const { messageApi } = useMessage();
+
+  const { mutate: deleteWorkExperience } = useMutation({
+    mutationFn: (id: number) => UserApi.deleteWorkExperience(id),
     onSuccess: () => {
+      messageApi.success('Xoá kinh nghiệm thành công');
       refetch();
     },
+    onError: (error: any) =>
+      messageApi.error(
+        error?.response?.data?.message || 'Lỗi khi xoá kinh nghiệm'
+      ),
   });
 
   return (

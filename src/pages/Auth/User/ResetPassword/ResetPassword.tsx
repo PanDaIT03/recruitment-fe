@@ -1,14 +1,15 @@
+import { useMutation } from '@tanstack/react-query';
 import { Flex } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthAPI, { IResetPasswordParams } from '~/apis/auth';
 
+import AuthAPI, { IResetPasswordParams } from '~/apis/auth';
 import { Success } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import InputPassword from '~/components/Input/InputPassword';
-import useMessageApi from '~/hooks/useMessageApi';
+import { useMessage } from '~/contexts/MessageProvider';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signIn } from '~/store/thunk/auth';
@@ -26,6 +27,7 @@ interface IForm {
 const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { messageApi } = useMessage();
 
   const [form] = useForm<IForm>();
 
@@ -36,13 +38,13 @@ const ResetPassword = () => {
   const { currentUser } = useAppSelector((state) => state.auth);
   const [isResetPasswordSuccess, setIsResetPasswordSuccess] = useState(false);
 
-  const { mutate: resetPassword, isPending } = useMessageApi({
-    apiFn: (params: IResetPasswordParams) => AuthAPI.resetPassword(params),
+  const { mutate: resetPassword, isPending } = useMutation({
+    mutationFn: (params: IResetPasswordParams) => AuthAPI.resetPassword(params),
     onSuccess: () => {
       setIsResetPasswordSuccess(true);
 
       if (!email) {
-        toast.error('Có lỗi xảy ra: Không tìm thấy email');
+        messageApi.error('Có lỗi xảy ra: Không tìm thấy email');
         return;
       }
 
@@ -51,6 +53,7 @@ const ResetPassword = () => {
         dispatch(signIn({ email, password }));
       }, 3000);
     },
+    onError: (error: any) => messageApi.error(error?.response?.data?.message),
   });
 
   useEffect(() => {

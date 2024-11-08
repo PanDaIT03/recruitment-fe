@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { Flex, Tooltip } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import FormItem from 'antd/es/form/FormItem';
@@ -9,7 +10,7 @@ import AuthAPI from '~/apis/auth';
 import { LeftArrow } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
-import useMessageApi from '~/hooks/useMessageApi';
+import { useMessage } from '~/contexts/MessageProvider';
 import { useAppSelector } from '~/hooks/useStore';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
@@ -28,14 +29,17 @@ const initCountdown = {
 
 const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
   const [form] = useForm();
+  const { messageApi } = useMessage();
 
   const [otp, setOtp] = useState('');
   const [countdown, setCountdown] = useState(initCountdown);
 
   const { emailStatus } = useAppSelector((state) => state.auth);
 
-  const { mutate: senOTPToEmail } = useMessageApi({
-    apiFn: (email: string) => AuthAPI.sendOTPToEmail(email),
+  const { mutate: sendOTPToEmail } = useMutation({
+    mutationFn: (email: string) => AuthAPI.sendOTPToEmail(email),
+    onSuccess: (res) => messageApi.success(res?.message),
+    onError: (error: any) => messageApi.error(error?.response?.data?.message),
   });
 
   const handleChange = (otp: string) => {
@@ -68,7 +72,7 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
       deadline: Date.now() + 1000 * 10,
     });
 
-    senOTPToEmail(emailStatus.email);
+    sendOTPToEmail(emailStatus.email);
   };
 
   const handleCountDownFinish = () => {
