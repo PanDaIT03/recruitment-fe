@@ -37,9 +37,9 @@ const { CloseOutlined } = icons;
 const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
   const [form] = useForm();
 
-  const { data: placements } = useFetch<JobPlacement, {}>(
-    JobsAPI.getAllPlacements,
-    {}
+  const jobPlacements = useFetch<JobPlacement>(
+    ['placements'],
+    JobsAPI.getAllPlacements
   );
 
   const handleSalaryChange = useCallback(
@@ -112,7 +112,7 @@ const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
           <Select
             mode="multiple"
             placeholder="Chọn thành phố"
-            options={placements?.items?.map((place) => ({
+            options={jobPlacements?.data?.items?.map((place) => ({
               value: place?.id,
               label: place?.title,
             }))}
@@ -149,7 +149,7 @@ const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
         // ],
       },
     ];
-  }, [placements]);
+  }, [jobPlacements]);
 
   const handleFinish = useCallback(() => {
     console.log('finish');

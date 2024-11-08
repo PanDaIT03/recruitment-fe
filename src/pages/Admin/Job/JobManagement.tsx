@@ -15,10 +15,7 @@ const JobManagement: React.FC = () => {
     return JobsAPI.getAllJobs(params || { page: 1, pageSize: 10 });
   };
 
-  const { data: allJobs } = useFetch<IJob, IPaginationParms & Partial<IParams>>(
-    fetchAllJobs,
-    {}
-  );
+  const { data: allJobs } = useFetch<IJob>(['allJobs'], fetchAllJobs);
 
   const currentPage = allJobs?.pageInfo?.currentPage || 1;
   const pageSize = allJobs?.pageInfo?.itemsPerPage || 10;

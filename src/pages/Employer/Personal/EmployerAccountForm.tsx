@@ -18,9 +18,9 @@ const EmployerAccountForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  const { data: jobPositions } = useFetch<PaginatedJobPositions, {}>(
-    JobsAPI.getAllJobPositions,
-    {}
+  const { data: jobPositions } = useFetch<PaginatedJobPositions>(
+    ['allJobsPositions'],
+    JobsAPI.getAllJobPositions
   );
 
   useEffect(() => {

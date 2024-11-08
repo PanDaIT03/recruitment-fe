@@ -32,9 +32,9 @@ const TopSearchBar: React.FC<IProps> = ({
 }) => {
   const [form] = useForm();
 
-  const { data: placements } = useFetch<JobPlacement, {}>(
-    JobsAPI.getAllPlacements,
-    {}
+  const jobPlacements = useFetch<JobPlacement>(
+    ['placements'],
+    JobsAPI.getAllPlacements
   );
 
   const handleFinish = (values: any) => {
@@ -73,7 +73,7 @@ const TopSearchBar: React.FC<IProps> = ({
                   colorBgContainer: 'bg-light-gray',
                 }}
                 options={
-                  placements?.items?.map((place) => ({
+                  jobPlacements?.data?.items?.map((place) => ({
                     value: place?.id,
                     label: place?.title,
                   })) || optionLocations
