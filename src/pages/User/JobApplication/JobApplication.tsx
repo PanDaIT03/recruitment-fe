@@ -306,24 +306,29 @@ const JobApplication = () => {
                   const { fields, func } = params;
 
                   return fields.map(({ key, name }) => (
-                    <Flex key={key} gap={12} className="mb-3">
-                      <div className="w-full grid grid-cols-4 gap-2">
-                        <FormItem
-                          name={[name, 'language']}
-                          className="col-span-1 m-0"
-                        >
-                          <CustomSelect
-                            placeholder="Chọn ngoại ngữ"
-                            options={languages?.items.map((language) => ({
-                              label: language.title,
-                              value: language.id,
-                            }))}
-                            prefixIcon={<Language width={14} height={14} />}
-                          />
-                        </FormItem>
+                    <Flex
+                      wrap
+                      key={key}
+                      gap={8}
+                      className="mb-3 max-sm:border max-sm:border-dashed max-sm:p-4 max-sm:rounded-md"
+                    >
+                      <FormItem
+                        name={[name, 'language']}
+                        className="m-0 max-w-[180px]"
+                      >
+                        <CustomSelect
+                          placeholder="Chọn ngoại ngữ"
+                          options={languages?.items.map((language) => ({
+                            label: language.title,
+                            value: language.id,
+                          }))}
+                          prefixIcon={<Language width={14} height={14} />}
+                        />
+                      </FormItem>
+                      <Flex gap={8} align="center" className="flex-1">
                         <FormItem
                           name={[name, 'advance']}
-                          className="col-span-3 m-0"
+                          className="w-full m-0 min-w-[250px]"
                         >
                           <CustomSelect
                             options={advanceOptions}
@@ -331,12 +336,14 @@ const JobApplication = () => {
                             prefixIcon={<StarOutlined width={14} height={14} />}
                           />
                         </FormItem>
-                      </div>
-                      <Button
-                        borderType="dashed"
-                        title={<MinusCircleOutlined className="flex text-xl" />}
-                        onClick={() => func.remove(name)}
-                      />
+                        <Button
+                          borderType="dashed"
+                          title={
+                            <MinusCircleOutlined className="flex text-xl" />
+                          }
+                          onClick={() => func.remove(name)}
+                        />
+                      </Flex>
                     </Flex>
                   ));
                 },
