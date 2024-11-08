@@ -164,7 +164,7 @@ const HeaderMenu = ({
   const guestMenu = useMemo(() => {
     return [
       {
-        key: 'profile-group',
+        key: 'user-group',
         type: 'group' as const,
         className: '[&>div]:!text-[#1c1917]',
         label: <span className="font-semibold">Người tìm việc</span>,
@@ -191,7 +191,7 @@ const HeaderMenu = ({
       },
       { type: 'divider' as const },
       {
-        key: 'profile-group',
+        key: 'employer-group',
         type: 'group' as const,
         className: '[&>div]:!text-[#1c1917]',
         label: <span className="font-semibold">Nhà tuyển dụng</span>,

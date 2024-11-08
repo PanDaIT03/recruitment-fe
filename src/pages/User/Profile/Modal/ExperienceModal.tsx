@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { Checkbox } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
@@ -10,13 +11,8 @@ import { DatePicker, RangePicker } from '~/components/DatePicker/DatePicker';
 import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
+import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
-import useMessageApi from '~/hooks/useMessageApi';
-import {
-  JobPlacement,
-  PaginatedJobCategories,
-  PaginatedJobPositions,
-} from '~/types/Job';
 import {
   IUserProfileData,
   IUserProfileForm,
@@ -35,36 +31,55 @@ interface IProps {
 const { BankOutlined } = icons;
 
 const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
+  const { messageApi } = useMessage();
   const [form] = useForm<IUserProfileForm>();
 
   const [isEdit, setIsEdit] = useState(false);
   const [isChecked, setIsChecked] = useState(true);
 
-  const { data: placements } = useFetch<JobPlacement, {}>(
-    JobsAPI.getAllPlacements,
-    {}
+  const { data: placements } = useFetch(
+    ['placements'],
+    JobsAPI.getAllPlacements
   );
-  const { data: jobPositions } = useFetch<PaginatedJobPositions, {}>(
-    JobsAPI.getAllJobPositions,
-    {}
+
+  const { data: jobPositions } = useFetch(
+    ['jobPositions'],
+    JobsAPI.getAllJobPositions
   );
-  const { data: jobCategories } = useFetch<PaginatedJobCategories, {}>(
-    JobsAPI.getAllJobCategories,
-    {}
+
+  const { data: jobCategories } = useFetch(
+    ['jobCategories'],
+    JobsAPI.getAllJobCategories
   );
 
   const { mutate: createWorkExperience, isPending: isCreateWorkPending } =
-    useMessageApi({
-      apiFn: (params: IUserProfileData) => UserApi.createWorkExperience(params),
-      onSuccess: () => refetch(),
+    useMutation({
+      mutationFn: (params: IUserProfileData) =>
+        UserApi.createWorkExperience(params),
+      onSuccess: () => {
+        messageApi.success('Thêm kinh nghiệm làm việc thành công');
+        refetch();
+      },
+      onError: (error: any) =>
+        messageApi.error(
+          error?.response?.data?.message || 'Lỗi khi thêm kinh nghiệm làm việc'
+        ),
     });
 
-  const { mutate: updateWorkExperience } = useMessageApi({
-    apiFn: (params: IUpdateWorkExperience) =>
-      UserApi.updateWorkExperience(params),
-    onSuccess: () => refetch(),
-    onError: (error) => console.log(error),
-  });
+  const { mutate: updateWorkExperience, isPending: isUpdateWorkPending } =
+    useMutation({
+      mutationFn: (params: IUpdateWorkExperience) =>
+        UserApi.updateWorkExperience(params),
+      onSuccess: () => {
+        messageApi.success('Cập nhât kinh nghiệm làm việc thành công');
+        refetch();
+      },
+      onError: (error: any) =>
+        messageApi.error(
+          error?.response?.data?.message ||
+            'Lỗi khi cập nhật kinh nghiệm làm việc'
+        ),
+    });
 
   const handleCancel = () => {
     form.resetFields();
@@ -121,7 +136,7 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     <ProfileModal
       form={form}
       isOpen={isOpen}
-      loading={isCreateWorkPending}
+      loading={isCreateWorkPending || isUpdateWorkPending}
       title="Thêm kinh nghiệm làm việc"
       onCancel={handleCancel}
       onFinish={handleFinish}

@@ -27,7 +27,7 @@ const JobApplicationModal = ({
   const [uploading, setUploading] = useState(false);
   const [selectedCvId, setSelectedCvId] = useState<number | null>(null);
 
-  const { data: myCV } = useFetch<any, {}>(UserApi.getMyCv, {});
+  const { data: myCV } = useFetch<any>(['myCv'], UserApi.getMyCv);
 
   const handleUpload = async () => {
     const formData = new FormData();

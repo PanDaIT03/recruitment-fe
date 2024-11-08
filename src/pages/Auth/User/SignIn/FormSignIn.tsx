@@ -19,7 +19,6 @@ const FormSignIn = ({ form, loading, onFinish }: IProps) => {
     <>
       <FormWrapper
         form={form}
-        // loading={true}
         loading={loading}
         submitTitle="Tiếp tục"
         onFinish={onFinish}

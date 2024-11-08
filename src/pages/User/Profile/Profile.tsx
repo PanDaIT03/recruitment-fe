@@ -1,10 +1,10 @@
+import { useMutation } from '@tanstack/react-query';
 import { Divider } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import UserApi from '~/apis/user';
 import { BriefCase, LanguageCenter, MagicHat, Summary } from '~/assets/img';
 import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
-import useMessageApi from '~/hooks/useMessageApi';
 import { useAppSelector } from '~/hooks/useStore';
 import ProfileSection, {
   IProfileSection,
@@ -38,51 +38,39 @@ const Profile = () => {
   const [editIndex, setEditIndex] = useState<number>(-1);
   const [selectedItem, setSelectedItem] = useState('');
 
-  const [userSkills, setUserSkills] = useState<IUserSkill[]>(initSkill);
-  const [achievement, setAchievement] = useState<IAchievement>(initAchievement);
   const [workExperiences, setWorkExperiences] =
     useState<IWorkExperience[]>(initExperience);
   const [foreignLanguages, setForeignLanguages] =
     useState<IForeignLanguage[]>(initLanguage);
+  const [userSkills, setUserSkills] = useState<IUserSkill[]>(initSkill);
 
-  const { mutate: getAchievementByUserId, isPending: getAchievementPending } =
-    useMessageApi({
-      showProcessMessage: false,
-      apiFn: (id: number) => UserApi.getAchievementByUserId(id),
-      onSuccess: (res) => {
-        setAchievement(res);
-      },
+  const {
+    data: achievement,
+    mutate: getAchievementByUserId,
+    isPending: isAchievementPending,
+  } = useMutation({
+    mutationFn: (id: number) => UserApi.getAchievementByUserId(id),
+  });
+
+  const { mutate: getLanguageByUserId, isPending: isLanguagePending } =
+    useMutation({
+      mutationFn: (id: number) => UserApi.getLanguageByUserId(id),
+      onSuccess: (res) => setForeignLanguages(res.items),
     });
 
-  const { mutate: getLanguageByUserId, isPending: getLanguagePending } =
-    useMessageApi({
-      showProcessMessage: false,
-      apiFn: (id: number) => UserApi.getLanguageByUserId(id),
-      onSuccess: (res) => {
-        const items = res?.items;
-        setForeignLanguages(items);
-      },
+  const { mutate: getUserSkillByUserId, isPending: isUserSkillPending } =
+    useMutation({
+      mutationFn: (id: number) => UserApi.getUserSkillByUserId(id),
+      onSuccess: (res) => setUserSkills(res.items),
     });
 
-  const { mutate: getUserSkillByUserId, isPending: getUserSkillPending } =
-    useMessageApi({
-      showProcessMessage: false,
-      apiFn: (id: number) => UserApi.getUserSkillByUserId(id),
-      onSuccess: (res) => {
-        const items = res?.items;
-        setUserSkills(items);
-      },
-    });
-
-  const { mutate: getWorkExperienceByUserId, isPending: getExperiencePending } =
-    useMessageApi({
-      showProcessMessage: false,
-      apiFn: (id: number) => UserApi.getWorkExperienceByUserId(id),
-      onSuccess: (res) => {
-        const items = res?.items;
-        setWorkExperiences(items);
-      },
-    });
+  const {
+    mutate: getWorkExperienceByUserId,
+    isPending: isWorkExperiencePending,
+  } = useMutation({
+    mutationFn: (id: number) => UserApi.getWorkExperienceByUserId(id),
+    onSuccess: (res) => setWorkExperiences(res.items),
+  });
 
   useEffect(() => {
     const id = currentUser.id;
@@ -213,30 +201,30 @@ const Profile = () => {
     <>
       <ProfileSection
         {...achievementSection}
-        loading={getAchievementPending}
+        loading={isAchievementPending}
         onClick={() => setSelectedItem(ProfileSectionType.ACHIEVEMENT)}
       />
       <Divider />
       <ProfileSection
         {...workExperienceSection}
-        loading={getExperiencePending}
+        loading={isWorkExperiencePending}
         onClick={() => setSelectedItem(ProfileSectionType.EXPERIENCE)}
       />
       <Divider />
       <ProfileSection
         {...foreignLanguageSection}
-        loading={getLanguagePending}
+        loading={isLanguagePending}
         onClick={() => setSelectedItem(ProfileSectionType.LANGUAGE)}
       />
       <Divider />
       <ProfileSection
         {...userSkillSection}
-        loading={getUserSkillPending}
+        loading={isUserSkillPending}
         onClick={() => setSelectedItem(ProfileSectionType.SKILL)}
       />
 
       <AchievementModal
-        data={achievement}
+        data={achievement || initAchievement}
         isOpen={selectedItem === ProfileSectionType.ACHIEVEMENT}
         onCancel={() => setSelectedItem('')}
         refetch={() => getAchievementByUserId(currentUser.id)}

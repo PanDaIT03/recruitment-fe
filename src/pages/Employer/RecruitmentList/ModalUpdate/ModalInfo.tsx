@@ -30,21 +30,24 @@ const ModalInfo: React.FC<ModalProps> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const { data: jobCategories } = useFetch<PaginatedJobCategories, {}>(
-    JobsAPI.getAllJobCategories,
-    {}
+  const jobCategories = useFetch<PaginatedJobCategories>(
+    ['jobCategories'],
+    JobsAPI.getAllJobCategories
   );
-  const { data: workType } = useFetch<PaginatedWorkTypes, {}>(
-    JobsAPI.getAllWorkTypes,
-    {}
+
+  const workTypes = useFetch<PaginatedWorkTypes>(
+    ['workTypes'],
+    JobsAPI.getAllWorkTypes
   );
-  const { data: jobPlacements } = useFetch<JobPlacement, {}>(
-    JobsAPI.getAllPlacements,
-    {}
+
+  const jobPlacements = useFetch<JobPlacement>(
+    ['placements'],
+    JobsAPI.getAllPlacements
   );
-  const { data: jobFields } = useFetch<PaginatedJobFields, {}>(
-    JobsAPI.getAllJobFields,
-    {}
+
+  const jobFields = useFetch<PaginatedJobFields>(
+    ['jobFields'],
+    JobsAPI.getAllJobFields
   );
 
   const formatter = (value: string | undefined): string => {
@@ -104,7 +107,7 @@ const ModalInfo: React.FC<ModalProps> = ({
           required
         >
           <Select placeholder="Chọn danh mục">
-            {jobFields?.items?.map?.((field) => (
+            {jobFields?.data?.items?.map?.((field) => (
               <Option value={field.id} key={field.id}>
                 {field.title}
               </Option>
@@ -114,7 +117,7 @@ const ModalInfo: React.FC<ModalProps> = ({
 
         <Form.Item name="categoriesId" label="Loại công việc" required>
           <Radio.Group>
-            {jobCategories?.items.map?.((category) => (
+            {jobCategories?.data?.items.map?.((category) => (
               <Radio value={category.id} key={category.id}>
                 {category.name}
               </Radio>
@@ -124,7 +127,7 @@ const ModalInfo: React.FC<ModalProps> = ({
 
         <Form.Item name="workTypesId" label="Hình thức làm việc" required>
           <Radio.Group>
-            {workType?.items.map?.((type) => (
+            {workTypes?.data?.items.map?.((type) => (
               <Radio value={type.id} key={type.id}>
                 {type.title}
               </Radio>
@@ -138,7 +141,7 @@ const ModalInfo: React.FC<ModalProps> = ({
           required
         >
           <Select placeholder="Chọn địa điểm" mode="multiple" maxCount={3}>
-            {jobPlacements?.items?.map((place) => (
+            {jobPlacements?.data?.items?.map((place) => (
               <Option key={place.id} value={place.id}>
                 {place.title}
               </Option>

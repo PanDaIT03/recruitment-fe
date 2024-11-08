@@ -143,8 +143,8 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
                     Các doanh nghiệp đang tuyển dụng trên Đúng Người Đúng Việc:
                   </h2>
                   <Flex wrap gap={32}>
-                    {businessItems.map((item) => (
-                      <Image preview={false} {...item} />
+                    {businessItems.map(({ key, ...others }) => (
+                      <Image key={key} preview={false} {...others} />
                     ))}
                   </Flex>
                 </div>

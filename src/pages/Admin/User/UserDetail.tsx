@@ -4,7 +4,8 @@ import { useLocation } from 'react-router-dom';
 const UserDetail = () => {
   const location = useLocation();
   const user = location.state;
-  console.log(user);
+
+  const isEmployer = user?.role?.id === 3;
 
   return (
     <Card className="max-w-4xl mx-auto p-8 shadow-lg bg-white rounded-lg">
@@ -31,22 +32,34 @@ const UserDetail = () => {
         <Descriptions.Item label="Số điện thoại">
           {user.phoneNumber || 'N/A'}
         </Descriptions.Item>
-        <Descriptions.Item label="Tên công ty">
-          {user.companyName}
-        </Descriptions.Item>
-        <Descriptions.Item label="Đường dẫn công ty">
-          {user.companyUrl}
-        </Descriptions.Item>
+        {isEmployer && (
+          <>
+            <Descriptions.Item label="Tên công ty">
+              {user.companyName}
+            </Descriptions.Item>
+            <Descriptions.Item label="Đường dẫn công ty">
+              {user.companyUrl}
+            </Descriptions.Item>
+            <Descriptions.Item label="Vị trí">
+              {user.jobPosition?.title || 'N/A'}
+            </Descriptions.Item>
+          </>
+        )}
+
+        {!isEmployer && (
+          <Descriptions.Item label="Lĩnh vực công việc">
+            {user?.usersJobFields
+              .map((field: any) => field.jobField.title)
+              .join(', ') || 'N/A'}
+          </Descriptions.Item>
+        )}
         <Descriptions.Item label="Quyền">
           <Tag color="blue" className="capitalize">
             {user.role?.title || 'Unknown'}
           </Tag>
         </Descriptions.Item>
-        <Descriptions.Item label="Vị trí">
-          {user.jobPosition?.title || 'N/A'}
-        </Descriptions.Item>
         <Descriptions.Item label="Trạng thái">
-          <Tag color={user.isActive ? 'green' : 'red'}>
+          <Tag color={user.isActive ? 'orange' : 'red'}>
             {user.isActive ? 'Hoạt động' : 'Bị chặn'}
           </Tag>
         </Descriptions.Item>

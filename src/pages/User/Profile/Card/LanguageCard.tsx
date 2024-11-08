@@ -1,8 +1,9 @@
+import { useMutation } from '@tanstack/react-query';
 import { Divider, Flex } from 'antd';
 import { memo } from 'react';
 
 import UserApi from '~/apis/user';
-import useMessageApi from '~/hooks/useMessageApi';
+import { useMessage } from '~/contexts/MessageProvider';
 import { mockFileList } from '~/mocks/data';
 import { IForeignLanguage } from '~/types/User/profile';
 import { advanceOptions } from '../Modal/LanguageModal';
@@ -18,9 +19,18 @@ interface IProps {
 const defaultImgUrl = mockFileList[0].url;
 
 const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
-  const { mutate: deleteUserLanguage } = useMessageApi({
-    apiFn: (id: number) => UserApi.deleteForeignLanguage(id),
-    onSuccess: () => refetch(),
+  const { messageApi } = useMessage();
+
+  const { mutate: deleteUserLanguage } = useMutation({
+    mutationFn: (id: number) => UserApi.deleteForeignLanguage(id),
+    onSuccess: () => {
+      messageApi.success('Xoá ngôn ngữ thành công');
+      refetch();
+    },
+    onError: (error: any) =>
+      messageApi.error(
+        error?.response?.data?.message || 'Lỗi khi xoá ngôn ngữ'
+      ),
   });
 
   return (

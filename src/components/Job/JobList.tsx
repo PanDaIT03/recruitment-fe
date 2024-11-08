@@ -90,28 +90,30 @@ const JobListPage = () => {
     extraParams: filters,
   });
 
-  const { data: placements } = useFetch<JobPlacement, {}>(
-    JobsAPI.getAllPlacements,
-    {}
+  const jobCategories = useFetch<PaginatedJobCategories>(
+    ['jobCategories'],
+    JobsAPI.getAllJobCategories
   );
 
-  const { data: jobCategories } = useFetch<PaginatedJobCategories, {}>(
-    JobsAPI.getAllJobCategories,
-    {}
+  const workTypes = useFetch<PaginatedWorkTypes>(
+    ['workTypes'],
+    JobsAPI.getAllWorkTypes
   );
-  const { data: workType } = useFetch<PaginatedWorkTypes, {}>(
-    JobsAPI.getAllWorkTypes,
-    {}
+
+  const jobPlacements = useFetch<JobPlacement>(
+    ['placements'],
+    JobsAPI.getAllPlacements
   );
-  const { data: jobFields } = useFetch<PaginatedJobFields, {}>(
-    JobsAPI.getAllJobFields,
-    {}
+
+  const jobFields = useFetch<PaginatedJobFields>(
+    ['jobFields'],
+    JobsAPI.getAllJobFields
   );
 
   const jobCategoriesOptions = useMemo(
     () => [
       { label: 'Tất cả loại hình', value: 'all' },
-      ...(jobCategories?.items?.map((item) => ({
+      ...(jobCategories?.data?.items?.map((item) => ({
         label: item.name,
         value: item.id,
       })) || []),
@@ -122,18 +124,18 @@ const JobListPage = () => {
   const workTypeOptions = useMemo(
     () => [
       { label: 'Tất cả hình thức', value: 'all' },
-      ...(workType?.items?.map((item) => ({
+      ...(workTypes?.data?.items?.map((item) => ({
         label: item.title,
         value: item.id,
       })) || []),
     ],
-    [workType]
+    [workTypes]
   );
 
   const jobFieldsOptions = useMemo(
     () => [
       { label: 'Tất cả lĩnh vực', value: 'all' },
-      ...(jobFields?.items?.map((item) => ({
+      ...(jobFields?.data?.items?.map((item) => ({
         label: item.title,
         value: item.id,
       })) || []),
@@ -207,7 +209,7 @@ const JobListPage = () => {
             colorBgContainer: 'bg-light-gray',
           }}
           options={
-            placements?.items?.map((place) => ({
+            jobPlacements?.data?.items?.map((place) => ({
               value: place?.id,
               label: place?.title,
             })) || []
@@ -226,7 +228,7 @@ const JobListPage = () => {
       </Form.Item>
       <Form.Item name="workTypesId" label="Hình thức làm việc">
         <Radio.Group className="flex flex-col gap-4">
-          {workType?.items.map?.((type) => (
+          {workTypes?.data?.items.map?.((type) => (
             <Radio value={type.id} key={type.id}>
               {type.title}
             </Radio>
@@ -235,7 +237,7 @@ const JobListPage = () => {
       </Form.Item>
       <Form.Item name="categoriesId" label="Loại công việc">
         <Radio.Group className="flex flex-col gap-4">
-          {jobCategories?.items.map?.((category) => (
+          {jobCategories?.data?.items.map?.((category) => (
             <Radio value={category.id} key={category.id}>
               {category.name}
             </Radio>

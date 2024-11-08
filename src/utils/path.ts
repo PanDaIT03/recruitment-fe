@@ -12,6 +12,7 @@ const PATH = {
   EMPLOYER_SIGN_IN: '/employer/sign-in',
   EMPLOYER_SIGN_UP: '/employer/sign-up',
   UPDATE_JOB: '/employer/update-job',
+  EMPLOYER_PERSONAL: '/employer/employer-personal',
   // Admin
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_USER_MANAGEMENT: '/admin/user-management',

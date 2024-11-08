@@ -1,8 +1,9 @@
+import { useMutation } from '@tanstack/react-query';
 import { Flex, Rate } from 'antd';
 import { memo } from 'react';
 
 import UserApi from '~/apis/user';
-import useMessageApi from '~/hooks/useMessageApi';
+import { useMessage } from '~/contexts/MessageProvider';
 import { IUserSkill } from '~/types/User/profile';
 import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
@@ -14,9 +15,16 @@ interface IProps {
 }
 
 const SkillCard = ({ data, refetch, onEdit }: IProps) => {
-  const { mutate: deleteUserSkill } = useMessageApi({
-    apiFn: (id: number) => UserApi.deleteUserSkill(id),
-    onSuccess: () => refetch(),
+  const { messageApi } = useMessage();
+
+  const { mutate: deleteUserSkill } = useMutation({
+    mutationFn: (id: number) => UserApi.deleteUserSkill(id),
+    onSuccess: () => {
+      messageApi.success('Xoá kỹ năng thành công');
+      refetch();
+    },
+    onError: (error: any) =>
+      messageApi.error(error?.response?.data?.message || 'Lỗi khi xoá kỹ năng'),
   });
 
   return (

@@ -43,7 +43,7 @@ const JobApplicationLayout = () => {
   return (
     <Layout className="w-full min-h-screen p-8 justify-center items-center">
       <div className="w-full mx-auto py-4 grid grid-cols-3 gap-12 max-w-7xl">
-        <div className="hidden md:col-span-1 md:block">
+        <div className="hidden lg:col-span-1 lg:block">
           <div className="sticky top-[30vh] space-y-6">
             <Button
               displayType="text"
@@ -67,7 +67,8 @@ const JobApplicationLayout = () => {
             </div>
           </div>
         </div>
-        <div className="w-full col-span-3 md:col-span-2">
+        <div className="w-full col-span-3 lg:col-span-2">
+          <h1 className="block text-2xl text-center font-semibold mb-4 lg:hidden">Tạo hồ sơ tìm việc</h1>
           <Outlet />
         </div>
       </div>
