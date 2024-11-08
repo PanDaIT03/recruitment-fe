@@ -40,17 +40,17 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const [isChecked, setIsChecked] = useState(true);
 
-  const { data: placements } = useFetch<JobPlacement, {}>(
-    JobsAPI.getAllPlacements,
-    {}
+  const { data: placements } = useFetch<JobPlacement>(
+    ['allPlacements'],
+    JobsAPI.getAllPlacements
   );
-  const { data: jobPositions } = useFetch<PaginatedJobPositions, {}>(
-    JobsAPI.getAllJobPositions,
-    {}
+  const { data: jobPositions } = useFetch<PaginatedJobPositions>(
+    ['allJobPositions'],
+    JobsAPI.getAllJobPositions
   );
-  const { data: jobCategories } = useFetch<PaginatedJobCategories, {}>(
-    JobsAPI.getAllJobCategories,
-    {}
+  const { data: jobCategories } = useFetch<PaginatedJobCategories>(
+    ['allJobCategories'],
+    JobsAPI.getAllJobCategories
   );
 
   const { mutate: createWorkExperience, isPending: isCreateWorkPending } =
