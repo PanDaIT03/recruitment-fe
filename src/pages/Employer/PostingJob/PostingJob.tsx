@@ -1,13 +1,5 @@
 import { Editor } from '@tinymce/tinymce-react';
-import {
-  DatePicker,
-  Divider,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-} from 'antd';
+import { DatePicker, Divider, Form, Input, InputNumber, Radio } from 'antd';
 import dayjs from 'dayjs';
 import React, { useMemo } from 'react';
 import { JobsAPI } from '~/apis/job';
