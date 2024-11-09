@@ -132,6 +132,13 @@ const JobListPage = () => {
     [workTypes]
   );
 
+  const placements = useMemo(() => {
+    return jobPlacements.data?.items.map((placements) => ({
+      value: placements.id,
+      label: placements.title,
+    }));
+  }, [jobPlacements]);
+
   const jobFieldsOptions = useMemo(
     () => [
       { label: 'Tất cả lĩnh vực', value: 'all' },
@@ -208,12 +215,7 @@ const JobListPage = () => {
           configProvider={{
             colorBgContainer: 'bg-light-gray',
           }}
-          options={
-            jobPlacements?.data?.items?.map((place) => ({
-              value: place?.id,
-              label: place?.title,
-            })) || []
-          }
+          options={placements || []}
         />
       </Form.Item>
       <Form.Item label="Lĩnh vực" layout="vertical">
