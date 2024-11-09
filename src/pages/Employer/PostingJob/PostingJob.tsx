@@ -9,9 +9,10 @@ import {
   Select,
 } from 'antd';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
+import CustomSelect from '~/components/Select/CustomSelect';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useFetch } from '~/hooks/useFetch';
 import {
@@ -85,6 +86,41 @@ const PostingJob: React.FC = () => {
     ['jobFields'],
     JobsAPI.getAllJobFields
   );
+
+  const positions = useMemo(() => {
+    return jobPositions.data?.items.map((positions) => ({
+      value: positions.id,
+      label: positions.title,
+    }));
+  }, [jobPositions]);
+
+  const categories = useMemo(() => {
+    return jobCategories.data?.items.map((categories) => ({
+      value: categories.id,
+      label: categories.name,
+    }));
+  }, [jobCategories]);
+
+  const types = useMemo(() => {
+    return workTypes.data?.items.map((types) => ({
+      value: types.id,
+      label: types.title,
+    }));
+  }, [workTypes]);
+
+  const placements = useMemo(() => {
+    return jobPlacements.data?.items.map((placements) => ({
+      value: placements.id,
+      label: placements.title,
+    }));
+  }, [jobPlacements]);
+
+  const fields = useMemo(() => {
+    return jobFields.data?.items.map((fields) => ({
+      value: fields.id,
+      label: fields.title,
+    }));
+  }, [jobFields]);
 
   const cleanFormValues = (values: any) => {
     const cleanValues = { ...values };
@@ -176,13 +212,7 @@ const PostingJob: React.FC = () => {
           label="Lĩnh vực của vị trí tuyển dụng này là gì?"
           rules={[{ required: true, validator: validateField('Lĩnh vực') }]}
         >
-          <Select placeholder="Chọn danh mục">
-            {jobFields?.data?.items?.map?.((field) => (
-              <Option value={field.id} key={field.id}>
-                {field.title}
-              </Option>
-            ))}
-          </Select>
+          <Select placeholder="Chọn danh mục" options={fields || []}></Select>
         </Form.Item>
 
         <Form.Item
@@ -192,13 +222,10 @@ const PostingJob: React.FC = () => {
             { required: true, validator: validateField('Loại công việc') },
           ]}
         >
-          <Radio.Group className="flex flex-col gap-4">
-            {jobCategories?.data?.items.map?.((category) => (
-              <Radio value={category.id} key={category.id}>
-                {category.name}
-              </Radio>
-            ))}
-          </Radio.Group>
+          <Radio.Group
+            className="flex flex-col gap-4"
+            options={categories}
+          ></Radio.Group>
         </Form.Item>
 
         <Form.Item
@@ -208,13 +235,10 @@ const PostingJob: React.FC = () => {
             { required: true, validator: validateField('Hình thức làm việc') },
           ]}
         >
-          <Radio.Group className="flex flex-col gap-4">
-            {workTypes?.data?.items.map?.((type) => (
-              <Radio value={type.id} key={type.id}>
-                {type.title}
-              </Radio>
-            ))}
-          </Radio.Group>
+          <Radio.Group
+            className="flex flex-col gap-4"
+            options={types || []}
+          ></Radio.Group>
         </Form.Item>
 
         <Form.Item
@@ -222,13 +246,11 @@ const PostingJob: React.FC = () => {
           label="Cấp bậc"
           rules={[{ required: true, validator: validateField('Cấp bậc') }]}
         >
-          <Select placeholder="Chọn cấp bậc">
-            {jobPositions?.data?.items.map?.((position) => (
-              <Option key={position.id} value={position.id}>
-                {position.title}
-              </Option>
-            ))}
-          </Select>
+          <CustomSelect
+            title="Chọn cấp bậc"
+            options={positions || []}
+            placeholder="Chọn cấp bậc"
+          />
         </Form.Item>
 
         <Form.Item
@@ -236,13 +258,12 @@ const PostingJob: React.FC = () => {
           label="Địa điểm làm việc (tối đa 3 địa điểm)"
           rules={[{ required: true, validator: validateField('Địa điểm') }]}
         >
-          <Select placeholder="Chọn địa điểm" mode="multiple" maxCount={3}>
-            {jobPlacements?.data?.items?.map((place) => (
-              <Option key={place.id} value={place.id}>
-                {place.title}
-              </Option>
-            ))}
-          </Select>
+          <Select
+            placeholder="Chọn địa điểm"
+            options={placements || []}
+            mode="multiple"
+            maxCount={3}
+          ></Select>
         </Form.Item>
 
         <Form.Item
