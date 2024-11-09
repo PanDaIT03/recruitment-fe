@@ -127,13 +127,6 @@ const JobListPage = () => {
     [jobFields]
   );
 
-  const handleInitForm = () => {
-    form.setFieldsValue({
-      jobFieldsId: 'all',
-      salaryRange: 'all',
-    });
-  };
-
   const handleSearch = (values: IParams) => {
     let salaryMin: number | undefined;
     let salaryMax: number | undefined;
@@ -184,7 +177,10 @@ const JobListPage = () => {
 
   const resetFilters = () => {
     form.resetFields();
-    handleInitForm();
+    form.setFieldsValue({
+      jobFieldsId: 'all',
+      salaryRange: 'all',
+    });
 
     setFilters({});
     handlePageChange(1);

@@ -1,17 +1,10 @@
 import { Editor } from '@tinymce/tinymce-react';
-import {
-  DatePicker,
-  Divider,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-} from 'antd';
+import { DatePicker, Divider, Form, Input, InputNumber, Radio } from 'antd';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
+import CustomSelect from '~/components/Select/CustomSelect';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useFetch } from '~/hooks/useFetch';
 import {
@@ -25,7 +18,6 @@ import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
-const { Option } = Select;
 const { TeamOutlined } = icons;
 
 export interface PostingJobFormValues {
@@ -85,6 +77,41 @@ const PostingJob: React.FC = () => {
     ['jobFields'],
     JobsAPI.getAllJobFields
   );
+
+  const positions = useMemo(() => {
+    return jobPositions.data?.items.map((positions) => ({
+      value: positions.id,
+      label: positions.title,
+    }));
+  }, [jobPositions]);
+
+  const categories = useMemo(() => {
+    return jobCategories.data?.items.map((categories) => ({
+      value: categories.id,
+      label: categories.name,
+    }));
+  }, [jobCategories]);
+
+  const types = useMemo(() => {
+    return workTypes.data?.items.map((types) => ({
+      value: types.id,
+      label: types.title,
+    }));
+  }, [workTypes]);
+
+  const placements = useMemo(() => {
+    return jobPlacements.data?.items.map((placements) => ({
+      value: placements.id,
+      label: placements.title,
+    }));
+  }, [jobPlacements]);
+
+  const fields = useMemo(() => {
+    return jobFields.data?.items.map((fields) => ({
+      value: fields.id,
+      label: fields.title,
+    }));
+  }, [jobFields]);
 
   const cleanFormValues = (values: any) => {
     const cleanValues = { ...values };
@@ -168,7 +195,7 @@ const PostingJob: React.FC = () => {
             },
           ]}
         >
-          <Input />
+          <Input size="large" className="bg-light-gray" />
         </Form.Item>
 
         <Form.Item
@@ -176,13 +203,10 @@ const PostingJob: React.FC = () => {
           label="Lĩnh vực của vị trí tuyển dụng này là gì?"
           rules={[{ required: true, validator: validateField('Lĩnh vực') }]}
         >
-          <Select placeholder="Chọn danh mục">
-            {jobFields?.data?.items?.map?.((field) => (
-              <Option value={field.id} key={field.id}>
-                {field.title}
-              </Option>
-            ))}
-          </Select>
+          <CustomSelect
+            placeholder="Chọn danh mục"
+            options={fields || []}
+          ></CustomSelect>
         </Form.Item>
 
         <Form.Item
@@ -192,13 +216,10 @@ const PostingJob: React.FC = () => {
             { required: true, validator: validateField('Loại công việc') },
           ]}
         >
-          <Radio.Group className="flex flex-col gap-4">
-            {jobCategories?.data?.items.map?.((category) => (
-              <Radio value={category.id} key={category.id}>
-                {category.name}
-              </Radio>
-            ))}
-          </Radio.Group>
+          <Radio.Group
+            className="flex flex-col gap-4"
+            options={categories}
+          ></Radio.Group>
         </Form.Item>
 
         <Form.Item
@@ -208,13 +229,10 @@ const PostingJob: React.FC = () => {
             { required: true, validator: validateField('Hình thức làm việc') },
           ]}
         >
-          <Radio.Group className="flex flex-col gap-4">
-            {workTypes?.data?.items.map?.((type) => (
-              <Radio value={type.id} key={type.id}>
-                {type.title}
-              </Radio>
-            ))}
-          </Radio.Group>
+          <Radio.Group
+            className="flex flex-col gap-4"
+            options={types || []}
+          ></Radio.Group>
         </Form.Item>
 
         <Form.Item
@@ -222,13 +240,11 @@ const PostingJob: React.FC = () => {
           label="Cấp bậc"
           rules={[{ required: true, validator: validateField('Cấp bậc') }]}
         >
-          <Select placeholder="Chọn cấp bậc">
-            {jobPositions?.data?.items.map?.((position) => (
-              <Option key={position.id} value={position.id}>
-                {position.title}
-              </Option>
-            ))}
-          </Select>
+          <CustomSelect
+            title="Chọn cấp bậc"
+            options={positions || []}
+            placeholder="Chọn cấp bậc"
+          />
         </Form.Item>
 
         <Form.Item
@@ -236,13 +252,12 @@ const PostingJob: React.FC = () => {
           label="Địa điểm làm việc (tối đa 3 địa điểm)"
           rules={[{ required: true, validator: validateField('Địa điểm') }]}
         >
-          <Select placeholder="Chọn địa điểm" mode="multiple" maxCount={3}>
-            {jobPlacements?.data?.items?.map((place) => (
-              <Option key={place.id} value={place.id}>
-                {place.title}
-              </Option>
-            ))}
-          </Select>
+          <CustomSelect
+            placeholder="Chọn địa điểm"
+            options={placements || []}
+            mode="multiple"
+            maxCount={3}
+          ></CustomSelect>
         </Form.Item>
 
         <Form.Item
@@ -253,7 +268,8 @@ const PostingJob: React.FC = () => {
         >
           <InputNumber
             prefix={<TeamOutlined />}
-            className="w-full"
+            size="large"
+            className="w-full bg-light-gray"
             placeholder="Số lượng cần tuyển"
             min={1}
           />
@@ -269,7 +285,8 @@ const PostingJob: React.FC = () => {
         >
           <DatePicker
             placeholder="Thời hạn ứng tuyển"
-            className="w-full"
+            size="large"
+            className="w-full bg-light-gray"
             format="DD-MM-YYYY"
             disabledDate={(current) =>
               current && current.isBefore(dayjs().startOf('day'))
@@ -284,7 +301,8 @@ const PostingJob: React.FC = () => {
                 <InputNumber
                   formatter={formatter}
                   parser={parser}
-                  className="w-full"
+                  className="w-full bg-light-gray"
+                  size="large"
                   placeholder="Từ mức lương"
                   suffix="VND"
                   min="1"
@@ -294,7 +312,8 @@ const PostingJob: React.FC = () => {
                 <InputNumber
                   formatter={formatter}
                   parser={parser}
-                  className="w-full"
+                  className="w-full bg-light-gray"
+                  size="large"
                   placeholder="Đến mức lương"
                   suffix="VND"
                   min="1"
@@ -313,14 +332,16 @@ const PostingJob: React.FC = () => {
             <Input.Group compact className="w-full">
               <Form.Item name={'minExpYearRequired'} noStyle>
                 <InputNumber
-                  className="w-full"
+                  className="w-full bg-light-gray"
+                  size="large"
                   placeholder="Năm kinh nghiệm"
                   min={0}
                 />
               </Form.Item>
               <Form.Item name={'maxExpYearRequired'} noStyle>
                 <InputNumber
-                  className="w-full"
+                  className="w-full bg-light-gray"
+                  size="large"
                   placeholder="Năm kinh nghiệm"
                   min={0}
                 />
