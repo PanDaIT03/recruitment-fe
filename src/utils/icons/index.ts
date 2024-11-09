@@ -8,6 +8,7 @@ import {
   CalendarOutlined,
   CheckCircleTwoTone,
   ClockCircleOutlined,
+  CloseCircleOutlined,
   CloseOutlined,
   CloudUploadOutlined,
   CommentOutlined,
@@ -23,6 +24,7 @@ import {
   EyeOutlined,
   EyeTwoTone,
   FilePdfOutlined,
+  FilterOutlined,
   HomeOutlined,
   IdcardOutlined,
   InboxOutlined,
@@ -57,7 +59,6 @@ import {
   UserAddOutlined,
   UserOutlined,
   WalletOutlined,
-  FilterOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -120,6 +121,7 @@ const icons = {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   FilterOutlined,
+  CloseCircleOutlined,
 };
 
 export default icons;

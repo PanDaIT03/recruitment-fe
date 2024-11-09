@@ -1,28 +1,25 @@
-import { Divider, Drawer, Form, List, Radio } from 'antd';
+import { Form, List, Radio } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
+
 import { JobsAPI } from '~/apis/job';
-import { Box, File, Location, Salary, Television } from '~/assets/svg';
+import { Box, File, Salary, Television } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
 import { getAllJobs } from '~/store/thunk/job';
 import {
   JobItem,
-  JobPlacement,
   PaginatedJobCategories,
   PaginatedJobFields,
   PaginatedWorkTypes,
 } from '~/types/Job';
-import icons from '~/utils/icons';
-import Button from '../Button/Button';
 import FormItem from '../Form/FormItem';
+import DrawerSearch from '../Search/DrawerSearch';
+import TopSearchBar from '../Search/TopSearchBar';
 import CustomSelect from '../Select/CustomSelect';
-import TopSearchBar from '../TopSearchBar/TopSearchBar';
+import Select from '../Select/Select';
 import JobCard from './JobCard';
-
-const { FilterOutlined } = icons;
-
 export interface IParams {
   page: number;
   pageSize: number;
@@ -35,6 +32,8 @@ export interface IParams {
   title?: string;
   salaryRange?: any;
 }
+
+type IFilter = Partial<Omit<IParams, 'page' | 'pageSize'>>;
 
 const optionsSalary: DefaultOptionType[] = [
   {
@@ -62,19 +61,9 @@ const optionsSalary: DefaultOptionType[] = [
 const JobListPage = () => {
   const [form] = Form.useForm();
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
-  const [filters, setFilters] = useState<
-    Partial<Omit<IParams, 'page' | 'pageSize'>>
-  >({});
 
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
-
-  const showFilter = () => {
-    setIsFilterVisible(true);
-  };
-
-  const hideFilter = () => {
-    setIsFilterVisible(false);
-  };
+  const [filters, setFilters] = useState<IFilter>({});
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
 
   const { currentPage, itemsPerPage, handlePageChange } = usePagination<
     JobItem,
@@ -98,11 +87,6 @@ const JobListPage = () => {
   const workTypes = useFetch<PaginatedWorkTypes>(
     ['workTypes'],
     JobsAPI.getAllWorkTypes
-  );
-
-  const jobPlacements = useFetch<JobPlacement>(
-    ['placements'],
-    JobsAPI.getAllPlacements
   );
 
   const jobFields = useFetch<PaginatedJobFields>(
@@ -131,13 +115,6 @@ const JobListPage = () => {
     ],
     [workTypes]
   );
-
-  const placements = useMemo(() => {
-    return jobPlacements.data?.items.map((placements) => ({
-      value: placements.id,
-      label: placements.title,
-    }));
-  }, [jobPlacements]);
 
   const jobFieldsOptions = useMemo(
     () => [
@@ -200,186 +177,152 @@ const JobListPage = () => {
 
   const resetFilters = () => {
     form.resetFields();
+    form.setFieldsValue({
+      jobFieldsId: 'all',
+      salaryRange: 'all',
+    });
+
     setFilters({});
     handlePageChange(1);
   };
 
-  const FilterContent = () => (
-    <>
-      <Form.Item label="Địa điểm" layout="vertical">
-        <CustomSelect
-          allowClear
-          className="h-10"
-          placeholder="Chọn khu vực"
-          prefixIcon={<Location />}
-          configProvider={{
-            colorBgContainer: 'bg-light-gray',
-          }}
-          options={placements || []}
-        />
-      </Form.Item>
-      <Form.Item label="Lĩnh vực" layout="vertical">
-        <CustomSelect
-          showSearch={false}
-          placeholder="Chọn lĩnh vực"
-          displayedType="text"
-          className="w-full h-full"
-          options={jobFieldsOptions}
-          prefixIcon={<Box />}
-        />
-      </Form.Item>
-      <Form.Item name="workTypesId" label="Hình thức làm việc">
-        <Radio.Group className="flex flex-col gap-4">
-          {workTypes?.data?.items.map?.((type) => (
-            <Radio value={type.id} key={type.id}>
-              {type.title}
-            </Radio>
-          ))}
-        </Radio.Group>
-      </Form.Item>
-      <Form.Item name="categoriesId" label="Loại công việc">
-        <Radio.Group className="flex flex-col gap-4">
-          {jobCategories?.data?.items.map?.((category) => (
-            <Radio value={category.id} key={category.id}>
-              {category.name}
-            </Radio>
-          ))}
-        </Radio.Group>
-      </Form.Item>
-      <Form.Item name="salaryRange" label="Tất cả mức lương">
-        <Radio.Group className="flex flex-col">
-          {optionsSalary.map((option) => (
-            <Radio key={option.value} value={option.value}>
-              {option.label}
-            </Radio>
-          ))}
-        </Radio.Group>
-      </Form.Item>
-      <Divider />
-      <div className="w-full flex gap-1">
-        <Button title="Hủy" onClick={resetFilters} className="w-full" />
-        <Button
-          title="Lọc"
-          onClick={handleFilterSubmit}
-          className="w-full"
-          fill
-        />
-      </div>
-    </>
-  );
-
   return (
-    <div className="w-full">
-      <div className="lg:hidden my-4">
-        <Button
-          title="Lọc"
-          onClick={showFilter}
-          iconBefore={<FilterOutlined />}
-          className="w-full"
-        />
-        <Drawer
-          title="Bộ lọc"
-          placement="right"
-          onClose={hideFilter}
-          visible={isFilterVisible}
-          width="80%"
+    <div className="min-h-[100vh]">
+      <TopSearchBar
+        form={form}
+        onSearch={handleFilterChange}
+        setIsDrawerSearchOpen={setIsOpenDrawer}
+        placeHolder="Vị trí công việc/tên công ty"
+      >
+        <FormItem
+          childrenSelected
+          name="workTypesId"
+          className="w-full h-10 max-w-44 mb-0"
         >
-          <Form form={form}>
-            <FilterContent />
-          </Form>
-        </Drawer>
-      </div>
-
-      <div className="hidden lg:block">
-        <TopSearchBar
-          onSearch={handleFilterChange}
-          placeHolder="Vị trí công việc/tên công ty"
+          <CustomSelect
+            showSearch={false}
+            displayedType="text"
+            className="w-full h-full"
+            options={workTypeOptions}
+            prefixIcon={<Television />}
+          />
+        </FormItem>
+        <FormItem
+          childrenSelected
+          name="categoriesId"
+          className="w-full max-w-44 mb-0"
         >
-          <FormItem
-            childrenSelected
-            name="workTypesId"
-            className="w-full h-10 max-w-44 mb-0"
-          >
-            <CustomSelect
-              showSearch={false}
-              displayedType="text"
-              className="w-full h-full"
-              options={workTypeOptions}
-              prefixIcon={<Television />}
-            />
-          </FormItem>
-          <FormItem
-            childrenSelected
-            name="categoriesId"
-            className="w-full max-w-44 mb-0"
-          >
-            <CustomSelect
-              showSearch={false}
-              displayedType="text"
-              className="w-full h-full"
-              options={jobCategoriesOptions}
-              prefixIcon={<File />}
-            />
-          </FormItem>
-          <FormItem
-            childrenSelected
-            name="salaryRange"
-            className="w-full max-w-44 mb-0"
-          >
-            <CustomSelect
-              showSearch={false}
-              displayedType="text"
-              options={optionsSalary}
-              prefixIcon={<Salary />}
-              className="w-full h-full font-semibold"
-            />
-          </FormItem>
-          <FormItem
-            childrenSelected
-            name="jobFieldsId"
-            className="w-full max-w-44 mb-0"
-          >
-            <CustomSelect
-              showSearch={false}
-              displayedType="text"
-              className="w-full h-full"
-              options={jobFieldsOptions}
-              prefixIcon={<Box />}
-            />
-          </FormItem>
-        </TopSearchBar>
-      </div>
+          <CustomSelect
+            showSearch={false}
+            displayedType="text"
+            className="w-full h-full"
+            options={jobCategoriesOptions}
+            prefixIcon={<File />}
+          />
+        </FormItem>
+        <FormItem
+          childrenSelected
+          name="salaryRange"
+          className="w-full max-w-44 mb-0"
+        >
+          <CustomSelect
+            showSearch={false}
+            displayedType="text"
+            options={optionsSalary}
+            prefixIcon={<Salary />}
+            className="w-full h-full font-semibold"
+          />
+        </FormItem>
+        <FormItem
+          childrenSelected
+          name="jobFieldsId"
+          className="w-full max-w-44 mb-0"
+        >
+          <CustomSelect
+            showSearch={false}
+            displayedType="text"
+            className="w-full h-full"
+            options={jobFieldsOptions}
+            prefixIcon={<Box />}
+          />
+        </FormItem>
+      </TopSearchBar>
 
-      <div className="container mx-auto p-4">
-        <div>
-          <h2 className="text-base font-medium">Tin tuyển dụng</h2>
-          <div className="text-sm text-sub">
-            Tìm thấy
-            <strong className="text-primary"> {allJobs?.items?.length} </strong>
-            tin tuyển dụng
+      <DrawerSearch
+        form={form}
+        open={isOpenDrawer}
+        title="Lọc tin"
+        onCancel={resetFilters}
+        onFilter={handleFilterSubmit}
+        setIsOpenDrawer={setIsOpenDrawer}
+      >
+        <FormItem label="Lĩnh vực" name="jobFieldsId">
+          <Select options={jobFieldsOptions} className="w-full h-10" />
+        </FormItem>
+        <FormItem name="workTypesId" label="Hình thức làm việc">
+          <Radio.Group className="flex flex-col gap-4">
+            {workTypes?.data?.items.map?.((type) => (
+              <Radio value={type.id} key={type.id}>
+                {type.title}
+              </Radio>
+            ))}
+          </Radio.Group>
+        </FormItem>
+        <FormItem name="categoriesId" label="Loại công việc">
+          <Radio.Group className="flex flex-col gap-4">
+            {jobCategories?.data?.items.map?.((category) => (
+              <Radio value={category.id} key={category.id}>
+                {category.name}
+              </Radio>
+            ))}
+          </Radio.Group>
+        </FormItem>
+        <FormItem name="salaryRange" label="Tất cả mức lương">
+          <Radio.Group className="flex flex-col gap-4">
+            {optionsSalary.map((option) => (
+              <Radio key={option.value} value={option.value}>
+                {option.label}
+              </Radio>
+            ))}
+          </Radio.Group>
+        </FormItem>
+      </DrawerSearch>
+
+      <div className="w-full">
+        <div className="container mx-auto p-4">
+          <div>
+            <h2 className="text-base font-medium">Tin tuyển dụng</h2>
+            <div className="text-sm text-sub">
+              Tìm thấy
+              <strong className="text-primary">
+                {' '}
+                {allJobs?.items?.length}{' '}
+              </strong>
+              tin tuyển dụng
+            </div>
           </div>
+          <List
+            loading={loading}
+            itemLayout="vertical"
+            dataSource={allJobs?.items}
+            renderItem={(job) => (
+              <List.Item className="mb-4">
+                <JobCard {...job} />
+              </List.Item>
+            )}
+            pagination={
+              allJobs && allJobs?.items?.length
+                ? {
+                    current: currentPage,
+                    pageSize: itemsPerPage,
+                    total: allJobs?.pageInfo?.totalItems,
+                    onChange: handlePageChange,
+                    showSizeChanger: false,
+                  }
+                : false
+            }
+          />
         </div>
-        <List
-          loading={loading}
-          itemLayout="vertical"
-          dataSource={allJobs?.items}
-          renderItem={(job) => (
-            <List.Item className="mb-4">
-              <JobCard {...job} />
-            </List.Item>
-          )}
-          pagination={
-            allJobs && allJobs?.items?.length
-              ? {
-                  current: currentPage,
-                  pageSize: itemsPerPage,
-                  total: allJobs?.pageInfo?.totalItems,
-                  onChange: handlePageChange,
-                  showSizeChanger: false,
-                }
-              : false
-          }
-        />
       </div>
     </div>
   );
