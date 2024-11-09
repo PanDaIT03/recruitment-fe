@@ -26,7 +26,6 @@ import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
-const { Option } = Select;
 const { TeamOutlined } = icons;
 
 export interface PostingJobFormValues {
@@ -204,7 +203,7 @@ const PostingJob: React.FC = () => {
             },
           ]}
         >
-          <Input />
+          <Input size="large" className="bg-light-gray" />
         </Form.Item>
 
         <Form.Item
@@ -212,7 +211,10 @@ const PostingJob: React.FC = () => {
           label="Lĩnh vực của vị trí tuyển dụng này là gì?"
           rules={[{ required: true, validator: validateField('Lĩnh vực') }]}
         >
-          <Select placeholder="Chọn danh mục" options={fields || []}></Select>
+          <CustomSelect
+            placeholder="Chọn danh mục"
+            options={fields || []}
+          ></CustomSelect>
         </Form.Item>
 
         <Form.Item
@@ -258,12 +260,12 @@ const PostingJob: React.FC = () => {
           label="Địa điểm làm việc (tối đa 3 địa điểm)"
           rules={[{ required: true, validator: validateField('Địa điểm') }]}
         >
-          <Select
+          <CustomSelect
             placeholder="Chọn địa điểm"
             options={placements || []}
             mode="multiple"
             maxCount={3}
-          ></Select>
+          ></CustomSelect>
         </Form.Item>
 
         <Form.Item
@@ -274,7 +276,8 @@ const PostingJob: React.FC = () => {
         >
           <InputNumber
             prefix={<TeamOutlined />}
-            className="w-full"
+            size="large"
+            className="w-full bg-light-gray"
             placeholder="Số lượng cần tuyển"
             min={1}
           />
@@ -290,7 +293,8 @@ const PostingJob: React.FC = () => {
         >
           <DatePicker
             placeholder="Thời hạn ứng tuyển"
-            className="w-full"
+            size="large"
+            className="w-full bg-light-gray"
             format="DD-MM-YYYY"
             disabledDate={(current) =>
               current && current.isBefore(dayjs().startOf('day'))
@@ -305,7 +309,8 @@ const PostingJob: React.FC = () => {
                 <InputNumber
                   formatter={formatter}
                   parser={parser}
-                  className="w-full"
+                  className="w-full bg-light-gray"
+                  size="large"
                   placeholder="Từ mức lương"
                   suffix="VND"
                   min="1"
@@ -315,7 +320,8 @@ const PostingJob: React.FC = () => {
                 <InputNumber
                   formatter={formatter}
                   parser={parser}
-                  className="w-full"
+                  className="w-full bg-light-gray"
+                  size="large"
                   placeholder="Đến mức lương"
                   suffix="VND"
                   min="1"
@@ -334,14 +340,16 @@ const PostingJob: React.FC = () => {
             <Input.Group compact className="w-full">
               <Form.Item name={'minExpYearRequired'} noStyle>
                 <InputNumber
-                  className="w-full"
+                  className="w-full bg-light-gray"
+                  size="large"
                   placeholder="Năm kinh nghiệm"
                   min={0}
                 />
               </Form.Item>
               <Form.Item name={'maxExpYearRequired'} noStyle>
                 <InputNumber
-                  className="w-full"
+                  className="w-full bg-light-gray"
+                  size="large"
                   placeholder="Năm kinh nghiệm"
                   min={0}
                 />
