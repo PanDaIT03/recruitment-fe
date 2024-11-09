@@ -1,6 +1,6 @@
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
-import React, { memo, ReactNode } from 'react';
+import React, { memo, ReactNode, useMemo } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { Location, Search } from '~/assets/svg';
@@ -11,13 +11,6 @@ import FormItem from '../Form/FormItem';
 import FormWrapper from '../Form/FormWrapper';
 import Input from '../Input/Input';
 import CustomSelect from '../Select/CustomSelect';
-
-const optionLocations: DefaultOptionType[] = [
-  {
-    label: 'Toàn quốc',
-    value: 'all',
-  },
-];
 
 interface IProps {
   children?: ReactNode;
@@ -36,6 +29,13 @@ const TopSearchBar: React.FC<IProps> = ({
     ['placements'],
     JobsAPI.getAllPlacements
   );
+
+  const placements = useMemo(() => {
+    return jobPlacements.data?.items.map((placements) => ({
+      value: placements.id,
+      label: placements.title,
+    }));
+  }, [jobPlacements]);
 
   const handleFinish = (values: any) => {
     onSearch(values);
@@ -72,12 +72,7 @@ const TopSearchBar: React.FC<IProps> = ({
                 configProvider={{
                   colorBgContainer: 'bg-light-gray',
                 }}
-                options={
-                  jobPlacements?.data?.items?.map((place) => ({
-                    value: place?.id,
-                    label: place?.title,
-                  })) || optionLocations
-                }
+                options={placements || []}
               />
             </FormItem>
             <Button fill type="submit" title="Tìm kiếm" />
