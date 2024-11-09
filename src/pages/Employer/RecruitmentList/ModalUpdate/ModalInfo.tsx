@@ -14,8 +14,6 @@ import icons from '~/utils/icons';
 
 const { TeamOutlined } = icons;
 
-const { Option } = Select;
-
 export interface ModalProps {
   open: boolean;
   onClose: () => void;
