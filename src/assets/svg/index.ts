@@ -12,6 +12,7 @@ export { ReactComponent as Community } from './community.svg';
 export { ReactComponent as Document } from './document.svg';
 export { ReactComponent as DualLayerFile } from './dual-layer-file.svg';
 export { ReactComponent as File } from './file.svg';
+export { ReactComponent as Filter } from './filter.svg';
 export { ReactComponent as Fly } from './fly.svg';
 export { ReactComponent as Graduate } from './graduate.svg';
 export { ReactComponent as Language } from './language.svg';
