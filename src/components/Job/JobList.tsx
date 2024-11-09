@@ -27,7 +27,7 @@ export interface IParams {
   salariMax?: number;
   categoriesId?: number;
   jobFieldsId?: number;
-  placmentsId?: number;
+  placementsId?: number;
   workTypesId?: number;
   title?: string;
   salaryRange?: any;
