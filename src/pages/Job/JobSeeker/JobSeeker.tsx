@@ -1,15 +1,20 @@
+import { Flex, message, Radio, Table, Tag } from 'antd';
+import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
-
-import { BackPack, Box } from '~/assets/svg';
-import FormItem from '~/components/Form/FormItem';
-import CustomSelect from '~/components/Select/CustomSelect';
-import TopSearchBar from '~/components/TopSearchBar/TopSearchBar';
-import { message, Table, Tag } from 'antd';
-import icons from '~/utils/icons';
-import Button from '~/components/Button/Button.tsx';
 import { ColumnsType } from 'antd/es/table';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
+import { BackPack, Box } from '~/assets/svg';
+import Button from '~/components/Button/Button.tsx';
+import FormItem from '~/components/Form/FormItem';
+import DrawerSearch from '~/components/Search/DrawerSearch';
+import TopSearchBar from '~/components/Search/TopSearchBar';
+import CustomSelect from '~/components/Select/CustomSelect';
+import Select from '~/components/Select/Select';
+import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore.ts';
-import { useCallback, useState } from 'react';
+import icons from '~/utils/icons';
 
 const { EnvironmentOutlined, ClockCircleOutlined } = icons;
 
@@ -42,29 +47,37 @@ const optionsExperience: DefaultOptionType[] = [
   },
 ];
 
-const optionsField: DefaultOptionType[] = [
+const defaultFieldOptions: DefaultOptionType[] = [
   {
     label: 'Tất cả lĩnh vực',
     value: 'all',
   },
-  {
-    label: 'Accountant/Finance/Investment',
-    value: 'op1',
-  },
-  {
-    label: 'Biên/Phiên dịch',
-    value: 'op2',
-  },
-  {
-    label: 'Bán lẻ/Tiêu dùng',
-    value: 'op3',
-  },
 ];
 
 const JobSeeker = () => {
+  const [form] = useForm();
   const { role } = useAppSelector((state) => state.auth.currentUser);
 
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [expandedRow, setExpandedRow] = useState<string[]>([]);
+
+  const { data: jobFields } = useFetch(
+    ['allJobsFields'],
+    DesiredJobAPI.getAllJobFields
+  );
+
+  const jobFieldOptions = useMemo(() => {
+    if (!jobFields?.items.length) return defaultFieldOptions;
+
+    const jobFieldItems: DefaultOptionType[] = jobFields?.items.map(
+      (jobField) => ({
+        label: jobField.title,
+        value: jobField.id,
+      })
+    );
+
+    return [...jobFieldItems, ...defaultFieldOptions];
+  }, []);
 
   const toggleExpand = (key: string) => {
     setExpandedRow((prevExpandedRows) =>
@@ -206,21 +219,28 @@ const JobSeeker = () => {
       },
     },
   ];
+
+  const handleInitForm = () => {
+    form.setFieldsValue({ experience: 'all', field: 'all' });
+  };
+
   const handleSearch = (values: any) => {
     console.log(values);
   };
 
+  useEffect(() => {
+    handleInitForm();
+  }, []);
+
   return (
     <div className="min-h-[100vh]">
       <TopSearchBar
+        form={form}
         placeHolder="Tìm kiếm theo vị trí ứng tuyển"
         onSearch={handleSearch}
+        setIsDrawerSearchOpen={setIsOpenDrawer}
       >
-        <FormItem
-          childrenSelected
-          name="experience"
-          className="w-full h-10 max-w-48 mb-0"
-        >
+        <FormItem name="experience" className="w-full h-10 max-w-48 mb-0">
           <CustomSelect
             showSearch={false}
             displayedType="text"
@@ -229,20 +249,40 @@ const JobSeeker = () => {
             prefixIcon={<BackPack />}
           />
         </FormItem>
-        <FormItem
-          childrenSelected
-          name="field"
-          className="w-full h-10 max-w-44 mb-0"
-        >
+        <FormItem name="field" className="w-full h-10 max-w-44 mb-0">
           <CustomSelect
             showSearch={false}
             displayedType="text"
             className="w-full h-full"
-            options={optionsField}
+            options={jobFieldOptions}
             prefixIcon={<Box />}
           />
         </FormItem>
       </TopSearchBar>
+
+      <DrawerSearch
+        form={form}
+        open={isOpenDrawer}
+        title="Lọc ứng viên"
+        onFilter={handleSearch}
+        onCancel={handleInitForm}
+        setIsOpenDrawer={setIsOpenDrawer}
+      >
+        <FormItem name="field" label="Lĩnh vực">
+          <Select allowClear placeholder="Lĩnh vực" options={jobFieldOptions} />
+        </FormItem>
+        <FormItem name="experience" label="Kinh nghiệm">
+          <Radio.Group>
+            <Flex vertical gap={16}>
+              {optionsExperience.map(({ value, label }) => (
+                <Radio key={value} value={value}>
+                  {label}
+                </Radio>
+              ))}
+            </Flex>
+          </Radio.Group>
+        </FormItem>
+      </DrawerSearch>
 
       <div className="container mx-auto p-4">
         <div>
