@@ -1,5 +1,5 @@
 import { Form, Input, InputNumber, Modal, Radio, Select } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
 import { useFetch } from '~/hooks/useFetch';
@@ -13,8 +13,6 @@ import {
 import icons from '~/utils/icons';
 
 const { TeamOutlined } = icons;
-
-const { Option } = Select;
 
 export interface ModalProps {
   open: boolean;
@@ -49,6 +47,34 @@ const ModalInfo: React.FC<ModalProps> = ({
     ['jobFields'],
     JobsAPI.getAllJobFields
   );
+
+  const categories = useMemo(() => {
+    return jobCategories.data?.items.map((categories) => ({
+      value: categories.id,
+      label: categories.name,
+    }));
+  }, [jobCategories]);
+
+  const types = useMemo(() => {
+    return workTypes.data?.items.map((types) => ({
+      value: types.id,
+      label: types.title,
+    }));
+  }, [workTypes]);
+
+  const placements = useMemo(() => {
+    return jobPlacements.data?.items.map((placements) => ({
+      value: placements.id,
+      label: placements.title,
+    }));
+  }, [jobPlacements]);
+
+  const fields = useMemo(() => {
+    return jobFields.data?.items.map((fields) => ({
+      value: fields.id,
+      label: fields.title,
+    }));
+  }, [jobFields]);
 
   const formatter = (value: string | undefined): string => {
     if (!value) return '';
@@ -106,33 +132,15 @@ const ModalInfo: React.FC<ModalProps> = ({
           label="Lĩnh vực của vị trí tuyển dụng này là gì?"
           required
         >
-          <Select placeholder="Chọn danh mục">
-            {jobFields?.data?.items?.map?.((field) => (
-              <Option value={field.id} key={field.id}>
-                {field.title}
-              </Option>
-            ))}
-          </Select>
+          <Select placeholder="Chọn danh mục" options={fields || []}></Select>
         </Form.Item>
 
         <Form.Item name="categoriesId" label="Loại công việc" required>
-          <Radio.Group>
-            {jobCategories?.data?.items.map?.((category) => (
-              <Radio value={category.id} key={category.id}>
-                {category.name}
-              </Radio>
-            ))}
-          </Radio.Group>
+          <Radio.Group options={categories || []}></Radio.Group>
         </Form.Item>
 
         <Form.Item name="workTypesId" label="Hình thức làm việc" required>
-          <Radio.Group>
-            {workTypes?.data?.items.map?.((type) => (
-              <Radio value={type.id} key={type.id}>
-                {type.title}
-              </Radio>
-            ))}
-          </Radio.Group>
+          <Radio.Group options={types || []}></Radio.Group>
         </Form.Item>
 
         <Form.Item
@@ -140,13 +148,12 @@ const ModalInfo: React.FC<ModalProps> = ({
           label="Địa điểm làm việc (tối đa 3 địa điểm)"
           required
         >
-          <Select placeholder="Chọn địa điểm" mode="multiple" maxCount={3}>
-            {jobPlacements?.data?.items?.map((place) => (
-              <Option key={place.id} value={place.id}>
-                {place.title}
-              </Option>
-            ))}
-          </Select>
+          <Select
+            placeholder="Chọn địa điểm"
+            options={placements}
+            mode="multiple"
+            maxCount={3}
+          ></Select>
         </Form.Item>
 
         <Form.Item label="Mức lương (không bắt buộc)" className="mb-4">

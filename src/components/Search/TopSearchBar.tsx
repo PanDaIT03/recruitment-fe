@@ -1,9 +1,15 @@
-import { useForm } from 'antd/es/form/Form';
+import { FormInstance } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
-import React, { memo, ReactNode } from 'react';
+import React, {
+  Dispatch,
+  memo,
+  ReactNode,
+  SetStateAction,
+  useMemo,
+} from 'react';
 
 import { JobsAPI } from '~/apis/job';
-import { Location, Search } from '~/assets/svg';
+import { Filter, Location, Search } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import { JobPlacement } from '~/types/Job';
 import Button from '../Button/Button';
@@ -12,7 +18,7 @@ import FormWrapper from '../Form/FormWrapper';
 import Input from '../Input/Input';
 import CustomSelect from '../Select/CustomSelect';
 
-const optionLocations: DefaultOptionType[] = [
+export const defaultLocation: DefaultOptionType[] = [
   {
     label: 'Toàn quốc',
     value: 'all',
@@ -20,22 +26,37 @@ const optionLocations: DefaultOptionType[] = [
 ];
 
 interface IProps {
+  form: FormInstance;
   children?: ReactNode;
   placeHolder?: string;
   onSearch: (values: any) => void;
+  setIsDrawerSearchOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
 const TopSearchBar: React.FC<IProps> = ({
+  form,
   children,
   placeHolder,
   onSearch,
+  setIsDrawerSearchOpen,
 }) => {
-  const [form] = useForm();
-
   const jobPlacements = useFetch<JobPlacement>(
     ['placements'],
     JobsAPI.getAllPlacements
   );
+
+  const placementOptions = useMemo(() => {
+    if (!jobPlacements?.data?.items.length) return defaultLocation;
+
+    const placementItems: DefaultOptionType[] = jobPlacements?.data?.items.map(
+      (placement) => ({
+        label: placement.title,
+        value: placement.id,
+      })
+    );
+
+    return [...placementItems, ...defaultLocation];
+  }, [jobPlacements]);
 
   const handleFinish = (values: any) => {
     onSearch(values);
@@ -52,6 +73,7 @@ const TopSearchBar: React.FC<IProps> = ({
           <div className="flex w-full gap-x-4">
             <FormItem name="title" className="flex-1 max-w-[957px] mb-3">
               <Input
+                allowClear
                 size="large"
                 prefix={<Search />}
                 placeholder={placeHolder}
@@ -60,29 +82,28 @@ const TopSearchBar: React.FC<IProps> = ({
             </FormItem>
             <FormItem
               childrenSelected
-              name="placmentsId"
-              initialValue="all"
-              className="w-full max-w-[198px] mb-3"
+              name="placementsId"
+              className="hidden w-full max-w-[198px] mb-3 lg:block"
             >
               <CustomSelect
                 allowClear
                 className="h-10"
                 placeholder="Chọn khu vực"
                 prefixIcon={<Location />}
-                configProvider={{
-                  colorBgContainer: 'bg-light-gray',
-                }}
-                options={
-                  jobPlacements?.data?.items?.map((place) => ({
-                    value: place?.id,
-                    label: place?.title,
-                  })) || optionLocations
-                }
+                options={placementOptions}
               />
             </FormItem>
             <Button fill type="submit" title="Tìm kiếm" />
+            <Button
+              title={<Filter />}
+              displayType="outline"
+              className="hidden max-lg:block"
+              onClick={() =>
+                setIsDrawerSearchOpen && setIsDrawerSearchOpen(true)
+              }
+            />
           </div>
-          <div className="flex gap-2">{children}</div>
+          <div className="hidden md:flex md:gap-2">{children}</div>
         </div>
       </FormWrapper>
     </div>
