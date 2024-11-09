@@ -69,7 +69,7 @@ const DrawerSearch: React.FC<IProps> = ({
     <Drawer
       {...props}
       onClose={handleClose}
-      classNames={{ wrapper: '!w-[55%]' }}
+      classNames={{ wrapper: '!w-[55%] max-md:!w-[80%]' }}
       footer={
         <Flex gap={24} align="center" className="py-4 px-6">
           <Button
