@@ -13,7 +13,8 @@ import { useMessage } from '~/contexts/MessageProvider';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetUser } from '~/store/reducer/auth';
 import { signInWithGoogle } from '~/store/thunk/auth';
-import { IBaseUser, ROLE } from '~/types/Auth';
+import { IBaseUser } from '~/types/Auth';
+import { ROLE } from '~/types/Role';
 import toast from '~/utils/functions/toast';
 import PATH from '~/utils/path';
 import FormSignUp from './FormSignUp';
@@ -26,6 +27,7 @@ const SignUp = () => {
   const [form] = useForm();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const { roles } = useAppSelector((state) => state.role);
   const { currentUser } = useAppSelector((state) => state.auth);
 
   const { mutate: signUp, isPending } = useMutation({
@@ -44,7 +46,14 @@ const SignUp = () => {
   }, [currentUser]);
 
   const handleFinish = useCallback(async (values: IBaseUser) => {
-    const params: ISignUpParams = { ...values, roleId: ROLE.USER };
+    const roleId = roles.find((role) => role.title === ROLE.USER)?.id;
+
+    if (!roleId) {
+      toast.error('Lỗi không tìm thấy chức vụ');
+      return;
+    }
+
+    const params: ISignUpParams = { ...values, roleId };
     signUp(params);
   }, []);
 

@@ -2,9 +2,9 @@ import { Divider, Flex, Layout, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import AuthAPI from '~/apis/auth';
 import { JobsAPI } from '~/apis/job';
-
 import { Fly } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
@@ -12,12 +12,12 @@ import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useFetch } from '~/hooks/useFetch';
-import { useAppDispatch } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import FormApplication from '~/pages/User/JobApplication/FormJobApplication';
 import { IJobApplicationForm } from '~/pages/User/JobApplication/JobApplication';
 import { checkExistedEmail } from '~/store/thunk/auth';
-import { ROLE } from '~/types/Auth';
 import { PaginatedJobFields, PaginatedJobPositions } from '~/types/Job';
+import { ROLE } from '~/types/Role';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -49,6 +49,8 @@ const SignUp = () => {
   const [form] = useForm();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const { roles } = useAppSelector((state) => state.role);
 
   const { data: jobFields } = useFetch<PaginatedJobFields>(
     ['allJobsFields'],
@@ -213,14 +215,20 @@ const SignUp = () => {
 
   const handleFinish = async (values: SignUpFormValues) => {
     try {
+      const roleId = roles.find((role) => role.title === ROLE.EMPLOYER)?.id;
       const checkEmail = await dispatch(checkExistedEmail(values.email));
 
       if (checkEmail) return toast.warning('Email đã tồn tại');
 
+      if (!roleId) {
+        toast.error('Lỗi không tìm thấy chức vụ');
+        return;
+      }
+
       const payload = {
         ...values,
+        roleId: roleId,
         jobFieldsIds: [values.jobFieldsIds],
-        roleId: ROLE.EMPLOYER,
       };
 
       const response = await AuthAPI.signUp(payload);
