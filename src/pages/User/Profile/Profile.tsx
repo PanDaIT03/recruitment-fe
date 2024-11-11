@@ -88,6 +88,7 @@ const Profile = () => {
 
   useEffect(() => {
     const id = currentUser.id;
+    if (!id) return;
 
     getLanguageByUserId(id);
     getUserSkillByUserId(id);
