@@ -1,4 +1,5 @@
 import { Flex } from 'antd';
+
 import {
   AddUser,
   AvatarPlaceHolder,
@@ -161,7 +162,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                         </span>
                       ),
                       icon: <LoginOutlined />,
-                      onClick: () => navigate('/'),
+                      onClick: () => navigate(PATH.EMPLOYER_SIGN_IN),
                     },
                     {
                       key: '4',
@@ -171,7 +172,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                         </span>
                       ),
                       icon: <AddUser width={18} height={18} />,
-                      onClick: () => navigate('/'),
+                      onClick: () => navigate(PATH.EMPLOYER_SIGN_UP),
                     },
                   ],
                 },
