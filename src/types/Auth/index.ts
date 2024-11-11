@@ -1,8 +1,3 @@
-export enum ROLE {
-  USER = 13,
-  EMPLOYER = 15,
-}
-
 interface IBaseAuthResponse {
   message: string;
   statusCode: number;

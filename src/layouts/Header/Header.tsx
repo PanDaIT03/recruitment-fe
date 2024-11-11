@@ -58,10 +58,15 @@ const Header = ({ items = defaultItems }: IProps) => {
   const dispatch = useAppDispatch();
 
   const refreshToken = localStorage.getItem('token2');
-  const { loading } = useAppSelector((state) => state.auth);
+  const { currentUser, loading } = useAppSelector((state) => state.auth);
 
   const [isOpenMenuModal, setIsOpenMenuModal] = useState(false);
   const [isOpenLogOutModal, setIsOpenLogOutModal] = useState(false);
+
+  const isAuthenticated = useMemo(
+    () => !!refreshToken && !!Object.keys(currentUser).length,
+    [refreshToken, currentUser]
+  );
 
   const menuItems: IMenuItem[] = useMemo(
     () =>
@@ -173,7 +178,7 @@ const Header = ({ items = defaultItems }: IProps) => {
           </ConfigProvider>
         </Col>
         <div className="hidden lg:block">
-          {refreshToken ? (
+          {isAuthenticated ? (
             <HeaderDropDown setIsOpen={setIsOpenLogOutModal} />
           ) : (
             <Col className="flex gap-3 justify-between items-center relative">
