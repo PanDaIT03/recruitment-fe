@@ -1,4 +1,4 @@
-import { InternalAxiosRequestConfig, AxiosHeaders } from 'axios';
+import { AxiosHeaders } from 'axios';
 import axiosApi from '~/services/axios';
 import { UserListResponse } from '~/types/User';
 import {
@@ -112,6 +112,11 @@ const UserApi = {
   updateUserSkill: async (params: ISkillParams): Promise<IBaseResponse> => {
     const { skillsId, level } = params;
     return await axiosApi.patch(`/users-skills/${skillsId}`, { level });
+  },
+  updateInfoEmployer: async (params: any): Promise<IBaseResponse> => {
+    return await axiosApi.patch('/users/personal-info', params, {
+      headers,
+    });
   },
 
   // DELETE
