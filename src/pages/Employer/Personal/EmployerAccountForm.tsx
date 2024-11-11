@@ -1,21 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Input, message, Upload, UploadProps, Image, Select } from 'antd';
-import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
-import { useAppSelector } from '~/hooks/useStore';
-import Button from '~/components/Button/Button';
 import type { GetProp } from 'antd';
-import { useFetch } from '~/hooks/useFetch';
-import { PaginatedJobPositions } from '~/types/Job';
+import {
+  Avatar,
+  Form,
+  Input,
+  message,
+  Select,
+  Upload,
+  UploadProps,
+} from 'antd';
+import React, { useEffect, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
+import UserApi from '~/apis/user';
+import Button from '~/components/Button/Button';
+import { useFetch } from '~/hooks/useFetch';
+import { useAppSelector } from '~/hooks/useStore';
+import { PaginatedJobPositions } from '~/types/Job';
 
 const { Option } = Select;
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
+export interface IUpdateInfoEmployer {
+  fullName: string;
+  phoneNumber: number;
+  companyName: string;
+  companyUrl: string;
+  jobPositionsId: number;
+  file: File;
+}
+
 const EmployerAccountForm: React.FC = () => {
   const [form] = Form.useForm();
   const { currentUser } = useAppSelector((state) => state.auth);
-  const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const { data: jobPositions } = useFetch<PaginatedJobPositions>(
@@ -49,7 +65,6 @@ const EmployerAccountForm: React.FC = () => {
 
   const handleChange: UploadProps['onChange'] = (info) => {
     if (info.file.status === 'uploading') {
-      setLoading(true);
       return;
     }
     if (info.file.status === 'done') {
@@ -59,19 +74,30 @@ const EmployerAccountForm: React.FC = () => {
           ? URL.createObjectURL(info.file.originFileObj)
           : null);
       setImageUrl(url);
-      setLoading(false);
     }
   };
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
 
-  const onFinish = (values: any) => {
-    console.log('Received values: ', values);
-    message.success('Cập nhật thông tin thành công!');
+  const onFinish = async (values: IUpdateInfoEmployer) => {
+    const formData = new FormData();
+
+    formData.append('fullName', values.fullName);
+    formData.append('phoneNumber', String(values.phoneNumber));
+    formData.append('companyName', values.companyName);
+    formData.append('companyUrl', values.companyUrl || '');
+    formData.append('jobPositionsId', String(values.jobPositionsId));
+
+    const fileList = form.getFieldValue('avatar');
+    if (fileList && fileList[0]?.originFileObj) {
+      formData.append('file', fileList[0].originFileObj);
+    }
+
+    try {
+      const response = await UserApi.updateInfoEmployer(formData);
+      message.success(response.message);
+    } catch (error) {
+      message.error('Có lỗi xảy ra khi cập nhật thông tin!');
+      console.error(error);
+    }
   };
 
   return (
@@ -85,17 +111,18 @@ const EmployerAccountForm: React.FC = () => {
             name="avatar"
             capture="user"
             listType="picture-circle"
-            className="avatar-uploader"
             showUploadList={false}
-            action="https://your-api-endpoint.com/upload"
-            beforeUpload={beforeUpload}
             onChange={handleChange}
+            beforeUpload={(file) => {
+              const isValid = beforeUpload(file);
+              if (isValid === true) {
+                setImageUrl(URL.createObjectURL(file));
+                form.setFieldsValue({ avatar: [{ originFileObj: file }] });
+              }
+              return false;
+            }}
           >
-            {imageUrl ? (
-              <Image src={imageUrl} alt="avatar" style={{ width: '100%' }} />
-            ) : (
-              uploadButton
-            )}
+            <Avatar src={imageUrl} alt="avatar" className="w-full h-full" />
           </Upload>
         </div>
       </div>
@@ -145,7 +172,7 @@ const EmployerAccountForm: React.FC = () => {
           <Input placeholder="Nhập website công ty" className="rounded-md" />
         </Form.Item>
 
-        <Form.Item name="positionsId" label="Cấp bậc">
+        <Form.Item name="jobPositionsId" label="Cấp bậc">
           <Select placeholder="Chức vụ">
             {jobPositions?.items.map?.((position) => (
               <Option key={position.id} value={position.id}>
