@@ -14,10 +14,9 @@ const HomeBanner = () => {
       navigate(PATH.USER_SIGN_UP);
       return;
     }
-
     const roleRedirectMap: { [key: number]: string } = {
       13: PATH.JOB_LIST,
-      3: PATH.EMPLOYER_DASHBOARD,
+      15: PATH.EMPLOYER_DASHBOARD,
     };
 
     const targetPath = roleRedirectMap[currentUser.role.id];

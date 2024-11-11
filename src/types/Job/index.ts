@@ -107,3 +107,29 @@ export interface IJob<T = JobItem> {
   pageInfo: PageInfo;
   items: T[];
 }
+
+interface Job {
+  id: number;
+  title: string;
+}
+
+interface User {
+  id: number;
+  fullName: string;
+}
+
+export interface Application {
+  pageInfo: PageInfo;
+  items: {
+    createAt: string;
+    cvViewedAt: Nullable<string>;
+    referrerId: Nullable<number>;
+    employerUpdateBy: Nullable<number>;
+    employerUpdateAt: Nullable<string>;
+    usersId: number;
+    jobsId: number;
+    job: Job;
+    user: User;
+    applicationStatus: Nullable<string>;
+  }[];
+}
