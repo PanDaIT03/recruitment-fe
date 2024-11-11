@@ -1,11 +1,19 @@
 import { Menu, ModalProps } from 'antd';
-import { Dispatch, memo, SetStateAction, useCallback, useMemo } from 'react';
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { BackPack, Blogs, Users } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppSelector } from '~/hooks/useStore';
+import { token } from '~/utils/constant';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import { createBaseMenu, createUserMenu } from './menu/headerMenuItem';
@@ -26,30 +34,31 @@ const HeaderMenu = ({
 }: IProps) => {
   const navigate = useNavigate();
 
-  const refreshToken = localStorage.getItem('token2');
+  const [navigatePath, setNavigatePath] = useState('');
   const { currentUser } = useAppSelector((state) => state.auth);
 
   const isAuthenticated = useMemo(
-    () => !!refreshToken && !!Object.keys(currentUser).length,
-    [refreshToken, currentUser]
+    () => !!token && !!Object.keys(currentUser).length,
+    [token, currentUser]
   );
 
-  const handleNavigate = useCallback(async (path: string) => {
+  const handleNavigate = useCallback((path: string) => {
+    setNavigatePath(path);
     setIsOpenMenuModal(false);
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    navigate(path);
   }, []);
 
-  const handleSignOut = useCallback(async () => {
+  const handleSignOut = useCallback(() => {
     setIsOpenMenuModal(false);
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
     onSingOut();
   }, []);
 
+  const handleModalClose = () => {
+    navigate(navigatePath);
+    setNavigatePath('');
+  };
+
   const userMenu = createUserMenu(handleNavigate);
-  const baseMenu = createBaseMenu({ currentUser, refreshToken });
+  const baseMenu = createBaseMenu({ currentUser, token });
 
   const menuItems = useMemo(() => {
     return [
@@ -104,6 +113,7 @@ const HeaderMenu = ({
       isOpen={isOpen}
       className="rounded-2xl"
       animationType="slide-down"
+      afterClose={handleModalClose}
       onCancel={() => setIsOpenMenuModal(false)}
       footer={
         <Button

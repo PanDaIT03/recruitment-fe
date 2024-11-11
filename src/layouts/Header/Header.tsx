@@ -17,6 +17,7 @@ import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signOut } from '~/store/thunk/auth';
+import { token } from '~/utils/constant';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
@@ -57,15 +58,14 @@ const Header = ({ items = defaultItems }: IProps) => {
   const location = useLocation();
   const dispatch = useAppDispatch();
 
-  const refreshToken = localStorage.getItem('token2');
-  const { currentUser, loading } = useAppSelector((state) => state.auth);
-
   const [isOpenMenuModal, setIsOpenMenuModal] = useState(false);
   const [isOpenLogOutModal, setIsOpenLogOutModal] = useState(false);
 
+  const { currentUser, loading } = useAppSelector((state) => state.auth);
+
   const isAuthenticated = useMemo(
-    () => !!refreshToken && !!Object.keys(currentUser).length,
-    [refreshToken, currentUser]
+    () => !!token && !!Object.keys(currentUser).length,
+    [token, currentUser]
   );
 
   const menuItems: IMenuItem[] = useMemo(

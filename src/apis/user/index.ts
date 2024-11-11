@@ -1,4 +1,4 @@
-import { AxiosHeaders } from 'axios';
+import { InternalAxiosRequestConfig, AxiosHeaders } from 'axios';
 import axiosApi from '~/services/axios';
 import { UserListResponse } from '~/types/User';
 import {
@@ -24,6 +24,11 @@ export type IGetForeignLanguage = IPaginatedData<IForeignLanguage[]>;
 export type IGetWorkExperience = IPaginatedData<IWorkExperience[]>;
 export type IGetUserSkill = IPaginatedData<IUserSkill[]>;
 
+export type IUpdateAccountInfo = {
+  fullName?: string;
+  newPassword?: string;
+  file?: string;
+};
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
 export type IPaginatedSkill = IPaginatedData<ISkillComboBox[]>;
@@ -108,11 +113,7 @@ const UserApi = {
     const { skillsId, level } = params;
     return await axiosApi.patch(`/users-skills/${skillsId}`, { level });
   },
-  updateInfoEmployer: async (params: any): Promise<any> => {
-    return await axiosApi.patch('/users/personal-info', params, {
-      headers,
-    });
-  },
+
   // DELETE
   deleteWorkExperience: async (id: number): Promise<IBaseResponse> => {
     return await axiosApi.delete(`/work-experiences/${id}`);
