@@ -1,4 +1,4 @@
-import { Card, Col, Row, Tag, Typography } from 'antd';
+import { Avatar, Card, Col, Row, Tag, Typography } from 'antd';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -28,9 +28,11 @@ const JobHeader: React.FC<
   <Row className="flex items-start gap-4 mb-3">
     <Col className="flex-shrink-0 w-12 h-12 mt-1">
       {user?.avatarUrl ? (
-        <img
+        <Avatar
           alt={title}
           src={user.avatarUrl}
+          shape="square"
+          size="large"
           className="rounded-md object-contain w-full h-full"
         />
       ) : (

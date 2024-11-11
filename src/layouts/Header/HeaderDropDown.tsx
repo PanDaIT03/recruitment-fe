@@ -1,4 +1,4 @@
-import { Dropdown, MenuProps } from 'antd';
+import { Avatar, Dropdown, MenuProps } from 'antd';
 import { Dispatch, memo, SetStateAction, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -40,7 +40,15 @@ const HeaderDropDown = ({ setIsOpen }: IProps) => {
   return (
     <>
       <Dropdown arrow trigger={['click']} menu={{ items: menuItems }}>
-        <AvatarPlaceHolder width={40} height={40} className="cursor-pointer" />
+        <Avatar
+          src={
+            currentUser?.avatarUrl || (
+              <AvatarPlaceHolder className="!w-14 !h-14 !border-none cursor-pointer" />
+            )
+          }
+          alt="avatar"
+          className="!w-14 !h-14 border border-slate-100 cursor-pointer"
+        />
       </Dropdown>
     </>
   );
