@@ -1,4 +1,4 @@
-import { InternalAxiosRequestConfig } from 'axios';
+import { AxiosHeaders, InternalAxiosRequestConfig } from 'axios';
 import axiosApi from '~/services/axios';
 import { UserListResponse } from '~/types/User';
 import {
@@ -32,6 +32,10 @@ export type IUpdateAccountInfo = {
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
 export type IPaginatedSkill = IPaginatedData<ISkillComboBox[]>;
+
+const headers: AxiosHeaders = new AxiosHeaders({
+  'Content-Type': 'multipart/form-data',
+});
 
 const UserApi = {
   // GET
@@ -115,6 +119,11 @@ const UserApi = {
         'Content-Type': 'multipart/form-data',
       },
     } as InternalAxiosRequestConfig);
+  },
+  updateInfoEmployer: async (params: any): Promise<IBaseResponse> => {
+    return await axiosApi.patch('/users/personal-info', params, {
+      headers,
+    });
   },
 
   // DELETE

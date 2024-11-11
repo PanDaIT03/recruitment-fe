@@ -1,28 +1,25 @@
-import Button from '~/components/Button/Button';
-import { GreaterThan } from '~/assets/svg';
 import { useNavigate } from 'react-router-dom';
+import { GreaterThan } from '~/assets/svg';
+import Button from '~/components/Button/Button';
+import useRole from '~/hooks/useRole';
 import { useAppSelector } from '~/hooks/useStore';
+import { token } from '~/utils/constant';
 import PATH from '~/utils/path';
 
 const HomeBanner = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem('token2');
   const { currentUser } = useAppSelector((state) => state.auth);
+
+  const { isEmployer, isUser } = useRole();
 
   const handleNavigate = () => {
     if (!token || !currentUser) {
       navigate(PATH.USER_SIGN_UP);
       return;
     }
-    const roleRedirectMap: { [key: number]: string } = {
-      13: PATH.JOB_LIST,
-      15: PATH.EMPLOYER_DASHBOARD,
-    };
 
-    const targetPath = roleRedirectMap[currentUser.role.id];
-    if (targetPath) {
-      navigate(targetPath);
-    }
+    isEmployer && navigate(PATH.EMPLOYER_RECRUITMENT_LIST);
+    isUser && navigate(PATH.JOB_LIST);
   };
 
   return (

@@ -5,14 +5,13 @@ import { useEffect, useState } from 'react';
 
 import UserApi, { IUpdateAccountInfo } from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { useAppSelector } from '~/hooks/useStore';
 import { IFormAccount } from '~/types/Account';
 import FormAccount from './FormAccount';
 
 const { Title } = Typography;
 
 const Account = () => {
-  const dispatch = useAppDispatch();
   const { messageApi } = useMessage();
   const [form] = useForm<IFormAccount>();
 
