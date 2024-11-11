@@ -45,10 +45,10 @@ import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore';
 import { defaultCoverImage } from '~/mocks/data';
+import { JobPlacement } from '~/types/Job';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
-import { JobPlacement } from '~/types/Job';
 
 interface IChildren {
   title: string;
@@ -111,7 +111,6 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
   const { currentUser } = useAppSelector((state) => state.auth);
 
   return (
-    // <Flex className="w-full lg:col-span-3">
     <div className="w-full h-max overflow-hidden rounded-xl bg-white shadow-card p-0 shadow lg:col-span-3">
       <div className="w-full">
         <div className="h-[9rem] bg-[url('assets/img/profile_cover_image.jpg')] bg-cover bg-center bg-no-repeat"></div>
