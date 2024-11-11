@@ -1,20 +1,14 @@
-import { Flex, Menu, ModalProps, Space } from 'antd';
+import { Menu, ModalProps } from 'antd';
 import { Dispatch, memo, SetStateAction, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  AddUser,
-  AvatarPlaceHolder,
-  BackPack,
-  Blogs,
-  Users,
-} from '~/assets/svg';
+import { BackPack, Blogs, Users } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppSelector } from '~/hooks/useStore';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
-import { createUserMenu } from './menu/headerMenuItem';
+import { createBaseMenu, createUserMenu } from './menu/headerMenuItem';
 
 interface IProps extends ModalProps {
   isOpen: boolean;
@@ -22,7 +16,7 @@ interface IProps extends ModalProps {
   setIsOpenMenuModal: Dispatch<SetStateAction<boolean>>;
 }
 
-const { LogoutOutlined, LoginOutlined } = icons;
+const { LogoutOutlined } = icons;
 
 const HeaderMenu = ({
   isOpen,
@@ -54,10 +48,12 @@ const HeaderMenu = ({
     onSingOut();
   }, []);
 
-  const userMenu = createUserMenu({ currentUser, navigate: handleNavigate });
+  const userMenu = createUserMenu(handleNavigate);
+  const baseMenu = createBaseMenu({ currentUser, refreshToken });
 
-  const baseMenu = useMemo(
-    () => [
+  const menuItems = useMemo(() => {
+    return [
+      ...baseMenu,
       {
         key: 'job-seeker',
         label: (
@@ -83,75 +79,10 @@ const HeaderMenu = ({
         icon: <Blogs width={18} height={18} />,
         onClick: () => handleNavigate('/'),
       },
-    ],
-    []
-  );
-
-  const guestMenu = useMemo(() => {
-    return [
-      {
-        key: 'user-group',
-        type: 'group' as const,
-        className: '[&>div]:!text-[#1c1917]',
-        label: <span className="font-semibold">Người tìm việc</span>,
-        children: [
-          {
-            key: '1',
-            label: (
-              <span className="text-neutral-600 font-medium">Đăng nhập</span>
-            ),
-            icon: <LoginOutlined />,
-            onClick: () => handleNavigate(PATH.USER_SIGN_IN),
-          },
-          {
-            key: '2',
-            label: (
-              <span className="text-neutral-600 font-medium">
-                Đăng ký tìm việc
-              </span>
-            ),
-            icon: <AddUser width={18} height={18} />,
-            onClick: () => handleNavigate(PATH.USER_SIGN_UP),
-          },
-        ],
-      },
-      { type: 'divider' as const },
-      {
-        key: 'employer-group',
-        type: 'group' as const,
-        className: '[&>div]:!text-[#1c1917]',
-        label: <span className="font-semibold">Nhà tuyển dụng</span>,
-        children: [
-          {
-            key: '3',
-            label: (
-              <span className="text-neutral-600 font-medium">Đăng nhập</span>
-            ),
-            icon: <LoginOutlined />,
-            onClick: () => handleNavigate('/'),
-          },
-          {
-            key: '4',
-            label: (
-              <span className="text-neutral-600 font-medium">
-                Đăng ký tuyển dụng
-              </span>
-            ),
-            icon: <AddUser width={18} height={18} />,
-            onClick: () => handleNavigate('/'),
-          },
-        ],
-      },
-    ];
-  }, []);
-
-  const menuItems = useMemo(() => {
-    return [
-      ...baseMenu,
-      { type: 'divider' as const },
+      { type: 'divider' as const, dashed: true },
+      ...userMenu,
       ...(isAuthenticated
         ? [
-            ...userMenu,
             { type: 'divider' as const, dashed: true },
             {
               key: 'logout',
@@ -163,9 +94,9 @@ const HeaderMenu = ({
               onClick: handleSignOut,
             },
           ]
-        : guestMenu),
+        : []),
     ];
-  }, [userMenu, guestMenu, isAuthenticated, onSingOut]);
+  }, [baseMenu, userMenu, isAuthenticated]);
 
   return (
     <Modal
@@ -184,18 +115,7 @@ const HeaderMenu = ({
       }
       {...props}
     >
-      <Space direction="vertical" size="middle" className="w-full">
-        {isAuthenticated && (
-          <Flex gap={16} align="center" className="w-full rounded-md p-3">
-            <AvatarPlaceHolder width={52} height={52} />
-            <div>
-              <p className="text-lg font-bold">{currentUser.fullName}</p>
-              <p className="text-sub text-md">{currentUser.email}</p>
-            </div>
-          </Flex>
-        )}
-        <Menu items={menuItems} className="!border-none" />
-      </Space>
+      <Menu items={menuItems} className="!border-none" />
     </Modal>
   );
 };

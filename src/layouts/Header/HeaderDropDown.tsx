@@ -1,11 +1,11 @@
-import { Dropdown, Image, MenuProps } from 'antd';
+import { Dropdown, MenuProps } from 'antd';
 import { Dispatch, memo, SetStateAction, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { USER_AVATAR } from '~/assets/img';
+import { AvatarPlaceHolder } from '~/assets/svg';
 import { useAppSelector } from '~/hooks/useStore';
 import icons from '~/utils/icons';
-import { createUserMenu } from './menu/headerMenuItem';
+import { createBaseMenu, createUserMenu } from './menu/headerMenuItem';
 
 const { LogoutOutlined } = icons;
 
@@ -15,34 +15,12 @@ interface IProps {
 
 const HeaderDropDown = ({ setIsOpen }: IProps) => {
   const navigate = useNavigate();
+
+  const refreshToken = localStorage.getItem('token2');
   const { currentUser } = useAppSelector((state) => state.auth);
 
-  const userMenu = createUserMenu({ currentUser, navigate });
-
-  const baseMenu: MenuProps['items'] = useMemo(() => {
-    return [
-      {
-        key: 'base',
-        className: 'pointer-events-none',
-        label: (
-          <div>
-            <h1 className="font-semibold">{currentUser.fullName}</h1>
-            <span className="text-sm text-gray-600">{currentUser.email}</span>
-          </div>
-        ),
-        icon: (
-          <Image
-            width={40}
-            height={40}
-            preview={false}
-            src={USER_AVATAR}
-            className="border border-white rounded-[50%] select-none"
-          />
-        ),
-      },
-      { type: 'divider' },
-    ];
-  }, [currentUser]);
+  const userMenu = createUserMenu(navigate);
+  const baseMenu = createBaseMenu({ currentUser, refreshToken });
 
   const menuItems: MenuProps['items'] = useMemo(() => {
     return [
@@ -57,20 +35,12 @@ const HeaderDropDown = ({ setIsOpen }: IProps) => {
         onClick: () => setIsOpen(true),
       },
     ];
-  }, [baseMenu, userMenu, currentUser, navigate]);
+  }, [baseMenu, userMenu]);
 
   return (
     <>
       <Dropdown arrow trigger={['click']} menu={{ items: menuItems }}>
-        <a onClick={(e) => e.preventDefault()}>
-          <Image
-            width={40}
-            height={40}
-            preview={false}
-            src={USER_AVATAR}
-            className="border border-white rounded-[50%] text-"
-          />
-        </a>
+        <AvatarPlaceHolder width={40} height={40} className="cursor-pointer" />
       </Dropdown>
     </>
   );
