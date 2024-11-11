@@ -118,6 +118,20 @@ export default {
       screens: {
         '812px': '812px',
       },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: 0, transform: 'translateY(10px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+        fadeOut: {
+          '0%': { opacity: 1, transform: 'translateY(0)' },
+          '100%': { opacity: 0, transform: 'translateY(10px)' },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn .5s ease-out forwards',
+        fadeOut: 'fadeOut .5s ease-in forwards',
+      },
     },
   },
   plugins: [],
