@@ -1,13 +1,12 @@
 import { Col, Row } from 'antd';
-import { useForm } from 'antd/es/form/Form';
+import { FormInstance } from 'antd/es/form/Form';
 import FormItem from 'antd/es/form/FormItem';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
-import { useAppSelector } from '~/hooks/useStore';
 import { IFormAccount } from '~/types/Account';
 import { passwordRegex } from '~/utils/constant';
 import icons from '~/utils/icons';
@@ -15,38 +14,26 @@ import icons from '~/utils/icons';
 const { UserOutlined, MailOutlined, LockOutlined, EditOutlined } = icons;
 
 interface IProps {
+  loading?: boolean;
+  form: FormInstance;
+  isChangeName: boolean;
+  isChangePassword: boolean;
+  onCancel: () => void;
   onFinish: (values: IFormAccount) => void;
+  setIsChangeName: Dispatch<SetStateAction<boolean>>;
+  setIsChangePassword: Dispatch<SetStateAction<boolean>>;
 }
 
-const FormAccount = ({ onFinish }: IProps) => {
-  const [form] = useForm<IFormAccount>();
-
-  const { currentUser } = useAppSelector((state) => state.auth);
-
-  const [isChangeName, setIsChangeName] = useState(false);
-  const [isChangePassword, setIsChangePassword] = useState(false);
-
-  const handleSetFormDefault = () => {
-    const formValues: IFormAccount = {
-      email: currentUser.email,
-      fullName: currentUser.fullName,
-    };
-
-    form.setFieldsValue(formValues);
-  };
-
-  useEffect(() => {
-    handleSetFormDefault();
-  }, [currentUser]);
-
-  const handleCancel = () => {
-    form.resetFields();
-    setIsChangeName(false);
-    setIsChangePassword(false);
-
-    handleSetFormDefault();
-  };
-
+const FormAccount: React.FC<IProps> = ({
+  form,
+  loading,
+  isChangeName,
+  isChangePassword,
+  onCancel,
+  onFinish,
+  setIsChangeName,
+  setIsChangePassword,
+}) => {
   const handleFinish = (values: IFormAccount) => {
     const { password, reEnterPassword } = values;
 
@@ -71,10 +58,10 @@ const FormAccount = ({ onFinish }: IProps) => {
           hidden={!(isChangePassword || isChangeName)}
         >
           <Col>
-            <Button title="Huỷ" onClick={handleCancel} />
+            <Button title="Huỷ" onClick={onCancel} loading={loading} />
           </Col>
           <Col>
-            <Button type="submit" fill title="Xác nhận" />
+            <Button type="submit" fill title="Xác nhận" loading={loading} />
           </Col>
         </Row>
       }
@@ -85,7 +72,7 @@ const FormAccount = ({ onFinish }: IProps) => {
         label="Họ và tên"
         rules={[
           {
-            required: true,
+            required: isChangeName,
             message: 'Hãy nhập họ và tên',
           },
         ]}
@@ -140,7 +127,7 @@ const FormAccount = ({ onFinish }: IProps) => {
         label="Nhập lại mật khẩu mới"
         rules={[
           {
-            required: true,
+            required: isChangePassword,
             message: 'Hãy nhập mật khẩu mới',
           },
         ]}

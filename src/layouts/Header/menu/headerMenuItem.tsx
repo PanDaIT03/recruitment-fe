@@ -18,7 +18,7 @@ const { LoginOutlined } = icons;
 
 interface IBaseMenu {
   currentUser: IUser;
-  refreshToken: string | null;
+  token: string | null;
 }
 
 export const createUserMenu = (navigate: (path: string) => void) => {
@@ -197,8 +197,8 @@ export const createUserMenu = (navigate: (path: string) => void) => {
   ];
 };
 
-export const createBaseMenu = ({ currentUser, refreshToken }: IBaseMenu) => {
-  return !!refreshToken && !!Object.keys(currentUser).length
+export const createBaseMenu = ({ currentUser, token }: IBaseMenu) => {
+  return !!token && !!Object.keys(currentUser).length
     ? [
         {
           key: 'base',
