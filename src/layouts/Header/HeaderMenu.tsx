@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { BackPack, Blogs, Users } from '~/assets/svg';
 import Button from '~/components/Button/Button';
@@ -33,9 +33,10 @@ const HeaderMenu = ({
   ...props
 }: IProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [navigatePath, setNavigatePath] = useState('');
   const { currentUser } = useAppSelector((state) => state.auth);
+  const [navigatePath, setNavigatePath] = useState(location.pathname);
 
   const isAuthenticated = useMemo(
     () => !!token && !!Object.keys(currentUser).length,
@@ -53,8 +54,10 @@ const HeaderMenu = ({
   }, []);
 
   const handleModalClose = () => {
+    if (navigatePath === location.pathname) return;
+
     navigate(navigatePath);
-    setNavigatePath('');
+    setNavigatePath(navigatePath);
   };
 
   const userMenu = createUserMenu(handleNavigate);
