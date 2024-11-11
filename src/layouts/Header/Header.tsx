@@ -3,7 +3,7 @@ import {
   Col,
   ConfigProvider,
   Dropdown,
-  Image,
+  Flex,
   Menu,
   MenuProps,
   Row,
@@ -11,13 +11,18 @@ import {
 import { memo, ReactNode, useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { DISCONNECTED } from '~/assets/img';
-import { BackPack, Blogs, HeaderLogo, MenuIcon, Users } from '~/assets/svg';
+import {
+  BackPack,
+  Blogs,
+  Disconnect,
+  HeaderLogo,
+  MenuIcon,
+  Users,
+} from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signOut } from '~/store/thunk/auth';
-import { token } from '~/utils/constant';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
@@ -63,9 +68,11 @@ const Header = ({ items = defaultItems }: IProps) => {
 
   const { currentUser, loading } = useAppSelector((state) => state.auth);
 
+  const refreshToken = localStorage.getItem('token2');
+
   const isAuthenticated = useMemo(
-    () => !!token && !!Object.keys(currentUser).length,
-    [token, currentUser]
+    () => !!refreshToken && !!Object.keys(currentUser).length,
+    [refreshToken, currentUser]
   );
 
   const menuItems: IMenuItem[] = useMemo(
@@ -171,7 +178,7 @@ const Header = ({ items = defaultItems }: IProps) => {
             <Menu
               mode="inline"
               items={menuItems}
-              className="flex w-full max-lg:hidden"
+              className="flex w-full !border-e-0 max-lg:hidden"
               onSelect={handleSelect}
               selectedKeys={getSelectedKey(location.pathname)}
             />
@@ -218,14 +225,15 @@ const Header = ({ items = defaultItems }: IProps) => {
           title="Đăng xuất"
           isOpen={isOpenLogOutModal}
           animationType="slide-down"
+          className="max-w-[446px]"
           onCancel={() => setIsOpenLogOutModal(false)}
           footer={
-            <div className="flex justify-end gap-3">
+            <Flex align="center" justify="space-between" gap={12}>
               <Button
                 title="Huỷ"
                 loading={loading}
                 iconBefore={<CloseOutlined />}
-                className="w-full max-w-[143px]"
+                className="w-full max-w-[183px]"
                 onClick={() => setIsOpenLogOutModal(false)}
               />
               <Button
@@ -233,23 +241,18 @@ const Header = ({ items = defaultItems }: IProps) => {
                 title="Đăng xuất"
                 loading={loading}
                 iconAfter={<LogoutOutlined />}
-                className="w-full max-w-[143px]"
+                className="w-full max-w-[183px]"
                 onClick={handleOkModal}
               />
-            </div>
+            </Flex>
           }
         >
-          <div className="flex flex-col items-center gap-3">
-            <Image
-              width={112}
-              height={112}
-              preview={false}
-              src={DISCONNECTED}
-            />
+          <Flex vertical align="center" gap={16}>
+            <Disconnect width={112} height={112} />
             <p className="text-center font-semibold text-[#334155]">
               Bạn có chắc chắn muốn đăng xuất khỏi tài khoản của mình?
             </p>
-          </div>
+          </Flex>
         </Modal>
       </Row>
     </div>

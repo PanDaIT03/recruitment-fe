@@ -1,5 +1,6 @@
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { App as AntApp } from 'antd';
 import { useEffect, useRef } from 'react';
 
 import { MessageProvider } from './contexts/MessageProvider';
@@ -37,11 +38,13 @@ function App() {
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
-      <MessageProvider>
-        <QueryClientProvider client={queryClient}>
-          <AppRouter />
-        </QueryClientProvider>
-      </MessageProvider>
+      <AntApp>
+        <MessageProvider>
+          <QueryClientProvider client={queryClient}>
+            <AppRouter />
+          </QueryClientProvider>
+        </MessageProvider>
+      </AntApp>
     </GoogleOAuthProvider>
   );
 }

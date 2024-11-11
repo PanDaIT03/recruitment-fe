@@ -57,8 +57,9 @@ const Account = () => {
 
   const handleFinish = (values: IFormAccount) => {
     const params: IUpdateAccountInfo = {
-      fullName: values.fullName,
-      newPassword: values.password,
+      fullName: values?.fullName?.trim(),
+      newPassword: values?.password?.trim(),
+      isChangePassword: isChangePassword,
     };
 
     updateAccountInfo(params);

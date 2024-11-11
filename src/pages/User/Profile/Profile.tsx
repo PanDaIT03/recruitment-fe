@@ -87,13 +87,16 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    const id = currentUser.id;
-    if (!id) return;
+    const id = currentUser?.id;
+    const achievementId = currentUser?.achivement?.id;
 
-    getLanguageByUserId(id);
-    getUserSkillByUserId(id);
-    getAchievementByUserId(id);
-    getWorkExperienceByUserId(id);
+    if (id) {
+      getLanguageByUserId(id);
+      getUserSkillByUserId(id);
+      getWorkExperienceByUserId(id);
+    }
+
+    if (achievementId) getAchievementByUserId(achievementId);
   }, [currentUser]);
 
   const handleEditItem = useCallback(
@@ -242,7 +245,7 @@ const Profile = () => {
         data={achievement || initAchievement}
         isOpen={selectedItem === ProfileSectionType.ACHIEVEMENT}
         onCancel={() => setSelectedItem('')}
-        refetch={() => getAchievementByUserId(currentUser.id)}
+        refetch={() => getAchievementByUserId(currentUser.achivement.id)}
       />
       <ExperienceModal
         data={workExperiences[editIndex]}

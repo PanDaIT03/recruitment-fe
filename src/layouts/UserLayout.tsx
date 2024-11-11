@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import {
   Divider,
   Flex,
@@ -25,6 +26,7 @@ import {
 import { Link, Outlet } from 'react-router-dom';
 
 import { JobsAPI } from '~/apis/job';
+import UserApi from '~/apis/user';
 import {
   AvatarPlaceHolder,
   BusinessCard,
@@ -42,6 +44,7 @@ import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal from '~/components/Modal/Modal';
 import Select from '~/components/Select/Select';
+import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore';
 import { defaultCoverImage } from '~/mocks/data';
@@ -119,7 +122,11 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
             <div className="relative w-fit rounded-full border-[3px] border-white">
               <div className="rounded-full bg-white w-[108px] h-[108px]">
                 <div className="inline-block aspect-square h-full w-full rounded-full border border-gray-200 overflow-hidden">
-                  <ImageAntd width={108} height={108} src={defaultCoverImage} />
+                  <ImageAntd
+                    width={108}
+                    height={108}
+                    src={currentUser.avatarUrl || defaultCoverImage}
+                  />
                 </div>
               </div>
               <ButtonAction
@@ -168,15 +175,29 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
 
 const UserLayout = () => {
   const [form] = useForm();
+  const { messageApi } = useMessage();
 
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const [isOpenAvatarModal, setIsOpenAvatarModal] = useState(false);
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const jobPlacements = useFetch<JobPlacement>(
     ['placements'],
     JobsAPI.getAllPlacements
   );
+
+  const { mutate: updateAccountInfo, isPending } = useMutation({
+    mutationFn: (params: FormData) => UserApi.updateAccountInfo(params),
+    onSuccess: (res) => {
+      setIsOpenAvatarModal(false);
+      messageApi.success(res?.message || 'Cập nhật thông tin thành công');
+    },
+    onError: (error: any) => {
+      messageApi.error(
+        `Cập nhật thông tin thất bại: ${error?.response?.data?.message}`
+      );
+    },
+  });
 
   const props: UploadProps = useMemo(
     () => ({
@@ -187,6 +208,7 @@ const UserLayout = () => {
       onRemove: () => setFileList([]),
       onPreview: async (file: UploadFile) => {
         let src = file.url as string;
+
         if (!src) {
           src = await new Promise((resolve) => {
             const reader = new FileReader();
@@ -194,7 +216,9 @@ const UserLayout = () => {
             reader.onload = () => resolve(reader.result as string);
           });
         }
+
         const image = new Image();
+
         image.src = src;
         const imgWindow = window.open(src);
         imgWindow?.document.write(image.outerHTML);
@@ -246,6 +270,20 @@ const UserLayout = () => {
   const handleCancelAvatarModal = useCallback(() => {
     setIsOpenAvatarModal(false);
   }, []);
+
+  const handleAvatarModalFinish = useCallback(() => {
+    if (!fileList.length) return;
+
+    const formData = new FormData();
+    fileList.forEach((file) => {
+      if (file.originFileObj) {
+        console.log(fileList, !!file.originFileObj);
+        formData.append('file', file.originFileObj);
+      }
+    });
+
+    updateAccountInfo(formData);
+  }, [fileList]);
 
   const handleInfoModalFinish = useCallback(() => {
     console.log('finish');
@@ -338,9 +376,11 @@ const UserLayout = () => {
       </Modal>
       <Modal
         centered
+        loading={isPending}
         isOpen={isOpenAvatarModal}
         title="Thay đổi hình đại diện"
         onCancel={handleCancelAvatarModal}
+        onOk={handleAvatarModalFinish}
       >
         <ImgCrop
           rotationSlider
