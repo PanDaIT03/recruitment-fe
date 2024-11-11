@@ -21,6 +21,7 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const { messageApi } = useMessage();
 
   const [isEdit, setIsEdit] = useState(false);
+  const [achievementEditor, setAchievementEditor] = useState('');
 
   const { mutate: createAchievement, isPending: isCreateAchievementPending } =
     useMutation({
@@ -50,14 +51,19 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     });
 
   useEffect(() => {
-    if (!data) {
+    if (!data || !Object.keys(data).length) {
       setIsEdit(false);
       return;
     }
 
     setIsEdit(true);
-    isOpen && form.setFieldValue('achievement', data);
+    isOpen && form.setFieldValue('achievement', data.description);
   }, [data, isOpen]);
+
+  const handleEditorChange = (newValue: string) => {
+    setAchievementEditor(newValue);
+    form.setFieldValue('achievement', newValue);
+  };
 
   const handleCancel = () => {
     form.resetFields();
@@ -67,13 +73,20 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const handleFinish = async (values: any) => {
     const { achievement } = values;
 
+    // console.log(values);
+    const content = achievement?.lastLevel?.content;
+    // const isEmptyContent = content
+    //   ? /^<p>(<br>|&nbsp;|\s)*<\/p>$/.test(content)
+    //   : true;
+    // console.log(isEmptyContent);
+
     isEdit
       ? updateAchievement({
           id: data.id,
-          description: achievement?.level?.content,
+          description: content,
         })
       : createAchievement({
-          description: achievement?.level?.content,
+          description: content,
         });
 
     handleCancel();
@@ -99,8 +112,9 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
         }
       >
         <Editor
-          initialValue={data.description}
-          onChange={(val) => console.log(val)}
+          value={achievementEditor}
+          initialValue={data?.description || ''}
+          onEditorChange={handleEditorChange}
         />
       </FormItem>
     </ProfileModal>

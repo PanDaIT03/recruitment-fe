@@ -38,9 +38,11 @@ const HeaderMenu = ({
   const { currentUser } = useAppSelector((state) => state.auth);
   const [navigatePath, setNavigatePath] = useState(location.pathname);
 
+  const refreshToken = localStorage.getItem('token2');
+  
   const isAuthenticated = useMemo(
-    () => !!token && !!Object.keys(currentUser).length,
-    [token, currentUser]
+    () => !!refreshToken && !!Object.keys(currentUser).length,
+    [refreshToken, currentUser]
   );
 
   const handleNavigate = useCallback((path: string) => {
@@ -61,7 +63,7 @@ const HeaderMenu = ({
   };
 
   const userMenu = createUserMenu(handleNavigate);
-  const baseMenu = createBaseMenu({ currentUser, token });
+  const baseMenu = createBaseMenu({ currentUser, token: refreshToken });
 
   const menuItems = useMemo(() => {
     return [
