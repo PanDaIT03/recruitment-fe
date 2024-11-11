@@ -4,7 +4,6 @@ import {
   IEmailStatus,
   IUser,
   IUserSignInWithGoogle,
-  ROLE,
 } from '~/types/Auth/index';
 
 type Response = IBaseResponse<{
@@ -12,7 +11,7 @@ type Response = IBaseResponse<{
 }>;
 
 export interface ISignUpParams extends IBaseUser {
-  roleId: ROLE;
+  roleId: number;
 }
 
 export interface IVerifyOTP {
