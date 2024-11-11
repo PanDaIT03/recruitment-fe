@@ -8,7 +8,10 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { currentUser } = useAppSelector((state) => state.auth);
+  const token = localStorage.getItem('token2');
   const userRole = currentUser?.role?.title;
+
+  if (token && !userRole) return <Outlet />;
 
   return allowedRoles.includes(userRole || 'admin') ? (
     <Outlet />
