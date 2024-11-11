@@ -24,11 +24,12 @@ export type IGetForeignLanguage = IPaginatedData<IForeignLanguage[]>;
 export type IGetWorkExperience = IPaginatedData<IWorkExperience[]>;
 export type IGetUserSkill = IPaginatedData<IUserSkill[]>;
 
-export type IUpdateAccountInfo = {
-  file?: any;
-  fullName?: string;
-  newPassword?: string;
-};
+export type IUpdateAccountInfo = Partial<{
+  file: any;
+  fullName: string;
+  newPassword: string;
+  isChangePassword: boolean;
+}>;
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
 export type IPaginatedSkill = IPaginatedData<ISkillComboBox[]>;
