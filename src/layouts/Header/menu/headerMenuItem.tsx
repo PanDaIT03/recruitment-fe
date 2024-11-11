@@ -1,4 +1,4 @@
-import { Flex } from 'antd';
+import { Avatar, Flex } from 'antd';
 
 import {
   AddUser,
@@ -132,6 +132,17 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                 ),
                 onClick: () => navigate(PATH.EMPLOYER_RECRUITMENT_LIST),
               },
+              { type: 'divider' as const },
+              {
+                key: '5',
+                label: (
+                  <span className="text-neutral-600 font-medium">
+                    Tài khoản
+                  </span>
+                ),
+                icon: <UserAccount width={18} height={18} />,
+                onClick: () => navigate(PATH.EMPLOYER_PERSONAL),
+              },
             ]
           : isGuest
             ? [
@@ -205,7 +216,15 @@ export const createBaseMenu = ({ currentUser, token }: IBaseMenu) => {
           className: 'pointer-events-none !p-0 !h-max',
           label: (
             <Flex gap={16} align="center" className="w-full rounded-md p-3">
-              <AvatarPlaceHolder width={52} height={52} />
+              <Avatar
+                src={
+                  currentUser?.avatarUrl || (
+                    <AvatarPlaceHolder className="!w-14 !h-14 cursor-pointer" />
+                  )
+                }
+                alt="avatar"
+                className="!w-14 !h-14 border-gray-200 border"
+              />
               <div>
                 <p className="text-lg font-bold">{currentUser.fullName}</p>
                 <p className="text-sub text-md">{currentUser.email}</p>
