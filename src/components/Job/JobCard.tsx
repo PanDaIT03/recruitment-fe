@@ -26,7 +26,7 @@ const JobHeader: React.FC<
   Pick<JobItem, 'id' | 'title' | 'user' | 'jobPosition'>
 > = ({ id, title, user, jobPosition }) => (
   <Row className="flex items-start gap-4 mb-3">
-    <Col className="flex-shrink-0 w-12 h-12 mt-1">
+    <Col className="flex-shrink-0 w-24 h-24 mt-1">
       {user?.avatarUrl ? (
         <Avatar
           alt={title}

@@ -219,11 +219,11 @@ export const createBaseMenu = ({ currentUser, refreshToken }: IBaseMenu) => {
               <Avatar
                 src={
                   currentUser?.avatarUrl || (
-                    <AvatarPlaceHolder className="!w-14 !h-14 !border-none cursor-pointer" />
+                    <AvatarPlaceHolder className="!w-14 !h-14 cursor-pointer" />
                   )
                 }
                 alt="avatar"
-                className="!w-14 !h-14 border border-slate-400"
+                className="!w-14 !h-14 border-gray-200 border"
               />
               <div>
                 <p className="text-lg font-bold">{currentUser.fullName}</p>

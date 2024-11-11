@@ -43,11 +43,11 @@ const HeaderDropDown = ({ setIsOpen }: IProps) => {
         <Avatar
           src={
             currentUser?.avatarUrl || (
-              <AvatarPlaceHolder className="!w-14 !h-14 !border-none cursor-pointer" />
+              <AvatarPlaceHolder className="!w-14 !h-14 cursor-pointer" />
             )
           }
           alt="avatar"
-          className="!w-14 !h-14 border border-slate-100 cursor-pointer"
+          className="!w-14 !h-14 border-gray-200 cursor-pointer"
         />
       </Dropdown>
     </>
