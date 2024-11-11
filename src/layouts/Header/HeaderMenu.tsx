@@ -1,24 +1,22 @@
-import { Flex, Menu, ModalProps, Space } from 'antd';
-import { Dispatch, memo, SetStateAction, useCallback, useMemo } from 'react';
+import { Menu, ModalProps } from 'antd';
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  AddUser,
-  AvatarPlaceHolder,
-  BackPack,
-  Blogs,
-  DualLayerFile,
-  File,
-  PersonCard,
-  SkyScraper,
-  UserAccount,
-  Users,
-} from '~/assets/svg';
+import { BackPack, Blogs, Users } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppSelector } from '~/hooks/useStore';
+import { token } from '~/utils/constant';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
+import { createBaseMenu, createUserMenu } from './menu/headerMenuItem';
 
 interface IProps extends ModalProps {
   isOpen: boolean;
@@ -26,7 +24,7 @@ interface IProps extends ModalProps {
   setIsOpenMenuModal: Dispatch<SetStateAction<boolean>>;
 }
 
-const { LogoutOutlined, LoginOutlined } = icons;
+const { LogoutOutlined } = icons;
 
 const HeaderMenu = ({
   isOpen,
@@ -36,191 +34,35 @@ const HeaderMenu = ({
 }: IProps) => {
   const navigate = useNavigate();
 
-  const refreshToken = localStorage.getItem('token2');
+  const [navigatePath, setNavigatePath] = useState('');
   const { currentUser } = useAppSelector((state) => state.auth);
 
-  const handleNavigate = useCallback(async (path: string) => {
-    setIsOpenMenuModal(false);
-    await new Promise((resolve) => setTimeout(resolve, 0));
+  const isAuthenticated = useMemo(
+    () => !!token && !!Object.keys(currentUser).length,
+    [token, currentUser]
+  );
 
-    navigate(path);
+  const handleNavigate = useCallback((path: string) => {
+    setNavigatePath(path);
+    setIsOpenMenuModal(false);
   }, []);
 
-  const handleSignOut = useCallback(async () => {
+  const handleSignOut = useCallback(() => {
     setIsOpenMenuModal(false);
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
     onSingOut();
   }, []);
 
-  const userMenu = useMemo(() => {
-    return [
-      ...(currentUser?.role?.id === 2
-        ? [
-            {
-              key: 'admin-menu',
-              label: (
-                <span className="text-neutral-600 font-medium">Admin</span>
-              ),
-              onClick: () => handleNavigate(PATH.ADMIN_DASHBOARD),
-            },
-          ]
-        : currentUser?.role?.id === 1
-          ? [
-              {
-                key: 'profile-group',
-                type: 'group' as const,
-                className: '[&>div]:!text-[#1c1917]',
-                label: <span className="font-semibold">Hồ sơ</span>,
-                children: [
-                  {
-                    key: '1',
-                    label: (
-                      <span className="text-neutral-600 font-medium">
-                        Cá nhân
-                      </span>
-                    ),
-                    icon: <PersonCard width={18} height={18} />,
-                    onClick: () => handleNavigate(PATH.USER_PROFILE),
-                  },
-                  {
-                    key: '2',
-                    label: (
-                      <span className="text-neutral-600 font-medium">
-                        Công việc mong muốn
-                      </span>
-                    ),
-                    icon: <DualLayerFile width={18} height={18} />,
-                    onClick: () => handleNavigate(PATH.USER_DESIRED_JOB),
-                  },
-                  {
-                    key: '3',
-                    label: (
-                      <span className="text-neutral-600 font-medium">CV</span>
-                    ),
-                    icon: <File width={16} height={16} />,
-                  },
-                ],
-              },
-              { type: 'divider' as const },
-              {
-                key: 'work-group',
-                className: '[&>div]:!text-[#1c1917]',
-                label: <span className="font-semibold">Công việc</span>,
-                type: 'group' as const,
-                children: [
-                  {
-                    key: '4',
-                    label: (
-                      <span className="text-neutral-600 font-medium">
-                        Doanh nghiệp tiếp cận
-                      </span>
-                    ),
-                    icon: <SkyScraper width={18} height={18} />,
-                  },
-                ],
-              },
-              { type: 'divider' as const },
-              {
-                key: '5',
-                label: (
-                  <span className="text-neutral-600 font-medium">
-                    Tài khoản
-                  </span>
-                ),
-                icon: <UserAccount width={18} height={18} />,
-                onClick: () => handleNavigate(PATH.USER_ACCOUNT),
-              },
-            ]
-          : [
-              {
-                key: '1',
-                label: (
-                  <span className="text-neutral-600 font-medium">
-                    Dashboard
-                  </span>
-                ),
-                onClick: () => handleNavigate(PATH.EMPLOYER_DASHBOARD),
-              },
-              {
-                key: '2',
-                label: (
-                  <span className="text-neutral-600 font-medium">Đăng tin</span>
-                ),
-                onClick: () => handleNavigate(PATH.EMPLOYER_POSTING),
-              },
-            ]),
-      { type: 'divider' as const, dashed: true },
-      {
-        key: 'logout',
-        className: 'hover:!bg-light-warning',
-        icon: <LogoutOutlined className="!text-warning" />,
-        label: <span className="text-warning font-medium">Đăng xuất</span>,
-        onClick: handleSignOut,
-      },
-    ];
-  }, [currentUser]);
+  const handleModalClose = () => {
+    navigate(navigatePath);
+    setNavigatePath('');
+  };
 
-  const guestMenu = useMemo(() => {
-    return [
-      {
-        key: 'user-group',
-        type: 'group' as const,
-        className: '[&>div]:!text-[#1c1917]',
-        label: <span className="font-semibold">Người tìm việc</span>,
-        children: [
-          {
-            key: '1',
-            label: (
-              <span className="text-neutral-600 font-medium">Đăng nhập</span>
-            ),
-            icon: <LoginOutlined />,
-            onClick: () => handleNavigate(PATH.USER_SIGN_IN),
-          },
-          {
-            key: '2',
-            label: (
-              <span className="text-neutral-600 font-medium">
-                Đăng ký tìm việc
-              </span>
-            ),
-            icon: <AddUser width={18} height={18} />,
-            onClick: () => handleNavigate(PATH.USER_SIGN_UP),
-          },
-        ],
-      },
-      { type: 'divider' as const },
-      {
-        key: 'employer-group',
-        type: 'group' as const,
-        className: '[&>div]:!text-[#1c1917]',
-        label: <span className="font-semibold">Nhà tuyển dụng</span>,
-        children: [
-          {
-            key: '3',
-            label: (
-              <span className="text-neutral-600 font-medium">Đăng nhập</span>
-            ),
-            icon: <LoginOutlined />,
-            onClick: () => handleNavigate('/'),
-          },
-          {
-            key: '4',
-            label: (
-              <span className="text-neutral-600 font-medium">
-                Đăng ký tuyển dụng
-              </span>
-            ),
-            icon: <AddUser width={18} height={18} />,
-            onClick: () => handleNavigate('/'),
-          },
-        ],
-      },
-    ];
-  }, []);
+  const userMenu = createUserMenu(handleNavigate);
+  const baseMenu = createBaseMenu({ currentUser, token });
 
   const menuItems = useMemo(() => {
     return [
+      ...baseMenu,
       {
         key: 'job-seeker',
         label: (
@@ -246,10 +88,24 @@ const HeaderMenu = ({
         icon: <Blogs width={18} height={18} />,
         onClick: () => handleNavigate('/'),
       },
-      { type: 'divider' as const },
-      ...(refreshToken ? userMenu : guestMenu),
+      { type: 'divider' as const, dashed: true },
+      ...userMenu,
+      ...(isAuthenticated
+        ? [
+            { type: 'divider' as const, dashed: true },
+            {
+              key: 'logout',
+              className: 'hover:!bg-light-warning',
+              icon: <LogoutOutlined className="!text-warning" />,
+              label: (
+                <span className="text-warning font-medium">Đăng xuất</span>
+              ),
+              onClick: handleSignOut,
+            },
+          ]
+        : []),
     ];
-  }, [userMenu, guestMenu, onSingOut]);
+  }, [baseMenu, userMenu, isAuthenticated]);
 
   return (
     <Modal
@@ -257,6 +113,7 @@ const HeaderMenu = ({
       isOpen={isOpen}
       className="rounded-2xl"
       animationType="slide-down"
+      afterClose={handleModalClose}
       onCancel={() => setIsOpenMenuModal(false)}
       footer={
         <Button
@@ -268,18 +125,7 @@ const HeaderMenu = ({
       }
       {...props}
     >
-      <Space direction="vertical" size="middle" className="w-full">
-        {refreshToken && (
-          <Flex gap={16} align="center" className="w-full rounded-md p-3">
-            <AvatarPlaceHolder width={52} height={52} />
-            <div>
-              <p className="text-lg font-bold">{currentUser.fullName}</p>
-              <p className="text-sub text-md">{currentUser.email}</p>
-            </div>
-          </Flex>
-        )}
-        <Menu items={menuItems} className="!border-none" />
-      </Space>
+      <Menu items={menuItems} className="!border-none" />
     </Modal>
   );
 };

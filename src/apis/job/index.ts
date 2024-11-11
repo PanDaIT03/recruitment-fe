@@ -3,6 +3,7 @@ import { IParams } from '~/components/Job/JobList';
 import { PostingJobFormValues } from '~/pages/Employer/PostingJob/PostingJob';
 import axiosApi from '~/services/axios';
 import {
+  Application,
   IJob,
   JobItem,
   JobPlacement,
@@ -44,6 +45,9 @@ export const JobsAPI = {
   },
   getAllJobFields: (): Promise<PaginatedJobFields> => {
     return axiosApi.get(`/job-fields/all`);
+  },
+  getAllJobsApplicants: (): Promise<Application> => {
+    return axiosApi.get(`/users-jobs/applicants`);
   },
 
   // POST

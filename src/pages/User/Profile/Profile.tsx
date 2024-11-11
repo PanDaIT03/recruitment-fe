@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import UserApi from '~/apis/user';
 import { BriefCase, LanguageCenter, MagicHat, Summary } from '~/assets/img';
 import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
+import { useMessage } from '~/contexts/MessageProvider';
 import { useAppSelector } from '~/hooks/useStore';
 import ProfileSection, {
   IProfileSection,
@@ -33,6 +34,7 @@ const initLanguage = [] as IForeignLanguage[];
 const initExperience = [] as IWorkExperience[];
 
 const Profile = () => {
+  const { messageApi } = useMessage();
   const { currentUser } = useAppSelector((state) => state.auth);
 
   const [editIndex, setEditIndex] = useState<number>(-1);
@@ -50,18 +52,27 @@ const Profile = () => {
     isPending: isAchievementPending,
   } = useMutation({
     mutationFn: (id: number) => UserApi.getAchievementByUserId(id),
+    onError: (error: any) => {
+      messageApi.error(error?.response?.data?.message);
+    },
   });
 
   const { mutate: getLanguageByUserId, isPending: isLanguagePending } =
     useMutation({
       mutationFn: (id: number) => UserApi.getLanguageByUserId(id),
       onSuccess: (res) => setForeignLanguages(res.items),
+      onError: (error: any) => {
+        messageApi.error(error?.response?.data?.message);
+      },
     });
 
   const { mutate: getUserSkillByUserId, isPending: isUserSkillPending } =
     useMutation({
       mutationFn: (id: number) => UserApi.getUserSkillByUserId(id),
       onSuccess: (res) => setUserSkills(res.items),
+      onError: (error: any) => {
+        messageApi.error(error?.response?.data?.message);
+      },
     });
 
   const {
@@ -70,10 +81,14 @@ const Profile = () => {
   } = useMutation({
     mutationFn: (id: number) => UserApi.getWorkExperienceByUserId(id),
     onSuccess: (res) => setWorkExperiences(res.items),
+    onError: (error: any) => {
+      messageApi.error(error?.response?.data?.message);
+    },
   });
 
   useEffect(() => {
     const id = currentUser.id;
+    if (!id) return;
 
     getLanguageByUserId(id);
     getUserSkillByUserId(id);

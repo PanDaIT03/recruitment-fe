@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAppSelector } from '~/hooks/useStore';
+import { token } from '~/utils/constant';
 
 interface ProtectedRouteProps {
   allowedRoles: string[];
@@ -9,6 +10,8 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const { currentUser } = useAppSelector((state) => state.auth);
   const userRole = currentUser?.role?.title;
+
+  if (token && !userRole) return <Outlet />;
 
   return allowedRoles.includes(userRole || 'admin') ? (
     <Outlet />

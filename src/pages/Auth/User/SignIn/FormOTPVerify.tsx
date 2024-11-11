@@ -101,7 +101,8 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
       <FormWrapper form={form} submitTitle="Đăng nhập" onFinish={handleFinish}>
         <FormItem
           name="verifyCode"
-          className="flex justify-center"
+          labelCol={{ span: 24 }}
+          className="flex justify-center [&>div]:!flex-row"
           label={<p className="w-full text-center">Mã xác minh</p>}
           rules={[{ required: true, message: 'Hãy nhập mã xác minh của bạn' }]}
         >
@@ -113,6 +114,7 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
             renderSeparator={(index) =>
               index === 2 && <MinusOutlined className="mx-2" />
             }
+            containerStyle={{ justifyContent: 'center' }}
             inputStyle={{
               width: '40px',
               height: '40px',

@@ -1,12 +1,13 @@
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 
 import { MessageProvider } from './contexts/MessageProvider';
 import { useAppDispatch } from './hooks/useStore';
 import AppRouter from './routes/AppRouter';
 import { getMe } from './store/thunk/auth';
+import { getAllRoles } from './store/thunk/role';
 import toast from './utils/functions/toast';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function App() {
   const flagRef = useRef(false);
@@ -15,6 +16,10 @@ function App() {
 
   const token = localStorage.getItem('token1');
   const clientId = import.meta.env.VITE_APP_CLIENT_ID;
+
+  useEffect(() => {
+    dispatch(getAllRoles());
+  }, []);
 
   useEffect(() => {
     if (!token) return;
