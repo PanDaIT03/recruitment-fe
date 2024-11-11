@@ -25,9 +25,9 @@ export type IGetWorkExperience = IPaginatedData<IWorkExperience[]>;
 export type IGetUserSkill = IPaginatedData<IUserSkill[]>;
 
 export type IUpdateAccountInfo = {
+  file?: any;
   fullName?: string;
   newPassword?: string;
-  file?: string;
 };
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
@@ -109,7 +109,7 @@ const UserApi = {
     const { skillsId, level } = params;
     return await axiosApi.patch(`/users-skills/${skillsId}`, { level });
   },
-  updateAccountInfo: async (params: IUpdateAccountInfo) => {
+  updateAccountInfo: async (params: IUpdateAccountInfo | FormData) => {
     return await axiosApi.patch('/users/account-info', params, {
       headers: {
         'Content-Type': 'multipart/form-data',

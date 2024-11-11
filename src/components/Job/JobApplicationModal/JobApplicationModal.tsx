@@ -49,7 +49,6 @@ const JobApplicationModal = ({
       const response = await JobsAPI.ApplyJob(formData);
 
       setFileList([]);
-
       message.success(response?.message);
     } catch (error: any) {
       message.error(error.response.data.message);
