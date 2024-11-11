@@ -6,6 +6,7 @@ import { BackPack, Blogs, Users } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppSelector } from '~/hooks/useStore';
+import { token } from '~/utils/constant';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import { createBaseMenu, createUserMenu } from './menu/headerMenuItem';
@@ -25,13 +26,11 @@ const HeaderMenu = ({
   ...props
 }: IProps) => {
   const navigate = useNavigate();
-
-  const refreshToken = localStorage.getItem('token2');
   const { currentUser } = useAppSelector((state) => state.auth);
 
   const isAuthenticated = useMemo(
-    () => !!refreshToken && !!Object.keys(currentUser).length,
-    [refreshToken, currentUser]
+    () => !!token && !!Object.keys(currentUser).length,
+    [token, currentUser]
   );
 
   const handleNavigate = useCallback(async (path: string) => {
@@ -49,7 +48,7 @@ const HeaderMenu = ({
   }, []);
 
   const userMenu = createUserMenu(handleNavigate);
-  const baseMenu = createBaseMenu({ currentUser, refreshToken });
+  const baseMenu = createBaseMenu({ currentUser, token });
 
   const menuItems = useMemo(() => {
     return [
