@@ -1,5 +1,12 @@
 import { Menu, ModalProps } from 'antd';
-import { Dispatch, memo, SetStateAction, useCallback, useMemo } from 'react';
+import {
+  Dispatch,
+  memo,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { BackPack, Blogs, Users } from '~/assets/svg';
@@ -26,6 +33,8 @@ const HeaderMenu = ({
   ...props
 }: IProps) => {
   const navigate = useNavigate();
+
+  const [navigatePath, setNavigatePath] = useState('');
   const { currentUser } = useAppSelector((state) => state.auth);
 
   const isAuthenticated = useMemo(
@@ -33,19 +42,20 @@ const HeaderMenu = ({
     [token, currentUser]
   );
 
-  const handleNavigate = useCallback(async (path: string) => {
+  const handleNavigate = useCallback((path: string) => {
+    setNavigatePath(path);
     setIsOpenMenuModal(false);
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    navigate(path);
   }, []);
 
-  const handleSignOut = useCallback(async () => {
+  const handleSignOut = useCallback(() => {
     setIsOpenMenuModal(false);
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
     onSingOut();
   }, []);
+
+  const handleModalClose = () => {
+    navigate(navigatePath);
+    setNavigatePath('');
+  };
 
   const userMenu = createUserMenu(handleNavigate);
   const baseMenu = createBaseMenu({ currentUser, token });
@@ -103,6 +113,7 @@ const HeaderMenu = ({
       isOpen={isOpen}
       className="rounded-2xl"
       animationType="slide-down"
+      afterClose={handleModalClose}
       onCancel={() => setIsOpenMenuModal(false)}
       footer={
         <Button
