@@ -33,6 +33,7 @@ const EmployerAccountForm: React.FC = () => {
   const [form] = Form.useForm();
   const { currentUser } = useAppSelector((state) => state.auth);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const { data: jobPositions } = useFetch<PaginatedJobPositions>(
     ['allJobsPositions'],
@@ -92,8 +93,12 @@ const EmployerAccountForm: React.FC = () => {
     }
 
     try {
+      setLoading(true);
       const response = await UserApi.updateInfoEmployer(formData);
-      message.success(response.message);
+      if (response.statusCode === 200) {
+        message.success(response.message);
+        setLoading(false);
+      }
     } catch (error) {
       message.error('Có lỗi xảy ra khi cập nhật thông tin!');
       console.error(error);
@@ -188,6 +193,7 @@ const EmployerAccountForm: React.FC = () => {
             type="submit"
             fill
             className="w-full"
+            loading={loading}
           />
         </Form.Item>
       </Form>
