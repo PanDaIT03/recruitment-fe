@@ -1,6 +1,6 @@
 export enum ROLE {
-  USER = 1,
-  EMPLOYER = 3,
+  USER = 13,
+  EMPLOYER = 15,
 }
 
 interface IBaseAuthResponse {
