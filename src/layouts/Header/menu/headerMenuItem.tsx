@@ -104,7 +104,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                 key: '1',
                 label: (
                   <span className="text-neutral-600 font-medium">
-                    Dashboard
+                    Tổng quan
                   </span>
                 ),
                 onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
@@ -112,9 +112,25 @@ export const createUserMenu = (navigate: (path: string) => void) => {
               {
                 key: '2',
                 label: (
+                  <span className="text-neutral-600 font-medium">Ứng viên</span>
+                ),
+                onClick: () => navigate(PATH.EMPLOYER_CANDICATES_DASHBOARD),
+              },
+              {
+                key: '3',
+                label: (
                   <span className="text-neutral-600 font-medium">Đăng tin</span>
                 ),
                 onClick: () => navigate(PATH.EMPLOYER_POSTING),
+              },
+              {
+                key: '4',
+                label: (
+                  <span className="text-neutral-600 font-medium">
+                    Tuyển dụng
+                  </span>
+                ),
+                onClick: () => navigate(PATH.EMPLOYER_RECRUITMENT_LIST),
               },
             ]
           : isGuest
