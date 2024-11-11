@@ -29,6 +29,7 @@ const GoogleSignInButton = ({
         const params: IUserSignInWithGoogle = {
           email: userInfo.email,
           fullName: userInfo.name,
+          avatarURL: userInfo.picture,
         };
 
         onClick(params);

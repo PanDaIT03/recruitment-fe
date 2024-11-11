@@ -100,6 +100,8 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
       ...others,
       startDate: startDate,
       endDate: endDate,
+      companyName: values?.companyName?.trim(),
+      description: values?.description?.trim(),
     };
 
     isEdit
