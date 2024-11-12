@@ -128,6 +128,9 @@ const UserApi = {
   },
 
   // DELETE
+  deleteAchievement: async (id: number): Promise<IBaseResponse> => {
+    return await axiosApi.delete(`/achivements/${id}`);
+  },
   deleteWorkExperience: async (id: number): Promise<IBaseResponse> => {
     return await axiosApi.delete(`/work-experiences/${id}`);
   },
