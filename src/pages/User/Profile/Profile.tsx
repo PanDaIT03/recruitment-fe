@@ -88,7 +88,7 @@ const Profile = () => {
 
   useEffect(() => {
     const id = currentUser?.id;
-    const achievementId = currentUser?.achivement?.id;
+    const achievementId = currentUser?.achievement?.id;
 
     if (id) {
       getLanguageByUserId(id);
@@ -245,7 +245,7 @@ const Profile = () => {
         data={achievement || initAchievement}
         isOpen={selectedItem === ProfileSectionType.ACHIEVEMENT}
         onCancel={() => setSelectedItem('')}
-        refetch={() => getAchievementByUserId(currentUser.achivement.id)}
+        refetch={() => getAchievementByUserId(currentUser.achievement.id)}
       />
       <ExperienceModal
         data={workExperiences[editIndex]}

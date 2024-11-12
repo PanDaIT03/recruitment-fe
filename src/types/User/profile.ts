@@ -51,7 +51,7 @@ export interface IUserProfile {
   role: Role;
   jobPosition: string;
   userSkills: IUserSkill[];
-  achivement: IAchievement;
+  achievement: IAchievement;
   userLanguages: IForeignLanguage[];
   workExperiences: IWorkExperience[];
 }

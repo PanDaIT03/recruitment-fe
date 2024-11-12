@@ -31,7 +31,7 @@ export interface IUser {
   role: Role;
   jobPosition: { id: number; title: string };
   statusCode: number;
-  achivement: Achievement;
+  achievement: Achievement;
 }
 
 export interface Role {
