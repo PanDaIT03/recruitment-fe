@@ -18,7 +18,7 @@ const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
 const UserManagement = lazy(() => import('~/pages/Admin/User/UserManagement'));
 const Blog = lazy(() => import('~/pages/Blog/Blogs'));
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
-const JobDetail = lazy(() => import('~/components/Job/JobDetail'));
+const JobDetail = lazy(() => import('~/components/Job/JobDetail/JobDetail'));
 const JobListPage = lazy(() => import('~/components/Job/JobList'));
 const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
 const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
