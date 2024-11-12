@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { AvatarPlaceHolder } from '~/assets/svg';
 import { useAppSelector } from '~/hooks/useStore';
-import { token } from '~/utils/constant';
 import icons from '~/utils/icons';
 import { createBaseMenu, createUserMenu } from './menu/headerMenuItem';
 
@@ -19,8 +18,10 @@ const HeaderDropDown = ({ setIsOpen }: IProps) => {
 
   const { currentUser } = useAppSelector((state) => state.auth);
 
+  const refreshToken = localStorage.getItem('token2');
+
   const userMenu = createUserMenu(navigate);
-  const baseMenu = createBaseMenu({ currentUser, token });
+  const baseMenu = createBaseMenu({ currentUser, token: refreshToken });
 
   const menuItems: MenuProps['items'] = useMemo(() => {
     return [
@@ -35,14 +36,18 @@ const HeaderDropDown = ({ setIsOpen }: IProps) => {
         onClick: () => setIsOpen(true),
       },
     ];
-  }, [baseMenu, userMenu]);
+  }, [baseMenu, userMenu, currentUser]);
 
   return (
     <>
       <Dropdown arrow trigger={['click']} menu={{ items: menuItems }}>
         <Avatar
           alt="avatar"
-          src={currentUser?.avatarUrl || <AvatarPlaceHolder />}
+          src={
+            currentUser?.avatarUrl || (
+              <AvatarPlaceHolder className="!w-14 !h-14" />
+            )
+          }
           className="!w-10 !h-10 border-gray-200 border cursor-pointer"
         />
       </Dropdown>

@@ -50,6 +50,16 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
         ),
     });
 
+  const { mutate: deleteAchievement, isPending: isDelAchievementPending } =
+    useMutation({
+      mutationFn: (id: number) => UserApi.deleteAchievement(id),
+      onSuccess: () => messageApi.success('Xoá thành tựu thành công'),
+      onError: (error: any) =>
+        messageApi.error(
+          error?.response?.data?.message || 'Lỗi khi xoá thành tựu'
+        ),
+    });
+
   useEffect(() => {
     if (!data || !Object.keys(data).length) {
       setIsEdit(false);
@@ -72,20 +82,23 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
 
   const handleFinish = async (values: any) => {
     const { achievement } = values;
-
-    // console.log(values);
     const content = achievement?.lastLevel?.content;
-    // const isEmptyContent = content
-    //   ? /^<p>(<br>|&nbsp;|\s)*<\/p>$/.test(content)
-    //   : true;
-    // console.log(isEmptyContent);
 
-    isEdit
-      ? updateAchievement({
+    if (!isEdit) {
+      createAchievement({
+        description: content,
+      });
+      return;
+    }
+
+    const isEmptyContent = content
+      ? /^<p>(<br>|&nbsp;|\s)*<\/p>$/.test(content)
+      : true;
+
+    isEmptyContent
+      ? deleteAchievement(data.id)
+      : updateAchievement({
           id: data.id,
-          description: content,
-        })
-      : createAchievement({
           description: content,
         });
 
@@ -96,7 +109,11 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     <ProfileModal
       form={form}
       isOpen={isOpen}
-      loading={isCreateAchievementPending || isUpdateAchievementPending}
+      loading={
+        isCreateAchievementPending ||
+        isUpdateAchievementPending ||
+        isDelAchievementPending
+      }
       title="Cập nhật tóm tắt"
       onCancel={handleCancel}
       onFinish={handleFinish}
