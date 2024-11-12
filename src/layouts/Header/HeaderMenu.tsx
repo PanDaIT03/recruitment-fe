@@ -109,7 +109,7 @@ const HeaderMenu = ({
           ]
         : []),
     ];
-  }, [baseMenu, userMenu, isAuthenticated]);
+  }, [baseMenu, userMenu, isAuthenticated, currentUser]);
 
   return (
     <Modal

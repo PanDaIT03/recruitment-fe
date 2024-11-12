@@ -35,7 +35,7 @@ const HeaderDropDown = ({ setIsOpen }: IProps) => {
         onClick: () => setIsOpen(true),
       },
     ];
-  }, [baseMenu, userMenu]);
+  }, [baseMenu, userMenu, currentUser]);
 
   return (
     <>
