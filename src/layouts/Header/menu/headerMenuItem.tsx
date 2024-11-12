@@ -3,11 +3,14 @@ import { Avatar, Flex } from 'antd';
 import {
   AddUser,
   AvatarPlaceHolder,
+  Community,
   DualLayerFile,
   File,
   PersonCard,
   SkyScraper,
   UserAccount,
+  Users,
+  Work,
 } from '~/assets/svg';
 import useRole from '~/hooks/useRole';
 import { IUser } from '~/types/Auth';
@@ -107,6 +110,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                     Tổng quan
                   </span>
                 ),
+                icon: <SkyScraper width={18} height={18} />,
                 onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
               },
               {
@@ -114,6 +118,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                 label: (
                   <span className="text-neutral-600 font-medium">Ứng viên</span>
                 ),
+                icon: <Community width={18} height={18} />,
                 onClick: () => navigate(PATH.EMPLOYER_CANDICATES_DASHBOARD),
               },
               {
@@ -121,6 +126,8 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                 label: (
                   <span className="text-neutral-600 font-medium">Đăng tin</span>
                 ),
+                icon: <Work width={18} height={18} />,
+
                 onClick: () => navigate(PATH.EMPLOYER_POSTING),
               },
               {
@@ -130,6 +137,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                     Tuyển dụng
                   </span>
                 ),
+                icon: <Users width={18} height={18} />,
                 onClick: () => navigate(PATH.EMPLOYER_RECRUITMENT_LIST),
               },
               { type: 'divider' as const },
@@ -219,7 +227,11 @@ export const createBaseMenu = ({ currentUser, token }: IBaseMenu) => {
               <Avatar
                 alt="avatar"
                 className="!w-14 !h-14 border-gray-200 border"
-                src={currentUser?.avatarUrl || <AvatarPlaceHolder />}
+                src={
+                  currentUser?.avatarUrl || (
+                    <AvatarPlaceHolder className="!w-14 !h-14" />
+                  )
+                }
               />
               <div>
                 <p className="text-lg font-bold">{currentUser.fullName}</p>

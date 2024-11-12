@@ -42,7 +42,11 @@ const HeaderDropDown = ({ setIsOpen }: IProps) => {
       <Dropdown arrow trigger={['click']} menu={{ items: menuItems }}>
         <Avatar
           alt="avatar"
-          src={currentUser?.avatarUrl || <AvatarPlaceHolder />}
+          src={
+            currentUser?.avatarUrl || (
+              <AvatarPlaceHolder className="!w-14 !h-14" />
+            )
+          }
           className="!w-10 !h-10 border-gray-200 border cursor-pointer"
         />
       </Dropdown>
