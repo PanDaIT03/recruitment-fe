@@ -114,6 +114,7 @@ const HeaderMenu = ({
   return (
     <Modal
       centered
+      destroyOnClose
       isOpen={isOpen}
       className="rounded-2xl"
       animationType="slide-down"

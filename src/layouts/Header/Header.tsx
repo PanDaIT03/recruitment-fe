@@ -222,6 +222,7 @@ const Header = ({ items = defaultItems }: IProps) => {
           />
         </div>
         <Modal
+          destroyOnClose
           title="Đăng xuất"
           isOpen={isOpenLogOutModal}
           animationType="slide-down"
