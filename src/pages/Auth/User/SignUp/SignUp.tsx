@@ -32,7 +32,14 @@ const SignUp = () => {
 
   const { mutate: signUp, isPending } = useMutation({
     mutationFn: (params: ISignUpParams) => AuthAPI.signUp(params),
-    onSuccess: () => setIsOpenModal(true),
+    onSuccess: (res) => {
+      if (res?.statusCode === 200) {
+        setIsOpenModal(true);
+        return;
+      }
+
+      messageApi.error(`Có lỗi xảy ra: ${res?.message}`);
+    },
     onError: (error: any) =>
       messageApi.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`),
   });

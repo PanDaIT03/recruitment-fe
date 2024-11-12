@@ -217,13 +217,9 @@ export const createBaseMenu = ({ currentUser, token }: IBaseMenu) => {
           label: (
             <Flex gap={16} align="center" className="w-full rounded-md p-3">
               <Avatar
-                src={
-                  currentUser?.avatarUrl || (
-                    <AvatarPlaceHolder className="!w-14 !h-14 cursor-pointer" />
-                  )
-                }
                 alt="avatar"
                 className="!w-14 !h-14 border-gray-200 border"
+                src={currentUser?.avatarUrl || <AvatarPlaceHolder />}
               />
               <div>
                 <p className="text-lg font-bold">{currentUser.fullName}</p>

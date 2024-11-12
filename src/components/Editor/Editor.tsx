@@ -29,10 +29,11 @@ const initOptions: InitOptions = {
     'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
 };
 
-const Editor = ({ init = initOptions, ...props }: IProps) => {
+const Editor = ({ init = initOptions, value, ...props }: IProps) => {
   return (
     <TinyEditor
       init={init}
+      value={typeof value === 'string' ? value : ''}
       apiKey={import.meta.env.VITE_APP_TINYMCE_API_KEY}
       {...props}
     />

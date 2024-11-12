@@ -29,9 +29,9 @@ const HomeBanner = () => {
       </span>
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center lg:text-left">
         Kết nối miễn phí
-        <h1 className="text-[#FF6B4E]">
+        <p className="text-[#FF6B4E]">
           ứng viên & doanh <br /> nghiệp
-        </h1>
+        </p>
       </h1>
       <p className="text-lg text-center lg:text-left max-w-md">
         Chúng tôi tin rằng, hành trình tìm việc và tuyển dụng nên bắt đầu từ
