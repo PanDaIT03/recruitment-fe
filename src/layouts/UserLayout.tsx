@@ -345,7 +345,7 @@ const UserLayout = () => {
   return (
     <Layout className="min-h-screen">
       <Header />
-      <div className="w-full py-4 px-8 mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-10 gap-4">
+      <div className="w-full py-4 px-8 mx-auto max-w-7xl grid grid-cols-1 gap-4 lg:grid-cols-10 max-lg:px-4">
         <Sider
           setIsOpenInfoModal={setIsOpenInfoModal}
           setIsOpenAvatarModal={setIsOpenAvatarModal}
