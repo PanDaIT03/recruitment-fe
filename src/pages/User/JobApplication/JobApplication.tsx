@@ -23,7 +23,6 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
 import { JobsAPI } from '~/apis/job';
 import UserApi from '~/apis/user';
 import {
@@ -86,10 +85,12 @@ const JobApplication = () => {
     ['allPlacements'],
     JobsAPI.getAllPlacements
   );
+
   const { data: jobFields } = useFetch(
     ['allJobsFields'],
-    DesiredJobAPI.getAllJobFields
+    JobsAPI.getAllJobFields
   );
+
   const { data: languages } = useFetch(
     ['foreignLanguage'],
     UserApi.getAllForeignLanguage

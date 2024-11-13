@@ -7,6 +7,15 @@ interface Achievement {
   id: number;
 }
 
+interface Placement {
+  id: number;
+  title: string;
+  createBy: string;
+  createAt: string;
+  updateBy: string;
+  updateAt: string;
+}
+
 export interface IBaseUser {
   email: string;
   userName?: string;
@@ -31,7 +40,11 @@ export interface IUser {
   role: Role;
   jobPosition: { id: number; title: string };
   statusCode: number;
-  achievement: Achievement;
+  placement: Placement;
+  achivement: Achievement;
+  desiredJob: {
+    totalYearExperience: string;
+  };
 }
 
 export interface Role {
