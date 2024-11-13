@@ -119,7 +119,7 @@ const Header = ({ items = defaultItems }: IProps) => {
         label: 'Đăng nhập',
         icon: <LoginOutlined className="w-4 h-4" />,
         className: 'hover:!text-main hover:!bg-bright-orange !font-medium',
-        onClick: () => navigate(PATH.EMPLOYER_SIGN_IN),
+        onClick: () => navigate(PATH.USER_SIGN_IN),
       },
       {
         key: 1,
