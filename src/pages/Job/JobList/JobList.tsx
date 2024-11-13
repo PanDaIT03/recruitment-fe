@@ -1,5 +1,5 @@
 import { Form, List, Radio } from 'antd';
-import Select, { DefaultOptionType } from 'antd/es/select';
+import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
@@ -9,6 +9,7 @@ import JobCard from '~/components/Job/JobCard';
 import DrawerSearch from '~/components/Search/DrawerSearch';
 import TopSearchBar from '~/components/Search/TopSearchBar';
 import CustomSelect from '~/components/Select/CustomSelect';
+import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';

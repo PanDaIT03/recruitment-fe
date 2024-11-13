@@ -8,7 +8,6 @@ import {
   UploadProps,
 } from 'antd';
 import { FormInstance, useForm } from 'antd/es/form/Form';
-import TextArea from 'antd/es/input/TextArea';
 import { DefaultOptionType } from 'antd/es/select';
 import Title from 'antd/es/typography/Title';
 import { FormItemProps } from 'antd/lib';
@@ -23,6 +22,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import TextArea from 'antd/es/input/TextArea';
 import { JobsAPI } from '~/apis/job';
 import UserApi from '~/apis/user';
 import {

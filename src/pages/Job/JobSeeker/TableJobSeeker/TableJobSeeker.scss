@@ -1,0 +1,15 @@
+.table-job-seeker td {
+  padding: 40px !important;
+
+  &:not(:last-child) {
+    border-inline-end-width: 1px;
+  }
+}
+
+.table-job-seeker .ant-table-cell {
+  vertical-align: top !important;
+
+  &::before {
+    content: none !important;
+  }
+}

@@ -127,7 +127,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
         <Space
           size="middle"
           direction="vertical"
-          className="-mt-[59px] px-6 pb-6"
+          className="w-full -mt-[59px] px-6 pb-6"
         >
           <Flex align="end" justify="space-between" gap={16}>
             <div className="relative w-fit rounded-full border-[3px] border-white">
@@ -136,6 +136,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
                   <ImageAntd
                     width={108}
                     height={108}
+                    preview={false}
                     src={currentUser.avatarUrl || defaultCoverImage}
                   />
                 </div>

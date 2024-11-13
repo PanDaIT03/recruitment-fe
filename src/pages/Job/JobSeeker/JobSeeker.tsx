@@ -1,4 +1,4 @@
-import { Flex, message, Radio, Space, Table, Tag } from 'antd';
+import { Flex, message, Radio, Space, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { ColumnsType } from 'antd/es/table';
@@ -14,23 +14,9 @@ import CustomSelect from '~/components/Select/CustomSelect';
 import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore.ts';
+import { IJobSeeker } from '~/types/JobSeeker/JobSeeker';
 import icons from '~/utils/icons';
-
-const { EnvironmentOutlined, ClockCircleOutlined } = icons;
-
-interface JobListing {
-  key: string;
-  name: string;
-  timePosted: string;
-  location: string;
-  age: number;
-  field: string;
-  position: string;
-  experience: string;
-  salary: string;
-  startDate: string;
-  requirements: string[];
-}
+import TableJobSeeker from './TableJobSeeker/TableJobSeeker';
 
 const optionsExperience: DefaultOptionType[] = [
   {
@@ -53,6 +39,8 @@ const defaultFieldOptions: DefaultOptionType[] = [
     value: 'all',
   },
 ];
+
+const { EnvironmentOutlined, ClockCircleOutlined } = icons;
 
 const JobSeeker = () => {
   const [form] = useForm();
@@ -87,7 +75,7 @@ const JobSeeker = () => {
     );
   };
 
-  const data: JobListing[] = [
+  const data: IJobSeeker[] = [
     {
       key: '1',
       name: 'Lệ Tr****',
@@ -132,66 +120,86 @@ const JobSeeker = () => {
         );
   }, []);
 
-  const columns: ColumnsType<JobListing> = [
+  const columns: ColumnsType<IJobSeeker> = [
     {
       key: 'name',
       width: '25%',
       dataIndex: 'name',
       title: 'Thông tin ứng viên',
-      render: (text: string, record: JobListing) => (
-        <div className="space-y-2">
-          <div className="font-medium">{text}</div>
-          <div className="text-gray-500 text-sm">
-            Được chia sẻ vào {record.timePosted}
+      render: (text: string, record: IJobSeeker) => (
+        <Space direction="vertical" size="large">
+          <div className="font-medium">
+            <p>{text}</p>
+            <div className="text-gray-500 text-sm">
+              Được chia sẻ vào {record.timePosted}
+            </div>
           </div>
-          <div className="flex items-center space-x-2 text-gray-500 text-sm">
-            <EnvironmentOutlined />
-            <span>{record.location}</span>
-            <ClockCircleOutlined className="ml-2" />
-            <span>{record.age} tuổi</span>
-          </div>
+          <Flex wrap align="center" className="text-gray-500 text-sm" gap={8}>
+            <div>
+              <EnvironmentOutlined className="mr-1" />
+              <span>{record.location}</span>
+            </div>
+            <div>
+              <ClockCircleOutlined className="mr-1" />
+              <span>{record.age} tuổi</span>
+            </div>
+          </Flex>
           <Button
             title="Tải hồ sơ"
             className="w-full"
             fill
             onClick={handleClickDownloadProfile}
           />
-        </div>
+        </Space>
       ),
     },
     {
       width: '40%',
       key: 'experience',
       title: 'Nguyện vọng & kinh nghiệm',
-      render: (record: JobListing) => (
-        <div className="space-y-4 ">
-          <div>
-            <div className="text-gray-500 mb-1">Lĩnh vực</div>
-            <div>{record.field}</div>
-          </div>
-          <div>
-            <div className="text-gray-500 mb-1">Vị trí ứng tuyển</div>
+      render: (record: IJobSeeker) => (
+        <Space direction="vertical" size="middle">
+          <Flex>
+            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
+              Lĩnh vực
+            </div>
+            <div className="leading-6">{record.field}</div>
+          </Flex>
+          <Flex>
+            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
+              Vị trí ứng tuyển
+            </div>
             <Tag color="purple">{record.position}</Tag>
-          </div>
-          <div>
-            <div className="text-gray-500 mb-1">Số năm kinh nghiệm</div>
+          </Flex>
+          <Flex>
+            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
+              Số năm kinh nghiệm
+            </div>
             <div>{record.experience}</div>
-          </div>
-          <div>
-            <div className="text-gray-500 mb-1">Mức lương kỳ vọng</div>
-            <p className="text-blue-500">{record.salary}</p>
-          </div>
-          <div>
-            <div className="text-gray-500 mb-1">Thời gian bắt đầu</div>
+          </Flex>
+          <Flex>
+            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
+              Mức lương kỳ vọng
+            </div>
+            <Button
+              displayType="text"
+              title="Xem mức lương"
+              className="text-blue font-medium hover:underline"
+            />
+          </Flex>
+          <Flex>
+            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
+              Thời gian bắt đầu
+            </div>
             <div>{record.startDate}</div>
-          </div>
-        </div>
+          </Flex>
+        </Space>
       ),
     },
     {
       key: 'requirements',
       title: 'Thành tích/kỹ năng nổi bật',
-      render: (record: JobListing) => {
+      render: (record: IJobSeeker) => {
         const isExpanded = expandedRow.includes(record.key);
 
         return (
@@ -209,7 +217,7 @@ const JobSeeker = () => {
                 ))}
 
             <a
-              className="text-accent cursor-pointer"
+              className="text-accent cursor-pointer hover:text-[#CC3E02] hover:underline"
               onClick={() => toggleExpand(record.key)}
             >
               {isExpanded ? 'Thu gọn' : 'Xem thêm'}
@@ -297,11 +305,7 @@ const JobSeeker = () => {
             Tất cả ứng viên được chia sẻ miễn phí
           </div>
         </div>
-        <Table
-          columns={columns}
-          dataSource={data}
-          className="bg-white shadow-sm rounded-lg"
-        />
+        <TableJobSeeker<IJobSeeker> columns={columns} dataSource={data} />
       </Space>
     </div>
   );
