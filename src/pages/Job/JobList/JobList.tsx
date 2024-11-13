@@ -1,9 +1,14 @@
 import { Form, List, Radio } from 'antd';
-import { DefaultOptionType } from 'antd/es/select';
+import Select, { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { Box, File, Salary, Television } from '~/assets/svg';
+import FormItem from '~/components/Form/FormItem';
+import JobCard from '~/components/Job/JobCard';
+import DrawerSearch from '~/components/Search/DrawerSearch';
+import TopSearchBar from '~/components/Search/TopSearchBar';
+import CustomSelect from '~/components/Select/CustomSelect';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
@@ -14,17 +19,12 @@ import {
   PaginatedJobFields,
   PaginatedWorkTypes,
 } from '~/types/Job';
-import FormItem from '../Form/FormItem';
-import DrawerSearch from '../Search/DrawerSearch';
-import TopSearchBar from '../Search/TopSearchBar';
-import CustomSelect from '../Select/CustomSelect';
-import Select from '../Select/Select';
-import JobCard from './JobCard';
-export interface IParams {
+
+export interface IJobList {
   page: number;
   pageSize: number;
   salaryMin?: number;
-  salariMax?: number;
+  salaryMax?: number;
   categoriesId?: number;
   jobFieldsId?: number;
   placementsId?: number;
@@ -33,9 +33,9 @@ export interface IParams {
   salaryRange?: any;
 }
 
-type IFilter = Partial<Omit<IParams, 'page' | 'pageSize'>>;
+type IFilter = Partial<Omit<IJobList, 'page' | 'pageSize'>>;
 
-const optionsSalary: DefaultOptionType[] = [
+const salaryOptions: DefaultOptionType[] = [
   {
     label: 'Tất cả mức lương',
     value: 'all',
@@ -58,26 +58,12 @@ const optionsSalary: DefaultOptionType[] = [
   },
 ];
 
-const JobListPage = () => {
+const JobList = () => {
   const [form] = Form.useForm();
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
   const [filters, setFilters] = useState<IFilter>({});
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
-
-  const { currentPage, itemsPerPage, handlePageChange } = usePagination<
-    JobItem,
-    IParams
-  >({
-    fetchAction: getAllJobs,
-    pageInfo: {
-      currentPage: 1,
-      itemsPerPage: 10,
-      totalItems: allJobs?.pageInfo?.totalItems || 0,
-    },
-    items: allJobs?.items,
-    extraParams: filters,
-  });
 
   const jobCategories = useFetch<PaginatedJobCategories>(
     ['jobCategories'],
@@ -93,6 +79,20 @@ const JobListPage = () => {
     ['jobFields'],
     JobsAPI.getAllJobFields
   );
+
+  const { currentPage, itemsPerPage, handlePageChange } = usePagination<
+    JobItem,
+    IJobList
+  >({
+    fetchAction: getAllJobs,
+    pageInfo: {
+      currentPage: 1,
+      itemsPerPage: 10,
+      totalItems: allJobs?.pageInfo?.totalItems || 0,
+    },
+    items: allJobs?.items,
+    extraParams: filters,
+  });
 
   const jobCategoriesOptions = useMemo(
     () => [
@@ -127,7 +127,7 @@ const JobListPage = () => {
     [jobFields]
   );
 
-  const handleSearch = (values: IParams) => {
+  const handleSearch = (values: IJobList) => {
     let salaryMin: number | undefined;
     let salaryMax: number | undefined;
 
@@ -159,20 +159,10 @@ const JobListPage = () => {
         salaryMin,
         salaryMax,
       }).filter(([_, value]) => value && value !== 'all')
-    ) as Partial<IParams>;
+    ) as Partial<IJobList>;
 
     setFilters(cleanedFilters);
     handlePageChange(1);
-  };
-
-  const handleFilterChange = (values: IParams) => {
-    handleSearch(values);
-  };
-
-  const handleFilterSubmit = () => {
-    form.validateFields().then((values) => {
-      handleSearch(values);
-    });
   };
 
   const resetFilters = () => {
@@ -186,12 +176,18 @@ const JobListPage = () => {
     handlePageChange(1);
   };
 
+  const handleFilterSubmit = () => {
+    form.validateFields().then((values) => {
+      handleSearch(values);
+    });
+  };
+
   return (
     <div className="min-h-[100vh]">
       <TopSearchBar
         form={form}
-        onSearch={handleFilterChange}
         setIsDrawerSearchOpen={setIsOpenDrawer}
+        onSearch={(values) => handleSearch(values)}
         placeHolder="Vị trí công việc/tên công ty"
       >
         <FormItem
@@ -228,7 +224,7 @@ const JobListPage = () => {
           <CustomSelect
             showSearch={false}
             displayedType="text"
-            options={optionsSalary}
+            options={salaryOptions}
             prefixIcon={<Salary />}
             className="w-full h-full font-semibold"
           />
@@ -279,7 +275,7 @@ const JobListPage = () => {
         </FormItem>
         <FormItem name="salaryRange" label="Tất cả mức lương">
           <Radio.Group className="flex flex-col gap-4">
-            {optionsSalary.map((option) => (
+            {salaryOptions.map((option) => (
               <Radio key={option.value} value={option.value}>
                 {option.label}
               </Radio>
@@ -328,4 +324,4 @@ const JobListPage = () => {
   );
 };
 
-export default JobListPage;
+export default JobList;

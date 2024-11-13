@@ -4,7 +4,7 @@ import { DefaultOptionType } from 'antd/es/select';
 import { ColumnsType } from 'antd/es/table';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
+import { JobsAPI } from '~/apis/job';
 import { BackPack, Box } from '~/assets/svg';
 import Button from '~/components/Button/Button.tsx';
 import FormItem from '~/components/Form/FormItem';
@@ -63,7 +63,7 @@ const JobSeeker = () => {
 
   const { data: jobFields } = useFetch(
     ['allJobsFields'],
-    DesiredJobAPI.getAllJobFields
+    JobsAPI.getAllJobFields
   );
 
   const jobFieldOptions = useMemo(() => {
@@ -138,8 +138,6 @@ const JobSeeker = () => {
       width: '25%',
       dataIndex: 'name',
       title: 'Thông tin ứng viên',
-      // className: 'before:!content-none lg:[&:not(:last-child)]:border-e',
-      className: 'before:!content-none lg:[&>td:not(:last-child)]:border-e',
       render: (text: string, record: JobListing) => (
         <div className="space-y-2">
           <div className="font-medium">{text}</div>
@@ -165,7 +163,6 @@ const JobSeeker = () => {
       width: '40%',
       key: 'experience',
       title: 'Nguyện vọng & kinh nghiệm',
-      className: 'before:!content-none',
       render: (record: JobListing) => (
         <div className="space-y-4 ">
           <div>
