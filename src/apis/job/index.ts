@@ -1,6 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 import { IParams } from '~/components/Job/JobList';
 import { PostingJobFormValues } from '~/pages/Employer/PostingJob/PostingJob';
+import { JobPostingListProps } from '~/pages/Employer/RecruitmentList/RecruitmentList';
 import axiosApi from '~/services/axios';
 import {
   Application,
@@ -27,6 +28,9 @@ export const JobsAPI = {
       params: data,
     };
     return axiosApi.get('/jobs/all', payload);
+  },
+  getAllJobsForEmployer: (): Promise<JobPostingListProps> => {
+    return axiosApi.get(`/jobs/employer/all`);
   },
   getJobById: (id: string): Promise<JobItem> => {
     return axiosApi.get(`/jobs?id=${id}`);
