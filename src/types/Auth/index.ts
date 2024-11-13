@@ -3,8 +3,13 @@ interface IBaseAuthResponse {
   statusCode: number;
 }
 
-interface Achievement {
+interface Placement {
   id: number;
+  title: string;
+  createBy: string;
+  createAt: string;
+  updateBy: string;
+  updateAt: string;
 }
 
 export interface IBaseUser {
@@ -31,7 +36,10 @@ export interface IUser {
   role: Role;
   jobPosition: { id: number; title: string };
   statusCode: number;
-  achievement: Achievement;
+  placement: Placement;
+  desiredJob: {
+    totalYearExperience: string;
+  };
 }
 
 export interface Role {

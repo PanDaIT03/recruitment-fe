@@ -35,8 +35,8 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
 
   const { mutate: createUserSkill, isPending: isCreatePending } = useMutation({
     mutationFn: (params: ISkillParams) => UserApi.createUserSkill(params),
-    onSuccess: () => {
-      messageApi.success('Thêm kỹ năng thành công');
+    onSuccess: (res) => {
+      messageApi.success(res?.message);
       refetch();
     },
     onError: (error: any) =>
@@ -47,8 +47,8 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
 
   const { mutate: updateUserSkill, isPending: isUpdatePending } = useMutation({
     mutationFn: (params: ISkillParams) => UserApi.updateUserSkill(params),
-    onSuccess: () => {
-      messageApi.success('Cập nhật kỹ năng thành công');
+    onSuccess: (res) => {
+      messageApi.success(res?.message);
       refetch();
     },
     onError: (error: any) =>

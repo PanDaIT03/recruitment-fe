@@ -43,8 +43,8 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
     useMutation({
       mutationFn: (params: ILanguageParams) =>
         UserApi.createForeignLanguage(params),
-      onSuccess: () => {
-        messageApi.success('Thêm ngoại ngữ thành công');
+      onSuccess: (res) => {
+        messageApi.success(res?.message);
         refetch();
       },
       onError: (error: any) =>
@@ -57,8 +57,8 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
     useMutation({
       mutationFn: (params: ILanguageParams) =>
         UserApi.updateForeignLanguage(params),
-      onSuccess: () => {
-        messageApi.success('Cập nhật ngoại ngữ thành công');
+      onSuccess: (res) => {
+        messageApi.success(res?.message);
         refetch();
       },
       onError: (error: any) =>

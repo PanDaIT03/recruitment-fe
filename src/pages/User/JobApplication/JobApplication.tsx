@@ -8,7 +8,6 @@ import {
   UploadProps,
 } from 'antd';
 import { FormInstance, useForm } from 'antd/es/form/Form';
-import TextArea from 'antd/es/input/TextArea';
 import { DefaultOptionType } from 'antd/es/select';
 import Title from 'antd/es/typography/Title';
 import { FormItemProps } from 'antd/lib';
@@ -23,7 +22,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
+import TextArea from 'antd/es/input/TextArea';
 import { JobsAPI } from '~/apis/job';
 import UserApi from '~/apis/user';
 import {
@@ -86,10 +85,12 @@ const JobApplication = () => {
     ['allPlacements'],
     JobsAPI.getAllPlacements
   );
+
   const { data: jobFields } = useFetch(
     ['allJobsFields'],
-    DesiredJobAPI.getAllJobFields
+    JobsAPI.getAllJobFields
   );
+
   const { data: languages } = useFetch(
     ['foreignLanguage'],
     UserApi.getAllForeignLanguage
