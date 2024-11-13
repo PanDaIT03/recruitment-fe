@@ -1,4 +1,4 @@
-import { Flex, message, Radio, Table, Tag } from 'antd';
+import { Flex, message, Radio, Space, Table, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { ColumnsType } from 'antd/es/table';
@@ -134,11 +134,14 @@ const JobSeeker = () => {
 
   const columns: ColumnsType<JobListing> = [
     {
-      title: 'Thông tin ứng viên',
-      dataIndex: 'name',
       key: 'name',
+      width: '25%',
+      dataIndex: 'name',
+      title: 'Thông tin ứng viên',
+      // className: 'before:!content-none lg:[&:not(:last-child)]:border-e',
+      className: 'before:!content-none lg:[&>td:not(:last-child)]:border-e',
       render: (text: string, record: JobListing) => (
-        <div className="space-y-2 ">
+        <div className="space-y-2">
           <div className="font-medium">{text}</div>
           <div className="text-gray-500 text-sm">
             Được chia sẻ vào {record.timePosted}
@@ -157,11 +160,12 @@ const JobSeeker = () => {
           />
         </div>
       ),
-      width: '25%',
     },
     {
-      title: 'Nguyện vọng & kinh nghiệm',
+      width: '40%',
       key: 'experience',
+      title: 'Nguyện vọng & kinh nghiệm',
+      className: 'before:!content-none',
       render: (record: JobListing) => (
         <div className="space-y-4 ">
           <div>
@@ -186,11 +190,10 @@ const JobSeeker = () => {
           </div>
         </div>
       ),
-      width: '40%',
     },
     {
-      title: 'Thành tích/kỹ năng nổi bật',
       key: 'requirements',
+      title: 'Thành tích/kỹ năng nổi bật',
       render: (record: JobListing) => {
         const isExpanded = expandedRow.includes(record.key);
 
@@ -284,7 +287,11 @@ const JobSeeker = () => {
         </FormItem>
       </DrawerSearch>
 
-      <div className="container mx-auto p-4">
+      <Space
+        size="middle"
+        direction="vertical"
+        className="container mx-auto px-4 pt-4 pb-8 max-w-[1600px] lg:px-8"
+      >
         <div>
           <h2 className="text-base font-medium">
             Có <span className="text-accent">2</span> ứng viên đang tìm việc
@@ -298,7 +305,7 @@ const JobSeeker = () => {
           dataSource={data}
           className="bg-white shadow-sm rounded-lg"
         />
-      </div>
+      </Space>
     </div>
   );
 };
