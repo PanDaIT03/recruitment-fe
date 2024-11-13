@@ -56,8 +56,8 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     useMutation({
       mutationFn: (params: IUserProfileData) =>
         UserApi.createWorkExperience(params),
-      onSuccess: () => {
-        messageApi.success('Thêm kinh nghiệm làm việc thành công');
+      onSuccess: (res) => {
+        messageApi.success(res?.message);
         refetch();
       },
       onError: (error: any) =>
@@ -70,8 +70,8 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     useMutation({
       mutationFn: (params: IUpdateWorkExperience) =>
         UserApi.updateWorkExperience(params),
-      onSuccess: () => {
-        messageApi.success('Cập nhât kinh nghiệm làm việc thành công');
+      onSuccess: (res) => {
+        messageApi.success(res?.message);
         refetch();
       },
       onError: (error: any) =>

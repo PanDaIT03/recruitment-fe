@@ -7,6 +7,7 @@ import {
   Image as ImageAntd,
   Layout,
   message,
+  Space,
   UploadFile,
   UploadProps,
 } from 'antd';
@@ -20,21 +21,21 @@ import {
   ReactNode,
   SetStateAction,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 
 import { JobsAPI } from '~/apis/job';
-import UserApi from '~/apis/user';
+import UserApi, { IUpdatePersonalInfo } from '~/apis/user';
 import {
   AvatarPlaceHolder,
-  BusinessCard,
   DualLayerFile,
   File,
+  Location,
   PersonCard,
   SkyScraper,
-  SunRise,
 } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -48,7 +49,6 @@ import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore';
 import { defaultCoverImage } from '~/mocks/data';
-import { JobPlacement } from '~/types/Job';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
@@ -69,6 +69,13 @@ interface IFormItem extends FormItemProps {
 }
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+
+interface IUserInfoForm {
+  fullName: string;
+  positionId: number;
+  placementId: number;
+  totalYearsOfExp: number;
+}
 
 interface ISiderProps {
   setIsOpenInfoModal: Dispatch<SetStateAction<boolean>>;
@@ -117,7 +124,11 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
     <div className="w-full h-max overflow-hidden rounded-xl bg-white shadow-card p-0 shadow lg:col-span-3">
       <div className="w-full">
         <div className="h-[9rem] bg-[url('assets/img/profile_cover_image.jpg')] bg-cover bg-center bg-no-repeat"></div>
-        <div className="-mt-[59px] px-6 pb-6">
+        <Space
+          size="middle"
+          direction="vertical"
+          className="w-full -mt-[59px] px-6 pb-6"
+        >
           <Flex align="end" justify="space-between" gap={16}>
             <div className="relative w-fit rounded-full border-[3px] border-white">
               <div className="rounded-full bg-white w-[108px] h-[108px]">
@@ -125,6 +136,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
                   <ImageAntd
                     width={108}
                     height={108}
+                    preview={false}
                     src={currentUser.avatarUrl || defaultCoverImage}
                   />
                 </div>
@@ -143,11 +155,22 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
               onClick={() => setIsOpenInfoModal(true)}
             />
           </Flex>
-          <div className="mt-4">
+          <div>
             <p className="text-lg font-semibold">{currentUser.fullName}</p>
             <p className="text-sm text-sub font-normal">{currentUser.email}</p>
           </div>
-        </div>
+          <div className="text-sm font-medium">
+            <span>
+              {currentUser.jobPosition?.title}
+              <span className='before:content-["•"] before:mx-2 before:text-lg'></span>
+              <span className="text-sub font-normal">~ 1 năm kinh nghiệm</span>
+            </span>
+            <Flex align="center" gap={4}>
+              <Location />
+              <p>{currentUser.placement?.title}</p>
+            </Flex>
+          </div>
+        </Space>
         <div className="hidden lg:block">
           <Divider dashed className="!m-0" />
           <div className="flex flex-col gap-4 mt-3 px-6 py-6">
@@ -174,30 +197,55 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
 };
 
 const UserLayout = () => {
-  const [form] = useForm();
   const { messageApi } = useMessage();
+  const [form] = useForm<IUserInfoForm>();
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const [isOpenAvatarModal, setIsOpenAvatarModal] = useState(false);
 
-  const jobPlacements = useFetch<JobPlacement>(
+  const { currentUser } = useAppSelector((state) => state.auth);
+
+  const { data: placements } = useFetch(
     ['placements'],
     JobsAPI.getAllPlacements
   );
 
-  const { mutate: updateAccountInfo, isPending } = useMutation({
-    mutationFn: (params: FormData) => UserApi.updateAccountInfo(params),
-    onSuccess: (res) => {
-      setIsOpenAvatarModal(false);
-      messageApi.success(res?.message || 'Cập nhật thông tin thành công');
-    },
-    onError: (error: any) => {
-      messageApi.error(
-        `Cập nhật thông tin thất bại: ${error?.response?.data?.message}`
-      );
-    },
-  });
+  const { data: jobPositions } = useFetch(
+    ['jobPositions'],
+    JobsAPI.getAllJobPositions
+  );
+
+  const { mutate: updateAccountInfo, isPending: isUpdateAccountInfoPending } =
+    useMutation({
+      mutationFn: (params: FormData) => UserApi.updateAccountInfo(params),
+      onSuccess: (res) => {
+        //refetch
+        setIsOpenAvatarModal(false);
+        messageApi.success(res?.message || 'Cập nhật thông tin thành công');
+      },
+      onError: (error: any) => {
+        messageApi.error(
+          `Cập nhật thông tin thất bại: ${error?.response?.data?.message}`
+        );
+      },
+    });
+
+  const { mutate: updatePersonalInfo, isPending: isUpdatePersonalInfoPending } =
+    useMutation({
+      mutationFn: (params: IUpdatePersonalInfo) =>
+        UserApi.updatePersonalInfo(params),
+      onSuccess: (res) => {
+        //refetch
+        setIsOpenInfoModal(false);
+        messageApi.success(res?.message || 'Cập nhật thông tin thành công');
+      },
+      onError: (error: any) => {
+        messageApi.error(
+          `Cập nhật thông tin thất bại: ${error?.response?.data?.message}`
+        );
+      },
+    });
 
   const props: UploadProps = useMemo(
     () => ({
@@ -238,6 +286,16 @@ const UserLayout = () => {
     }),
     [fileList]
   );
+
+  useEffect(() => {
+    if (!Object.keys(currentUser).length) return;
+
+    form.setFieldsValue({
+      fullName: currentUser.fullName,
+      placementId: currentUser.placement?.id,
+      positionId: currentUser.jobPosition?.id,
+    });
+  }, [currentUser]);
 
   const handleTotalYearChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -285,8 +343,14 @@ const UserLayout = () => {
     updateAccountInfo(formData);
   }, [fileList]);
 
-  const handleInfoModalFinish = useCallback(() => {
-    console.log('finish');
+  const handleInfoModalFinish = useCallback((values: IUserInfoForm) => {
+    const params: IUpdatePersonalInfo = {
+      fullName: values.fullName,
+      jobPositionsId: values.positionId?.toString(),
+      placementsId: values.placementId?.toString(),
+    };
+
+    updatePersonalInfo(params);
   }, []);
 
   const formItems: IFormItem[] = useMemo(() => {
@@ -294,6 +358,7 @@ const UserLayout = () => {
       {
         name: 'fullName',
         label: 'Họ và tên',
+        rules: [{ required: true, message: 'Vui lòng nhập Họ và tên' }],
         item: (
           <Input
             placeholder="Nhập họ và tên"
@@ -302,37 +367,41 @@ const UserLayout = () => {
         ),
       },
       {
-        name: 'position',
+        name: 'positionId',
         label: 'Chức vụ hiện tại',
         item: (
-          <Input
-            placeholder="Ví dụ: Chuyên viên tuyển dụng"
-            prefix={<BusinessCard />}
+          <Select
+            allowClear
+            placeholder="Chọn chức vụ"
+            options={jobPositions?.items?.map((jobPosition) => ({
+              label: jobPosition.title,
+              value: jobPosition.id,
+            }))}
           />
         ),
       },
+      // {
+      //   name: 'totalYearsOfExp',
+      //   label: 'Tổng số năm kinh nghiệm của bạn',
+      //   item: (
+      //     <Input
+      //       inputMode="numeric"
+      //       prefix={<SunRise />}
+      //       placeholder="Ví dụ: 7"
+      //       onChange={handleTotalYearChange}
+      //       onBlur={(e) => handleBlurTotalYear(e)}
+      //     />
+      //   ),
+      // },
       {
-        name: 'totalYearsOfExp',
-        label: 'Tổng số năm kinh nghiệm của bạn',
-        item: (
-          <Input
-            inputMode="numeric"
-            prefix={<SunRise />}
-            placeholder="Ví dụ: 7"
-            onChange={handleTotalYearChange}
-            onBlur={(e) => handleBlurTotalYear(e)}
-          />
-        ),
-      },
-      {
-        name: 'placement',
+        name: 'placementId',
         label: 'Nơi sống hiện tại',
         className: 'mb-0',
         item: (
           <Select
             allowClear
             placeholder="Chọn thành phố"
-            options={jobPlacements?.data?.items?.map((place) => ({
+            options={placements?.items?.map((place) => ({
               value: place?.id,
               label: place?.title,
             }))}
@@ -340,12 +409,12 @@ const UserLayout = () => {
         ),
       },
     ];
-  }, [jobPlacements]);
+  }, [placements]);
 
   return (
     <Layout className="min-h-screen">
       <Header />
-      <div className="w-full py-4 px-8 mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-10 gap-4">
+      <div className="w-full py-4 px-8 mx-auto max-w-7xl grid grid-cols-1 gap-4 lg:grid-cols-10 max-lg:px-4">
         <Sider
           setIsOpenInfoModal={setIsOpenInfoModal}
           setIsOpenAvatarModal={setIsOpenAvatarModal}
@@ -360,7 +429,9 @@ const UserLayout = () => {
         centered
         isOpen={isOpenInfoModal}
         title="Cập nhật thông tin"
+        loading={isUpdatePersonalInfoPending}
         onCancel={handleCancelInfoModal}
+        onOk={() => form.submit()}
       >
         <FormWrapper form={form} onFinish={handleInfoModalFinish}>
           {formItems.map((formItem) => {
@@ -376,9 +447,9 @@ const UserLayout = () => {
       </Modal>
       <Modal
         centered
-        loading={isPending}
         isOpen={isOpenAvatarModal}
         title="Thay đổi hình đại diện"
+        loading={isUpdateAccountInfoPending}
         onCancel={handleCancelAvatarModal}
         onOk={handleAvatarModalFinish}
       >

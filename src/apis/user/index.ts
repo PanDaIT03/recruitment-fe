@@ -30,6 +30,12 @@ export type IUpdateAccountInfo = Partial<{
   newPassword: string;
   isChangePassword: boolean;
 }>;
+export type IUpdatePersonalInfo = {
+  fullName: string;
+  placementsId: string;
+  jobPositionsId: string;
+  totalYearExperience?: string;
+};
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
 export type IPaginatedSkill = IPaginatedData<ISkillComboBox[]>;
@@ -58,8 +64,8 @@ const UserApi = {
   getAllSkill: async (): Promise<IPaginatedSkill> => {
     return await axiosApi.get('/skills/all');
   },
-  getAchievementByUserId: async (id: number): Promise<IAchievement> => {
-    return await axiosApi.get(`/achivements?id=${id}`);
+  getAchievementByUser: async () => {
+    return await axiosApi.get('/achivements');
   },
   getLanguageByUserId: async (id: number): Promise<IGetForeignLanguage> => {
     return await axiosApi.get(`/users-foreign-languages/all?usersId=${id}`);
@@ -120,6 +126,9 @@ const UserApi = {
         'Content-Type': 'multipart/form-data',
       },
     } as InternalAxiosRequestConfig);
+  },
+  updatePersonalInfo: async (params: IUpdatePersonalInfo) => {
+    return await axiosApi.patch('/users/personal-info', params);
   },
   updateInfoEmployer: async (params: any): Promise<IBaseResponse> => {
     return await axiosApi.patch('/users/personal-info', params, {

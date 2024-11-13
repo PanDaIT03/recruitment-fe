@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
-import { IParams } from '~/components/Job/JobList';
 import { PostingJobFormValues } from '~/pages/Employer/PostingJob/PostingJob';
+import { IJobList } from '~/pages/Job/JobList/JobList';
 import { JobPostingListProps } from '~/pages/Employer/RecruitmentList/RecruitmentList';
 import axiosApi from '~/services/axios';
 import {
@@ -22,7 +22,7 @@ export interface IPaginationParms {
 export const JobsAPI = {
   // GET
   getAllJobs: (
-    data: IPaginationParms & Partial<IParams> = { page: 1, pageSize: 10 }
+    data: IPaginationParms & Partial<IJobList> = { page: 1, pageSize: 10 }
   ): Promise<IJob> => {
     const payload: AxiosRequestConfig = {
       params: data,

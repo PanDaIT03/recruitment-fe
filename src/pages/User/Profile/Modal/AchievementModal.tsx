@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'antd/es/form/Form';
+import TextArea from 'antd/es/input/TextArea';
 import { memo, useEffect, useState } from 'react';
 
 import UserApi, { IAchievementParams } from '~/apis/user';
-import Editor from '~/components/Editor/Editor';
 import FormItem from '~/components/Form/FormItem';
 import { useMessage } from '~/contexts/MessageProvider';
 import { IAchievement } from '~/types/User/profile';
@@ -21,14 +21,13 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const { messageApi } = useMessage();
 
   const [isEdit, setIsEdit] = useState(false);
-  const [achievementEditor, setAchievementEditor] = useState('');
 
   const { mutate: createAchievement, isPending: isCreateAchievementPending } =
     useMutation({
       mutationFn: (params: IAchievementParams) =>
         UserApi.createAchievement(params),
-      onSuccess: () => {
-        messageApi.success('Tạo thành tựu thành công');
+      onSuccess: (res) => {
+        messageApi.success(res?.message);
         refetch();
       },
       onError: (error: any) =>
@@ -40,8 +39,8 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const { mutate: updateAchievement, isPending: isUpdateAchievementPending } =
     useMutation({
       mutationFn: (params: IAchievement) => UserApi.updateAchievement(params),
-      onSuccess: () => {
-        messageApi.success('Cập nhật thành tựu thành công');
+      onSuccess: (res) => {
+        messageApi.success(res?.message);
         refetch();
       },
       onError: (error: any) =>
@@ -53,7 +52,10 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const { mutate: deleteAchievement, isPending: isDelAchievementPending } =
     useMutation({
       mutationFn: (id: number) => UserApi.deleteAchievement(id),
-      onSuccess: () => messageApi.success('Xoá thành tựu thành công'),
+      onSuccess: (res) => {
+        messageApi.success(res?.message);
+        refetch();
+      },
       onError: (error: any) =>
         messageApi.error(
           error?.response?.data?.message || 'Lỗi khi xoá thành tựu'
@@ -67,13 +69,9 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     }
 
     setIsEdit(true);
+
     isOpen && form.setFieldValue('achievement', data.description);
   }, [data, isOpen]);
-
-  const handleEditorChange = (newValue: string) => {
-    setAchievementEditor(newValue);
-    form.setFieldValue('achievement', newValue);
-  };
 
   const handleCancel = () => {
     form.resetFields();
@@ -82,25 +80,18 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
 
   const handleFinish = async (values: any) => {
     const { achievement } = values;
-    const content = achievement?.lastLevel?.content;
 
-    if (!isEdit) {
+    if (!isEdit)
       createAchievement({
-        description: content,
+        description: achievement,
       });
-      return;
-    }
-
-    const isEmptyContent = content
-      ? /^<p>(<br>|&nbsp;|\s)*<\/p>$/.test(content)
-      : true;
-
-    isEmptyContent
-      ? deleteAchievement(data.id)
-      : updateAchievement({
-          id: data.id,
-          description: content,
-        });
+    else
+      !achievement
+        ? deleteAchievement(data.id)
+        : updateAchievement({
+            id: data.id,
+            description: achievement,
+          });
 
     handleCancel();
   };
@@ -120,7 +111,6 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     >
       <FormItem
         name="achievement"
-        rules={[{ required: true, message: 'Hãy điền vào tóm tắt của bạn' }]}
         label={
           <p className="text-sm font-medium">
             Tóm tắt 3-5 thành tựu hoặc lý do nổi bật khiến nhà tuyển dụng chọn
@@ -128,10 +118,9 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
           </p>
         }
       >
-        <Editor
-          value={achievementEditor}
-          initialValue={data?.description || ''}
-          onEditorChange={handleEditorChange}
+        <TextArea
+          placeholder={`Ví dụ:\n- Tốt nghiệp loại giỏi chuyên ngành Quản trị Nhân lực với GPA 3.53/4.00\n- Đạt 100% KPI trong thời gian thử việc, vượt 119% KPI chung trong Quý 2.2022\n- Mang về mỗi tháng lên tới 30 khách hàng tương đương 40% doanh thu năm 2023`}
+          className="p-3 !min-h-44 bg-light-gray"
         />
       </FormItem>
     </ProfileModal>

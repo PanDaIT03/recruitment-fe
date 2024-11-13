@@ -23,8 +23,8 @@ const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
 
   const { mutate: deleteUserLanguage } = useMutation({
     mutationFn: (id: number) => UserApi.deleteForeignLanguage(id),
-    onSuccess: () => {
-      messageApi.success('Xoá ngôn ngữ thành công');
+    onSuccess: (res) => {
+      messageApi.success(res?.message);
       refetch();
     },
     onError: (error: any) =>
