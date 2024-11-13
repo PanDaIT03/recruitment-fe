@@ -19,14 +19,12 @@ function App() {
   const clientId = import.meta.env.VITE_APP_CLIENT_ID;
 
   useEffect(() => {
-    dispatch(getAllRoles());
-  }, []);
-
-  useEffect(() => {
     if (!token) return;
 
     if (!flagRef.current) {
       dispatch(getMe());
+      dispatch(getAllRoles());
+
       flagRef.current = true;
     }
   }, [token]);

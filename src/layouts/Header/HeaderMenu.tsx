@@ -109,11 +109,12 @@ const HeaderMenu = ({
           ]
         : []),
     ];
-  }, [baseMenu, userMenu, isAuthenticated]);
+  }, [baseMenu, userMenu, isAuthenticated, currentUser]);
 
   return (
     <Modal
       centered
+      destroyOnClose
       isOpen={isOpen}
       className="rounded-2xl"
       animationType="slide-down"
