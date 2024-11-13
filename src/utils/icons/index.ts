@@ -59,6 +59,11 @@ import {
   UserAddOutlined,
   UserOutlined,
   WalletOutlined,
+  MoreOutlined,
+  DesktopOutlined,
+  UsergroupAddOutlined,
+  CalendarFilled,
+  RightCircleOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -122,6 +127,11 @@ const icons = {
   MenuFoldOutlined,
   FilterOutlined,
   CloseCircleOutlined,
+  MoreOutlined,
+  DesktopOutlined,
+  UsergroupAddOutlined,
+  CalendarFilled,
+  RightCircleOutlined,
 };
 
 export default icons;
