@@ -1,4 +1,4 @@
-import { Flex, message, Radio, Space, Tag } from 'antd';
+import { Flex, message, Radio, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { ColumnsType } from 'antd/es/table';
@@ -16,7 +16,8 @@ import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore.ts';
 import { IJobSeeker } from '~/types/JobSeeker/JobSeeker';
 import icons from '~/utils/icons';
-import TableJobSeeker from './TableJobSeeker/TableJobSeeker';
+import Experience from './components/Experience/Experience';
+import TableJobSeeker from './components/TableJobSeeker/TableJobSeeker';
 
 const optionsExperience: DefaultOptionType[] = [
   {
@@ -40,7 +41,46 @@ const defaultFieldOptions: DefaultOptionType[] = [
   },
 ];
 
-const { EnvironmentOutlined, ClockCircleOutlined } = icons;
+const data: IJobSeeker[] = [
+  {
+    key: '1',
+    age: 20,
+    name: 'Lệ Tr****',
+    timePosted: '14 giờ trước',
+    location: 'Hồ Chí Minh',
+    field: 'Quảng cáo/ Truyền thông/ Marketing',
+    position: [
+      'Content Creator',
+      'Livestreamer',
+      'Thực Tập Sinh Tổ Chức Sự Kiện',
+    ],
+    experience: '< 1 năm',
+    salary: 2000000000,
+    startDate: 'Bắt đầu ngay',
+    requirements:
+      'Sinh viên năm cuối chuyên ngành thiết kế đồ họa\nYêu thích và mong muốn gắn bó với lâu dài với công việc thiết kế\nTìm kiếm được vị trí thực tập phù hợp trong lĩnh vực thiết kế đồ họa\nHoàn thành tốt kỳ thực tập và khẳng định bản thân bằng cách trở thành nhân viên chính thức của Công ty',
+  },
+  {
+    key: '2',
+    age: 20,
+    name: 'Nhi Tr****',
+    timePosted: '14 giờ trước',
+    location: 'Hồ Chí Minh',
+    field: 'HCNS/Trợ lý/Tuyển dụng/Văn phòng',
+    position: [
+      'Office Manager',
+      'Admin Manager/ Leader',
+      'Cộng Tác Viên Tuyển Dụng Online',
+    ],
+    experience: '< 1 năm',
+    salary: 15000000000,
+    startDate: 'Bắt đầu ngay',
+    requirements:
+      'Gia sư Tiếng Anh online, Gia sư Trí Thức | 4/2023 - 7/2024: Nhận lớp gia sư online thông qua trung tâm Gia sư Trí Thức và dạy gia sư môn Tiếng Anh. Liên hệ, trao đổi với phụ huynh và học sinh để xác nhận thông tin lớp học, nhận lớp, dạy thử.\nPhó ban Nhân sự CLB Thương mại, CLB Thương mại Đại học',
+  },
+];
+
+const { EnvironmentOutlined, ClockCircleOutlined, DownloadOutlined } = icons;
 
 const JobSeeker = () => {
   const [form] = useForm();
@@ -75,43 +115,6 @@ const JobSeeker = () => {
     );
   };
 
-  const data: IJobSeeker[] = [
-    {
-      key: '1',
-      name: 'Lệ Tr****',
-      timePosted: '14 giờ trước',
-      location: 'Hồ Chí Minh',
-      age: 20,
-      field: 'Quảng cáo/ Truyền thông/ Marketing',
-      position: 'Thực Tập Sinh Tổ Chức Sự Kiện',
-      experience: '< 1 năm',
-      salary: 'Xem mức lương',
-      startDate: 'Bắt đầu ngay',
-      requirements: [
-        'Sinh viên năm cuối chuyên ngành thiết kế đồ họa',
-        'Yêu thích và mong muốn gắn bó với lâu dài với công việc thiết kế',
-        'Tìm kiếm được vị trí thực tập phù hợp trong lĩnh vực thiết kế đồ họa',
-        'Hoàn thành tốt kỳ thực tập và khẳng định bản thân bằng cách trở thành nhân viên chính thức của Công ty',
-      ],
-    },
-    {
-      key: '2',
-      name: 'Nhi Tr****',
-      timePosted: '14 giờ trước',
-      location: 'Hồ Chí Minh',
-      age: 20,
-      field: 'HCNS/Trợ lý/Tuyển dụng/Văn phòng',
-      position: 'Cộng Tác Viên Tuyển Dụng Online',
-      experience: '< 1 năm',
-      salary: 'Xem mức lương',
-      startDate: 'Bắt đầu ngay',
-      requirements: [
-        'Gia sư Tiếng Anh online, Gia sư Trí Thức | 4/2023 - 7/2024: Nhận lớp gia sư online thông qua trung tâm Gia sư Trí Thức và dạy gia sư môn Tiếng Anh. Liên hệ, trao đổi với phụ huynh và học sinh để xác nhận thông tin lớp học, nhận lớp, dạy thử.',
-        'Phó ban Nhân sự CLB Thương mại, CLB Thương mại Đại học',
-      ],
-    },
-  ];
-
   const handleClickDownloadProfile = useCallback(() => {
     return role?.id === 3
       ? console.log('click')
@@ -119,6 +122,14 @@ const JobSeeker = () => {
           'Bạn cần phải là nhà tuyển dụng mới được tải hồ sơ ứng viên'
         );
   }, []);
+
+  const handleInitForm = () => {
+    form.setFieldsValue({ experience: 'all', field: 'all' });
+  };
+
+  const handleSearch = (values: any) => {
+    console.log(values);
+  };
 
   const columns: ColumnsType<IJobSeeker> = [
     {
@@ -145,9 +156,10 @@ const JobSeeker = () => {
             </div>
           </Flex>
           <Button
+            fill
             title="Tải hồ sơ"
             className="w-full"
-            fill
+            iconBefore={<DownloadOutlined width={16} height={16} />}
             onClick={handleClickDownloadProfile}
           />
         </Space>
@@ -157,84 +169,43 @@ const JobSeeker = () => {
       width: '40%',
       key: 'experience',
       title: 'Nguyện vọng & kinh nghiệm',
-      render: (record: IJobSeeker) => (
-        <Space direction="vertical" size="middle">
-          <Flex>
-            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
-              Lĩnh vực
-            </div>
-            <div className="leading-6">{record.field}</div>
-          </Flex>
-          <Flex>
-            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
-              Vị trí ứng tuyển
-            </div>
-            <Tag color="purple">{record.position}</Tag>
-          </Flex>
-          <Flex>
-            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
-              Số năm kinh nghiệm
-            </div>
-            <div>{record.experience}</div>
-          </Flex>
-          <Flex>
-            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
-              Mức lương kỳ vọng
-            </div>
-            <Button
-              displayType="text"
-              title="Xem mức lương"
-              className="text-blue font-medium hover:underline"
-            />
-          </Flex>
-          <Flex>
-            <div className="text-gray-500 font-medium flex-shrink-0 min-w-[150px]">
-              Thời gian bắt đầu
-            </div>
-            <div>{record.startDate}</div>
-          </Flex>
-        </Space>
-      ),
+      render: (record: IJobSeeker) => {
+        const keys = ['field', 'position', 'experience', 'salary', 'startDate'];
+        return <Experience keys={keys} data={record} />;
+      },
     },
     {
       key: 'requirements',
       title: 'Thành tích/kỹ năng nổi bật',
       render: (record: IJobSeeker) => {
         const isExpanded = expandedRow.includes(record.key);
+        const requirementsArr = record.requirements.split('\n');
 
         return (
-          <div>
-            {isExpanded
-              ? record.requirements.map((req, index) => (
-                  <div key={index} className="mb-2">
-                    • {req}
-                  </div>
-                ))
-              : record.requirements.slice(0, 2).map((req, index) => (
-                  <div key={index} className="mb-2">
-                    • {req}
-                  </div>
-                ))}
-
-            <a
-              className="text-accent cursor-pointer hover:text-[#CC3E02] hover:underline"
-              onClick={() => toggleExpand(record.key)}
+          <>
+            <div
+              className={`whitespace-pre-wrap overflow-hidden ${isExpanded ? 'line-clamp-none' : 'line-clamp-6'}`}
             >
-              {isExpanded ? 'Thu gọn' : 'Xem thêm'}
-            </a>
-          </div>
+              {requirementsArr.map((req, index) => (
+                <div
+                  key={index}
+                  className="font-medium before:content-['•'] before:text-lg before:mr-1"
+                >
+                  {req}
+                </div>
+              ))}
+            </div>
+            <Button
+              displayType="text"
+              className="text-accent font-medium hover:text-[#CC3E02] hover:underline"
+              title={isExpanded ? 'Thu gọn' : 'Xem thêm'}
+              onClick={() => toggleExpand(record.key)}
+            />
+          </>
         );
       },
     },
   ];
-
-  const handleInitForm = () => {
-    form.setFieldsValue({ experience: 'all', field: 'all' });
-  };
-
-  const handleSearch = (values: any) => {
-    console.log(values);
-  };
 
   useEffect(() => {
     handleInitForm();
@@ -305,7 +276,11 @@ const JobSeeker = () => {
             Tất cả ứng viên được chia sẻ miễn phí
           </div>
         </div>
-        <TableJobSeeker<IJobSeeker> columns={columns} dataSource={data} />
+        <TableJobSeeker<IJobSeeker>
+          columns={columns}
+          dataSource={data}
+          // className="hidden lg:block"
+        />
       </Space>
     </div>
   );

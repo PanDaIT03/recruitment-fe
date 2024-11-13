@@ -5,9 +5,9 @@ export interface IJobSeeker {
   location: string;
   age: number;
   field: string;
-  position: string;
+  position: string[];
   experience: string;
-  salary: string;
+  salary: number;
   startDate: string;
-  requirements: string[];
+  requirements: string;
 }

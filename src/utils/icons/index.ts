@@ -17,6 +17,7 @@ import {
   DeleteOutlined,
   DollarCircleOutlined,
   DollarOutlined,
+  DownloadOutlined,
   EditOutlined,
   EnvironmentOutlined,
   ExportOutlined,
@@ -122,6 +123,7 @@ const icons = {
   MenuFoldOutlined,
   FilterOutlined,
   CloseCircleOutlined,
+  DownloadOutlined,
 };
 
 export default icons;
