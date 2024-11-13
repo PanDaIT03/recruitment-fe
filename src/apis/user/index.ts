@@ -64,8 +64,8 @@ const UserApi = {
   getAllSkill: async (): Promise<IPaginatedSkill> => {
     return await axiosApi.get('/skills/all');
   },
-  getAchievementByUserId: async (id: number): Promise<IAchievement> => {
-    return await axiosApi.get(`/achivements?id=${id}`);
+  getAchievementByUser: async () => {
+    return await axiosApi.get('/achivements');
   },
   getLanguageByUserId: async (id: number): Promise<IGetForeignLanguage> => {
     return await axiosApi.get(`/users-foreign-languages/all?usersId=${id}`);

@@ -44,18 +44,18 @@ const Profile = () => {
     useState<IWorkExperience[]>(initExperience);
   const [foreignLanguages, setForeignLanguages] =
     useState<IForeignLanguage[]>(initLanguage);
-  const [userSkills, setUserSkills] = useState<IUserSkill[]>(initSkill);
 
-  const {
-    data: achievement,
-    mutate: getAchievementByUserId,
-    isPending: isAchievementPending,
-  } = useMutation({
-    mutationFn: (id: number) => UserApi.getAchievementByUserId(id),
-    onError: (error: any) => {
-      messageApi.error(error?.response?.data?.message);
-    },
-  });
+  const [userSkills, setUserSkills] = useState<IUserSkill[]>(initSkill);
+  const [achievement, setAchievement] = useState<IAchievement>(initAchievement);
+
+  const { mutate: getAchievementByUser, isPending: isAchievementPending } =
+    useMutation({
+      mutationFn: () => UserApi.getAchievementByUser(),
+      onSuccess: (res) => setAchievement(res?.result),
+      onError: (error: any) => {
+        messageApi.error(error?.response?.data?.message);
+      },
+    });
 
   const { mutate: getLanguageByUserId, isPending: isLanguagePending } =
     useMutation({
@@ -90,15 +90,13 @@ const Profile = () => {
     if (!Object.keys(currentUser).length) return;
 
     const id = currentUser.id;
-    const achievementId = currentUser.achivement?.id;
-
     if (id) {
       getLanguageByUserId(id);
       getUserSkillByUserId(id);
       getWorkExperienceByUserId(id);
     }
 
-    if (achievementId) getAchievementByUserId(achievementId);
+    getAchievementByUser();
   }, [currentUser]);
 
   const handleEditItem = useCallback(
@@ -247,7 +245,7 @@ const Profile = () => {
         data={achievement || initAchievement}
         isOpen={selectedItem === ProfileSectionType.ACHIEVEMENT}
         onCancel={() => setSelectedItem('')}
-        refetch={() => getAchievementByUserId(currentUser.achivement.id)}
+        refetch={getAchievementByUser}
       />
       <ExperienceModal
         data={workExperiences[editIndex]}
