@@ -296,28 +296,28 @@ const UserLayout = () => {
     });
   }, [currentUser]);
 
-  const handleTotalYearChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value,
-        numericValue = value.replace(/[^0-9]/g, '');
+  // const handleTotalYearChange = useCallback(
+  //   (event: ChangeEvent<HTMLInputElement>) => {
+  //     const value = event.target.value,
+  //       numericValue = value.replace(/[^0-9]/g, '');
 
-      form.setFieldValue('totalYearsOfExp', numericValue);
-    },
-    []
-  );
+  //     form.setFieldValue('totalYearsOfExp', numericValue);
+  //   },
+  //   []
+  // );
 
-  const handleBlurTotalYear = useCallback(
-    (event: React.FocusEvent<HTMLInputElement, Element>) => {
-      let formattedValue = '';
-      const value = Number(event.target.value);
+  // const handleBlurTotalYear = useCallback(
+  //   (event: React.FocusEvent<HTMLInputElement, Element>) => {
+  //     let formattedValue = '';
+  //     const value = Number(event.target.value);
 
-      if (value >= 50) formattedValue = '50';
-      else formattedValue = value.toString();
+  //     if (value >= 50) formattedValue = '50';
+  //     else formattedValue = value.toString();
 
-      form.setFieldValue('totalYearsOfExp', formattedValue);
-    },
-    []
-  );
+  //     form.setFieldValue('totalYearsOfExp', formattedValue);
+  //   },
+  //   []
+  // );
 
   const handleCancelInfoModal = useCallback(() => {
     setIsOpenInfoModal(false);
