@@ -43,3 +43,5 @@ export { ReactComponent as Down } from './arrow-down.svg';
 export { ReactComponent as Hash } from './hash.svg';
 export { ReactComponent as User } from './user.svg';
 export { ReactComponent as Database } from './database.svg';
+export { ReactComponent as CalendarOutline } from './calendar-outline.svg';
+export { ReactComponent as Edit } from './edit.svg';
