@@ -23,8 +23,8 @@ const ExperienceCard = ({ data, refetch, onEdit }: IProps) => {
 
   const { mutate: deleteWorkExperience } = useMutation({
     mutationFn: (id: number) => UserApi.deleteWorkExperience(id),
-    onSuccess: () => {
-      messageApi.success('Xoá kinh nghiệm thành công');
+    onSuccess: (res) => {
+      messageApi.success(res?.message);
       refetch();
     },
     onError: (error: any) =>

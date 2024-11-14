@@ -22,7 +22,7 @@ const UserManagement = lazy(() => import('~/pages/Admin/User/UserManagement'));
 const Blog = lazy(() => import('~/pages/Blog/Blogs'));
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
 const JobDetail = lazy(() => import('~/components/Job/JobDetail/JobDetail'));
-const JobListPage = lazy(() => import('~/components/Job/JobList'));
+const JobList = lazy(() => import('~/pages/Job/JobList/JobList'));
 const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
 const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
@@ -114,7 +114,7 @@ const routesConfig: CustomRouteObject[] = [
     createRoute(PATH.BLOG, <Blog />),
     createRoute(PATH.JOB_DETAIL, <JobDetail />),
     createRoute(PATH.JOB_SEEKER, <JobSeeker />),
-    createRoute(PATH.JOB_LIST, <JobListPage />)
+    createRoute(PATH.JOB_LIST, <JobList />)
   ),
 
   // Admin
