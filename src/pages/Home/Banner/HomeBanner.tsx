@@ -3,17 +3,19 @@ import { GreaterThan } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import useRole from '~/hooks/useRole';
 import { useAppSelector } from '~/hooks/useStore';
-import { token } from '~/utils/constant';
+import useToken from '~/hooks/useToken';
 import PATH from '~/utils/path';
 
 const HomeBanner = () => {
   const navigate = useNavigate();
-  const { currentUser } = useAppSelector((state) => state.auth);
 
+  const { refreshToken } = useToken();
   const { isEmployer, isUser } = useRole();
 
+  const { currentUser } = useAppSelector((state) => state.auth);
+
   const handleNavigate = () => {
-    if (!token || !currentUser) {
+    if (!refreshToken || !currentUser) {
       navigate(PATH.USER_SIGN_UP);
       return;
     }

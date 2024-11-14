@@ -1,27 +1,32 @@
-import React, { useEffect, useState } from 'react';
 import { Col, Modal, Row, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { getJobById } from '~/store/thunk/job';
+
 import useBreadcrumb from '~/hooks/useBreadcrumb';
-import JobApplicationModal from '../JobApplicationModal/JobApplicationModal';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import useToken from '~/hooks/useToken';
+import { getJobById } from '~/store/thunk/job';
 import PATH from '~/utils/path';
-import JobHeader from './components/JobHeader';
+import JobApplicationModal from '../JobApplicationModal/JobApplicationModal';
 import JobContent from './components/JobContent';
+import JobHeader from './components/JobHeader';
 import JobSidebar from './components/JobSidebar';
-import ShareModal from './components/ShareModal';
 import LoginModal from './components/LoginModal';
+import ShareModal from './components/ShareModal';
 
 const JobDetail: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { token } = useToken();
   const { id } = useParams<{ id: string }>();
+  const { currentJob, loading } = useAppSelector((state) => state.jobs);
+
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [isLoginModalVisible, setIsLoginModalVisible] =
     useState<boolean>(false);
   const [isShareModalVisible, setIsShareModalVisible] =
     useState<boolean>(false);
-  const { currentJob, loading } = useAppSelector((state) => state.jobs);
-  const dispatch = useAppDispatch();
 
   const customBreadcrumbItems = [
     { path: '/jobs', label: 'Tin tuyển dụng' },
@@ -38,7 +43,6 @@ const JobDetail: React.FC = () => {
   }, [id]);
 
   const handleIsOpenModal = () => {
-    const token = localStorage.getItem('token1');
     if (!token) {
       setIsLoginModalVisible(true);
     } else {
