@@ -12,6 +12,9 @@ import PATH from '~/utils/path';
 import AdminLayout from '~/layouts/AdminLayout';
 import UserDetail from '~/pages/Admin/User/UserDetail';
 import EmployerAccountPage from '~/pages/Employer/Personal/EmployerAccountPage';
+const AddNewCandicate = lazy(
+  () => import('~/pages/Employer/Candicates/AddNewCandicate')
+);
 
 const Recruitment = lazy(
   () => import('~/pages/Employer/RecruitmentList/Recruitment')
@@ -148,6 +151,11 @@ const routesConfig: CustomRouteObject[] = [
       <EmployerDashboard />
     ),
     createProtectedRoute(PATH.EMPLOYER_POSTING, ['employer'], <PostingJob />),
+    createProtectedRoute(
+      PATH.EMPLOYER_CANDICATES_ADDNEW,
+      ['employer'],
+      <AddNewCandicate />
+    ),
     createProtectedRoute(
       PATH.EMPLOYER_CANDICATES_DASHBOARD,
       ['employer'],

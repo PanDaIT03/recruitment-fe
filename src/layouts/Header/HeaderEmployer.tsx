@@ -35,6 +35,11 @@ const menuItems: IMenuItems[] = [
         href: PATH.EMPLOYER_CANDICATES_MANAGEMENT,
         active: false,
       },
+      {
+        label: 'Thêm mới',
+        href: PATH.EMPLOYER_CANDICATES_ADDNEW,
+        active: false,
+      },
     ],
   },
   {

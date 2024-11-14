@@ -23,6 +23,7 @@ const PATH = {
   EMPLOYER_POSTING: '/employer/posting-job',
   EMPLOYER_CANDICATES_DASHBOARD: '/employer/manage-candicates',
   EMPLOYER_CANDICATES_MANAGEMENT: '/employer/management-candicates',
+  EMPLOYER_CANDICATES_ADDNEW: '/employer/addnew-candicate',
   EMPLOYER_RECRUITMENT_LIST: '/employer/manage-job',
   EMPLOYER_RECRUITMENT: '/employer/recruitment',
   // User

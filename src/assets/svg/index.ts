@@ -45,3 +45,6 @@ export { ReactComponent as User } from './user.svg';
 export { ReactComponent as Database } from './database.svg';
 export { ReactComponent as CalendarOutline } from './calendar-outline.svg';
 export { ReactComponent as Edit } from './edit.svg';
+export { ReactComponent as Card } from './card.svg';
+export { ReactComponent as Email } from './email.svg';
+export { ReactComponent as Phone } from './phone.svg';
