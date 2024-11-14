@@ -175,13 +175,13 @@ const PostingJob: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="p-4">
       {breadcrumb}
       <Form
         form={form}
         onFinish={onFinish}
         layout="vertical"
-        className="max-w-3xl mx-auto p-4 rounded-md border-none shadow gap-4"
+        className="max-w-3xl mx-auto p-4 rounded-md border-none shadow gap-4 bg-white"
       >
         <h2 className="text-xl font-bold mb-4">Thông tin cơ bản</h2>
         <Divider />
@@ -445,7 +445,7 @@ const PostingJob: React.FC = () => {
           <Button title="Đăng tin" className="w-full" fill type="submit" />
         </Form.Item>
       </Form>
-    </>
+    </div>
   );
 };
 
