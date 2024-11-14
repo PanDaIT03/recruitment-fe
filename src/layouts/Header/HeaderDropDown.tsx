@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { AvatarPlaceHolder } from '~/assets/svg';
 import { useAppSelector } from '~/hooks/useStore';
+import useToken from '~/hooks/useToken';
 import icons from '~/utils/icons';
 import { createBaseMenu, createUserMenu } from './menu/headerMenuItem';
 
@@ -15,10 +16,9 @@ interface IProps {
 
 const HeaderDropDown = ({ setIsOpen }: IProps) => {
   const navigate = useNavigate();
+  const { refreshToken } = useToken();
 
   const { currentUser } = useAppSelector((state) => state.auth);
-
-  const refreshToken = localStorage.getItem('token2');
 
   const userMenu = createUserMenu(navigate);
   const baseMenu = createBaseMenu({ currentUser, token: refreshToken });

@@ -95,9 +95,6 @@ const DesiredJob = () => {
             </p>
             <Flex align="center" justify="center" gap={8}>
               <PingIcon status="pending" />
-              {/* <p className="text-sm text-success font-medium">
-                Chia sẻ vào 16 tháng 10
-              </p> */}
               <p className="text-sm text-[#2563EB] font-medium">Đang duyệt</p>
             </Flex>
           </Flex>

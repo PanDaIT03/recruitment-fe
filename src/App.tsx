@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 
 import { MessageProvider } from './contexts/MessageProvider';
 import { useAppDispatch } from './hooks/useStore';
+import useToken from './hooks/useToken';
 import AppRouter from './routes/AppRouter';
 import { getMe } from './store/thunk/auth';
 import { getAllRoles } from './store/thunk/role';
@@ -13,9 +14,10 @@ import toast from './utils/functions/toast';
 function App() {
   const flagRef = useRef(false);
   const dispatch = useAppDispatch();
+
+  const { token } = useToken();
   const queryClient = new QueryClient();
 
-  const token = localStorage.getItem('token1');
   const clientId = import.meta.env.VITE_APP_CLIENT_ID;
 
   useEffect(() => {

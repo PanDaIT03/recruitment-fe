@@ -22,6 +22,7 @@ import {
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import useToken from '~/hooks/useToken';
 import { signOut } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -60,15 +61,15 @@ const { LoginOutlined, UserAddOutlined, CloseOutlined, LogoutOutlined } = icons;
 
 const Header = ({ items = defaultItems }: IProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useAppDispatch();
+
+  const location = useLocation();
+  const { refreshToken } = useToken();
 
   const [isOpenMenuModal, setIsOpenMenuModal] = useState(false);
   const [isOpenLogOutModal, setIsOpenLogOutModal] = useState(false);
 
   const { currentUser, loading } = useAppSelector((state) => state.auth);
-
-  const refreshToken = localStorage.getItem('token2');
 
   const isAuthenticated = useMemo(
     () => !!refreshToken && !!Object.keys(currentUser).length,
