@@ -64,6 +64,7 @@ import {
   UsergroupAddOutlined,
   CalendarFilled,
   RightCircleOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -132,6 +133,7 @@ const icons = {
   UsergroupAddOutlined,
   CalendarFilled,
   RightCircleOutlined,
+  DownOutlined,
 };
 
 export default icons;

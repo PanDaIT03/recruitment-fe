@@ -13,6 +13,9 @@ import AdminLayout from '~/layouts/AdminLayout';
 import UserDetail from '~/pages/Admin/User/UserDetail';
 import EmployerAccountPage from '~/pages/Employer/Personal/EmployerAccountPage';
 
+const Recruitment = lazy(
+  () => import('~/pages/Employer/RecruitmentList/Recruitment')
+);
 const Home = lazy(() => import('~/pages/Home/Home'));
 const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
 const UserManagement = lazy(() => import('~/pages/Admin/User/UserManagement'));
@@ -24,7 +27,7 @@ const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
 const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
-const PostingJob = lazy(() => import('~/pages/Employer/PostingJob/PostingJob'));
+const PostingJob = lazy(() => import('~/pages/Employer/Job/PostingJob'));
 const UserDesiredJob = lazy(() => import('~/pages/User/DesiredJob/DesiredJob'));
 const EmployerDashboard = lazy(
   () => import('~/pages/Employer/Dashboard/EmployerDashboard')
@@ -32,12 +35,13 @@ const EmployerDashboard = lazy(
 const CandicateDashboard = lazy(
   () => import('~/pages/Employer/Candicates/CandicateDashboard')
 );
+const ManagementCandicates = lazy(
+  () => import('~/pages/Employer/Candicates/ManagementCandicates')
+);
 const RecruitmentList = lazy(
-  () => import('~/pages/Employer/RecruitmentList/RecruitmentList')
+  () => import('~/pages/Employer/Personal/RecruitmentList')
 );
-const UpdateJob = lazy(
-  () => import('~/pages/Employer/RecruitmentList/UpdateJob')
-);
+const UpdateJob = lazy(() => import('~/pages/Employer/Personal/UpdateJob'));
 const UserSignIn = lazy(() => import('~/pages/Auth/User/SignIn/SignIn'));
 const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
 const UserForgotPassword = lazy(
@@ -150,11 +154,21 @@ const routesConfig: CustomRouteObject[] = [
       <CandicateDashboard />
     ),
     createProtectedRoute(
+      PATH.EMPLOYER_CANDICATES_MANAGEMENT,
+      ['employer'],
+      <ManagementCandicates />
+    ),
+    createProtectedRoute(
       PATH.EMPLOYER_RECRUITMENT_LIST,
       ['employer'],
       <RecruitmentList />
     ),
     createProtectedRoute(PATH.UPDATE_JOB, ['employer'], <UpdateJob />),
+    createProtectedRoute(
+      PATH.EMPLOYER_RECRUITMENT,
+      ['employer'],
+      <Recruitment />
+    ),
   ]),
 
   // User

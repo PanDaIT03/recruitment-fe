@@ -1,5 +1,4 @@
 import { List, Pagination } from 'antd';
-import React from 'react';
 import { JobsAPI } from '~/apis/job';
 import { useFetch } from '~/hooks/useFetch';
 import JobListItem from './components/JobListItem';
@@ -31,16 +30,25 @@ interface PageInfo {
 }
 
 export interface JobPostingListProps {
-  statusCode: number;
-  pageInfo: PageInfo;
-  items: JobPosting[];
+  statusCode?: number;
+  pageInfo?: PageInfo;
+  items?: JobPosting[];
 }
 
-const RecruitmentList: React.FC<JobPostingListProps> = ({}) => {
-  const { data: allJobsForEmp, isLoading } = useFetch<JobPostingListProps>(
+const RecruitmentList = () => {
+  const {
+    data: allJobsForEmp,
+    isLoading,
+    refetch,
+  } = useFetch<JobPostingListProps>(
     ['allJobsForEmp'],
     JobsAPI.getAllJobsForEmployer
   );
+
+  const pageInfo = allJobsForEmp?.pageInfo;
+  const hasMultiplePages =
+    !!allJobsForEmp?.pageInfo?.totalPages &&
+    allJobsForEmp.pageInfo.totalPages > 1;
 
   return (
     <div className="space-y-4 text-sm">
@@ -50,18 +58,18 @@ const RecruitmentList: React.FC<JobPostingListProps> = ({}) => {
         loading={isLoading}
         renderItem={(item) => (
           <List.Item className="mb-4">
-            <JobListItem item={item} />
+            <JobListItem item={item} refetch={refetch} />
           </List.Item>
         )}
         pagination={false}
       />
 
-      {allJobsForEmp && allJobsForEmp?.pageInfo?.totalPages > 1 && (
+      {hasMultiplePages && (
         <div className="flex justify-end">
           <Pagination
-            current={allJobsForEmp?.pageInfo.currentPage}
-            total={allJobsForEmp?.pageInfo.totalItems}
-            pageSize={allJobsForEmp?.pageInfo.itemsPerPage}
+            current={pageInfo?.currentPage}
+            total={pageInfo?.totalItems}
+            pageSize={pageInfo?.itemsPerPage}
             showSizeChanger={false}
           />
         </div>

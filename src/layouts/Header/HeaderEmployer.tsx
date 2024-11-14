@@ -1,10 +1,10 @@
 import { MenuOutlined } from '@ant-design/icons';
 import { googleLogout } from '@react-oauth/google';
-import { Col, Divider, Image, Modal, Row } from 'antd';
+import { Col, Divider, Dropdown, Image, Menu, Modal, Row } from 'antd';
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DISCONNECTED, USER_AVATAR } from '~/assets/img';
-import { HeaderLogo } from '~/assets/svg';
+import { Down, HeaderLogo } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signOut } from '~/store/thunk/auth';
@@ -15,6 +15,7 @@ interface IMenuItems {
   href: string;
   label: string;
   active: boolean;
+  children?: IMenuItems[];
 }
 
 const menuItems: IMenuItems[] = [
@@ -23,9 +24,37 @@ const menuItems: IMenuItems[] = [
     label: 'Ứng viên',
     href: PATH.EMPLOYER_CANDICATES_DASHBOARD,
     active: false,
+    children: [
+      {
+        label: 'Tổng quan',
+        href: PATH.EMPLOYER_CANDICATES_DASHBOARD,
+        active: false,
+      },
+      {
+        label: 'Quản lý',
+        href: PATH.EMPLOYER_CANDICATES_MANAGEMENT,
+        active: false,
+      },
+    ],
   },
-  { label: 'Công việc', href: PATH.EMPLOYER_POSTING, active: false },
-  { label: 'Tuyển dụng', href: PATH.EMPLOYER_RECRUITMENT_LIST, active: false },
+  {
+    label: 'Công việc',
+    href: PATH.EMPLOYER_POSTING,
+    active: false,
+    children: [
+      {
+        label: 'Quản lý',
+        href: PATH.EMPLOYER_RECRUITMENT_LIST,
+        active: false,
+      },
+      {
+        label: 'Đăng tin tuyển dụng',
+        href: PATH.EMPLOYER_POSTING,
+        active: false,
+      },
+    ],
+  },
+  { label: 'Tuyển dụng', href: PATH.EMPLOYER_RECRUITMENT, active: false },
 ];
 
 const Header = () => {
@@ -48,16 +77,46 @@ const Header = () => {
   }, [dispatch, navigate]);
 
   const renderMenuItems = (onClick?: () => void) =>
-    menuItems.map((item, index) => (
-      <Link
-        key={index}
-        to={item.href}
-        className={`p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main ${item.active ? 'bg-header-active' : ''}`}
-        onClick={onClick}
-      >
-        {item.label}
-      </Link>
-    ));
+    menuItems.map((item, index) => {
+      if (item.children) {
+        const dropdownMenu = (
+          <Menu>
+            {item.children.map((child, childIndex) => (
+              <Menu.Item key={childIndex}>
+                <Link
+                  to={child.href!}
+                  className="p-2 w-full text-center font-bold rounded-md hover:bg-header-bgHover !hover:text-white"
+                  onClick={onClick}
+                >
+                  {child.label}
+                </Link>
+              </Menu.Item>
+            ))}
+          </Menu>
+        );
+
+        return (
+          <Dropdown overlay={dropdownMenu} key={index}>
+            <span
+              className={`flex items-center gap-2 p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main cursor-pointer ${item.active ? 'bg-header-active' : ''}`}
+            >
+              {item.label} <Down />
+            </span>
+          </Dropdown>
+        );
+      }
+
+      return (
+        <Link
+          key={index}
+          to={item.href!}
+          className={`p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main ${item.active ? 'bg-header-active' : ''}`}
+          onClick={onClick}
+        >
+          {item.label}
+        </Link>
+      );
+    });
 
   return (
     <div className="sticky bg-secondary px-8 left-0 top-0 z-40">

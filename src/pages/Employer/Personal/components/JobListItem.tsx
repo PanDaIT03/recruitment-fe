@@ -7,6 +7,9 @@ import { JobPosting } from '../RecruitmentList';
 import 'dayjs/locale/vi';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from 'react-router-dom';
+import { JobsAPI } from '~/apis/job';
+import { JOB_STATUS } from '~/utils/constant';
+import toast from '~/utils/functions/toast';
 import PATH from '~/utils/path';
 
 dayjs.extend(relativeTime);
@@ -34,10 +37,39 @@ const formatSalaryRange = (min: number | null, max: number | null) => {
 
 interface JobListItemProps {
   item: JobPosting;
+  refetch: () => void;
 }
 
-const JobListItem: React.FC<JobListItemProps> = ({ item }) => {
+const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
   const navigate = useNavigate();
+
+  const isActiveJob = item.jobstatus === JOB_STATUS.ACTIVE;
+  const isInActiveJob = item.jobstatus === JOB_STATUS.INACTIVE;
+
+  const determineNextStatus = (status: string) => {
+    switch (status) {
+      case JOB_STATUS.ACTIVE:
+        return JOB_STATUS.INACTIVE;
+      case JOB_STATUS.INACTIVE:
+        return JOB_STATUS.ACTIVE;
+      default:
+        return JOB_STATUS.DELETED;
+    }
+  };
+
+  const handleChangeStatusJob = async (id: number, status: string) => {
+    try {
+      const response = await JobsAPI.updateJob(id.toString(), { status });
+      toast[response?.statusCode === 200 ? 'success' : 'error'](
+        response?.message || ''
+      );
+
+      if (response.statusCode === 200) refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <List.Item
       key={item.id}
@@ -60,8 +92,13 @@ const JobListItem: React.FC<JobListItemProps> = ({ item }) => {
               },
               {
                 key: '3',
-                label: 'Dừng đăng tin',
+                label: determineNextStatus(item.jobstatus),
                 icon: <RightCircleOutlined />,
+                onClick: () =>
+                  handleChangeStatusJob(
+                    item.id,
+                    determineNextStatus(item.jobstatus)
+                  ),
               },
               {
                 key: '4',
@@ -82,8 +119,14 @@ const JobListItem: React.FC<JobListItemProps> = ({ item }) => {
       }
     >
       <div className="w-full p-2">
-        <Tag color="success" className="flex gap-2 mb-2 w-fit">
-          <Badge color="green" className="rounded-full" />
+        <Tag
+          color={isActiveJob ? 'success' : isInActiveJob ? 'warning' : 'error'}
+          className="flex gap-2 mb-2 w-fit"
+        >
+          <Badge
+            color={isActiveJob ? 'green' : isInActiveJob ? 'yellow' : 'red'}
+            className="rounded-full"
+          />
           <p>{item.jobstatus}</p>
         </Tag>
 
@@ -120,34 +163,34 @@ const JobListItem: React.FC<JobListItemProps> = ({ item }) => {
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-          <span className="flex items-center">
-            Đang đánh giá{' '}
+          <span className="flex cursor-pointer items-center">
+            Đang đánh giá
             <Tag className="ml-1 bg-[#ff5800] text-white">
               {item.evaluatingCount}
             </Tag>
           </span>
           <span className="text-gray-300">|</span>
-          <span className="flex items-center">
-            Phỏng vấn{' '}
+          <span className="flex cursor-pointer items-center">
+            Phỏng vấn
             <Tag className="ml-1 bg-[#ff5800] text-white">
               {item.interviewingCount}
             </Tag>
           </span>
           <span className="text-gray-300">|</span>
-          <span className="flex items-center">
-            Đang offer{' '}
+          <span className="flex cursor-pointer items-center">
+            Đang offer
             <Tag className="ml-1 bg-[#ff5800] text-white">
               {item.offeringCount}
             </Tag>
           </span>
           <span className="text-gray-300">|</span>
-          <span className="flex items-center text-green-600">
-            Đã tuyển{' '}
+          <span className="flex cursor-pointer items-center text-green-600">
+            Đã tuyển
             <Tag className="ml-1 bg-[#52c41a] text-white">
               {item.recruitingCount}
             </Tag>
           </span>
-          <span className="flex items-center text-gray-400">
+          <span className="flex cursor-pointer items-center text-gray-400">
             Đã đóng <Tag className="ml-1">{item.recruitingCount}</Tag>
           </span>
         </div>

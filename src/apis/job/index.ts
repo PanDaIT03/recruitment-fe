@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 import { IParams } from '~/components/Job/JobList';
-import { PostingJobFormValues } from '~/pages/Employer/PostingJob/PostingJob';
-import { JobPostingListProps } from '~/pages/Employer/RecruitmentList/RecruitmentList';
+import { PostingJobFormValues } from '~/pages/Employer/Job/PostingJob';
+import { JobPostingListProps } from '~/pages/Employer/Personal/RecruitmentList';
 import axiosApi from '~/services/axios';
 import {
   Application,
@@ -67,7 +67,10 @@ export const JobsAPI = {
   },
 
   // PATCH
-  updateJob: (id: string, data: Partial<JobItem>): Promise<JobItem> => {
+  updateJob: (
+    id: string,
+    data: Partial<any>
+  ): Promise<JobItem | IBaseResponse> => {
     return axiosApi.patch(`/jobs/${id}`, data);
   },
 };
