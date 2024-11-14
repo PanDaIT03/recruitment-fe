@@ -73,4 +73,9 @@ export const JobsAPI = {
   ): Promise<JobItem | IBaseResponse> => {
     return axiosApi.patch(`/jobs/${id}`, data);
   },
+
+  // DELETE
+  deleteJob: (id: number): Promise<IBaseResponse> => {
+    return axiosApi.delete(`/jobs/${id}`);
+  },
 };
