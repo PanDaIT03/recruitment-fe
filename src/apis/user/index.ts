@@ -6,7 +6,6 @@ import {
   IForeignLanguage,
   ILanguageComboBox,
   ISkillComboBox,
-  IUserProfile,
   IUserProfileData,
   IUserSkill,
   IWorkExperience,
@@ -19,6 +18,20 @@ export type ILanguageParams = Pick<
   IForeignLanguage,
   'foreignLanguagesId' | 'level'
 >;
+export interface IDesiredJobParams {
+  jobFieldsId: number;
+  startAfterOffer: string;
+  totalYearExperience: number;
+  yearOfBirth: string;
+  salaryExpectation: number;
+  jobPositionIds: number[];
+  jobPlacementIds: number[];
+  achivements: string;
+  skills: {
+    level: number;
+    id: number;
+  }[];
+}
 
 export type IGetForeignLanguage = IPaginatedData<IForeignLanguage[]>;
 export type IGetWorkExperience = IPaginatedData<IWorkExperience[]>;
@@ -30,6 +43,12 @@ export type IUpdateAccountInfo = Partial<{
   newPassword: string;
   isChangePassword: boolean;
 }>;
+export type IUpdatePersonalInfo = {
+  fullName: string;
+  placementsId: string;
+  jobPositionsId: string;
+  totalYearExperience?: string;
+};
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
 export type IPaginatedSkill = IPaginatedData<ISkillComboBox[]>;
@@ -40,12 +59,6 @@ const headers: AxiosHeaders = new AxiosHeaders({
 
 const UserApi = {
   // GET
-  getUserProfile: async (params: IUserProfileParams): Promise<IUserProfile> => {
-    const { accessToken, refreshToken } = params;
-    return await axiosApi.get('/users/profile', {
-      headers: { Authorization: accessToken, Cookies: refreshToken },
-    });
-  },
   getAllUser: async (): Promise<UserListResponse> => {
     return await axiosApi.get('/users/all');
   },
@@ -58,8 +71,8 @@ const UserApi = {
   getAllSkill: async (): Promise<IPaginatedSkill> => {
     return await axiosApi.get('/skills/all');
   },
-  getAchievementByUserId: async (id: number): Promise<IAchievement> => {
-    return await axiosApi.get(`/achivements?id=${id}`);
+  getAchievementByUser: async () => {
+    return await axiosApi.get('/achivements');
   },
   getLanguageByUserId: async (id: number): Promise<IGetForeignLanguage> => {
     return await axiosApi.get(`/users-foreign-languages/all?usersId=${id}`);
@@ -92,6 +105,12 @@ const UserApi = {
   ): Promise<IBaseResponse> => {
     return await axiosApi.post('/users-foreign-languages', params);
   },
+  createNewDesiredJob: async (params: IDesiredJobParams) => {
+    return await axiosApi.post('/desired-jobs', params);
+  },
+  uploadCV: async (params: FormData) => {
+    return await axiosApi.post('/cloudinary/upload/CVs', params);
+  },
 
   // PATCH
   updateAchievement: async (params: IAchievement): Promise<IBaseResponse> => {
@@ -120,6 +139,9 @@ const UserApi = {
         'Content-Type': 'multipart/form-data',
       },
     } as InternalAxiosRequestConfig);
+  },
+  updatePersonalInfo: async (params: IUpdatePersonalInfo) => {
+    return await axiosApi.patch('/users/personal-info', params);
   },
   updateInfoEmployer: async (params: any): Promise<IBaseResponse> => {
     return await axiosApi.patch('/users/personal-info', params, {

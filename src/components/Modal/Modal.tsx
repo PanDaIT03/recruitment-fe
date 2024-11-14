@@ -31,6 +31,7 @@ const Modal = ({
   children,
   loading,
   classNames,
+  destroyOnClose,
   animationType = 'default',
   onOk,
   onCancel,
@@ -55,6 +56,7 @@ const Modal = ({
   return (
     <ModalAntd
       open={isOpen}
+      destroyOnClose
       classNames={customClassNames}
       footer={
         props.footer || (

@@ -22,6 +22,7 @@ import {
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import useToken from '~/hooks/useToken';
 import { signOut } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -60,15 +61,15 @@ const { LoginOutlined, UserAddOutlined, CloseOutlined, LogoutOutlined } = icons;
 
 const Header = ({ items = defaultItems }: IProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useAppDispatch();
+
+  const location = useLocation();
+  const { refreshToken } = useToken();
 
   const [isOpenMenuModal, setIsOpenMenuModal] = useState(false);
   const [isOpenLogOutModal, setIsOpenLogOutModal] = useState(false);
 
   const { currentUser, loading } = useAppSelector((state) => state.auth);
-
-  const refreshToken = localStorage.getItem('token2');
 
   const isAuthenticated = useMemo(
     () => !!refreshToken && !!Object.keys(currentUser).length,
@@ -119,7 +120,7 @@ const Header = ({ items = defaultItems }: IProps) => {
         label: 'Đăng nhập',
         icon: <LoginOutlined className="w-4 h-4" />,
         className: 'hover:!text-main hover:!bg-bright-orange !font-medium',
-        onClick: () => navigate(PATH.EMPLOYER_SIGN_IN),
+        onClick: () => navigate(PATH.USER_SIGN_IN),
       },
       {
         key: 1,
@@ -222,7 +223,6 @@ const Header = ({ items = defaultItems }: IProps) => {
           />
         </div>
         <Modal
-          destroyOnClose
           title="Đăng xuất"
           isOpen={isOpenLogOutModal}
           animationType="slide-down"

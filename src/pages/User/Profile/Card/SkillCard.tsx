@@ -19,8 +19,8 @@ const SkillCard = ({ data, refetch, onEdit }: IProps) => {
 
   const { mutate: deleteUserSkill } = useMutation({
     mutationFn: (id: number) => UserApi.deleteUserSkill(id),
-    onSuccess: () => {
-      messageApi.success('Xoá kỹ năng thành công');
+    onSuccess: (res) => {
+      messageApi.success(res?.message);
       refetch();
     },
     onError: (error: any) =>

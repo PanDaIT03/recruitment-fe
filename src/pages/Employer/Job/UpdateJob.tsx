@@ -7,11 +7,11 @@ import { getJobById } from '~/store/thunk/job';
 import { JobItem } from '~/types/Job';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
+import { formatCurrencyVN } from '~/utils/functions';
 import ModalBen from './ModalUpdate/ModalBen';
 import ModalDesc from './ModalUpdate/ModalDesc';
-import ModalInfo from './ModalUpdate/ModalInfo';
 import ModalReq from './ModalUpdate/ModalReq';
-import { formatCurrencyVN } from '~/utils/functions';
+import ModalInfo from './ModalUpdate/ModalInfo';
 
 const { EditOutlined, ArrowLeftOutlined } = icons;
 

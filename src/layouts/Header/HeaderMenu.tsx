@@ -13,6 +13,7 @@ import { BackPack, Blogs, Users } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppSelector } from '~/hooks/useStore';
+import useToken from '~/hooks/useToken';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import { createBaseMenu, createUserMenu } from './menu/headerMenuItem';
@@ -33,11 +34,10 @@ const HeaderMenu = ({
 }: IProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { refreshToken } = useToken();
 
   const { currentUser } = useAppSelector((state) => state.auth);
   const [navigatePath, setNavigatePath] = useState(location.pathname);
-
-  const refreshToken = localStorage.getItem('token2');
 
   const isAuthenticated = useMemo(
     () => !!refreshToken && !!Object.keys(currentUser).length,
@@ -114,7 +114,6 @@ const HeaderMenu = ({
   return (
     <Modal
       centered
-      destroyOnClose
       isOpen={isOpen}
       className="rounded-2xl"
       animationType="slide-down"

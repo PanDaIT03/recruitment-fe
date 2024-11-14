@@ -1,6 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
-import { IParams } from '~/components/Job/JobList';
-import { PostingJobFormValues } from '~/pages/Employer/PostingJob/PostingJob';
+import { JobPostingListProps } from '~/pages/Employer/Job/ManageJob';
+import { PostingJobFormValues } from '~/pages/Employer/Job/PostingJob';
+import { IJobList } from '~/pages/Job/JobList/JobList';
 import axiosApi from '~/services/axios';
 import {
   Application,
@@ -21,12 +22,15 @@ export interface IPaginationParms {
 export const JobsAPI = {
   // GET
   getAllJobs: (
-    data: IPaginationParms & Partial<IParams> = { page: 1, pageSize: 10 }
+    data: IPaginationParms & Partial<IJobList> = { page: 1, pageSize: 10 }
   ): Promise<IJob> => {
     const payload: AxiosRequestConfig = {
       params: data,
     };
     return axiosApi.get('/jobs/all', payload);
+  },
+  getAllJobsForEmployer: (): Promise<JobPostingListProps> => {
+    return axiosApi.get(`/jobs/employer/all`);
   },
   getJobById: (id: string): Promise<JobItem> => {
     return axiosApi.get(`/jobs?id=${id}`);
@@ -63,7 +67,15 @@ export const JobsAPI = {
   },
 
   // PATCH
-  updateJob: (id: string, data: Partial<JobItem>): Promise<JobItem> => {
+  updateJob: (
+    id: string,
+    data: Partial<any>
+  ): Promise<JobItem | IBaseResponse> => {
     return axiosApi.patch(`/jobs/${id}`, data);
+  },
+
+  // DELETE
+  deleteJob: (id: number): Promise<IBaseResponse> => {
+    return axiosApi.delete(`/jobs/${id}`);
   },
 };

@@ -24,6 +24,7 @@ type TProps = {
 } & SelectProps;
 
 const CustomSelect = ({
+  className,
   prefixIcon,
   configProvider,
   displayedType = 'default',
@@ -35,6 +36,7 @@ const CustomSelect = ({
   const customClass = classNames(
     'custom-select',
     'flex pl-[11px] items-center gap-[10px]',
+    className,
     displayedType,
     configProvider?.colorBgContainer,
     configProvider?.colorBorder &&
