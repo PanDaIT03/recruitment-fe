@@ -33,7 +33,7 @@ const Experience = ({ keys, data, className }: IProps) => {
       case 'position':
         title = 'Vị trí ứng tuyển';
         content = (
-          <div className="flex lg:flex-col gap-2">
+          <div className="flex flex-wrap gap-2 lg:flex-col">
             {value?.length &&
               value?.map((item: string, index: number) => (
                 <Tag key={index} color="green" className="w-max m-0">
@@ -80,7 +80,7 @@ const Experience = ({ keys, data, className }: IProps) => {
         const { title, content } = handleRenderTitle(key, value);
 
         return (
-          <Flex key={key} className="font-medium leading-6">
+          <Flex key={key} className="font-medium leading-6 max-sm:flex-col">
             <div className="text-gray-500 flex-shrink-0 min-w-[150px]">
               {title}
             </div>
