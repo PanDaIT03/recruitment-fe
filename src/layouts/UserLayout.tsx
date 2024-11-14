@@ -15,7 +15,7 @@ import ImgCrop from 'antd-img-crop';
 import { useForm } from 'antd/es/form/Form';
 import { Content } from 'antd/es/layout/layout';
 import {
-  ChangeEvent,
+  // ChangeEvent,
   Dispatch,
   ReactElement,
   ReactNode,
