@@ -60,12 +60,6 @@ const headers: AxiosHeaders = new AxiosHeaders({
 
 const UserApi = {
   // GET
-  getUserProfile: async (params: IUserProfileParams): Promise<IUserProfile> => {
-    const { accessToken, refreshToken } = params;
-    return await axiosApi.get('/users/profile', {
-      headers: { Authorization: accessToken, Cookies: refreshToken },
-    });
-  },
   getAllUser: async (): Promise<UserListResponse> => {
     return await axiosApi.get('/users/all');
   },
