@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+// import { useMutation } from '@tanstack/react-query';
 import {
   Divider,
   Flex,
@@ -43,7 +43,7 @@ import { IFormListProps } from '~/components/Form/FormList';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import CustomSelect from '~/components/Select/CustomSelect';
-import { useMessage } from '~/contexts/MessageProvider';
+// import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
@@ -79,7 +79,7 @@ const { CloseOutlined, MinusCircleOutlined, StarOutlined } = icons;
 const JobApplication = () => {
   const navigate = useNavigate();
   const [form] = useForm<IForm>();
-  const { messageApi } = useMessage();
+  // const { messageApi } = useMessage();
 
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
@@ -103,30 +103,30 @@ const JobApplication = () => {
     UserApi.getAllForeignLanguage
   );
 
-  const { mutate: uploadCV, isPending: isUploadCVPending } = useMutation({
-    mutationFn: (params: FormData) => UserApi.uploadCV(params),
-    onSuccess: (res) => {
-      console.log(res);
-      // const params: IDesiredJobParams = {};
+  // const { mutate: uploadCV, isPending: isUploadCVPending } = useMutation({
+  //   mutationFn: (params: FormData) => UserApi.uploadCV(params),
+  //   onSuccess: (res) => {
+  //     console.log(res);
+  //     // const params: IDesiredJobParams = {};
 
-      // createNewDesiredJob(params);
-    },
-    onError: (error: any) =>
-      messageApi.error(error?.response?.data?.message || 'Lỗi khi upload CV'),
-  });
+  //     // createNewDesiredJob(params);
+  //   },
+  //   onError: (error: any) =>
+  //     messageApi.error(error?.response?.data?.message || 'Lỗi khi upload CV'),
+  // });
 
-  const { mutate: createNewDesiredJob, isPending: isCreateDesiredJobPending } =
-    useMutation({
-      mutationFn: (params: IDesiredJobParams) =>
-        UserApi.createNewDesiredJob(params),
-      onSuccess: (res) => {
-        console.log(res);
-      },
-      onError: (error: any) =>
-        messageApi.error(
-          error?.response?.data?.message || 'Lỗi khi tạo công việc mong muốn'
-        ),
-    });
+  // const { mutate: createNewDesiredJob, isPending: isCreateDesiredJobPending } =
+  //   useMutation({
+  //     mutationFn: (params: IDesiredJobParams) =>
+  //       UserApi.createNewDesiredJob(params),
+  //     onSuccess: (res) => {
+  //       console.log(res);
+  //     },
+  //     onError: (error: any) =>
+  //       messageApi.error(
+  //         error?.response?.data?.message || 'Lỗi khi tạo công việc mong muốn'
+  //       ),
+  //   });
 
   const props: UploadProps = useMemo(
     () => ({
@@ -442,17 +442,17 @@ const JobApplication = () => {
     };
   }, [form, props, languages, jobFields, jobPositions, placements]);
 
-  const handleUploadCV = useCallback(async () => {
-    if (!uploadFile.length) return;
+  // const handleUploadCV = useCallback(async () => {
+  //   if (!uploadFile.length) return;
 
-    const formData = new FormData();
-    uploadFile.forEach((item) => {
-      if (!item.originFileObj) return;
-      formData.append('file', item.originFileObj);
-    });
+  //   const formData = new FormData();
+  //   uploadFile.forEach((item) => {
+  //     if (!item.originFileObj) return;
+  //     formData.append('file', item.originFileObj);
+  //   });
 
-    uploadCV(formData);
-  }, [uploadFile]);
+  //   uploadCV(formData);
+  // }, [uploadFile]);
 
   const handleFinish = (values: any) => {
     // handleUploadCV();
@@ -495,7 +495,7 @@ const JobApplication = () => {
             title="Tạo hồ sơ"
             className="w-full"
             iconAfter={<Fly />}
-            loading={isUploadCVPending || isCreateDesiredJobPending}
+            // loading={isUploadCVPending || isCreateDesiredJobPending}
             onClick={() => form.submit()}
           />
         </Flex>

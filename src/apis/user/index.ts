@@ -6,7 +6,6 @@ import {
   IForeignLanguage,
   ILanguageComboBox,
   ISkillComboBox,
-  IUserProfile,
   IUserProfileData,
   IUserSkill,
   IWorkExperience,
