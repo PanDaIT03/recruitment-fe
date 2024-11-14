@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signOut } from '~/store/thunk/auth';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
+import type { MenuProps } from 'antd';
 
 interface IMenuItems {
   href: string;
@@ -53,7 +54,7 @@ const menuItems: IMenuItems[] = [
         active: false,
       },
       {
-        label: 'Đăng tin tuyển dụng',
+        label: 'Đăng tin',
         href: PATH.EMPLOYER_POSTING,
         active: false,
       },
@@ -81,47 +82,91 @@ const Header = () => {
     });
   }, [dispatch, navigate]);
 
-  const renderMenuItems = (onClick?: () => void) =>
-    menuItems.map((item, index) => {
+  const convertToMenuItems = (
+    items: IMenuItems[],
+    onClick?: () => void
+  ): MenuProps['items'] => {
+    return items.map((item, index) => {
       if (item.children) {
-        const dropdownMenu = (
-          <Menu>
-            {item.children.map((child, childIndex) => (
-              <Menu.Item key={childIndex}>
-                <Link
-                  to={child.href!}
-                  className="p-2 w-full text-center font-bold rounded-md hover:bg-header-bgHover !hover:text-white"
-                  onClick={onClick}
-                >
-                  {child.label}
-                </Link>
-              </Menu.Item>
-            ))}
-          </Menu>
-        );
-
-        return (
-          <Dropdown overlay={dropdownMenu} key={index}>
+        return {
+          key: `${index}`,
+          label: (
             <span
-              className={`flex items-center gap-2 p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main cursor-pointer ${item.active ? 'bg-header-active' : ''}`}
+              className={`w-full flex items-center gap-2 p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main cursor-pointer ${
+                item.active ? 'bg-header-active' : ''
+              }`}
             >
               {item.label} <Down />
             </span>
-          </Dropdown>
-        );
+          ),
+          children: item.children.map((child, childIndex) => ({
+            key: `${index}-${childIndex}`,
+            label: (
+              <Link
+                to={child.href}
+                className="p-2 w-full text-center font-bold rounded-md hover:bg-header-bgHover hover:text-white"
+                onClick={onClick}
+              >
+                {child.label}
+              </Link>
+            ),
+          })),
+        };
       }
 
-      return (
-        <Link
-          key={index}
-          to={item.href!}
-          className={`p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main ${item.active ? 'bg-header-active' : ''}`}
-          onClick={onClick}
-        >
-          {item.label}
-        </Link>
-      );
+      return {
+        key: `${index}`,
+        label: (
+          <Link
+            to={item.href}
+            className={`w-full p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:!text-white ${
+              item.active ? 'bg-header-active text-white' : ''
+            }`}
+            onClick={onClick}
+          >
+            {item.label}
+          </Link>
+        ),
+      };
     });
+  };
+
+  const renderDesktopMenu = () => (
+    <div className="hidden md:flex text-main text-sm gap-x-4">
+      {menuItems.map((item, index) => {
+        if (item.children) {
+          return (
+            <Dropdown
+              trigger={['click']}
+              key={index}
+              menu={{ items: convertToMenuItems(item.children) }}
+              placement="bottomLeft"
+            >
+              <span
+                className={`flex items-center gap-2 p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main cursor-pointer ${
+                  item.active ? 'bg-header-active' : ''
+                }`}
+              >
+                {item.label} <Down />
+              </span>
+            </Dropdown>
+          );
+        }
+
+        return (
+          <Link
+            key={index}
+            to={item.href}
+            className={`p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main ${
+              item.active ? 'bg-header-active text-white' : ''
+            }`}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div className="sticky bg-secondary px-8 left-0 top-0 z-40">
@@ -135,9 +180,7 @@ const Header = () => {
             className="max-w-[139px] h-full cursor-pointer"
             onClick={() => navigate(PATH.ROOT)}
           />
-          <div className="hidden md:flex text-main text-sm gap-x-4">
-            {renderMenuItems()}
-          </div>
+          {renderDesktopMenu()}
         </Col>
 
         <Col className="md:hidden flex justify-between items-center w-full">
@@ -168,9 +211,10 @@ const Header = () => {
               </div>
             </div>
             <Divider />
-            <div className="flex flex-col items-center mt-4">
-              {renderMenuItems(toggleMenuModal)}
-            </div>
+            <Menu
+              items={convertToMenuItems(menuItems, toggleMenuModal)}
+              mode="vertical"
+            />
             <Divider />
             <div className="flex flex-col gap-2">
               <Button

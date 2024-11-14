@@ -41,10 +41,8 @@ const CandicateDashboard = lazy(
 const ManagementCandicates = lazy(
   () => import('~/pages/Employer/Candicates/ManagementCandicates')
 );
-const RecruitmentList = lazy(
-  () => import('~/pages/Employer/Personal/RecruitmentList')
-);
-const UpdateJob = lazy(() => import('~/pages/Employer/Personal/UpdateJob'));
+const RecruitmentList = lazy(() => import('~/pages/Employer/Job/ManageJob'));
+const UpdateJob = lazy(() => import('~/pages/Employer/Job/UpdateJob'));
 const UserSignIn = lazy(() => import('~/pages/Auth/User/SignIn/SignIn'));
 const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
 const UserForgotPassword = lazy(
