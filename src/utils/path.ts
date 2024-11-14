@@ -20,9 +20,12 @@ const PATH = {
   ADMIN_JOB_MANAGEMENT: '/admin/job-management',
   // Employer
   EMPLOYER_DASHBOARD: '/employer/dashboard',
-  EMPLOYER_POSTING: '/employer/posting',
+  EMPLOYER_POSTING: '/employer/posting-job',
   EMPLOYER_CANDICATES_DASHBOARD: '/employer/manage-candicates',
-  EMPLOYER_RECRUITMENT_LIST: '/employer/recruitment-list',
+  EMPLOYER_CANDICATES_MANAGEMENT: '/employer/management-candicates',
+  EMPLOYER_CANDICATES_ADDNEW: '/employer/addnew-candicate',
+  EMPLOYER_RECRUITMENT_LIST: '/employer/manage-job',
+  EMPLOYER_RECRUITMENT: '/employer/recruitment',
   // User
   USER_PROFILE: '/user/profile',
   USER_ACCOUNT: '/user/account',

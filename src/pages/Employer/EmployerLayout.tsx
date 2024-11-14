@@ -8,8 +8,8 @@ const EmployerLayout = () => {
     <Layout className="min-h-screen">
       <HeaderEmployer />
 
-      <Content className="p-6 px-20 bg-[#e5e7eb]">
-        <div className="bg-white p-4 rounded-lg shadow">
+      <Content className="px-16">
+        <div className=" rounded-lg ">
           <Outlet />
         </div>
       </Content>

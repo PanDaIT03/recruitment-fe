@@ -12,7 +12,13 @@ import PATH from '~/utils/path';
 import AdminLayout from '~/layouts/AdminLayout';
 import UserDetail from '~/pages/Admin/User/UserDetail';
 import EmployerAccountPage from '~/pages/Employer/Personal/EmployerAccountPage';
+const AddNewCandicate = lazy(
+  () => import('~/pages/Employer/Candicates/AddNewCandicate')
+);
 
+const Recruitment = lazy(
+  () => import('~/pages/Employer/RecruitmentList/Recruitment')
+);
 const Home = lazy(() => import('~/pages/Home/Home'));
 const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
 const UserManagement = lazy(() => import('~/pages/Admin/User/UserManagement'));
@@ -24,7 +30,7 @@ const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
 const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
-const PostingJob = lazy(() => import('~/pages/Employer/PostingJob/PostingJob'));
+const PostingJob = lazy(() => import('~/pages/Employer/Job/PostingJob'));
 const UserDesiredJob = lazy(() => import('~/pages/User/DesiredJob/DesiredJob'));
 const EmployerDashboard = lazy(
   () => import('~/pages/Employer/Dashboard/EmployerDashboard')
@@ -32,12 +38,13 @@ const EmployerDashboard = lazy(
 const CandicateDashboard = lazy(
   () => import('~/pages/Employer/Candicates/CandicateDashboard')
 );
+const ManagementCandicates = lazy(
+  () => import('~/pages/Employer/Candicates/ManagementCandicates')
+);
 const RecruitmentList = lazy(
-  () => import('~/pages/Employer/RecruitmentList/RecruitmentList')
+  () => import('~/pages/Employer/Personal/RecruitmentList')
 );
-const UpdateJob = lazy(
-  () => import('~/pages/Employer/RecruitmentList/UpdateJob')
-);
+const UpdateJob = lazy(() => import('~/pages/Employer/Personal/UpdateJob'));
 const UserSignIn = lazy(() => import('~/pages/Auth/User/SignIn/SignIn'));
 const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
 const UserForgotPassword = lazy(
@@ -145,9 +152,19 @@ const routesConfig: CustomRouteObject[] = [
     ),
     createProtectedRoute(PATH.EMPLOYER_POSTING, ['employer'], <PostingJob />),
     createProtectedRoute(
+      PATH.EMPLOYER_CANDICATES_ADDNEW,
+      ['employer'],
+      <AddNewCandicate />
+    ),
+    createProtectedRoute(
       PATH.EMPLOYER_CANDICATES_DASHBOARD,
       ['employer'],
       <CandicateDashboard />
+    ),
+    createProtectedRoute(
+      PATH.EMPLOYER_CANDICATES_MANAGEMENT,
+      ['employer'],
+      <ManagementCandicates />
     ),
     createProtectedRoute(
       PATH.EMPLOYER_RECRUITMENT_LIST,
@@ -155,6 +172,11 @@ const routesConfig: CustomRouteObject[] = [
       <RecruitmentList />
     ),
     createProtectedRoute(PATH.UPDATE_JOB, ['employer'], <UpdateJob />),
+    createProtectedRoute(
+      PATH.EMPLOYER_RECRUITMENT,
+      ['employer'],
+      <Recruitment />
+    ),
   ]),
 
   // User
