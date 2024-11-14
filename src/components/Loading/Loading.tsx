@@ -14,7 +14,7 @@ const Loading = () => {
       className="min-h-screen mt-auto bg-gray-100"
     >
       <Flex vertical align="center" gap={16}>
-        <HeaderLogoFillColor className="max-w-[139px] h-full object-cover cursor-pointer" />
+        <HeaderLogoFillColor className="max-w-[139px] h-full" />
         <p className="font-semibold">
           Đang xử lý... Vui lòng đợi trong giây lát
         </p>

@@ -1,7 +1,7 @@
+import { Tooltip } from 'antd';
+import classNames from 'classnames';
 import { memo } from 'react';
 import Button, { IButtonProps } from './Button';
-import classNames from 'classnames';
-import { Tooltip } from 'antd';
 
 interface IProps extends IButtonProps {
   tooltipTitle?: string;
