@@ -19,6 +19,20 @@ export type ILanguageParams = Pick<
   IForeignLanguage,
   'foreignLanguagesId' | 'level'
 >;
+export interface IDesiredJobParams {
+  jobFieldsId: number;
+  startAfterOffer: string;
+  totalYearExperience: number;
+  yearOfBirth: string;
+  salaryExpectation: number;
+  jobPositionIds: number[];
+  jobPlacementIds: number[];
+  achivements: string;
+  skills: {
+    level: number;
+    id: number;
+  }[];
+}
 
 export type IGetForeignLanguage = IPaginatedData<IForeignLanguage[]>;
 export type IGetWorkExperience = IPaginatedData<IWorkExperience[]>;
@@ -97,6 +111,12 @@ const UserApi = {
     params: ILanguageParams
   ): Promise<IBaseResponse> => {
     return await axiosApi.post('/users-foreign-languages', params);
+  },
+  createNewDesiredJob: async (params: IDesiredJobParams) => {
+    return await axiosApi.post('/desired-jobs', params);
+  },
+  uploadCV: async (params: FormData) => {
+    return await axiosApi.post('/cloudinary/upload/CVs', params);
   },
 
   // PATCH
