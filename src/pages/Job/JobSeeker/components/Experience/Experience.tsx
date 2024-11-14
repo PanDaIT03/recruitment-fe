@@ -56,7 +56,7 @@ const Experience = ({ keys, data, className }: IProps) => {
             {isVisible && <span>{formatCurrencyVN(value)} VND</span>}
             <Button
               displayType="text"
-              title={isVisible ? 'Xem mức lương' : 'Đóng'}
+              title={isVisible ? 'Đóng' : 'Xem mức lương'}
               className="text-[#3e8ff3] font-medium leading-6 hover:underline hover:text-[#2d67c5]"
               onClick={() => setIsVisible(!isVisible)}
             />
