@@ -1,4 +1,5 @@
 import { Flex, Space, Tag } from 'antd';
+import classNames from 'classnames';
 import { memo, ReactNode, useState } from 'react';
 
 import Button from '~/components/Button/Button';
@@ -8,10 +9,12 @@ import { formatCurrencyVN } from '~/utils/functions';
 interface IProps {
   keys: string[];
   data: IJobSeeker;
+  className?: string;
 }
 
-const Experience = ({ keys, data }: IProps) => {
-  const [isSalaryVisible, setIsSalaryVisible] = useState(false);
+const Experience = ({ keys, data, className }: IProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const customClass = classNames('w-full', className);
 
   const experience = Object.entries(data).filter(([recordKey]) =>
     keys.some((key) => key === recordKey)
@@ -25,41 +28,46 @@ const Experience = ({ keys, data }: IProps) => {
       case 'field':
         content = value;
         title = 'Lĩnh vực';
+
         break;
       case 'position':
         title = 'Vị trí ứng tuyển';
-        content =
-          value?.length &&
-          value?.map((item: string) => <Tag color="green">{item}</Tag>);
+        content = (
+          <div className="flex lg:flex-col gap-2">
+            {value?.length &&
+              value?.map((item: string, index: number) => (
+                <Tag key={index} color="green" className="w-max m-0">
+                  {item}
+                </Tag>
+              ))}
+          </div>
+        );
+
         break;
       case 'experience':
         content = value;
         title = 'Số năm kinh nghiệm';
+
         break;
       case 'salary':
         title = 'Mức lương kỳ vọng';
-        content = isSalaryVisible ? (
-          <Flex gap={8}>
-            <span>{formatCurrencyVN(value)} VND</span>
+        content = (
+          <>
+            {isVisible && <span>{formatCurrencyVN(value)} VND</span>}
             <Button
-              title="Đóng"
               displayType="text"
+              title={isVisible ? 'Xem mức lương' : 'Đóng'}
               className="text-[#3e8ff3] font-medium leading-6 hover:underline hover:text-[#2d67c5]"
-              onClick={() => setIsSalaryVisible(false)}
+              onClick={() => setIsVisible(!isVisible)}
             />
-          </Flex>
-        ) : (
-          <Button
-            displayType="text"
-            title="Xem mức lương"
-            className="text-[#3e8ff3] font-medium leading-6 hover:underline hover:text-[#2d67c5]"
-            onClick={() => setIsSalaryVisible(true)}
-          />
+          </>
         );
+
         break;
       default:
         content = value;
         title = 'Thời gian bắt đầu';
+
         break;
     }
 
@@ -67,16 +75,16 @@ const Experience = ({ keys, data }: IProps) => {
   };
 
   return (
-    <Space direction="vertical" size="middle">
+    <Space direction="vertical" size="middle" className={customClass}>
       {experience.map(([key, value]) => {
         const { title, content } = handleRenderTitle(key, value);
 
         return (
-          <Flex className="font-medium leading-6">
+          <Flex key={key} className="font-medium leading-6">
             <div className="text-gray-500 flex-shrink-0 min-w-[150px]">
               {title}
             </div>
-            <Space direction="vertical">{content}</Space>
+            <div>{content}</div>
           </Flex>
         );
       })}
