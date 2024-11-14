@@ -1,11 +1,10 @@
-import { Form, List, Radio } from 'antd';
+import { Form, List, Radio, Space } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { Box, File, Salary, Television } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
-import JobCard from '~/components/Job/JobCard';
 import DrawerSearch from '~/components/Search/DrawerSearch';
 import TopSearchBar from '~/components/Search/TopSearchBar';
 import CustomSelect from '~/components/Select/CustomSelect';
@@ -20,6 +19,7 @@ import {
   PaginatedJobFields,
   PaginatedWorkTypes,
 } from '~/types/Job';
+import JobCard from './components/JobCard/JobCard';
 
 export interface IJobList {
   page: number;
@@ -285,42 +285,41 @@ const JobList = () => {
         </FormItem>
       </DrawerSearch>
 
-      <div className="w-full">
-        <div className="container mx-auto p-4">
-          <div>
-            <h2 className="text-base font-medium">Tin tuyển dụng</h2>
-            <div className="text-sm text-sub">
-              Tìm thấy
-              <strong className="text-primary">
-                {' '}
-                {allJobs?.items?.length}{' '}
-              </strong>
-              tin tuyển dụng
-            </div>
+      <Space
+        size="middle"
+        direction="vertical"
+        className="w-full py-4 px-4 lg:px-8"
+      >
+        <div>
+          <h2 className="text-base font-semibold">Tin tuyển dụng</h2>
+          <div className="text-sm text-sub font-medium">
+            Tìm thấy
+            <strong className="text-primary"> {allJobs?.items?.length} </strong>
+            tin tuyển dụng
           </div>
-          <List
-            loading={loading}
-            itemLayout="vertical"
-            dataSource={allJobs?.items}
-            renderItem={(job: JobItem) => (
-              <List.Item className="mb-4">
-                <JobCard {...job} />
-              </List.Item>
-            )}
-            pagination={
-              allJobs && allJobs?.items?.length
-                ? {
-                    current: currentPage,
-                    pageSize: itemsPerPage,
-                    total: allJobs?.pageInfo?.totalItems,
-                    onChange: handlePageChange,
-                    showSizeChanger: false,
-                  }
-                : false
-            }
-          />
         </div>
-      </div>
+        <List
+          loading={loading}
+          itemLayout="vertical"
+          dataSource={allJobs?.items}
+          renderItem={(job: JobItem) => (
+            <List.Item style={{ borderBlockEnd: 0 }}>
+              <JobCard {...job} />
+            </List.Item>
+          )}
+          pagination={
+            allJobs && allJobs?.items?.length
+              ? {
+                  current: currentPage,
+                  pageSize: itemsPerPage,
+                  total: allJobs?.pageInfo?.totalItems,
+                  onChange: handlePageChange,
+                  showSizeChanger: false,
+                }
+              : false
+          }
+        />
+      </Space>
     </div>
   );
 };
