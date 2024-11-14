@@ -302,7 +302,7 @@ const JobList = () => {
             loading={loading}
             itemLayout="vertical"
             dataSource={allJobs?.items}
-            renderItem={(job) => (
+            renderItem={(job: JobItem) => (
               <List.Item className="mb-4">
                 <JobCard {...job} />
               </List.Item>

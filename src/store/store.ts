@@ -8,12 +8,10 @@ import {
 import { authReducer } from './reducer/auth';
 import { jobReducer } from './reducer/job';
 import { roleReducer } from './reducer/role';
-import { userReducer } from './reducer/user';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   jobs: jobReducer,
-  user: userReducer,
   role: roleReducer,
 });
 
