@@ -67,7 +67,9 @@ const Recruitment: React.FC = () => {
   ];
 
   return (
-    <div className="p-6  min-h-screen">
+    <div className="p-6 min-h-screen">
+      <p className="font-bold">Danh sách tuyển dụng</p>
+      <p className="text-xs text-gray-500">Có 1 hồ sơ được tìm thấy</p>
       <Card className="mt-6 text-center shadow-md">
         <Table
           columns={columns}
