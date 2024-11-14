@@ -1,11 +1,14 @@
 import { ArrowUpOutlined } from '@ant-design/icons';
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Table, Typography } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
 
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { Calendar, Filter, Hash, User } from '~/assets/svg';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
+
+const { Title, Text, Paragraph } = Typography;
 
 const CandicateDashboard: React.FC = () => {
   const stats = [
@@ -13,6 +16,45 @@ const CandicateDashboard: React.FC = () => {
     { title: 'Ứng viên tự ứng tuyển', value: 0 },
     { title: 'Ứng viên được chia sẻ', value: 0 },
     { title: 'Ứng viên từ nguồn khác', value: 0 },
+  ];
+
+  const columns = [
+    {
+      title: () => (
+        <span className="flex items-center gap-2">
+          <User />
+          Ứng viên
+        </span>
+      ),
+      dataIndex: '',
+    },
+    {
+      title: () => (
+        <span className="flex items-center gap-2">
+          <Filter className="w-4 h-4" />
+          Vị trí tuyển dụng
+        </span>
+      ),
+      dataIndex: '',
+    },
+    {
+      title: () => (
+        <span className="flex items-center gap-2">
+          <Hash />
+          Hashtags
+        </span>
+      ),
+      dataIndex: '',
+    },
+    {
+      title: () => (
+        <span className="flex items-center gap-2">
+          <Calendar />
+          Cập nhật
+        </span>
+      ),
+      dataIndex: '',
+    },
   ];
 
   return (
@@ -32,7 +74,16 @@ const CandicateDashboard: React.FC = () => {
         ))}
       </Row>
 
-      <Card className="mt-6 text-center shadow-md"></Card>
+      <Card className="mt-6 text-center shadow-md">
+        <Paragraph className="mb-4">
+          <Title level={4}>Ứng tuyển mới nhất</Title>
+          <Text className="text-sm text-gray-500">
+            Danh sách ứng viên ứng tuyển mới nhất
+          </Text>
+        </Paragraph>
+
+        <Table columns={columns} dataSource={[]} />
+      </Card>
     </div>
   );
 };

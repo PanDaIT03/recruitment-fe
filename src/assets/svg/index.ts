@@ -40,3 +40,5 @@ export { ReactComponent as Users } from './users.svg';
 export { ReactComponent as WelComeBackCat } from './welcome-back-cat.svg';
 export { ReactComponent as Work } from './work.svg';
 export { ReactComponent as Down } from './arrow-down.svg';
+export { ReactComponent as Hash } from './hash.svg';
+export { ReactComponent as User } from './user.svg';
