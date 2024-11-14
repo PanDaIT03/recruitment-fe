@@ -42,3 +42,4 @@ export { ReactComponent as Work } from './work.svg';
 export { ReactComponent as Down } from './arrow-down.svg';
 export { ReactComponent as Hash } from './hash.svg';
 export { ReactComponent as User } from './user.svg';
+export { ReactComponent as Database } from './database.svg';

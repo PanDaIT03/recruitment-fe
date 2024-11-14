@@ -22,8 +22,8 @@ const CandicateDashboard: React.FC = () => {
     {
       title: () => (
         <span className="flex items-center gap-2">
-          <User />
-          Ứng viên
+          <User className="text-sub w-4 h-4" />
+          <span className="text-sm font-medium text-sub">Ứng viên</span>
         </span>
       ),
       dataIndex: '',
@@ -31,8 +31,10 @@ const CandicateDashboard: React.FC = () => {
     {
       title: () => (
         <span className="flex items-center gap-2">
-          <Filter className="w-4 h-4" />
-          Vị trí tuyển dụng
+          <Filter className="w-4 h-4 text-sub" />
+          <span className="text-sm font-medium text-sub">
+            Vị trí tuyển dụng
+          </span>
         </span>
       ),
       dataIndex: '',
@@ -40,8 +42,8 @@ const CandicateDashboard: React.FC = () => {
     {
       title: () => (
         <span className="flex items-center gap-2">
-          <Hash />
-          Hashtags
+          <Hash className="text-sub w-4 h-4" />
+          <span className="text-sm font-medium text-sub">Hashtags</span>
         </span>
       ),
       dataIndex: '',
@@ -49,8 +51,8 @@ const CandicateDashboard: React.FC = () => {
     {
       title: () => (
         <span className="flex items-center gap-2">
-          <Calendar />
-          Cập nhật
+          <Calendar className="text-sub w-4 h-4" />
+          <span className="text-sm font-medium text-sub">Cập nhật</span>
         </span>
       ),
       dataIndex: '',
