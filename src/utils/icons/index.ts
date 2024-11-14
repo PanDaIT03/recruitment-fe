@@ -20,6 +20,7 @@ import {
   DollarCircleOutlined,
   DollarOutlined,
   DownloadOutlined,
+  DownOutlined,
   EditOutlined,
   EnvironmentOutlined,
   ExportOutlined,
@@ -134,6 +135,7 @@ const icons = {
   UsergroupAddOutlined,
   CalendarFilled,
   RightCircleOutlined,
+  DownOutlined,
 };
 
 export default icons;

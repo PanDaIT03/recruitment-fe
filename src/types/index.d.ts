@@ -5,6 +5,6 @@ interface IBaseResponse<T = undefined> {
 }
 
 interface IPaginatedData<T> {
-  pageInfo: PageInfo
+  pageInfo: PageInfo;
   items: T;
 }

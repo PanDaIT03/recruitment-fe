@@ -1,28 +1,16 @@
 import { ArrowUpOutlined } from '@ant-design/icons';
-import { Card, Col, Row, Table } from 'antd';
+import { Card, Col, Row, Table, Typography } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
-import { JobsAPI } from '~/apis/job';
-import { useFetch } from '~/hooks/useFetch';
-import { Application } from '~/types/Job';
-import icons from '~/utils/icons';
 
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { Link } from 'react-router-dom';
+import { Calendar, Filter, Hash, User } from '~/assets/svg';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
-const { FilePdfOutlined } = icons;
+const { Title, Text, Paragraph } = Typography;
 
 const CandicateDashboard: React.FC = () => {
-  const { data: applicationJobs } = useFetch<Application>(
-    ['JobsApplicants'],
-    JobsAPI.getAllJobsApplicants
-  );
-
-  const currentPage = applicationJobs?.pageInfo?.currentPage || 1;
-  const pageSize = applicationJobs?.pageInfo?.itemsPerPage || 10;
-
   const stats = [
     { title: 'Số lượng ứng viên mới', value: 0 },
     { title: 'Ứng viên tự ứng tuyển', value: 0 },
@@ -32,45 +20,42 @@ const CandicateDashboard: React.FC = () => {
 
   const columns = [
     {
-      title: 'STT',
-      render: (_: any, __: any, index: number) =>
-        (currentPage - 1) * pageSize + index + 1,
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'applicationStatus',
-    },
-    {
-      title: 'Ứng viên',
-      dataIndex: ['user', 'fullName'],
-    },
-    {
-      title: 'Vị trí tuyển dụng',
-      dataIndex: ['job'],
-      render: (value: { id: number; title: string }) => (
-        <Link to={`/job/${value.id}`}>{value.title}</Link>
+      title: () => (
+        <span className="flex items-center gap-2">
+          <User className="text-sub w-4 h-4" />
+          <span className="text-sm font-medium text-sub">Ứng viên</span>
+        </span>
       ),
+      dataIndex: '',
     },
     {
-      title: 'Ngày ứng tuyển',
-      dataIndex: 'createAt',
-      render: (value: string) => (
-        <>
-          <p>{dayjs(value).format('DD/MM/YYYY')}</p>
-          <p>{dayjs(value).fromNow()}</p>
-        </>
+      title: () => (
+        <span className="flex items-center gap-2">
+          <Filter className="w-4 h-4 text-sub" />
+          <span className="text-sm font-medium text-sub">
+            Vị trí tuyển dụng
+          </span>
+        </span>
       ),
+      dataIndex: '',
     },
     {
-      title: 'Ngày cập nhật',
-      render: (record: Application['items'][0]) =>
-        dayjs(
-          !record.employerUpdateAt ? record.createAt : record.employerUpdateAt
-        ).format('DD/MM/YYYY'),
+      title: () => (
+        <span className="flex items-center gap-2">
+          <Hash className="text-sub w-4 h-4" />
+          <span className="text-sm font-medium text-sub">Hashtags</span>
+        </span>
+      ),
+      dataIndex: '',
     },
     {
-      title: 'Hành động',
-      render: () => <FilePdfOutlined className="cursor-pointer" />,
+      title: () => (
+        <span className="flex items-center gap-2">
+          <Calendar className="text-sub w-4 h-4" />
+          <span className="text-sm font-medium text-sub">Cập nhật</span>
+        </span>
+      ),
+      dataIndex: '',
     },
   ];
 
@@ -92,11 +77,14 @@ const CandicateDashboard: React.FC = () => {
       </Row>
 
       <Card className="mt-6 text-center shadow-md">
-        <Table
-          columns={columns}
-          dataSource={applicationJobs?.items}
-          className="mb-4"
-        />
+        <Paragraph className="mb-4">
+          <Title level={4}>Ứng tuyển mới nhất</Title>
+          <Text className="text-sm text-gray-500">
+            Danh sách ứng viên ứng tuyển mới nhất
+          </Text>
+        </Paragraph>
+
+        <Table columns={columns} dataSource={[]} />
       </Card>
     </div>
   );

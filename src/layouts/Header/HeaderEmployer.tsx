@@ -1,20 +1,22 @@
 import { MenuOutlined } from '@ant-design/icons';
 import { googleLogout } from '@react-oauth/google';
-import { Col, Divider, Image, Modal, Row } from 'antd';
+import { Col, Divider, Dropdown, Image, Menu, Modal, Row } from 'antd';
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DISCONNECTED, USER_AVATAR } from '~/assets/img';
-import { HeaderLogo } from '~/assets/svg';
+import { Down, HeaderLogo } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { signOut } from '~/store/thunk/auth';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
+import type { MenuProps } from 'antd';
 
 interface IMenuItems {
   href: string;
   label: string;
   active: boolean;
+  children?: IMenuItems[];
 }
 
 const menuItems: IMenuItems[] = [
@@ -23,9 +25,42 @@ const menuItems: IMenuItems[] = [
     label: 'Ứng viên',
     href: PATH.EMPLOYER_CANDICATES_DASHBOARD,
     active: false,
+    children: [
+      {
+        label: 'Tổng quan',
+        href: PATH.EMPLOYER_CANDICATES_DASHBOARD,
+        active: false,
+      },
+      {
+        label: 'Quản lý',
+        href: PATH.EMPLOYER_CANDICATES_MANAGEMENT,
+        active: false,
+      },
+      {
+        label: 'Thêm mới',
+        href: PATH.EMPLOYER_CANDICATES_ADDNEW,
+        active: false,
+      },
+    ],
   },
-  { label: 'Công việc', href: PATH.EMPLOYER_POSTING, active: false },
-  { label: 'Tuyển dụng', href: PATH.EMPLOYER_RECRUITMENT_LIST, active: false },
+  {
+    label: 'Công việc',
+    href: PATH.EMPLOYER_POSTING,
+    active: false,
+    children: [
+      {
+        label: 'Quản lý',
+        href: PATH.EMPLOYER_RECRUITMENT_LIST,
+        active: false,
+      },
+      {
+        label: 'Đăng tin',
+        href: PATH.EMPLOYER_POSTING,
+        active: false,
+      },
+    ],
+  },
+  { label: 'Tuyển dụng', href: PATH.EMPLOYER_RECRUITMENT, active: false },
 ];
 
 const Header = () => {
@@ -47,17 +82,91 @@ const Header = () => {
     });
   }, [dispatch, navigate]);
 
-  const renderMenuItems = (onClick?: () => void) =>
-    menuItems.map((item, index) => (
-      <Link
-        key={index}
-        to={item.href}
-        className={`p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main ${item.active ? 'bg-header-active' : ''}`}
-        onClick={onClick}
-      >
-        {item.label}
-      </Link>
-    ));
+  const convertToMenuItems = (
+    items: IMenuItems[],
+    onClick?: () => void
+  ): MenuProps['items'] => {
+    return items.map((item, index) => {
+      if (item.children) {
+        return {
+          key: `${index}`,
+          label: (
+            <span
+              className={`w-full flex items-center gap-2 p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main cursor-pointer ${
+                item.active ? 'bg-header-active' : ''
+              }`}
+            >
+              {item.label} <Down />
+            </span>
+          ),
+          children: item.children.map((child, childIndex) => ({
+            key: `${index}-${childIndex}`,
+            label: (
+              <Link
+                to={child.href}
+                className="p-2 w-full text-center font-bold rounded-md hover:bg-header-bgHover hover:text-white"
+                onClick={onClick}
+              >
+                {child.label}
+              </Link>
+            ),
+          })),
+        };
+      }
+
+      return {
+        key: `${index}`,
+        label: (
+          <Link
+            to={item.href}
+            className={`w-full p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:!text-white ${
+              item.active ? 'bg-header-active text-white' : ''
+            }`}
+            onClick={onClick}
+          >
+            {item.label}
+          </Link>
+        ),
+      };
+    });
+  };
+
+  const renderDesktopMenu = () => (
+    <div className="hidden md:flex text-main text-sm gap-x-4">
+      {menuItems.map((item, index) => {
+        if (item.children) {
+          return (
+            <Dropdown
+              trigger={['click']}
+              key={index}
+              menu={{ items: convertToMenuItems(item.children) }}
+              placement="bottomLeft"
+            >
+              <span
+                className={`flex items-center gap-2 p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main cursor-pointer ${
+                  item.active ? 'bg-header-active' : ''
+                }`}
+              >
+                {item.label} <Down />
+              </span>
+            </Dropdown>
+          );
+        }
+
+        return (
+          <Link
+            key={index}
+            to={item.href}
+            className={`p-2 text-center font-bold rounded-md hover:bg-header-bgHover hover:text-main ${
+              item.active ? 'bg-header-active text-white' : ''
+            }`}
+          >
+            {item.label}
+          </Link>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div className="sticky bg-secondary px-8 left-0 top-0 z-40">
@@ -71,9 +180,7 @@ const Header = () => {
             className="max-w-[139px] h-full cursor-pointer"
             onClick={() => navigate(PATH.ROOT)}
           />
-          <div className="hidden md:flex text-main text-sm gap-x-4">
-            {renderMenuItems()}
-          </div>
+          {renderDesktopMenu()}
         </Col>
 
         <Col className="md:hidden flex justify-between items-center w-full">
@@ -104,9 +211,10 @@ const Header = () => {
               </div>
             </div>
             <Divider />
-            <div className="flex flex-col items-center mt-4">
-              {renderMenuItems(toggleMenuModal)}
-            </div>
+            <Menu
+              items={convertToMenuItems(menuItems, toggleMenuModal)}
+              mode="vertical"
+            />
             <Divider />
             <div className="flex flex-col gap-2">
               <Button
