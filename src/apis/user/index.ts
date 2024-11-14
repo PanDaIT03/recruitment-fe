@@ -19,6 +19,20 @@ export type ILanguageParams = Pick<
   IForeignLanguage,
   'foreignLanguagesId' | 'level'
 >;
+export interface IDesiredJobParams {
+  jobFieldsId: number;
+  startAfterOffer: string;
+  totalYearExperience: number;
+  yearOfBirth: string;
+  salaryExpectation: number;
+  jobPositionIds: number[];
+  jobPlacementIds: number[];
+  achivements: string;
+  skills: {
+    level: number;
+    id: number;
+  }[];
+}
 
 export type IGetForeignLanguage = IPaginatedData<IForeignLanguage[]>;
 export type IGetWorkExperience = IPaginatedData<IWorkExperience[]>;
@@ -46,12 +60,6 @@ const headers: AxiosHeaders = new AxiosHeaders({
 
 const UserApi = {
   // GET
-  getUserProfile: async (params: IUserProfileParams): Promise<IUserProfile> => {
-    const { accessToken, refreshToken } = params;
-    return await axiosApi.get('/users/profile', {
-      headers: { Authorization: accessToken, Cookies: refreshToken },
-    });
-  },
   getAllUser: async (): Promise<UserListResponse> => {
     return await axiosApi.get('/users/all');
   },
@@ -97,6 +105,12 @@ const UserApi = {
     params: ILanguageParams
   ): Promise<IBaseResponse> => {
     return await axiosApi.post('/users-foreign-languages', params);
+  },
+  createNewDesiredJob: async (params: IDesiredJobParams) => {
+    return await axiosApi.post('/desired-jobs', params);
+  },
+  uploadCV: async (params: FormData) => {
+    return await axiosApi.post('/cloudinary/upload/CVs', params);
   },
 
   // PATCH

@@ -1,6 +1,5 @@
 import { Table, TableProps } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-
 import classNames from 'classnames';
 import './TableJobSeeker.scss';
 

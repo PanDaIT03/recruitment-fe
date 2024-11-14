@@ -33,7 +33,6 @@ import {
   AvatarPlaceHolder,
   DualLayerFile,
   File,
-  Location,
   PersonCard,
   SkyScraper,
 } from '~/assets/svg';
@@ -82,7 +81,7 @@ interface ISiderProps {
   setIsOpenAvatarModal: Dispatch<SetStateAction<boolean>>;
 }
 
-const { EditOutlined } = icons;
+const { EditOutlined, EnvironmentOutlined } = icons;
 
 const items: Items[] = [
   {
@@ -166,7 +165,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
               <span className="text-sub font-normal">~ 1 năm kinh nghiệm</span>
             </span>
             <Flex align="center" gap={4}>
-              <Location />
+              <EnvironmentOutlined />
               <p>{currentUser.placement?.title}</p>
             </Flex>
           </div>
