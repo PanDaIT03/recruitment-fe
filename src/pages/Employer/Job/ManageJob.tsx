@@ -41,7 +41,7 @@ export interface JobPostingListProps {
   items?: JobPosting[];
 }
 
-const RecruitmentList = () => {
+const ManageJob = () => {
   const [form] = useForm();
   const {
     data: allJobsForEmp,
@@ -111,4 +111,4 @@ const RecruitmentList = () => {
   );
 };
 
-export default RecruitmentList;
+export default ManageJob;
