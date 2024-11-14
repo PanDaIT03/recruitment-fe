@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
+import { JobPostingListProps } from '~/pages/Employer/Job/ManageJob';
 import { PostingJobFormValues } from '~/pages/Employer/Job/PostingJob';
-import { JobPostingListProps } from '~/pages/Employer/Job/RecruitmentList';
 import { IJobList } from '~/pages/Job/JobList/JobList';
 import axiosApi from '~/services/axios';
 import {
