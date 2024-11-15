@@ -45,6 +45,7 @@ const Modal = ({
   };
 
   const customClassNames: ModalProps['classNames'] = {
+    mask: !isOpen ? 'hidden' : '',
     content: `!p-0 ${transitionName}-${isOpen ? 'enter' : 'leave'}`, // This ensures the Modal has an opening animation even on first render
     header:
       '!mb-0 !px-[24px] !pt-[20px] !pb-[8px] !border-b-[1px] !border-solid !border-[#e5e7eb]',
@@ -56,7 +57,6 @@ const Modal = ({
   return (
     <ModalAntd
       open={isOpen}
-      destroyOnClose
       classNames={customClassNames}
       footer={
         props.footer || (
