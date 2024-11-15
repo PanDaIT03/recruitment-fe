@@ -7,7 +7,7 @@ import { Application } from '~/types/Job';
 import icons from '~/utils/icons';
 
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Bag,
   Calendar,
@@ -18,12 +18,15 @@ import {
 } from '~/assets/svg';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useForm } from 'antd/es/form/Form';
+import PATH from '~/utils/path';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
 const { FilePdfOutlined } = icons;
 
 const Recruitment: React.FC = () => {
+  const navigate = useNavigate();
+
   const [form] = useForm();
   const { data: applicationJobs } = useFetch<Application>(
     ['JobsApplicants'],
@@ -96,7 +99,16 @@ const Recruitment: React.FC = () => {
           <Edit className="w-4 h-4 text-sub" />
         </span>
       ),
-      render: () => <FilePdfOutlined className="cursor-pointer" />,
+      render: () => (
+        <FilePdfOutlined
+          className="cursor-pointer"
+          onClick={() =>
+            navigate(PATH.EMPLOYER_RECRUITMENT_DETAIL, {
+              state: applicationJobs?.items,
+            })
+          }
+        />
+      ),
     },
   ];
 

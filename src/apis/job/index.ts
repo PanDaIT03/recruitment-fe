@@ -53,6 +53,11 @@ export const JobsAPI = {
   getAllJobsApplicants: (): Promise<Application> => {
     return axiosApi.get(`/users-jobs/applicants`);
   },
+  getApplicantsDetail: (userId: number, jobId: number): Promise<any> => {
+    return axiosApi.get(
+      `/users-jobs/applicants/detail?usersId=${userId}&jobsId=${jobId}`
+    );
+  },
 
   // POST
   postJob: (data: PostingJobFormValues): Promise<JobItem> => {
