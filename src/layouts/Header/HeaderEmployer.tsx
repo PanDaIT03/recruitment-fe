@@ -169,11 +169,11 @@ const Header = () => {
   );
 
   return (
-    <div className="sticky bg-secondary px-8 left-0 top-0 z-40">
+    <div className="sticky bg-secondary left-0 top-0 z-40">
       <Row
         align="middle"
         justify="space-between"
-        className="h-16 mx-12 flex-wrap md:flex-nowrap"
+        className="h-16 mx-16 flex-wrap md:flex-nowrap"
       >
         <Col className="hidden md:flex justify-between gap-x-12 w-full md:w-auto">
           <HeaderLogo

@@ -133,3 +133,33 @@ export interface Application {
     applicationStatus: Nullable<string>;
   }[];
 }
+
+interface RecruimentJob {
+  id: number;
+  title: string;
+}
+
+interface CurriculumVitae {
+  id: number;
+  fileName: string;
+  url: string;
+}
+
+interface Schedule {
+  id: number;
+  note: string;
+  date: string;
+}
+
+export interface ApplicationJobDetail {
+  statusCode: number;
+  createAt: string;
+  updateAt: string | null;
+  employerUpdateAt: string | null;
+  usersId: number;
+  jobsId: number;
+  job: RecruimentJob;
+  applicationStatus: string | null;
+  curriculumVitae: CurriculumVitae;
+  schedules: Schedule[];
+}
