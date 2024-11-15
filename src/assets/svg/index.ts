@@ -26,6 +26,7 @@ export { ReactComponent as GreaterThan } from './greater-than.svg';
 export { ReactComponent as Hash } from './hash.svg';
 export { ReactComponent as Language } from './language.svg';
 export { ReactComponent as LeftArrow } from './left-arrow.svg';
+export { ReactComponent as Lightning } from './lightning.svg';
 export { ReactComponent as Link } from './link.svg';
 export { ReactComponent as Location } from './location.svg';
 export { ReactComponent as LogoTextColor } from './logo-text-color.svg';
