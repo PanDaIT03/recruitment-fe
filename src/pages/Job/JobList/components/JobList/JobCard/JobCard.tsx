@@ -43,7 +43,7 @@ const JobCard = (job: JobItem) => {
           <Flex align="center" justify="space-between" className="font-medium">
             <Space className="text-sub text-sm">
               <Calendar />
-              <span>Tạo lúc: {dayjs(job.createAt).format('DD/MM/YYYY')}</span>
+              <span>{dayjs(job.createAt).format('DD/MM/YYYY')}</span>
             </Space>
             <Link to={`/job/${job.id}`} target="_blank">
               <Button
