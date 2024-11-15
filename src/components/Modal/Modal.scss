@@ -28,28 +28,28 @@
   animation: slideUpOut 0.2s ease-in forwards;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+// @keyframes fadeIn {
+//   from {
+//     opacity: 0;
+//   }
+//   to {
+//     opacity: 1;
+//   }
+// }
 
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
+// @keyframes fadeOut {
+//   from {
+//     opacity: 1;
+//   }
+//   to {
+//     opacity: 0;
+//   }
+// }
 
-.custom-mask-enter {
-  animation: fadeIn 0.3s ease-out forwards;
-}
+// .custom-mask-enter {
+//   animation: fadeIn 0.3s ease-out forwards;
+// }
 
-.custom-mask-leave {
-  animation: fadeOut 0.3s ease-in forwards;
-}
+// .custom-mask-leave {
+//   animation: fadeOut 0.3s ease-in forwards;
+// }
