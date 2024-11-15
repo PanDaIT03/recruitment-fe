@@ -138,7 +138,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                   </span>
                 ),
                 icon: <Users width={18} height={18} />,
-                onClick: () => navigate(PATH.EMPLOYER_RECRUITMENT_LIST),
+                onClick: () => navigate(PATH.EMPLOYER_RECRUITMENT),
               },
               { type: 'divider' as const },
               {
