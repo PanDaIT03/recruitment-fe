@@ -13,7 +13,7 @@ const JobDetail = () => {
   const dispatch = useAppDispatch();
 
   const { id } = useParams<{ id: string }>();
-  const { currentJob, loading } = useAppSelector((state) => state.jobs);
+  const { currentJob } = useAppSelector((state) => state.jobs);
 
   const breadcrumb = useBreadcrumb([
     { path: PATH.JOB_LIST, label: 'Tin tuyển dụng' },
