@@ -79,7 +79,7 @@ const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
   };
 
   const jobContent = (
-    <div className="w-full p-2">
+    <div className="w-full p-4">
       <Tag
         color={isActiveJob ? 'success' : isInActiveJob ? 'warning' : 'error'}
         className="flex gap-2 mb-2 w-fit"

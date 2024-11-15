@@ -11,7 +11,10 @@ type BreadcrumbItem = {
   label: string;
 };
 
-const useBreadcrumb = (customItems?: BreadcrumbItem[]) => {
+const useBreadcrumb = (
+  customItems?: BreadcrumbItem[],
+  customClass?: string
+) => {
   const location = useLocation();
 
   return useMemo(() => {
@@ -31,9 +34,11 @@ const useBreadcrumb = (customItems?: BreadcrumbItem[]) => {
         key: item.path,
         title:
           index === customItems.length - 1 ? (
-            item.label
+            <span className={`!${customClass} font-medium`}>{item.label}</span>
           ) : (
-            <Link to={item.path}>{item.label}</Link>
+            <Link to={item.path} className={`!${customClass} font-medium`}>
+              {item.label}
+            </Link>
           ),
       }));
     } else {
@@ -50,7 +55,9 @@ const useBreadcrumb = (customItems?: BreadcrumbItem[]) => {
             index === pathSnippets.length - 1 ? (
               breadcrumbName
             ) : (
-              <Link to={url}>{breadcrumbName}</Link>
+              <Link to={url} className={`!${customClass} font-medium`}>
+                {breadcrumbName}
+              </Link>
             ),
         };
       });
@@ -60,12 +67,25 @@ const useBreadcrumb = (customItems?: BreadcrumbItem[]) => {
       key: 'home',
       title: (
         <Link to={PATH.ROOT}>
-          <HomeOutlined />
+          {customClass ? (
+            <HomeOutlined style={{ color: '#fff', fontWeight: '500' }} />
+          ) : (
+            <HomeOutlined />
+          )}
         </Link>
       ),
     });
 
-    return <Breadcrumb items={breadcrumbItems} />;
+    return (
+      <Breadcrumb
+        items={breadcrumbItems}
+        separator={
+          <>
+            <span className={`${customClass ? '!text-white' : ''} `}>/</span>
+          </>
+        }
+      />
+    );
   }, [location.pathname, customItems]);
 };
 

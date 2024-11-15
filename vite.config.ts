@@ -43,5 +43,12 @@ export default defineConfig(({ mode }) => {
         overlay: false,
       },
     },
+    optimizeDeps: {
+      include: [
+        '@react-pdf-viewer/core',
+        '@react-pdf-viewer/default-layout',
+        'pdfjs-dist',
+      ],
+    },
   };
 });
