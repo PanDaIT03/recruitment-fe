@@ -1,10 +1,12 @@
 import { AxiosRequestConfig } from 'axios';
 import { JobPostingListProps } from '~/pages/Employer/Job/ManageJob';
 import { PostingJobFormValues } from '~/pages/Employer/Job/PostingJob';
+import { TypeCreateIntervew } from '~/pages/Employer/RecruitmentList/ModalInterview';
 import { IJobList } from '~/pages/Job/JobList/JobList';
 import axiosApi from '~/services/axios';
 import {
   Application,
+  ApplicationJobDetail,
   IJob,
   JobItem,
   JobPlacement,
@@ -53,7 +55,10 @@ export const JobsAPI = {
   getAllJobsApplicants: (): Promise<Application> => {
     return axiosApi.get(`/users-jobs/applicants`);
   },
-  getApplicantsDetail: (userId: number, jobId: number): Promise<any> => {
+  getApplicantsDetail: (
+    userId: number,
+    jobId: number
+  ): Promise<ApplicationJobDetail> => {
     return axiosApi.get(
       `/users-jobs/applicants/detail?usersId=${userId}&jobsId=${jobId}`
     );
@@ -70,7 +75,9 @@ export const JobsAPI = {
       },
     });
   },
-
+  createNewInterview: (data: TypeCreateIntervew): Promise<IBaseResponse> => {
+    return axiosApi.post(`/schedules`, data);
+  },
   // PATCH
   updateJob: (
     id: string,

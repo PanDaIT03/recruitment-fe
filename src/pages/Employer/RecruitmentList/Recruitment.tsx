@@ -1,12 +1,10 @@
 import { Card, Form, Table } from 'antd';
-import dayjs from 'dayjs';
 import React from 'react';
 import { JobsAPI } from '~/apis/job';
 import { useFetch } from '~/hooks/useFetch';
 import { Application } from '~/types/Job';
 import icons from '~/utils/icons';
 
-import relativeTime from 'dayjs/plugin/relativeTime';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Bag,
@@ -19,6 +17,9 @@ import {
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useForm } from 'antd/es/form/Form';
 import PATH from '~/utils/path';
+
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
