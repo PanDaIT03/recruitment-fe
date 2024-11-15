@@ -195,7 +195,11 @@ const PostingJob: React.FC = () => {
             },
           ]}
         >
-          <Input size="large" className="bg-light-gray" />
+          <Input
+            size="large"
+            className="bg-light-gray"
+            placeholder="Ví dụ: SEO Marketing"
+          />
         </Form.Item>
 
         <Form.Item
