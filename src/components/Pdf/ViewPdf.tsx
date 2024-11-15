@@ -2,35 +2,35 @@ import { Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import { Button, Spin } from 'antd';
+import { Spin } from 'antd';
 
 interface PDFViewerProps {
   fileUrl?: string;
   fileName?: string;
 }
 
-const PDFViewer = ({ fileUrl, fileName = 'document.pdf' }: PDFViewerProps) => {
+const PDFViewer = ({ fileUrl }: PDFViewerProps) => {
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
-  const handleDownloadClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  // const handleDownloadClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
 
-    if (fileUrl) {
-      fetch(fileUrl)
-        .then((response) => response.blob())
-        .then((blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = fileName;
-          link.click();
-          window.URL.revokeObjectURL(url);
-        })
-        .catch((error) => {
-          console.error('Error downloading PDF:', error);
-        });
-    }
-  };
+  //   if (fileUrl) {
+  //     fetch(fileUrl)
+  //       .then((response) => response.blob())
+  //       .then((blob) => {
+  //         const url = window.URL.createObjectURL(blob);
+  //         const link = document.createElement('a');
+  //         link.href = url;
+  //         link.download = fileName;
+  //         link.click();
+  //         window.URL.revokeObjectURL(url);
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error downloading PDF:', error);
+  //       });
+  //   }
+  // };
 
   if (!fileUrl) {
     return (
