@@ -1,12 +1,5 @@
 import { Menu, ModalProps } from 'antd';
-import {
-  Dispatch,
-  memo,
-  SetStateAction,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+import { Dispatch, memo, SetStateAction, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { BackPack, Blogs, Users } from '~/assets/svg';
@@ -39,20 +32,17 @@ const HeaderMenu = ({
   const { currentUser } = useAppSelector((state) => state.auth);
   const [navigatePath, setNavigatePath] = useState(location.pathname);
 
-  const isAuthenticated = useMemo(
-    () => !!refreshToken && !!Object.keys(currentUser).length,
-    [refreshToken, currentUser]
-  );
+  const isAuthenticated = !!refreshToken && !!Object.keys(currentUser).length;
 
-  const handleNavigate = useCallback((path: string) => {
+  const handleNavigate = (path: string) => {
     setNavigatePath(path);
     setIsOpenMenuModal(false);
-  }, []);
+  };
 
-  const handleSignOut = useCallback(() => {
+  const handleSignOut = () => {
     setIsOpenMenuModal(false);
     onSingOut();
-  }, []);
+  };
 
   const handleModalClose = () => {
     if (navigatePath === location.pathname) return;
@@ -64,52 +54,46 @@ const HeaderMenu = ({
   const userMenu = createUserMenu(handleNavigate);
   const baseMenu = createBaseMenu({ currentUser, token: refreshToken });
 
-  const menuItems = useMemo(() => {
-    return [
-      ...baseMenu,
-      {
-        key: 'job-seeker',
-        label: (
-          <span className="text-neutral-600 font-medium">
-            Danh sách ứng viên
-          </span>
-        ),
-        icon: <Users width={18} height={18} />,
-        onClick: () => handleNavigate(PATH.JOB_SEEKER),
-      },
-      {
-        key: 'job-list',
-        label: (
-          <span className="text-neutral-600 font-medium">Tin tuyển dụng</span>
-        ),
-        icon: <BackPack width={18} height={18} />,
+  const menuItems = [
+    ...baseMenu,
+    {
+      key: 'job-seeker',
+      label: (
+        <span className="text-neutral-600 font-medium">Danh sách ứng viên</span>
+      ),
+      icon: <Users width={18} height={18} />,
+      onClick: () => handleNavigate(PATH.JOB_SEEKER),
+    },
+    {
+      key: 'job-list',
+      label: (
+        <span className="text-neutral-600 font-medium">Tin tuyển dụng</span>
+      ),
+      icon: <BackPack width={18} height={18} />,
 
-        onClick: () => handleNavigate(PATH.JOB_LIST),
-      },
-      {
-        key: 'blog',
-        label: <span className="text-neutral-600 font-medium">Blog</span>,
-        icon: <Blogs width={18} height={18} />,
-        onClick: () => handleNavigate('/'),
-      },
-      { type: 'divider' as const, dashed: true },
-      ...userMenu,
-      ...(isAuthenticated
-        ? [
-            { type: 'divider' as const, dashed: true },
-            {
-              key: 'logout',
-              className: 'hover:!bg-light-warning',
-              icon: <LogoutOutlined className="!text-warning" />,
-              label: (
-                <span className="text-warning font-medium">Đăng xuất</span>
-              ),
-              onClick: handleSignOut,
-            },
-          ]
-        : []),
-    ];
-  }, [baseMenu, userMenu, isAuthenticated, currentUser]);
+      onClick: () => handleNavigate(PATH.JOB_LIST),
+    },
+    {
+      key: 'blog',
+      label: <span className="text-neutral-600 font-medium">Blog</span>,
+      icon: <Blogs width={18} height={18} />,
+      onClick: () => handleNavigate('/'),
+    },
+    { type: 'divider' as const, dashed: true },
+    ...userMenu,
+    ...(isAuthenticated
+      ? [
+          { type: 'divider' as const, dashed: true },
+          {
+            key: 'logout',
+            className: 'hover:!bg-light-warning',
+            icon: <LogoutOutlined className="!text-warning" />,
+            label: <span className="text-warning font-medium">Đăng xuất</span>,
+            onClick: handleSignOut,
+          },
+        ]
+      : []),
+  ];
 
   return (
     <Modal
