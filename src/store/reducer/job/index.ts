@@ -6,13 +6,13 @@ export interface JobState {
   loading: boolean;
   allJobs: IJob | null;
   error: string | null;
-  currentJob: JobItem | null;
+  currentJob: JobItem;
 }
 
 const initialState: JobState = {
   loading: false,
   allJobs: null,
-  currentJob: null,
+  currentJob: {} as JobItem,
   error: null,
 };
 
