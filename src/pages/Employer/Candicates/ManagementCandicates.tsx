@@ -25,7 +25,7 @@ const ManagementCandicates = () => {
     },
   ];
 
-  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
   const { data: applicationJobs } = useFetch<Application>(
     ['JobsApplicants'],

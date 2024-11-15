@@ -37,7 +37,7 @@ const Recruitment: React.FC = () => {
     },
   ];
 
-  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
   const { data: applicationJobs } = useFetch<Application>(
     ['JobsApplicants'],

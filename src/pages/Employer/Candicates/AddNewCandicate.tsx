@@ -22,7 +22,7 @@ const AddNewCandicate = () => {
     },
   ];
 
-  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
   const onFinish = (values: any) => {
     console.log('Form values:', values);

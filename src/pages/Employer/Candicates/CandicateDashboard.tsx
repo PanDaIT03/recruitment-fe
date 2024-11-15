@@ -24,7 +24,7 @@ const CandicateDashboard: React.FC = () => {
     },
   ];
 
-  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
   const stats = [
     { title: 'Số lượng ứng viên mới', value: 0 },

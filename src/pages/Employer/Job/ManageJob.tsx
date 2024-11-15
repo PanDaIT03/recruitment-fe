@@ -57,7 +57,7 @@ const ManageJob = () => {
     },
   ];
 
-  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
   const {
     data: allJobsForEmp,

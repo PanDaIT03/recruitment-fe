@@ -51,7 +51,7 @@ const PostingJob: React.FC = () => {
     },
   ];
 
-  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
   const jobPositions = useFetch<PaginatedJobPositions>(
     ['jobPositions'],
