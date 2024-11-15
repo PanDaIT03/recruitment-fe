@@ -1,12 +1,21 @@
 import { Form, Table, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import dayjs from 'dayjs';
+import { JobsAPI } from '~/apis/job';
 import { Calendar, Database, Filter, Hash, Search, User } from '~/assets/svg';
 import CustomSelect from '~/components/Select/CustomSelect';
+import { useFetch } from '~/hooks/useFetch';
+import { Application } from '~/types/Job';
 
 const { Text, Paragraph } = Typography;
 
 const ManagementCandicates = () => {
   const [form] = useForm();
+
+  const { data: applicationJobs } = useFetch<Application>(
+    ['JobsApplicants'],
+    JobsAPI.getAllJobsApplicants
+  );
 
   const columns = [
     {
@@ -16,7 +25,7 @@ const ManagementCandicates = () => {
           <span className="text-sm font-medium text-sub">Ứng viên</span>
         </span>
       ),
-      dataIndex: '',
+      dataIndex: ['user', 'fullName'],
     },
     {
       title: () => (
@@ -36,7 +45,7 @@ const ManagementCandicates = () => {
           </span>
         </span>
       ),
-      dataIndex: '',
+      dataIndex: ['job', 'title'],
     },
     {
       title: () => (
@@ -54,7 +63,8 @@ const ManagementCandicates = () => {
           <span className="text-sm font-medium text-sub">Cập nhật</span>
         </span>
       ),
-      dataIndex: '',
+      dataIndex: 'createAt',
+      render: (value: string) => dayjs(value).format('DD/MM/YYYY'),
     },
   ];
 
@@ -85,7 +95,7 @@ const ManagementCandicates = () => {
         </div>
       </div>
 
-      <Table columns={columns} dataSource={[]} />
+      <Table columns={columns} dataSource={applicationJobs?.items} />
     </div>
   );
 };
