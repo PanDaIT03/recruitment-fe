@@ -19,7 +19,7 @@ import {
   PaginatedJobFields,
   PaginatedWorkTypes,
 } from '~/types/Job';
-import JobCard from './components/JobCard/JobCard';
+import JobCard from './components/JobList/JobCard/JobCard';
 
 export interface IJobList {
   page: number;

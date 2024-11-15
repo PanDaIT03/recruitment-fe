@@ -18,7 +18,7 @@ type IProps = {
 
 const customAnimation: CustomAnimation = {
   'slide-down': {
-    maskTransitionName: 'custom-mask',
+    // maskTransitionName: 'custom-mask',
     transitionName: 'custom-modal-slide-down',
   },
   default: {},
@@ -56,7 +56,6 @@ const Modal = ({
   return (
     <ModalAntd
       open={isOpen}
-      destroyOnClose
       classNames={customClassNames}
       footer={
         props.footer || (
