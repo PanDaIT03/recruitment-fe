@@ -31,9 +31,11 @@ const useBreadcrumb = (customItems?: BreadcrumbItem[]) => {
         key: item.path,
         title:
           index === customItems.length - 1 ? (
-            item.label
+            <span className="!text-white font-medium">{item.label}</span>
           ) : (
-            <Link to={item.path}>{item.label}</Link>
+            <Link to={item.path} className="!text-white font-medium">
+              {item.label}
+            </Link>
           ),
       }));
     } else {
@@ -50,7 +52,9 @@ const useBreadcrumb = (customItems?: BreadcrumbItem[]) => {
             index === pathSnippets.length - 1 ? (
               breadcrumbName
             ) : (
-              <Link to={url}>{breadcrumbName}</Link>
+              <Link to={url} className="!text-white font-medium">
+                {breadcrumbName}
+              </Link>
             ),
         };
       });
@@ -60,7 +64,7 @@ const useBreadcrumb = (customItems?: BreadcrumbItem[]) => {
       key: 'home',
       title: (
         <Link to={PATH.ROOT}>
-          <HomeOutlined />
+          <HomeOutlined style={{ color: '#fff', fontWeight: '500' }} />
         </Link>
       ),
     });

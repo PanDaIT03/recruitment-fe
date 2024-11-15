@@ -4,13 +4,28 @@ import dayjs from 'dayjs';
 import { JobsAPI } from '~/apis/job';
 import { Calendar, Database, Filter, Hash, Search, User } from '~/assets/svg';
 import CustomSelect from '~/components/Select/CustomSelect';
+import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useFetch } from '~/hooks/useFetch';
 import { Application } from '~/types/Job';
+import PATH from '~/utils/path';
 
 const { Text, Paragraph } = Typography;
 
 const ManagementCandicates = () => {
   const [form] = useForm();
+
+  const customBreadcrumbItems = [
+    {
+      path: PATH.EMPLOYER_CANDICATES_DASHBOARD,
+      label: 'Ứng viên',
+    },
+    {
+      path: PATH.EMPLOYER_CANDICATES_MANAGEMENT,
+      label: 'Quản lý',
+    },
+  ];
+
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
 
   const { data: applicationJobs } = useFetch<Application>(
     ['JobsApplicants'],
@@ -69,13 +84,16 @@ const ManagementCandicates = () => {
   ];
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center">
-        <Paragraph className="flex flex-col">
+    <>
+      <div className="bg-secondary border-t border-[#561d59]">
+        <p className="px-16 w-full py-2">{breadcrumb}</p>
+      </div>
+      <div className="flex justify-between pt-4 bg-white">
+        <Paragraph className="flex flex-col px-16">
           <Text strong>Ứng viên</Text>
           <Text>Có 6 ứng viên được tìm thấy</Text>
         </Paragraph>
-        <div>
+        <div className="px-16">
           <Form form={form} layout="horizontal" className="flex gap-2">
             <Form.Item name="title">
               <CustomSelect
@@ -94,9 +112,14 @@ const ManagementCandicates = () => {
           </Form>
         </div>
       </div>
-
-      <Table columns={columns} dataSource={applicationJobs?.items} />
-    </div>
+      <div className="p-4 px-16">
+        <Table
+          columns={columns}
+          dataSource={applicationJobs?.items}
+          pagination={false}
+        />
+      </div>
+    </>
   );
 };
 

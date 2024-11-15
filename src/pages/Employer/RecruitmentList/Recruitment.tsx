@@ -20,6 +20,7 @@ import PATH from '~/utils/path';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import useBreadcrumb from '~/hooks/useBreadcrumb';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
@@ -27,8 +28,17 @@ const { FilePdfOutlined } = icons;
 
 const Recruitment: React.FC = () => {
   const navigate = useNavigate();
-
   const [form] = useForm();
+
+  const customBreadcrumbItems = [
+    {
+      path: PATH.EMPLOYER_RECRUITMENT,
+      label: 'Tuyển dụng',
+    },
+  ];
+
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+
   const { data: applicationJobs } = useFetch<Application>(
     ['JobsApplicants'],
     JobsAPI.getAllJobsApplicants
@@ -114,29 +124,36 @@ const Recruitment: React.FC = () => {
   ];
 
   return (
-    <div className="p-6 min-h-screen">
-      <div className="flex justify-between items-center">
+    <>
+      <div className="bg-secondary border-t border-[#561d59]">
+        <p className="px-16 w-full py-2">{breadcrumb}</p>
+      </div>
+      <div className="flex justify-between items-center bg-white px-16">
         <div>
           <p className="font-bold">Danh sách tuyển dụng</p>
           <p className="text-xs text-gray-500">Có 1 hồ sơ được tìm thấy</p>
         </div>
-        <Form form={form} layout="horizontal" className="flex gap-2">
-          <Form.Item name="title">
-            <CustomSelect
-              prefixIcon={<MenuIcon className="w-4 h-4 text-sub" />}
-              placeholder="Trạng thái"
-            />
-          </Form.Item>
-        </Form>
+        <div className="pt-4">
+          <Form form={form} layout="horizontal" className="flex gap-2">
+            <Form.Item name="title">
+              <CustomSelect
+                prefixIcon={<MenuIcon className="w-4 h-4 text-sub" />}
+                placeholder="Trạng thái"
+              />
+            </Form.Item>
+          </Form>
+        </div>
       </div>
-      <Card className="mt-6 text-center shadow-md">
-        <Table
-          columns={columns}
-          dataSource={applicationJobs?.items}
-          className="mb-4"
-        />
-      </Card>
-    </div>
+      <div className="px-16 min-h-screen">
+        <Card className="mt-6 text-center shadow-md">
+          <Table
+            columns={columns}
+            dataSource={applicationJobs?.items}
+            className="mb-4"
+          />
+        </Card>
+      </div>
+    </>
   );
 };
 

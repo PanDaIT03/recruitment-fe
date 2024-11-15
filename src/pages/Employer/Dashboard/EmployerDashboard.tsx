@@ -26,7 +26,7 @@ const data = [
 
 const EmployerDashboard: React.FC = () => {
   return (
-    <div className="p-4 min-h-screen">
+    <div className="px-16 pt-4 min-h-screen">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="col-span-2">
           <Card

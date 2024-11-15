@@ -6,6 +6,8 @@ import CustomSelect from '~/components/Select/CustomSelect';
 import { useFetch } from '~/hooks/useFetch';
 import icons from '~/utils/icons';
 import JobListItem from './components/JobListItem';
+import PATH from '~/utils/path';
+import useBreadcrumb from '~/hooks/useBreadcrumb';
 
 const { MoreOutlined } = icons;
 
@@ -43,6 +45,20 @@ export interface JobPostingListProps {
 
 const ManageJob = () => {
   const [form] = useForm();
+
+  const customBreadcrumbItems = [
+    {
+      path: PATH.EMPLOYER_RECRUITMENT_LIST,
+      label: 'Công việc',
+    },
+    {
+      path: '',
+      label: 'Quản lý',
+    },
+  ];
+
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems);
+
   const {
     data: allJobsForEmp,
     isLoading,
@@ -59,14 +75,17 @@ const ManageJob = () => {
 
   return (
     <>
-      <div className="flex justify-between mt-4">
+      <div className="bg-secondary border-t border-[#561d59]">
+        <p className="px-16 w-full py-2">{breadcrumb}</p>
+      </div>
+      <div className="flex justify-between px-16 bg-white">
         <div>
-          <p className="font-bold">Danh sách tin</p>
+          <p className="font-bold mt-4">Danh sách tin</p>
           <p className="text-xs text-gray-500">
             Có {allJobsForEmp?.items?.length} tin được tìm thấy
           </p>
         </div>
-        <div>
+        <div className="pt-4">
           <Form form={form} layout="horizontal" className="flex gap-2">
             <Form.Item name="title">
               <CustomSelect
@@ -85,17 +104,19 @@ const ManageJob = () => {
           </Form>
         </div>
       </div>
-      <List
-        itemLayout="vertical"
-        dataSource={allJobsForEmp?.items}
-        loading={isLoading}
-        renderItem={(item) => (
-          <List.Item className="mb-4">
-            <JobListItem item={item} refetch={refetch} />
-          </List.Item>
-        )}
-        pagination={false}
-      />
+      <div className="px-16">
+        <List
+          itemLayout="vertical"
+          dataSource={allJobsForEmp?.items}
+          loading={isLoading}
+          renderItem={(item) => (
+            <List.Item className="mb-4">
+              <JobListItem item={item} refetch={refetch} />
+            </List.Item>
+          )}
+          pagination={false}
+        />
+      </div>
 
       {hasMultiplePages && (
         <div className="flex justify-end">
