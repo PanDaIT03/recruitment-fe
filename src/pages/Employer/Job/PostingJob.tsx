@@ -310,7 +310,25 @@ const PostingJob: React.FC = () => {
           <Form.Item label="Mức lương (không bắt buộc)" className="mb-4">
             <Input.Group compact>
               <Input.Group compact className="w-full">
-                <Form.Item name={'salaryMin'} noStyle>
+                <Form.Item
+                  name={'salaryMin'}
+                  noStyle
+                  rules={[
+                    {
+                      validator: (_, value) => {
+                        const maxSalary = form.getFieldValue('salaryMax');
+                        if (value && maxSalary && value >= maxSalary) {
+                          return Promise.reject(
+                            new Error(
+                              'Mức lương tối thiểu phải nhỏ hơn mức lương tối đa'
+                            )
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                >
                   <InputNumber
                     formatter={formatter}
                     parser={parser}
@@ -321,7 +339,25 @@ const PostingJob: React.FC = () => {
                     min="1"
                   />
                 </Form.Item>
-                <Form.Item name={'salaryMax'} noStyle>
+                <Form.Item
+                  name={'salaryMax'}
+                  noStyle
+                  rules={[
+                    {
+                      validator: (_, value) => {
+                        const minSalary = form.getFieldValue('salaryMin');
+                        if (value && minSalary && value <= minSalary) {
+                          return Promise.reject(
+                            new Error(
+                              'Mức lương tối đa phải lớn hơn mức lương tối thiểu'
+                            )
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                >
                   <InputNumber
                     formatter={formatter}
                     parser={parser}
@@ -343,7 +379,25 @@ const PostingJob: React.FC = () => {
           <Form.Item label="Năm kinh nghiệm (không bắt buộc)" className="mb-4">
             <Input.Group compact>
               <Input.Group compact className="w-full">
-                <Form.Item name={'minExpYearRequired'} noStyle>
+                <Form.Item
+                  name={'minExpYearRequired'}
+                  noStyle
+                  rules={[
+                    {
+                      validator: (_, value) => {
+                        const maxExp = form.getFieldValue('maxExpYearRequired');
+                        if (value && maxExp && value > maxExp) {
+                          return Promise.reject(
+                            new Error(
+                              'Kinh nghiệm tối thiểu không được lớn hơn kinh nghiệm tối đa'
+                            )
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                >
                   <InputNumber
                     className="w-full bg-light-gray"
                     size="large"
@@ -351,7 +405,25 @@ const PostingJob: React.FC = () => {
                     min={0}
                   />
                 </Form.Item>
-                <Form.Item name={'maxExpYearRequired'} noStyle>
+                <Form.Item
+                  name={'maxExpYearRequired'}
+                  noStyle
+                  rules={[
+                    {
+                      validator: (_, value) => {
+                        const minExp = form.getFieldValue('minExpYearRequired');
+                        if (value && minExp && value < minExp) {
+                          return Promise.reject(
+                            new Error(
+                              'Kinh nghiệm tối đa không được nhỏ hơn kinh nghiệm tối thiểu'
+                            )
+                          );
+                        }
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                >
                   <InputNumber
                     className="w-full bg-light-gray"
                     size="large"
