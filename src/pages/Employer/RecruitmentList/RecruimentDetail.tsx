@@ -10,6 +10,8 @@ import { useState } from 'react';
 import { ApplicationJobDetail } from '~/types/Job';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import useBreadcrumb from '~/hooks/useBreadcrumb';
+import PATH from '~/utils/path';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
@@ -19,6 +21,19 @@ const RecruimentDetail = () => {
   const location = useLocation();
   const data = location.state;
   const [isOpenModal, setisOpenModal] = useState(false);
+
+  const customBreadcrumbItems = [
+    {
+      path: PATH.EMPLOYER_RECRUITMENT,
+      label: 'Tuyển dụng',
+    },
+    {
+      path: PATH.EMPLOYER_RECRUITMENT_DETAIL,
+      label: data[0]?.user?.fullName || '',
+    },
+  ];
+
+  const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
   const { data: applicationJobs, refetch } = useFetch<ApplicationJobDetail>(
     ['getApplicantsDetail', data.usersId, data.jobsId],
@@ -31,7 +46,10 @@ const RecruimentDetail = () => {
 
   return (
     <>
-      <div className="p-4">
+      <div className="bg-secondary border-t border-[#561d59]">
+        <p className="px-16 w-full py-2">{breadcrumb}</p>
+      </div>
+      <div className="px-16 py-4">
         <div className="grid grid-cols-3 gap-4">
           <div>
             <Card bordered={false} className="shadow-sm rounded-2xl">
