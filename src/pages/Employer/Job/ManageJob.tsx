@@ -20,7 +20,8 @@ export interface JobPosting {
   jobQuantity: number;
   userFullName: string;
   workTypeTitle: string;
-  jobstatus: string;
+  jobstatus: number;
+  status: string;
   jobCategoryName: string;
   evaluatingCount: string;
   offeringCount: string;

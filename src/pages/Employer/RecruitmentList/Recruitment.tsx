@@ -1,5 +1,5 @@
 import { Card, Form, Table } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { JobsAPI } from '~/apis/job';
 import { useFetch } from '~/hooks/useFetch';
 import { Application } from '~/types/Job';
@@ -21,14 +21,17 @@ import PATH from '~/utils/path';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
+import ModalStatusJob from '~/components/Modal/ModalStatusJob/index';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
-const { FilePdfOutlined } = icons;
+const { FilePdfOutlined, EditOutlined } = icons;
 
 const Recruitment: React.FC = () => {
   const navigate = useNavigate();
   const [form] = useForm();
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const customBreadcrumbItems = [
     {
@@ -44,6 +47,8 @@ const Recruitment: React.FC = () => {
     JobsAPI.getAllJobsApplicants
   );
 
+  const toggleModal = () => setIsOpenModal(!isOpenModal);
+
   const columns = [
     {
       title: () => (
@@ -53,6 +58,12 @@ const Recruitment: React.FC = () => {
         </span>
       ),
       dataIndex: 'applicationStatus',
+      render: (value: string) => (
+        <>
+          <span>{value}</span>,
+          <EditOutlined className="cursor-pointer" onClick={toggleModal} />
+        </>
+      ),
     },
     {
       title: () => (
@@ -153,6 +164,7 @@ const Recruitment: React.FC = () => {
           />
         </Card>
       </div>
+      <ModalStatusJob isOpen={isOpenModal} handleCancel={toggleModal} />
     </>
   );
 };

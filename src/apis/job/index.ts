@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 import { JobPostingListProps } from '~/pages/Employer/Job/ManageJob';
 import { PostingJobFormValues } from '~/pages/Employer/Job/PostingJob';
-import { TypeCreateIntervew } from '~/pages/Employer/RecruitmentList/ModalInterview';
+import { TypeInterview } from '~/pages/Employer/RecruitmentList/ModalInterview';
 import { IJobList } from '~/pages/Job/JobList/JobList';
 import axiosApi from '~/services/axios';
 import {
@@ -14,6 +14,8 @@ import {
   PaginatedJobFields,
   PaginatedJobPositions,
   PaginatedWorkTypes,
+  Schedule,
+  StatusJob,
 } from '~/types/Job';
 
 export interface IPaginationParms {
@@ -63,6 +65,14 @@ export const JobsAPI = {
       `/users-jobs/applicants/detail?usersId=${userId}&jobsId=${jobId}`
     );
   },
+  getSchedulesInterview: (userId: number, jobId: number): Promise<Schedule> => {
+    return axiosApi.get(
+      `/schedules/interview?usersId=${userId}&jobsId=${jobId}`
+    );
+  },
+  getAllStatusJob: (): Promise<StatusJob> => {
+    return axiosApi.get(`/status/all`);
+  },
 
   // POST
   postJob: (data: PostingJobFormValues): Promise<JobItem> => {
@@ -75,7 +85,7 @@ export const JobsAPI = {
       },
     });
   },
-  createNewInterview: (data: TypeCreateIntervew): Promise<IBaseResponse> => {
+  createNewInterview: (data: TypeInterview): Promise<IBaseResponse> => {
     return axiosApi.post(`/schedules`, data);
   },
   // PATCH
@@ -85,9 +95,15 @@ export const JobsAPI = {
   ): Promise<JobItem | IBaseResponse> => {
     return axiosApi.patch(`/jobs/${id}`, data);
   },
+  updateInterview: (id: number, data: Partial<any>): Promise<IBaseResponse> => {
+    return axiosApi.patch(`/schedules/${id}`, data);
+  },
 
   // DELETE
   deleteJob: (id: number): Promise<IBaseResponse> => {
     return axiosApi.delete(`/jobs/${id}`);
+  },
+  deleteSchedule: (id: number): Promise<IBaseResponse> => {
+    return axiosApi.delete(`/schedules/${id}`);
   },
 };

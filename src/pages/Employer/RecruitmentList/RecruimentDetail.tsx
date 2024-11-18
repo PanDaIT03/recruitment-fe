@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, Card, Divider } from 'antd';
+import { Avatar, Badge, Button, Card, Divider, Modal } from 'antd';
 import { useLocation } from 'react-router-dom';
 import { JobsAPI } from '~/apis/job';
 import { MenuIcon } from '~/assets/svg';
@@ -7,20 +7,26 @@ import { useFetch } from '~/hooks/useFetch';
 import icons from '~/utils/icons';
 import ModalIntervew from './ModalInterview';
 import { useState } from 'react';
-import { ApplicationJobDetail } from '~/types/Job';
+import { ApplicationJobDetail, Schedule } from '~/types/Job';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import PATH from '~/utils/path';
+import toast from '~/utils/functions/toast';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
-const { PlusOutlined, EditOutlined, CalendarOutlined } = icons;
+const { PlusOutlined, EditOutlined, CalendarOutlined, DeleteOutlined } = icons;
 
 const RecruimentDetail = () => {
   const location = useLocation();
   const data = location.state;
-  const [isOpenModal, setisOpenModal] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState<{
+    id: number;
+    date: string;
+    note: string;
+  } | null>(null);
 
   const customBreadcrumbItems = [
     {
@@ -40,8 +46,41 @@ const RecruimentDetail = () => {
     () => JobsAPI.getApplicantsDetail(data[0].usersId, data[0].jobsId)
   );
 
-  const toggleModal = () => {
-    setisOpenModal(!isOpenModal);
+  const { data: schedulesInterview, refetch: refetchSchedules } =
+    useFetch<Schedule>(['schedulesInterview', data.usersId, data.jobsId], () =>
+      JobsAPI.getSchedulesInterview(data[0].usersId, data[0].jobsId)
+    );
+
+  const handleOpenModal = (interview?: any) => {
+    setSelectedInterview(interview);
+    setIsOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedInterview(null);
+    setIsOpenModal(false);
+  };
+
+  const handleDeleteInterview = async (id: number) => {
+    Modal.confirm({
+      title: 'Xác nhận xóa',
+      content: 'Bạn có chắc chắn muốn xóa lịch phỏng vấn này?',
+      okText: 'Xóa',
+      cancelText: 'Hủy',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        try {
+          const response = await JobsAPI.deleteSchedule(id);
+          if (response.statusCode === 200) {
+            toast.success(response.message);
+            refetchSchedules();
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error('Có lỗi xảy ra khi xóa lịch phỏng vấn');
+        }
+      },
+    });
   };
 
   return (
@@ -117,14 +156,14 @@ const RecruimentDetail = () => {
                   type="text"
                   className="text-orange-500"
                   icon={<PlusOutlined className="text-orange-500" />}
-                  onClick={toggleModal}
+                  onClick={() => handleOpenModal()}
                 >
                   Thêm
                 </Button>
               }
             >
               <div className="">
-                {applicationJobs?.schedules.length === 0 ? (
+                {schedulesInterview?.items.length === 0 ? (
                   <div className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
                       <span className="text-2xl">📅</span>
@@ -136,27 +175,43 @@ const RecruimentDetail = () => {
                       type="text"
                       className="text-orange-500"
                       icon={<PlusOutlined className="text-orange-500" />}
-                      onClick={toggleModal}
+                      onClick={() => handleOpenModal()}
                     >
                       Thêm lịch phỏng vấn
                     </Button>
                   </div>
                 ) : (
-                  <>
-                    <ul className="list-disc mx-2">
-                      {applicationJobs?.schedules?.map((schedule) => (
-                        <li key={schedule.id} className="my-2">
+                  <ul className="list-disc mx-2">
+                    {schedulesInterview?.items?.map((schedule) => (
+                      <li key={schedule.id} className="my-2">
+                        <div className="flex items-center justify-between">
                           <span>
-                            {dayjs(schedule.date).format('HH:MM - DD/MM/YYYY')}
+                            {dayjs(schedule.date).format('HH:mm - DD/MM/YYYY')}
                           </span>
-                          <br />
-                          <span className="text-sub text-xs">
-                            {schedule.note}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
+                          <p className="flex gap-4">
+                            <span>
+                              <DeleteOutlined
+                                className="cursor-pointer hover:!text-red-500"
+                                onClick={() =>
+                                  handleDeleteInterview(schedule.id)
+                                }
+                              />
+                            </span>
+                            <span>
+                              <EditOutlined
+                                className="cursor-pointer hover:!text-[#ff580033]"
+                                onClick={() => handleOpenModal(schedule)}
+                              />
+                            </span>
+                          </p>
+                        </div>
+                        <br />
+                        <span className="text-sub text-xs">
+                          {schedule.note}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 )}
               </div>
             </Card>
@@ -165,14 +220,12 @@ const RecruimentDetail = () => {
             <Card
               className="rounded-2xl"
               title={
-                <>
-                  <div className="w-full flex items-center justify-center gap-2">
-                    <span>
-                      <MenuIcon />
-                    </span>
-                    <span>{applicationJobs?.curriculumVitae?.fileName}</span>
-                  </div>
-                </>
+                <div className="w-full flex items-center justify-center gap-2">
+                  <span>
+                    <MenuIcon />
+                  </span>
+                  <span>{applicationJobs?.curriculumVitae?.fileName}</span>
+                </div>
               }
             >
               <PDFViewer
@@ -185,9 +238,11 @@ const RecruimentDetail = () => {
       </div>
       <ModalIntervew
         isOpen={isOpenModal}
-        onClose={toggleModal}
+        onClose={handleCloseModal}
         data={applicationJobs}
-        refetch={refetch}
+        refetch={refetchSchedules}
+        refetchAppJ={refetch}
+        editData={selectedInterview}
       />
     </>
   );

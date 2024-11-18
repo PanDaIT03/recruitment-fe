@@ -1,19 +1,27 @@
 import { DatePicker, Divider, Form, Input, message, Modal } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import 'dayjs/locale/vi';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { JobsAPI } from '~/apis/job';
 import Button from '~/components/Button/Button';
 import toast from '~/utils/functions/toast';
+import dayjs from 'dayjs';
+import '~/components/Modal/ModalStatusJob/index.scss';
 
 interface ModalInterviewProps {
   isOpen: boolean;
   onClose: () => void;
   data: any;
   refetch: () => void;
+  refetchAppJ: () => void;
+  editData?: {
+    id: number;
+    date: string;
+    note: string;
+  } | null;
 }
 
-export interface TypeCreateIntervew {
+export interface TypeInterview {
   date: string;
   note: string;
   usersId: number;
@@ -25,10 +33,23 @@ const ModalInterview: React.FC<ModalInterviewProps> = ({
   onClose,
   data,
   refetch,
+  refetchAppJ,
+  editData,
 }) => {
   const [form] = useForm();
 
-  const handleOk = async () => {
+  useEffect(() => {
+    if (editData) {
+      form.setFieldsValue({
+        date: dayjs(editData.date),
+        note: editData.note,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [editData, form]);
+
+  const handleSubmit = async () => {
     const { date, note } = form.getFieldsValue();
 
     if (!date) {
@@ -40,33 +61,43 @@ const ModalInterview: React.FC<ModalInterviewProps> = ({
       note: note,
       usersId: data?.usersId,
       jobsId: data?.jobsId,
+      statusId: 6,
     };
+
     try {
-      const response = await JobsAPI.createNewInterview(payload);
+      let response;
+      if (editData) {
+        response = await JobsAPI.updateInterview(editData.id, payload);
+      } else {
+        response = await JobsAPI.createNewInterview(payload);
+      }
 
       if (response.statusCode === 200) {
         toast.success(response.message);
         refetch();
-        onClose();
+        refetchAppJ();
+        handleCancel();
       }
     } catch (error) {
       console.log(error);
+      toast.error('Có lỗi xảy ra. Vui lòng thử lại sau.');
     }
   };
 
   const handleCancel = () => {
+    form.resetFields();
     onClose();
   };
 
   return (
     <Modal
-      title="Thêm lịch phỏng vấn"
+      title={editData ? 'Cập nhật lịch phỏng vấn' : 'Thêm lịch phỏng vấn'}
       open={isOpen}
       onCancel={handleCancel}
       footer={null}
     >
       <Divider />
-      <Form form={form} layout="vertical" onFinish={handleOk}>
+      <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <Form.Item
           label={<span className="text-sub font-medium">Ngày phỏng vấn</span>}
           name="date"
@@ -102,8 +133,13 @@ const ModalInterview: React.FC<ModalInterviewProps> = ({
       </Form>
 
       <div className="flex items-center gap-2 mt-4">
-        <Button title="Để sau" onClick={handleCancel} className="w-full" />
-        <Button title="Thêm" className="w-full" fill onClick={handleOk} />
+        <Button title="Hủy" onClick={handleCancel} className="w-full" />
+        <Button
+          title={editData ? 'Cập nhật' : 'Thêm'}
+          className="w-full"
+          fill
+          onClick={() => form.submit()}
+        />
       </div>
     </Modal>
   );
