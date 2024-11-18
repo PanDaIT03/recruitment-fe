@@ -1,16 +1,14 @@
-import { Flex, ModalProps, Space } from 'antd';
+import { Flex, Space } from 'antd';
 import { memo } from 'react';
 
-import { Copy } from '~/assets/svg';
 import Button from '~/components/Button/Button';
-import ButtonAction from '~/components/Button/ButtonAction';
-import Modal from '~/components/Modal/Modal';
+import CopyButton from '~/components/Button/CopyButton';
+import Modal, { IModalProps } from '~/components/Modal/Modal';
 import { IUser } from '~/types/Auth';
 import icons from '~/utils/icons';
 
-interface IProps extends ModalProps {
+interface IProps extends IModalProps {
   data: IUser;
-  isOpen: boolean;
 }
 
 const { CloseOutlined } = icons;
@@ -43,12 +41,7 @@ const JobContactModal = ({ data, onCancel, ...props }: IProps) => {
           </p>
           <Flex align="center" className="flex-1 font-semibold">
             {data?.email}
-            <ButtonAction
-              tooltipTitle="Sao chép"
-              className="!p-0 hover:bg-transparent"
-              title={<Copy className="h-4 w-4 stroke-2 stroke-primary" />}
-              onClick={() => navigator.clipboard.writeText(data?.email)}
-            />
+            <CopyButton value={data?.email} />
           </Flex>
         </Flex>
       </Space>

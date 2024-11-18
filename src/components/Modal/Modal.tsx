@@ -11,7 +11,7 @@ type CustomAnimation = Record<
   { maskTransitionName?: string; transitionName?: string }
 >;
 
-type IProps = {
+export type IModalProps = {
   isOpen: boolean;
   animationType?: AnimationType;
 } & ModalProps;
@@ -36,7 +36,7 @@ const Modal = ({
   onOk,
   onCancel,
   ...props
-}: IProps) => {
+}: IModalProps) => {
   const { transitionName } = customAnimation[animationType];
 
   const combinedProps = {

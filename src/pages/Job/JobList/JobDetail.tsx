@@ -1,20 +1,20 @@
 import { Space } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
 import { formatCurrencyVN } from '~/utils/functions';
 import PATH from '~/utils/path';
+import JobApplyModal from './components/JobDetail/JobApplyModal/JobApplyModal';
 import JobContactModal from './components/JobDetail/JobContactModal/JobContactModal';
 import JobContent from './components/JobDetail/JobContent/JobContent';
 import JobHeader from './components/JobDetail/JobHeader/JobHeader';
 import JobShareModal from './components/JobDetail/JobShareModal/JobShareModal';
 
 const JobDetail = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const { id } = useParams<{ id: string }>();
@@ -22,6 +22,7 @@ const JobDetail = () => {
 
   const [isOpenShareModal, setIsOpenShareModal] = useState(false);
   const [isOpenContactModal, setIsOpenContactModal] = useState(false);
+  const [isOpenJobApplyModal, setIsOpenJobApplyModal] = useState(false);
 
   const breadcrumb = useBreadcrumb([
     { path: PATH.JOB_LIST, label: 'Tin tuyển dụng' },
@@ -60,13 +61,6 @@ const JobDetail = () => {
     dispatch(getJobById(id));
   }, [id]);
 
-  useEffect(() => {
-    if (!Object.keys(currentJob).length) {
-      navigate(PATH.JOB_LIST);
-      return;
-    }
-  }, [currentJob]);
-
   return (
     <div className="px-4 lg:px-8 w-full py-8">
       <div className="mx-auto max-w-7xl">
@@ -80,6 +74,7 @@ const JobDetail = () => {
             applicationDeadline={applicationDeadline}
             setIsOpenShareModal={setIsOpenShareModal}
             setIsOpenContactModal={setIsOpenContactModal}
+            setIsOpenJobApplyModal={setIsOpenJobApplyModal}
           />
           <JobContent
             salary={jobSalary}
@@ -105,6 +100,17 @@ const JobDetail = () => {
         jobId={currentJob.id}
         isOpen={isOpenShareModal}
         title={`Chia sẻ tin tuyển dụng: ${currentJob.title}`}
+        onCancel={() => setIsOpenShareModal(false)}
+      />
+      <JobApplyModal
+        isOpen={isOpenJobApplyModal}
+        title={
+          <h2 className="text-base font-semibold">
+            Ứng tuyển vị trí:
+            <span className="text-accent"> {currentJob.title}</span>
+          </h2>
+        }
+        onCancel={() => setIsOpenJobApplyModal(false)}
       />
     </div>
   );

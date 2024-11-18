@@ -14,6 +14,7 @@ type IProps = Pick<JobItem, 'user' | 'title' | 'applicationDeadline'> & {
   placements: string;
   setIsOpenShareModal: Dispatch<SetStateAction<boolean>>;
   setIsOpenContactModal: Dispatch<SetStateAction<boolean>>;
+  setIsOpenJobApplyModal: Dispatch<SetStateAction<boolean>>;
 };
 
 const JobHeader = ({
@@ -24,6 +25,7 @@ const JobHeader = ({
   applicationDeadline,
   setIsOpenShareModal,
   setIsOpenContactModal,
+  setIsOpenJobApplyModal,
 }: IProps) => {
   return (
     <Flex gap={16} justify="space-between" className="max-lg:flex-col">
@@ -72,6 +74,7 @@ const JobHeader = ({
           title="Ứng tuyển ngay"
           iconBefore={<Lightning />}
           className="w-full sm:w-auto"
+          onClick={() => setIsOpenJobApplyModal(true)}
         />
       </Space>
     </Flex>
