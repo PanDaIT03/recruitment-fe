@@ -5,11 +5,11 @@ import HeaderEmployer from '~/layouts/Header/HeaderEmployer';
 
 const EmployerLayout = () => {
   return (
-    <Layout className="min-h-screen">
+    <Layout className="min-h-screen min-w-full container ">
       <HeaderEmployer />
 
-      <Content className="px-16">
-        <div className=" rounded-lg ">
+      <Content className="w-full">
+        <div className="w-full">
           <Outlet />
         </div>
       </Content>
