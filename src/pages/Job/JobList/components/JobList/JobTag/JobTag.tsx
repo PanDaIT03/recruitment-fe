@@ -3,7 +3,7 @@ import { TagProps } from 'antd/lib';
 import classNames from 'classnames';
 import { memo } from 'react';
 
-import { BackPack, Box, Users } from '~/assets/svg';
+import { BackPack, Box, Television, Users } from '~/assets/svg';
 import { JobItem } from '~/types/Job';
 import icons from '~/utils/icons';
 
@@ -41,7 +41,7 @@ const JobTag = ({
     <Tag icon={<ClockCircleOutlined />} color="cyan">
       {jobCategory.name}
     </Tag>
-    <Tag icon={<ClockCircleOutlined />} color="volcano">
+    <Tag icon={<Television />} color="volcano">
       {workType.title}
     </Tag>
     <Tag icon={<Users width={16} height={16} />} color="magenta">
