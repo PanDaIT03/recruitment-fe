@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { memo, useMemo, useState } from 'react';
+import { memo, useState } from 'react';
 
 import Button from '~/components/Button/Button';
 
@@ -10,7 +10,7 @@ interface IProps {
 
 const Achievement = ({ value, className }: IProps) => {
   const [isVisible, setIsVisible] = useState(false);
-  const requirementsArr = useMemo(() => value?.split('\n'), [value]);
+  const requirementsArr = value?.split('\n');
 
   const customClass = classNames('w-full', className);
   const lineClampClass = classNames(
