@@ -103,7 +103,7 @@ const JobContent = ({
   ...props
 }: IProps) => {
   return (
-    <Flex gap={16} justify="space-between">
+    <Flex gap={16} justify="space-between" className="max-lg:flex-col">
       <div className="flex-1 bg-white rounded-2xl border">
         <div className="px-6 py-4 border-b">
           <p className="text-base font-semibold">Chi tiết tin tuyển dụng</p>
