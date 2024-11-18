@@ -97,6 +97,9 @@ export default {
         warning: '#DC2626',
         success: '#15803D',
       },
+      fontSize: {
+        xsm: '15px',
+      },
       backgroundColor: {
         main: '#f7f6f2',
         secondary: '#692474',
@@ -109,8 +112,12 @@ export default {
       },
       fill: {
         dark: '#0A0A0A',
+        primary: '#f15224',
         warning: '#DC2626',
         'light-gray': '#FAFAFA',
+      },
+      stroke: {
+        primary: '#f15224',
       },
       boxShadow: {
         select: '0 0 0 2px rgba(5, 145, 255, 0.1)',

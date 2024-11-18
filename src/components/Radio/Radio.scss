@@ -1,0 +1,8 @@
+.ant-radio-wrapper:hover .ant-radio-inner {
+  border-color: var(--radio-inner-border-color) !important;
+}
+
+.ant-radio-checked .ant-radio-inner {
+  border-color: var(--radio-inner-border-color) !important;
+  background-color: var(--radio-inner-bg-color) !important;
+}
