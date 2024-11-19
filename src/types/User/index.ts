@@ -1,3 +1,5 @@
+import { IMyCV } from './profile';
+
 interface PageInfo {
   hasNextPage: boolean;
   hasPreviousPage: boolean;
@@ -53,4 +55,9 @@ interface UserItem {
 export interface UserListResponse {
   pageInfo: PageInfo;
   items: UserItem[];
+}
+
+export interface IGetCVResponse {
+  items: IMyCV[];
+  statusCode: number;
 }
