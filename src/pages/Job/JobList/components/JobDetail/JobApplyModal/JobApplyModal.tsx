@@ -1,15 +1,18 @@
 import { Flex, message, Space, Upload, UploadFile, UploadProps } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
+import UserApi from '~/apis/user';
 
-import { Fly } from '~/assets/svg';
+import { File, Fly } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Dragger from '~/components/Dragger/Dragger';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Modal, { IModalProps } from '~/components/Modal/Modal';
 import { Radio, RadioGroup } from '~/components/Radio/Radio';
-import Select from '~/components/Select/Select';
+import CustomSelect from '~/components/Select/CustomSelect';
+import { useFetch } from '~/hooks/useFetch';
 import icons from '~/utils/icons';
 
 interface IProps extends IModalProps {
@@ -31,12 +34,30 @@ const JobApplyModal = ({
   const [value, setValue] = useState(1);
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
+  const isUsingExistingCV = useMemo(() => value === 1, [value]);
+  const { data: myCV } = useFetch(['getMyCV'], UserApi.getMyCv);
+
+  const cvOptions: DefaultOptionType[] = useMemo(() => {
+    return (
+      myCV?.items?.map((item) => ({
+        label: item?.fileName,
+        value: item?.id,
+      })) || []
+    );
+  }, [myCV]);
+
   const handleFinish = (values: any) => {
     const { cv } = values;
 
     const formData = new FormData();
-    formData.append('file', cv.file);
+    !isUsingExistingCV
+      ? formData.append('file', cv?.file)
+      : formData.append('curriculumVitaesId', cv.toString());
     formData.append('jobsId', jobId.toString());
+
+    formData.forEach((val) => {
+      console.log(val);
+    });
 
     onApply(formData);
   };
@@ -115,11 +136,17 @@ const JobApplyModal = ({
           <FormItem
             name="cv"
             className="mb-0"
-            label={value === 1 ? 'Chọn CV ứng tuyển' : 'Hồ sơ xin việc / CV'}
+            label={
+              isUsingExistingCV ? 'Chọn CV ứng tuyển' : 'Hồ sơ xin việc / CV'
+            }
             rules={[{ required: true, message: 'Vui lòng chọn CV' }]}
           >
-            {value === 1 ? (
-              <Select placeholder="Chọn CV" />
+            {isUsingExistingCV ? (
+              <CustomSelect
+                placeholder="Chọn CV"
+                prefixIcon={<File />}
+                options={cvOptions}
+              />
             ) : (
               <Dragger {...draggerProps} />
             )}

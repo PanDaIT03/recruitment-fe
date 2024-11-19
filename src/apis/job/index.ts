@@ -78,6 +78,7 @@ export const JobsAPI = {
   createNewInterview: (data: TypeCreateIntervew): Promise<IBaseResponse> => {
     return axiosApi.post(`/schedules`, data);
   },
+
   // PATCH
   updateJob: (
     id: string,
