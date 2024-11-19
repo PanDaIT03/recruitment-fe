@@ -11,7 +11,7 @@ type CustomAnimation = Record<
   { maskTransitionName?: string; transitionName?: string }
 >;
 
-type IProps = {
+export type IModalProps = {
   isOpen: boolean;
   animationType?: AnimationType;
 } & ModalProps;
@@ -36,7 +36,7 @@ const Modal = ({
   onOk,
   onCancel,
   ...props
-}: IProps) => {
+}: IModalProps) => {
   const { transitionName } = customAnimation[animationType];
 
   const combinedProps = {
@@ -48,8 +48,10 @@ const Modal = ({
     content: `!p-0 ${transitionName}-${isOpen ? 'enter' : 'leave'}`, // This ensures the Modal has an opening animation even on first render
     header:
       '!mb-0 !px-[24px] !pt-[20px] !pb-[8px] !border-b-[1px] !border-solid !border-[#e5e7eb]',
-    body: 'max-h-[70vh] overflow-auto !px-[24px] !pt-[10px] !pb-[20px]',
-    footer: '!mt-0 !px-[24px] !py-[20px] !rounded-b-[8px]',
+    // body: 'max-h-[70vh] overflow-auto !px-[24px] !pt-[10px] !pb-[20px]',
+    body: 'max-h-[70vh] overflow-auto !px-[24px] !py-[20px]',
+    // footer: '!mt-0 !px-[24px] !py-[20px] !rounded-b-[8px]',
+    footer: '!mt-0 !px-[24px] !pt-[10px] !pb-[20px] !rounded-b-[8px]',
     ...classNames,
   };
 
