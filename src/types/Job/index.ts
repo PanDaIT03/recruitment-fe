@@ -130,7 +130,7 @@ export interface Application {
     jobsId: number;
     job: Job;
     user: User;
-    applicationStatus: Nullable<string>;
+    status: Status;
   }[];
 }
 
@@ -171,7 +171,7 @@ export interface ApplicationJobDetail {
   job: RecruimentJob;
   applicationStatus: string | null;
   curriculumVitae: CurriculumVitae;
-  schedules: Schedule[];
+  status: Status;
 }
 
 export interface StatusJob {

@@ -8,18 +8,27 @@ import { useMemo, useState } from 'react';
 import CustomSelect from '../../Select/CustomSelect';
 import { MenuIcon, Tag } from '~/assets/svg';
 import './index.scss';
+import toast from '~/utils/functions/toast';
 
 interface ModalProps {
+  data: any;
   isOpen: boolean;
   handleCancel: () => void;
+  refetch: () => void;
 }
 
-const ModalStatusJob = ({ isOpen, handleCancel }: ModalProps) => {
+const ModalStatusJob = ({
+  isOpen,
+  handleCancel,
+  data,
+  refetch,
+}: ModalProps) => {
   const [form] = useForm();
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
-
-  const { data: allStatusJob } = useFetch<StatusJob>(['getAllStatusJob'], () =>
-    JobsAPI.getAllStatusJob()
+  const params = { type: 'Phỏng vấn' };
+  const { data: allStatusJob } = useFetch<StatusJob>(
+    ['getAllStatusJob', params.type],
+    () => JobsAPI.getAllStatusJob(params.type)
   );
 
   const statusJob = useMemo(() => {
@@ -33,8 +42,25 @@ const ModalStatusJob = ({ isOpen, handleCancel }: ModalProps) => {
     setSelectedStatus(value);
   };
 
-  const handleSubmit = () => {
-    console.log('1');
+  const handleSubmit = async () => {
+    const formData = form.getFieldsValue();
+
+    const payload = {
+      ...formData,
+      jobsId: data?.jobsId,
+      usersId: data?.usersId,
+    };
+
+    try {
+      const response = await JobsAPI.updateApplicationJob(payload);
+      if (response.statusCode === 200) {
+        toast.success(response.message);
+        refetch();
+        handleCancel();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -46,7 +72,7 @@ const ModalStatusJob = ({ isOpen, handleCancel }: ModalProps) => {
     >
       <Divider />
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
-        <Form.Item label="Trạng thái" name="status">
+        <Form.Item label="Trạng thái" name="statusId">
           <CustomSelect
             options={statusJob}
             prefixIcon={<MenuIcon className="w-4 h-4 text-sub" />}
@@ -95,7 +121,7 @@ const ModalStatusJob = ({ isOpen, handleCancel }: ModalProps) => {
           </>
         )}
 
-        {selectedStatus === 6 && (
+        {selectedStatus === 10 && (
           <>
             <Form.Item label="Trạng thái" name="reason">
               <CustomSelect
@@ -120,7 +146,7 @@ const ModalStatusJob = ({ isOpen, handleCancel }: ModalProps) => {
           title="Lưu"
           className="w-full"
           fill
-          onClick={() => console.log('first')}
+          onClick={() => form.submit()}
         />
       </div>
     </Modal>

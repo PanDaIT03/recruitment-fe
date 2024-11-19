@@ -6,6 +6,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 import toast from '~/utils/functions/toast';
+import PATH from '~/utils/path';
 
 interface CustomAxiosResponse extends AxiosResponse {
   action?: string;
@@ -75,8 +76,10 @@ instance.interceptors.response.use(
         return instance(originalRequest);
       } catch (refreshError) {
         console.log(refreshError);
-        // window.location.href = PATH.SIGN_IN;
-        toast.warning('Có lỗi xảy ra, xin vui lòng thử lại');
+        localStorage.removeItem('token1');
+        localStorage.removeItem('token2');
+        window.location.href = PATH.USER_SIGN_IN;
+        toast.warning('Phiên đăng nhập đã hết hạn. Xin vui lòng đăng nhập lại');
         return Promise.reject(refreshError);
       }
     }
@@ -109,9 +112,9 @@ const retryRequest = async <T>(
       }
 
       if (retries === 0) {
-        isWarningShown = true
-        return Promise.reject(error)
-      };
+        isWarningShown = true;
+        return Promise.reject(error);
+      }
 
       await new Promise((resolve) => setTimeout(resolve, delay));
 

@@ -23,6 +23,12 @@ export interface IPaginationParms {
   pageSize?: number;
 }
 
+export interface IParamsUpdateApplicationJob {
+  jobsId: number;
+  usersId: number;
+  statusId: number;
+}
+
 export const JobsAPI = {
   // GET
   getAllJobs: (
@@ -70,8 +76,11 @@ export const JobsAPI = {
       `/schedules/interview?usersId=${userId}&jobsId=${jobId}`
     );
   },
-  getAllStatusJob: (): Promise<StatusJob> => {
-    return axiosApi.get(`/status/all`);
+  getAllStatusJob: (data?: string): Promise<StatusJob> => {
+    const payload: AxiosRequestConfig = {
+      params: { type: data },
+    };
+    return axiosApi.get(`/status/all`, payload);
   },
 
   // POST
@@ -97,6 +106,11 @@ export const JobsAPI = {
   },
   updateInterview: (id: number, data: Partial<any>): Promise<IBaseResponse> => {
     return axiosApi.patch(`/schedules/${id}`, data);
+  },
+  updateApplicationJob: (
+    data: IParamsUpdateApplicationJob
+  ): Promise<IBaseResponse> => {
+    return axiosApi.patch('/users-jobs', data);
   },
 
   // DELETE

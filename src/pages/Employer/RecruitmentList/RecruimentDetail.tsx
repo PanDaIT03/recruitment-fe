@@ -7,12 +7,13 @@ import { useFetch } from '~/hooks/useFetch';
 import icons from '~/utils/icons';
 import ModalIntervew from './ModalInterview';
 import { useState } from 'react';
-import { ApplicationJobDetail, Schedule } from '~/types/Job';
+import { Application, ApplicationJobDetail, Schedule } from '~/types/Job';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import PATH from '~/utils/path';
 import toast from '~/utils/functions/toast';
+import ModalStatusJob from '~/components/Modal/ModalStatusJob';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
@@ -27,6 +28,10 @@ const RecruimentDetail = () => {
     date: string;
     note: string;
   } | null>(null);
+  const [isOpenModalStatus, setIsOpenModalStatus] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<
+    Application['items'][0] | null
+  >(null);
 
   const customBreadcrumbItems = [
     {
@@ -83,6 +88,13 @@ const RecruimentDetail = () => {
     });
   };
 
+  const toggleModal = () => setIsOpenModalStatus(!isOpenModalStatus);
+
+  const handleEditClick = (record: any) => {
+    setSelectedRecord(record);
+    toggleModal();
+  };
+
   return (
     <>
       <div className="bg-secondary border-t border-[#561d59]">
@@ -113,17 +125,20 @@ const RecruimentDetail = () => {
               <Divider className="w-full" />
               <div className="flex items-center justify-between">
                 <p className="text-sub">Vị trí</p>
-                <p>{data[0]?.job?.title}</p>
+                <p>{applicationJobs?.job?.title}</p>
               </div>
               <div className="flex items-center justify-between my-2">
                 <p className="text-sub">Trạng thái</p>
                 <p>
                   <Badge color="blue" />
                   <span className="text-blue mx-2">
-                    {data[0]?.applicationStatus}
+                    {applicationJobs?.status?.title}
                   </span>
                   <span>
-                    <EditOutlined className="cursor-pointer" />
+                    <EditOutlined
+                      className="cursor-pointer"
+                      onClick={() => handleEditClick(applicationJobs)}
+                    />
                   </span>
                 </p>
               </div>
@@ -205,7 +220,6 @@ const RecruimentDetail = () => {
                             </span>
                           </p>
                         </div>
-                        <br />
                         <span className="text-sub text-xs">
                           {schedule.note}
                         </span>
@@ -243,6 +257,12 @@ const RecruimentDetail = () => {
         refetch={refetchSchedules}
         refetchAppJ={refetch}
         editData={selectedInterview}
+      />
+      <ModalStatusJob
+        isOpen={isOpenModalStatus}
+        handleCancel={toggleModal}
+        data={selectedRecord}
+        refetch={refetch}
       />
     </>
   );

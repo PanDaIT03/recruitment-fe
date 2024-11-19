@@ -61,7 +61,7 @@ const ModalInterview: React.FC<ModalInterviewProps> = ({
       note: note,
       usersId: data?.usersId,
       jobsId: data?.jobsId,
-      statusId: 6,
+      statusId: data?.status?.id,
     };
 
     try {

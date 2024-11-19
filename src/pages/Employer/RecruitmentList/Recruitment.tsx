@@ -1,10 +1,11 @@
-import { Card, Form, Table } from 'antd';
+import { Badge, Card, Form, Table } from 'antd';
 import React, { useState } from 'react';
 import { JobsAPI } from '~/apis/job';
 import { useFetch } from '~/hooks/useFetch';
 import { Application } from '~/types/Job';
 import icons from '~/utils/icons';
 
+import { useForm } from 'antd/es/form/Form';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Bag,
@@ -15,13 +16,12 @@ import {
   User,
 } from '~/assets/svg';
 import CustomSelect from '~/components/Select/CustomSelect';
-import { useForm } from 'antd/es/form/Form';
 import PATH from '~/utils/path';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import useBreadcrumb from '~/hooks/useBreadcrumb';
 import ModalStatusJob from '~/components/Modal/ModalStatusJob/index';
+import useBreadcrumb from '~/hooks/useBreadcrumb';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
@@ -32,6 +32,9 @@ const Recruitment: React.FC = () => {
   const [form] = useForm();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<
+    Application['items'][0] | null
+  >(null);
 
   const customBreadcrumbItems = [
     {
@@ -42,12 +45,17 @@ const Recruitment: React.FC = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
-  const { data: applicationJobs } = useFetch<Application>(
+  const { data: applicationJobs, refetch } = useFetch<Application>(
     ['JobsApplicants'],
     JobsAPI.getAllJobsApplicants
   );
 
   const toggleModal = () => setIsOpenModal(!isOpenModal);
+
+  const handleEditClick = (record: Application['items'][0]) => {
+    setSelectedRecord(record);
+    toggleModal();
+  };
 
   const columns = [
     {
@@ -57,13 +65,31 @@ const Recruitment: React.FC = () => {
           <span className="text-sm font-medium text-sub">Trạng thái</span>
         </span>
       ),
-      dataIndex: 'applicationStatus',
-      render: (value: string) => (
-        <>
-          <span>{value}</span>,
-          <EditOutlined className="cursor-pointer" onClick={toggleModal} />
-        </>
-      ),
+      dataIndex: ['status', 'title'],
+      render: (value: string, record: Application['items'][0]) => {
+        const isBlue =
+          record.status.id === 1 ||
+          record.status.id === 2 ||
+          record.status.id === 4;
+        const isGreen = record.status.id === 3;
+
+        return (
+          <p className="flex items-center gap-2">
+            <Badge
+              color={`${isBlue ? '#1677ff' : isGreen ? '#22c55e' : '#78726de6'} `}
+            />
+            <span
+              className={`${isBlue ? 'text-blue' : isGreen ? 'text-green-500' : 'text-sub'}`}
+            >
+              {value}
+            </span>
+            <EditOutlined
+              className="cursor-pointer !text-sub"
+              onClick={() => handleEditClick(record)}
+            />
+          </p>
+        );
+      },
     },
     {
       title: () => (
@@ -164,7 +190,12 @@ const Recruitment: React.FC = () => {
           />
         </Card>
       </div>
-      <ModalStatusJob isOpen={isOpenModal} handleCancel={toggleModal} />
+      <ModalStatusJob
+        isOpen={isOpenModal}
+        handleCancel={toggleModal}
+        data={selectedRecord}
+        refetch={refetch}
+      />
     </>
   );
 };
