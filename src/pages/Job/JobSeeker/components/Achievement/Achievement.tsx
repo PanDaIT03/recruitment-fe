@@ -1,7 +1,10 @@
-import classNames from 'classnames';
-import { CSSProperties, memo, useState } from 'react';
+import classNames from 'classnames/bind';
+import { memo, useState } from 'react';
 
 import Button from '~/components/Button/Button';
+import styles from './Achievement.module.scss';
+
+const cx = classNames.bind(styles);
 
 interface IProps {
   value: string;
@@ -12,25 +15,15 @@ const Achievement = ({ value, className }: IProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const requirementsArr = value?.split('\n');
 
-  const customClass = classNames('w-full', className);
-  const lineClampStyle: CSSProperties = {
-    display: '-webkit-box',
-    overflow: 'hidden',
-    WebkitBoxOrient: 'vertical',
-    WebkitLineClamp: isVisible ? 'unset' : '3',
-  };
-  // const lineClampClass = classNames(
-  //   'font-medium whitespace-pre-wrap overflow-hidden',
-  //   isVisible ? 'line-clamp-none' : 'line-clamp-[3] lg:line-clamp-6'
-  // );
-
   return (
-    <div className={customClass}>
-      <div style={lineClampStyle} className="font-medium whitespace-pre-wrap">
+    <div className={`w-full ${className}`}>
+      <div className={cx('content-container', isVisible ? 'expanded' : '')}>
         {requirementsArr.map((req, index) => (
           <div
             key={index}
-            className="before:text-lg before:mr-1 before:content-['-'] lg:before:content-['•']"
+            className={cx(
+              `requirement-item before:text-lg before:mr-1 before:content-['-'] lg:before:content-['•']`
+            )}
           >
             {req}
           </div>
