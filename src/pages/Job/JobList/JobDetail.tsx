@@ -63,9 +63,17 @@ const JobDetail = () => {
   }, [currentJob]);
 
   const jobSalary = useMemo(() => {
-    if (!currentJob.salaryMin || !currentJob.salaryMax) return 'Thương lượng';
+    const { salaryMin, salaryMax } = currentJob;
+    if (!salaryMin && !salaryMax) return 'Thương lượng';
 
-    return `${formatCurrencyVN(currentJob.salaryMin)} - ${formatCurrencyVN(currentJob.salaryMax)} VND`;
+    const min = salaryMin ? formatCurrencyVN(salaryMin / 1000) : 0;
+    const max = salaryMax ? formatCurrencyVN(salaryMax / 1000) : 0;
+
+    if (min && max) return `${min}k - ${max}k VND`;
+    if (min) return `Từ ${min}k VND`;
+    if (max) return `${max}k VND`;
+
+    return 'Thương lượng';
   }, [currentJob]);
 
   console.log(currentJob);
