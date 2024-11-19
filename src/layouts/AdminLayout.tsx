@@ -86,7 +86,7 @@ const AdminLayout: React.FC = () => {
             </Dropdown>
           </div>
         </Header>
-        <Content className="p-6 bg-gray-100">
+        <Content className="p-6 admin-bg">
           <Outlet />
         </Content>
       </Layout>
