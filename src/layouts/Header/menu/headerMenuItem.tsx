@@ -233,7 +233,7 @@ export const createBaseMenu = ({ currentUser, token }: IBaseMenu) => {
                   )
                 }
               />
-              <div>
+              <div className="leading-6">
                 <p className="text-lg font-bold">{currentUser.fullName}</p>
                 <p className="text-sub text-md">{currentUser.email}</p>
               </div>

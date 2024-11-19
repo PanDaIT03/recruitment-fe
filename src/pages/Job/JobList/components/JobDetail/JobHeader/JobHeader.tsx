@@ -32,6 +32,7 @@ const JobHeader = ({
       <Space direction="vertical" className="w-full">
         <h1 className="text-2xl font-bold">{title}</h1>
         <Flex
+          wrap
           gap={8}
           align="center"
           className="h4 text-center text-sub text-xsm font-medium leading-4"
@@ -56,27 +57,27 @@ const JobHeader = ({
           </Flex>
         </Flex>
       </Space>
-      <Space>
+      <Flex gap={8}>
         <ButtonAction
           title={<Telephone />}
           tooltipTitle="Xem thông tin liên hệ"
-          className="w-9 h-9 text-accent text-base"
+          className="w-9 h-9 text-accent text-base max-md:hidden"
           onClick={() => setIsOpenContactModal(true)}
         />
         <ButtonAction
           tooltipTitle="Chia sẻ"
           title={<ShareAltOutlined />}
-          className="w-9 h-9 text-accent text-base"
+          className="w-9 h-9 text-accent text-base max-md:hidden"
           onClick={() => setIsOpenShareModal(true)}
         />
         <Button
           fill
           title="Ứng tuyển ngay"
           iconBefore={<Lightning />}
-          className="w-full sm:w-auto"
+          className="w-full md:w-auto"
           onClick={() => setIsOpenJobApplyModal(true)}
         />
-      </Space>
+      </Flex>
     </Flex>
   );
 };
