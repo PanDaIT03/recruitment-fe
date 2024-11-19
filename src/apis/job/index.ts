@@ -68,7 +68,7 @@ export const JobsAPI = {
   postJob: (data: PostingJobFormValues): Promise<JobItem> => {
     return axiosApi.post('/jobs', data);
   },
-  ApplyJob: (data: any): Promise<any> => {
+  ApplyJob: (data: FormData): Promise<any> => {
     return axiosApi.post('/users-jobs', data, {
       headers: {
         'Content-Type': 'multipart/form-data',

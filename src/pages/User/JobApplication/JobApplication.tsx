@@ -1,4 +1,3 @@
-// import { useMutation } from '@tanstack/react-query';
 import {
   Divider,
   Flex,
@@ -43,7 +42,6 @@ import { IFormListProps } from '~/components/Form/FormList';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import CustomSelect from '~/components/Select/CustomSelect';
-// import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
@@ -79,7 +77,6 @@ const { CloseOutlined, MinusCircleOutlined, StarOutlined } = icons;
 const JobApplication = () => {
   const navigate = useNavigate();
   const [form] = useForm<IForm>();
-  // const { messageApi } = useMessage();
 
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
@@ -148,6 +145,7 @@ const JobApplication = () => {
           ...uploadFile,
           { uid: file.uid, name: file.name, originFileObj: file },
         ];
+
         setUploadFile(newFile);
         return false;
       },
@@ -442,20 +440,22 @@ const JobApplication = () => {
     };
   }, [form, props, languages, jobFields, jobPositions, placements]);
 
-  // const handleUploadCV = useCallback(async () => {
-  //   if (!uploadFile.length) return;
+  const handleUploadCV = useCallback(async () => {
+    if (!uploadFile.length) return;
 
-  //   const formData = new FormData();
-  //   uploadFile.forEach((item) => {
-  //     if (!item.originFileObj) return;
-  //     formData.append('file', item.originFileObj);
-  //   });
+    const formData = new FormData();
+    uploadFile.forEach((item) => {
+      if (!item.originFileObj) return;
+      formData.append('file', item.originFileObj);
+    });
 
-  //   uploadCV(formData);
-  // }, [uploadFile]);
+    console.log(uploadFile);
+    console.log(formData);
+    // uploadCV(formData);
+  }, [uploadFile]);
 
   const handleFinish = (values: any) => {
-    // handleUploadCV();
+    handleUploadCV();
     console.log(values);
   };
 
