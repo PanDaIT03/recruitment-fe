@@ -1,8 +1,11 @@
+import { useMutation } from '@tanstack/react-query';
 import { Space } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { JobsAPI } from '~/apis/job';
+import { useMessage } from '~/contexts/MessageProvider';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
@@ -15,6 +18,7 @@ import JobHeader from './components/JobDetail/JobHeader/JobHeader';
 import JobShareModal from './components/JobDetail/JobShareModal/JobShareModal';
 
 const JobDetail = () => {
+  const { messageApi } = useMessage();
   const dispatch = useAppDispatch();
 
   const { id } = useParams<{ id: string }>();
@@ -23,6 +27,15 @@ const JobDetail = () => {
   const [isOpenShareModal, setIsOpenShareModal] = useState(false);
   const [isOpenContactModal, setIsOpenContactModal] = useState(false);
   const [isOpenJobApplyModal, setIsOpenJobApplyModal] = useState(false);
+
+  const { mutate: applyJob, isPending } = useMutation({
+    mutationFn: (params: FormData) => JobsAPI.ApplyJob(params),
+    onSuccess: (res) => {
+      messageApi.success(res?.message);
+      setIsOpenJobApplyModal(false);
+    },
+    onError: (error: any) => messageApi.error(error?.response?.data?.message),
+  });
 
   const breadcrumb = useBreadcrumb([
     { path: PATH.JOB_LIST, label: 'Tin tuyển dụng' },
@@ -103,6 +116,8 @@ const JobDetail = () => {
         onCancel={() => setIsOpenShareModal(false)}
       />
       <JobApplyModal
+        loading={isPending}
+        jobId={currentJob.id}
         isOpen={isOpenJobApplyModal}
         title={
           <h2 className="text-base font-semibold">
@@ -110,6 +125,7 @@ const JobDetail = () => {
             <span className="text-accent"> {currentJob.title}</span>
           </h2>
         }
+        onApply={(values) => applyJob(values)}
         onCancel={() => setIsOpenJobApplyModal(false)}
       />
     </div>
