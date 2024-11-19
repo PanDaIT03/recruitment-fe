@@ -1,4 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
+
 import { JobPostingListProps } from '~/pages/Employer/Job/ManageJob';
 import { PostingJobFormValues } from '~/pages/Employer/Job/PostingJob';
 import { TypeCreateIntervew } from '~/pages/Employer/RecruitmentList/ModalInterview';

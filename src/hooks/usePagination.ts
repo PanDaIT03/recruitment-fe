@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '~/hooks/useStore';
 
 interface PaginationInfo {
@@ -26,6 +27,7 @@ function usePagination<T, P extends { page: number; pageSize: number }>({
   );
   const dispatch = useAppDispatch();
   const isInitialMount = useRef(true);
+  const navigate = useNavigate();
 
   const handlePageChange = useCallback((page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -39,6 +41,8 @@ function usePagination<T, P extends { page: number; pageSize: number }>({
       pageSize: itemsPerPage,
       ...extraParams,
     } as P;
+
+    navigate(`?page=${currentPage}&pageSize=${itemsPerPage}`);
     dispatch(fetchAction(params));
   }, [dispatch, fetchAction, currentPage, itemsPerPage, extraParams]);
 
