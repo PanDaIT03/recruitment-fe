@@ -113,3 +113,9 @@ export interface IWorkExperience {
   jobPosition: JobPosition;
   placement: JobPosition;
 }
+
+export interface IMyCV {
+  id: number;
+  url: string;
+  fileName: string;
+}
