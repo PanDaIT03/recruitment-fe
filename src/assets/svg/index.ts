@@ -20,6 +20,7 @@ export { ReactComponent as DualLayerFile } from './dual-layer-file.svg';
 export { ReactComponent as Edit } from './edit.svg';
 export { ReactComponent as Email } from './email.svg';
 export { ReactComponent as ExternalLink } from './external-link.svg';
+export { ReactComponent as Eye } from './eye.svg';
 export { ReactComponent as File } from './file.svg';
 export { ReactComponent as Filter } from './filter.svg';
 export { ReactComponent as Fly } from './fly.svg';
