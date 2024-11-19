@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { memo, useState } from 'react';
+import { CSSProperties, memo, useState } from 'react';
 
 import Button from '~/components/Button/Button';
 
@@ -13,14 +13,20 @@ const Achievement = ({ value, className }: IProps) => {
   const requirementsArr = value?.split('\n');
 
   const customClass = classNames('w-full', className);
-  const lineClampClass = classNames(
-    'font-medium whitespace-pre-wrap overflow-hidden',
-    isVisible ? 'line-clamp-none' : 'line-clamp-[3] lg:line-clamp-6'
-  );
+  const lineClampStyle: CSSProperties = {
+    display: '-webkit-box',
+    overflow: 'hidden',
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: isVisible ? 'unset' : '3',
+  };
+  // const lineClampClass = classNames(
+  //   'font-medium whitespace-pre-wrap overflow-hidden',
+  //   isVisible ? 'line-clamp-none' : 'line-clamp-[3] lg:line-clamp-6'
+  // );
 
   return (
     <div className={customClass}>
-      <div className={lineClampClass}>
+      <div style={lineClampStyle} className="font-medium whitespace-pre-wrap">
         {requirementsArr.map((req, index) => (
           <div
             key={index}
