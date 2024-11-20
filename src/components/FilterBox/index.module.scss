@@ -1,0 +1,5 @@
+.form {
+    & label > span {
+        color: var(--admin-color-primary);
+    }
+}

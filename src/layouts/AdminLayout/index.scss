@@ -6,7 +6,7 @@
 
     & > span,
     & > i {
-      color: #ffac69;
+      color: var(--admin-color-primary);
     }
   }
 
@@ -17,7 +17,7 @@
       background-color: #1e1e2e;
 
       & a {
-        color: #ffac69;
+        color: var(--admin-color-primary);
       }
     }
   }

@@ -18,6 +18,7 @@ export default {
           95: '#ADDDFF',
           99: '#ADDDFF',
           100: '#FFFFFF',
+          110: '#ffac69',
         },
         secondary: {
           10: '#3C2D16',

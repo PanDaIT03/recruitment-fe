@@ -28,6 +28,10 @@ html {
 
   --radio-inner-bg-color: #ff5800;
   --radio-inner-border-color: #ff5800;
+
+  --admin-color-primary: #ffac69;
+  --admin-background-color-primary: #1e1e2e;
+  --admin-header-background-color: #001529;
 }
 
 :root {
@@ -44,7 +48,7 @@ html {
   background-color: #1e1e2e;
 }
 
-.header-bg { 
+.header-bg {
   background-color: #020220;
 }
 
