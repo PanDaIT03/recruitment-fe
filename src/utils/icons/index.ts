@@ -66,6 +66,7 @@ import {
   UsergroupAddOutlined,
   UserOutlined,
   WalletOutlined,
+  ReloadOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -136,6 +137,7 @@ const icons = {
   CalendarFilled,
   RightCircleOutlined,
   DownOutlined,
+  ReloadOutlined,
 };
 
 export default icons;
