@@ -8,6 +8,8 @@ import icons from '~/utils/icons';
 import JobListItem from './components/JobListItem';
 import PATH from '~/utils/path';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
+import { StatusJob } from '~/types/Job';
+import { useMemo } from 'react';
 
 const { MoreOutlined } = icons;
 
@@ -60,13 +62,28 @@ const ManageJob = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
+  const params = { type: 'Công việc' };
+
+  const { data: allStatusJob } = useFetch<StatusJob>(
+    ['getAllStatusJob', params.type],
+    () => JobsAPI.getAllStatusJob(params.type)
+  );
+
+  const statusJob = useMemo(() => {
+    return allStatusJob?.items.map((apply) => ({
+      value: apply.id,
+      label: apply.title,
+    }));
+  }, [allStatusJob]);
+
+  const statusId = Form.useWatch('statusId', form);
+
   const {
     data: allJobsForEmp,
     isLoading,
     refetch,
-  } = useFetch<JobPostingListProps>(
-    ['allJobsForEmp'],
-    JobsAPI.getAllJobsForEmployer
+  } = useFetch<JobPostingListProps>(['allJobsForEmp', statusId], () =>
+    JobsAPI.getAllJobsForEmployer(statusId || undefined)
   );
 
   const pageInfo = allJobsForEmp?.pageInfo;
@@ -87,7 +104,12 @@ const ManageJob = () => {
           </p>
         </div>
         <div className="pt-4">
-          <Form form={form} layout="horizontal" className="flex gap-2">
+          <Form
+            form={form}
+            layout="horizontal"
+            className="flex gap-2"
+            onValuesChange={() => refetch()}
+          >
             <Form.Item name="title">
               <CustomSelect
                 prefixIcon={<Search />}
@@ -95,10 +117,11 @@ const ManageJob = () => {
                 placeholder="Chọn tên tin tuyển dụng"
               />
             </Form.Item>
-            <Form.Item name="status">
+            <Form.Item name="statusId">
               <CustomSelect
+                allowClear
                 prefixIcon={<MoreOutlined />}
-                options={[]}
+                options={statusJob || []}
                 placeholder="Chọn trạng thái"
               />
             </Form.Item>

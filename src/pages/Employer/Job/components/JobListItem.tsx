@@ -1,20 +1,15 @@
-import { Badge, Dropdown, Modal, Tag, Typography } from 'antd';
+import { Badge, Dropdown, Tag } from 'antd';
 import dayjs from 'dayjs';
 import React, { useMemo, useState } from 'react';
-import icons from '~/utils/icons';
-import { JobPosting } from '../ManageJob';
-
-import 'dayjs/locale/vi';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import { useNavigate } from 'react-router-dom';
 import { JobsAPI } from '~/apis/job';
-import Button from '~/components/Button/Button';
 import { JOB_STATUS } from '~/utils/constant';
 import toast from '~/utils/functions/toast';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
-
-dayjs.extend(relativeTime);
-dayjs.locale('vi');
+import { JobPosting } from '../ManageJob';
+import DeleteJobModal from './Modal/DeleteModal';
+import RecoverJobModal from './Modal/RecoverModal';
 
 const {
   DollarCircleOutlined,
@@ -27,9 +22,8 @@ const {
   FilePdfOutlined,
   RightCircleOutlined,
   DeleteOutlined,
+  ReloadOutlined,
 } = icons;
-
-const { Text, Paragraph } = Typography;
 
 const formatSalaryRange = (min: number | null, max: number | null) => {
   if (!min && !max) return 'Thương lượng';
@@ -45,8 +39,9 @@ interface JobListItemProps {
 
 const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
   const navigate = useNavigate();
-  const [isOpenModalDeleteJob, setisOpenModalDeleteJob] = useState(false);
-
+  const [isOpenModalDeleteJob, setIsOpenModalDeleteJob] = useState(false);
+  const [isOpenModalRecoverJob, setIsOpenModalRecoverJob] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<number | null>(null);
   const isActiveJob = item.jobstatus === JOB_STATUS.ACTIVE;
   const isInActiveJob = item.jobstatus === JOB_STATUS.INACTIVE;
 
@@ -56,15 +51,51 @@ const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
       toast[response?.statusCode === 200 ? 'success' : 'error'](
         response?.message || ''
       );
-
       if (response.statusCode === 200) refetch();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const toggleModal = () => {
-    setisOpenModalDeleteJob(!isOpenModalDeleteJob);
+  const toggleModalDelete = () =>
+    setIsOpenModalDeleteJob(!isOpenModalDeleteJob);
+  const toggleModalRecover = () =>
+    setIsOpenModalRecoverJob(!isOpenModalRecoverJob);
+
+  const handleDeleteClick = (record: JobPosting['id']) => {
+    setSelectedRecord(record);
+    toggleModalDelete();
+  };
+
+  const handleRecoverClick = (record: JobPosting['id']) => {
+    setSelectedRecord(record);
+    toggleModalRecover();
+  };
+
+  const handleDeleteJob = async (id: number) => {
+    try {
+      const response = await JobsAPI.deleteJob(id);
+      toast[response?.statusCode === 200 ? 'success' : 'error'](
+        response?.message || ''
+      );
+      if (response.statusCode === 200) {
+        refetch();
+        toggleModalDelete();
+      }
+    } catch (error) {}
+  };
+
+  const handleRecoverJob = async (id: number) => {
+    try {
+      const response = await JobsAPI.restoreJob(id);
+      toast[response?.statusCode === 200 ? 'success' : 'error'](
+        response?.message || ''
+      );
+      if (response.statusCode === 200) {
+        refetch();
+        toggleModalRecover();
+      }
+    } catch (error) {}
   };
 
   const jobContent = useMemo(
@@ -80,7 +111,6 @@ const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
           />
           <p>{item.status}</p>
         </Tag>
-
         <h3 className="text-sm font-medium mb-1">{item.jobTitle}</h3>
         <div className="flex items-center text-gray-500 text-sm mb-3">
           <span>
@@ -89,7 +119,6 @@ const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
           <span className="mx-2 text-sm">{item.userFullName}</span>
           <span className="text-sm">• {dayjs(item.jobCreateAt).fromNow()}</span>
         </div>
-
         <div className="flex flex-wrap gap-2 mb-4">
           <Tag
             className="font-bold"
@@ -185,9 +214,20 @@ const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
                 },
                 {
                   key: '4',
-                  label: 'Xóa tin',
-                  icon: <DeleteOutlined />,
-                  onClick: toggleModal,
+                  label:
+                    item.jobstatus === JOB_STATUS.DELETED
+                      ? 'Khôi phục'
+                      : 'Xóa tin',
+                  icon:
+                    item.jobstatus === JOB_STATUS.DELETED ? (
+                      <ReloadOutlined />
+                    ) : (
+                      <DeleteOutlined />
+                    ),
+                  onClick: () =>
+                    item.jobstatus === JOB_STATUS.DELETED
+                      ? handleRecoverClick(item.id)
+                      : handleDeleteClick(item.id),
                   className: 'hover:!bg-red-500 hover:!text-white',
                 },
               ],
@@ -200,31 +240,16 @@ const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
         </div>
       </div>
 
-      <Modal
+      <DeleteJobModal
         open={isOpenModalDeleteJob}
-        onCancel={toggleModal}
-        title="Xoá tin tuyển dụng"
-        footer={null}
-      >
-        <Paragraph className="flex flex-col">
-          <Text className="text-orange-600">
-            - Tin đã xóa có thể khôi phục lại trong vòng 30 ngày.
-          </Text>
-          <Text>- Tin đã xóa không thể khôi phục lại.</Text>
-          <Text>
-            - Tất cả ứng viên đang ứng tuyển vào tin này sẽ bị hủy ứng tuyển.
-          </Text>
-        </Paragraph>
-        <div className="flex items-center justify-center gap-2">
-          <Button title="Hủy" onClick={toggleModal} className="w-full" />
-          <Button
-            title="Xác nhận"
-            fill
-            className="w-full"
-            onClick={toggleModal}
-          />
-        </div>
-      </Modal>
+        onCancel={toggleModalDelete}
+        onConfirm={() => selectedRecord && handleDeleteJob(selectedRecord)}
+      />
+      <RecoverJobModal
+        open={isOpenModalRecoverJob}
+        onCancel={toggleModalRecover}
+        onConfirm={() => selectedRecord && handleRecoverJob(selectedRecord)}
+      />
     </>
   );
 };

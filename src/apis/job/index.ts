@@ -39,8 +39,11 @@ export const JobsAPI = {
     };
     return axiosApi.get('/jobs/all', payload);
   },
-  getAllJobsForEmployer: (): Promise<JobPostingListProps> => {
-    return axiosApi.get(`/jobs/employer/all`);
+  getAllJobsForEmployer: (statusId?: number): Promise<JobPostingListProps> => {
+    const payload: AxiosRequestConfig = {
+      params: statusId ? { statusId } : undefined,
+    };
+    return axiosApi.get(`/jobs/employer/all`, payload);
   },
   getJobById: (id: string): Promise<JobItem> => {
     return axiosApi.get(`/jobs?id=${id}`);
@@ -118,6 +121,9 @@ export const JobsAPI = {
     data: IParamsUpdateApplicationJob
   ): Promise<IBaseResponse> => {
     return axiosApi.patch('/users-jobs', data);
+  },
+  restoreJob: (id: number): Promise<IBaseResponse> => {
+    return axiosApi.patch(`/jobs/restore/${id}`);
   },
 
   // DELETE
