@@ -1,4 +1,4 @@
-import { Badge, Card, Form, Table } from 'antd';
+import { Badge, Card, Form, List, Table } from 'antd';
 import React, { useMemo, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
 import { useFetch } from '~/hooks/useFetch';
@@ -22,6 +22,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import ModalStatusJob from '~/components/Modal/ModalStatusJob/index';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
+import MobileCard from './components/ListRecruimentCard';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
@@ -186,25 +187,26 @@ const Recruitment: React.FC = () => {
       <div className="bg-secondary border-t border-[#561d59]">
         <p className="px-16 w-full py-2">{breadcrumb}</p>
       </div>
-      <div className="flex justify-between items-center bg-white px-16">
-        <div>
+      <div className="flex flex-col md:flex-row justify-between items-center bg-white px-4 md:px-16">
+        <div className="w-full md:w-auto mb-4 md:mb-0 mt-4 lg:mt-0">
           <p className="font-bold">Danh sách tuyển dụng</p>
           <p className="text-xs text-gray-500">
             Có {applicationJobs?.items.length} hồ sơ được tìm thấy
           </p>
         </div>
-        <div className="pt-4">
+        <div className="w-full md:w-auto lg:pt-4">
           <Form
             form={form}
             layout="horizontal"
-            className="flex gap-2"
+            className="flex flex-col md:flex-row gap-2"
             onValuesChange={() => {
               setCurrentPage(1);
               refetch();
             }}
           >
-            <Form.Item name="statusId">
+            <Form.Item name="statusId" className="w-full md:w-auto">
               <CustomSelect
+                allowClear
                 className="w-full"
                 prefixIcon={<MenuIcon className="w-4 h-4 text-sub" />}
                 options={statusJob || []}
@@ -214,24 +216,51 @@ const Recruitment: React.FC = () => {
           </Form>
         </div>
       </div>
+
+      <div className="block md:hidden mt-4 w-full px-4">
+        <List
+          dataSource={applicationJobs?.items}
+          renderItem={(record) => (
+            <MobileCard
+              key={record?.jobsId}
+              record={record}
+              handleEditClick={handleEditClick}
+            />
+          )}
+          pagination={{
+            current: applicationJobs?.pageInfo?.currentPage || currentPage,
+            pageSize: applicationJobs?.pageInfo?.itemsPerPage || pageSize,
+            total: applicationJobs?.pageInfo?.totalItems,
+            onChange: (page, pageSize) => {
+              setCurrentPage(page);
+              setPageSize(pageSize);
+            },
+            showSizeChanger: true,
+          }}
+        >
+          <List.Item />
+        </List>
+      </div>
       <div className="px-16 min-h-screen">
-        <Card className="mt-6 text-center shadow-md">
-          <Table
-            columns={columns}
-            dataSource={applicationJobs?.items}
-            className="mb-4"
-            pagination={{
-              current: applicationJobs?.pageInfo?.currentPage || currentPage,
-              pageSize: applicationJobs?.pageInfo?.itemsPerPage || pageSize,
-              total: applicationJobs?.pageInfo?.totalItems,
-              onChange: (page, pageSize) => {
-                setCurrentPage(page);
-                setPageSize(pageSize);
-              },
-              showSizeChanger: true,
-            }}
-          />
-        </Card>
+        <div className="hidden md:block">
+          <Card className="mt-6 text-center shadow-md">
+            <Table
+              columns={columns}
+              dataSource={applicationJobs?.items}
+              className="mb-4"
+              pagination={{
+                current: applicationJobs?.pageInfo?.currentPage || currentPage,
+                pageSize: applicationJobs?.pageInfo?.itemsPerPage || pageSize,
+                total: applicationJobs?.pageInfo?.totalItems,
+                onChange: (page, pageSize) => {
+                  setCurrentPage(page);
+                  setPageSize(pageSize);
+                },
+                showSizeChanger: true,
+              }}
+            />
+          </Card>
+        </div>
       </div>
       <ModalStatusJob
         isOpen={isOpenModal}
