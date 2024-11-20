@@ -1,6 +1,7 @@
-// layouts/AdminLayout.tsx
 import { BellOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Badge, Button, Dropdown, Layout, Menu } from 'antd';
+
+import './index.scss';
 import React, { useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import icons from '~/utils/icons';
@@ -33,12 +34,12 @@ const AdminLayout: React.FC = () => {
         collapsible
         collapsed={collapsed}
         onCollapse={toggleCollapsed}
-        theme="light"
+        theme="dark"
         width={250}
         trigger={null}
       >
-        <div className="p-4 text-center">LOGO</div>
-        <Menu theme="light" mode="inline">
+        <div className="p-4 text-center text-[#ffac69]">LOGO</div>
+        <Menu theme="dark" mode="inline">
           <SubMenu key="dashboard" icon={<BellOutlined />} title="Dashboard">
             <Menu.Item key="overview">
               <Link to={PATH.ADMIN_DASHBOARD}>Tổng quan</Link>
@@ -65,11 +66,17 @@ const AdminLayout: React.FC = () => {
         </Menu>
       </Sider>
       <Layout>
-        <Header className="flex items-center justify-between bg-white px-4 shadow-md">
+        <Header className="flex items-center justify-between admin-bg px-4 shadow-md">
           <div>
             <Button
               type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              icon={
+                collapsed ? (
+                  <MenuUnfoldOutlined className="text-[#ffac69]" />
+                ) : (
+                  <MenuFoldOutlined className="text-[#ffac69]" />
+                )
+              }
               onClick={() => setCollapsed(!collapsed)}
               style={{
                 fontSize: '16px',
@@ -78,11 +85,18 @@ const AdminLayout: React.FC = () => {
           </div>
           <div className="flex items-center justify-end mt-2 gap-4">
             <Badge count={5}>
-              <BellOutlined style={{ fontSize: '18px' }} />
+              <BellOutlined
+                className="text-[#ffac69]"
+                style={{ fontSize: '18px' }}
+              />
             </Badge>
 
             <Dropdown overlay={menu}>
-              <Avatar size="large" icon={<UserOutlined />} />
+              <Avatar
+                size="large"
+                className="bg-white"
+                icon={<UserOutlined className="text-[#ffac69]" />}
+              />
             </Dropdown>
           </div>
         </Header>

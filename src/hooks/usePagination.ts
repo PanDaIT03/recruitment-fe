@@ -47,6 +47,10 @@ function usePagination<T, P extends { page: number; pageSize: number }>({
   }, [dispatch, fetchAction, currentPage, itemsPerPage, extraParams]);
 
   useEffect(() => {
+    console.log(currentPage, itemsPerPage);
+  }, [currentPage, itemsPerPage]);
+
+  useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
       fetchData();

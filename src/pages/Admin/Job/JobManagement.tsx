@@ -2,7 +2,6 @@ import { Space, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { Eye } from '~/assets/svg';
 import Button from '~/components/Button/Button';
@@ -19,8 +18,8 @@ const JobManagement: React.FC = () => {
     queryParams = useQueryParams();
 
   const paginationParams = {
-    page: Number(queryParams.get('page')),
-    pageSize: Number(queryParams.get('pageSize')),
+    page: Number(queryParams.get('page') || 1),
+    pageSize: Number(queryParams.get('pageSize') || 10),
   };
 
   const [filterParams, setFilterParams] = useState({} as any);
@@ -90,6 +89,23 @@ const JobManagement: React.FC = () => {
         render: (value: string) => dayjs(value).format('DD/MM/YYYY HH:MM'),
       },
       {
+        title: 'Người đăng tin',
+        width: 150,
+        dataIndex: ['user', 'fullName'],
+      },
+      {
+        title: 'Ngày cập nhật',
+        width: 150,
+        dataIndex: 'updateAt',
+        render: (value: string) => dayjs(value).format('DD/MM/YYYY HH:MM'),
+      },
+      {
+        title: 'Người cập nhật',
+        width: 150,
+        dataIndex: ['user', 'fullName'],
+      },
+      {
+        title: 'Thao tác',
         key: 'actions',
         width: 100,
         fixed: 'right',
@@ -102,10 +118,6 @@ const JobManagement: React.FC = () => {
                 title={<Eye />}
               />
             </Tooltip>
-            <Button
-              className="border-none hover:bg-transparent p-0"
-              title={<Switch />}
-            />
           </Space>
         ),
       },
@@ -113,12 +125,12 @@ const JobManagement: React.FC = () => {
   }, []);
 
   return (
-    <Content>
+    <Content className="!bg-[#2f2f41b3]">
       <Table
         loading={loading}
         dataSource={jobItems}
         columns={columns}
-        scroll={{ x: 1800 }}
+        scroll={{ x: 2000 }}
         pagination={{
           current: pageInfo?.currentPage,
           pageSize: pageInfo?.itemsPerPage,
