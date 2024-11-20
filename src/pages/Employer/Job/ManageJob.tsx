@@ -1,4 +1,4 @@
-import { Form, List, Pagination } from 'antd';
+import { Form, List } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { JobsAPI } from '~/apis/job';
 import { Search } from '~/assets/svg';
@@ -86,7 +86,10 @@ const ManageJob = () => {
   } = useFetch<JobPostingListProps>(
     ['allJobsForEmp', statusId, currentPage],
     () =>
-      JobsAPI.getAllJobsForEmployer(statusId, { page: currentPage, pageSize })
+      JobsAPI.getAllJobsForEmployer(statusId, {
+        page: currentPage,
+        pageSize: pageSize,
+      })
   );
 
   return (
@@ -106,7 +109,10 @@ const ManageJob = () => {
             form={form}
             layout="horizontal"
             className="flex gap-2"
-            onValuesChange={() => refetch()}
+            onValuesChange={() => {
+              setCurrentPage(1);
+              refetch();
+            }}
           >
             <Form.Item name="title">
               <CustomSelect

@@ -74,18 +74,19 @@ export const JobsAPI = {
   getAllJobsApplicants: (
     statusId?: number,
     type?: string,
-    page?: number
+    pagination?: { page: number; pageSize: number }
   ): Promise<Application> => {
     const payload: AxiosRequestConfig = {
       params: {
         ...(statusId ? { statusId } : {}),
         ...(type ? { type } : {}),
-        ...(page ? { page } : {}),
+        ...(pagination
+          ? { page: pagination.page, pageSize: pagination.pageSize }
+          : {}),
       },
     };
     return axiosApi.get(`/users-jobs/applicants`, payload);
   },
-
   getApplicantsDetail: (
     userId: number,
     jobId: number

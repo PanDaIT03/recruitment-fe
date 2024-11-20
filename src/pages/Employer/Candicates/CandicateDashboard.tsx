@@ -22,6 +22,8 @@ const { Title, Text, Paragraph } = Typography;
 
 const CandicateDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<
     Application['items'][0] | null
@@ -40,8 +42,12 @@ const CandicateDashboard: React.FC = () => {
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
   const { data: applicationJobs, refetch } = useFetch<Application>(
-    ['JobsApplicants', 'new'],
-    () => JobsAPI.getAllJobsApplicants(undefined, 'new')
+    ['JobsApplicants', 'new', currentPage.toString(), pageSize.toString()],
+    () =>
+      JobsAPI.getAllJobsApplicants(undefined, 'new', {
+        page: currentPage,
+        pageSize: pageSize,
+      })
   );
 
   const stats = [
@@ -168,7 +174,20 @@ const CandicateDashboard: React.FC = () => {
             </Text>
           </Paragraph>
 
-          <Table columns={columns} dataSource={applicationJobs?.items} />
+          <Table
+            columns={columns}
+            dataSource={applicationJobs?.items}
+            pagination={{
+              current: applicationJobs?.pageInfo?.currentPage || 1,
+              pageSize: applicationJobs?.pageInfo?.itemsPerPage || 10,
+              total: applicationJobs?.pageInfo?.totalItems,
+              onChange: (page, pageSize) => {
+                setCurrentPage(page);
+                setPageSize(pageSize);
+              },
+              showSizeChanger: true,
+            }}
+          />
         </Card>
       </div>
 

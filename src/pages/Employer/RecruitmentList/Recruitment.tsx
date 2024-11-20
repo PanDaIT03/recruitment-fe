@@ -57,7 +57,11 @@ const Recruitment: React.FC = () => {
 
   const { data: applicationJobs, refetch } = useFetch<Application>(
     ['JobsApplicants', statusId || 'all', currentPage, pageSize],
-    () => JobsAPI.getAllJobsApplicants(statusId, undefined, currentPage)
+    () =>
+      JobsAPI.getAllJobsApplicants(statusId, undefined, {
+        page: currentPage,
+        pageSize: pageSize,
+      })
   );
 
   const statusJob = useMemo(() => {
@@ -217,8 +221,8 @@ const Recruitment: React.FC = () => {
             dataSource={applicationJobs?.items}
             className="mb-4"
             pagination={{
-              current: currentPage || 1,
-              pageSize: pageSize || 10,
+              current: applicationJobs?.pageInfo?.currentPage || currentPage,
+              pageSize: applicationJobs?.pageInfo?.itemsPerPage || pageSize,
               total: applicationJobs?.pageInfo?.totalItems,
               onChange: (page, pageSize) => {
                 setCurrentPage(page);

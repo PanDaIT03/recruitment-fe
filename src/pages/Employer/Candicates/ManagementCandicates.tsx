@@ -17,7 +17,8 @@ const { Text, Paragraph } = Typography;
 
 const ManagementCandicates = () => {
   const [form] = useForm();
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<
     Application['items'][0] | null
@@ -52,8 +53,12 @@ const ManagementCandicates = () => {
   const statusId = Form.useWatch('statusId', form);
 
   const { data: applicationJobs, refetch } = useFetch<Application>(
-    ['JobsApplicants', statusId || 'all'],
-    () => JobsAPI.getAllJobsApplicants(statusId || undefined)
+    ['JobsApplicants', statusId || 'all', currentPage, pageSize],
+    () =>
+      JobsAPI.getAllJobsApplicants(statusId, undefined, {
+        page: currentPage,
+        pageSize: pageSize,
+      })
   );
 
   const toggleModal = () => setIsOpenModal(!isOpenModal);
@@ -157,7 +162,10 @@ const ManagementCandicates = () => {
             form={form}
             layout="horizontal"
             className="flex gap-2"
-            onValuesChange={() => refetch()}
+            onValuesChange={() => {
+              setCurrentPage(1);
+              refetch();
+            }}
           >
             <Form.Item name="title">
               <CustomSelect
@@ -168,6 +176,7 @@ const ManagementCandicates = () => {
             </Form.Item>
             <Form.Item name="statusId">
               <CustomSelect
+                allowClear
                 prefixIcon={<Hash />}
                 options={statusJob || []}
                 placeholder="Chọn trạng thái"
@@ -180,7 +189,16 @@ const ManagementCandicates = () => {
         <Table
           columns={columns}
           dataSource={applicationJobs?.items}
-          pagination={false}
+          pagination={{
+            current: applicationJobs?.pageInfo?.currentPage || 1,
+            pageSize: applicationJobs?.pageInfo?.itemsPerPage || 10,
+            total: applicationJobs?.pageInfo?.totalItems,
+            onChange: (page, pageSize) => {
+              setCurrentPage(page);
+              setPageSize(pageSize);
+            },
+            showSizeChanger: true,
+          }}
         />
       </div>
 
