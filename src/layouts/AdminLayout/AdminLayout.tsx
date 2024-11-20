@@ -1,32 +1,75 @@
 import { BellOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Badge, Button, Dropdown, Layout, Menu } from 'antd';
+import { Avatar, Badge, Button, Dropdown, Layout, Menu, MenuProps } from 'antd';
+import React, { useMemo, useState } from 'react';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import './index.scss';
-import React, { useState } from 'react';
-import { Link, Outlet } from 'react-router-dom';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
+import './index.scss';
 
 const { Header, Sider, Content } = Layout;
-const { SubMenu } = Menu;
-
 const { MenuUnfoldOutlined, MenuFoldOutlined } = icons;
 
+export const MENU_ITEMS = [
+  {
+    key: 'dashboard',
+    label: 'Dashboard',
+    icon: <BellOutlined />,
+    children: [
+      {
+        key: PATH.ADMIN_DASHBOARD,
+        label: 'Tổng quan',
+      },
+    ],
+  },
+  {
+    key: 'jobManagement',
+    label: 'Quản lý công việc',
+    icon: <SettingOutlined />,
+    children: [
+      {
+        key: PATH.ADMIN_JOB_MANAGEMENT,
+        label: 'Danh sách công việc',
+      },
+    ],
+  },
+  {
+    key: 'userManagement',
+    label: 'Danh sách người dùng',
+    icon: <UserOutlined />,
+    children: [
+      {
+        key: PATH.ADMIN_USER_MANAGEMENT,
+        label: 'Danh sách người dùng',
+      },
+    ],
+  },
+] as MenuProps['items'];
+
 const AdminLayout: React.FC = () => {
+  const navigate = useNavigate(),
+    location = useLocation();
+
   const [collapsed, setCollapsed] = useState(false);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="profile">
-        <Link to="/admin/profile">Trang cá nhân</Link>
-      </Menu.Item>
-      <Menu.Item key="logout">Đăng xuất</Menu.Item>
-    </Menu>
-  );
+  const dropdownMenu = useMemo(() => {
+    return {
+      items: [
+        {
+          key: '1',
+          label: <Link to="/admin/profile">Trang cá nhân</Link>,
+        },
+        {
+          key: '2',
+          label: <p>Đăng xuất</p>,
+        },
+      ],
+    } as MenuProps;
+  }, []);
 
   return (
     <Layout className="min-h-screen">
@@ -39,31 +82,14 @@ const AdminLayout: React.FC = () => {
         trigger={null}
       >
         <div className="p-4 text-center text-[#ffac69]">LOGO</div>
-        <Menu theme="dark" mode="inline">
-          <SubMenu key="dashboard" icon={<BellOutlined />} title="Dashboard">
-            <Menu.Item key="overview">
-              <Link to={PATH.ADMIN_DASHBOARD}>Tổng quan</Link>
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu
-            key="jobs"
-            icon={<SettingOutlined />}
-            title="Quản lý công việc"
-          >
-            <Menu.Item key="job-list">
-              <Link to={PATH.ADMIN_JOB_MANAGEMENT}>Danh sách công việc</Link>
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu
-            key="users"
-            icon={<UserOutlined />}
-            title="Quản lý người dùng"
-          >
-            <Menu.Item key="user-list">
-              <Link to={PATH.ADMIN_USER_MANAGEMENT}>Danh sách người dùng</Link>
-            </Menu.Item>
-          </SubMenu>
-        </Menu>
+        <Menu
+          theme="dark"
+          mode="inline"
+          items={MENU_ITEMS}
+          defaultOpenKeys={[location.state?.key]}
+          selectedKeys={[location.state?.key]}
+          onSelect={(e) => navigate(e.key, { state: { key: e.key } })}
+        />
       </Sider>
       <Layout>
         <Header className="flex items-center justify-between admin-bg px-4 shadow-md">
@@ -90,8 +116,7 @@ const AdminLayout: React.FC = () => {
                 style={{ fontSize: '18px' }}
               />
             </Badge>
-
-            <Dropdown overlay={menu}>
+            <Dropdown menu={dropdownMenu}>
               <Avatar
                 size="large"
                 className="bg-white"

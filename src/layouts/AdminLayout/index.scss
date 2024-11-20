@@ -16,7 +16,7 @@
     & > li {
       background-color: #1e1e2e;
 
-      & a {
+      & > span {
         color: var(--admin-color-primary);
       }
     }
