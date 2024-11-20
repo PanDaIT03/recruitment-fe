@@ -34,7 +34,9 @@ export interface IJobList {
   salaryRange?: any;
 }
 
-type IFilter = Partial<Omit<IJobList, 'page' | 'pageSize'>>;
+type IFilter = Partial<Omit<IJobList, 'page' | 'pageSize'>> & {
+  statusId?: number;
+};
 
 const salaryOptions: DefaultOptionType[] = [
   {
@@ -59,12 +61,16 @@ const salaryOptions: DefaultOptionType[] = [
   },
 ];
 
+const defaultFilter: IFilter = {
+  statusId: 5,
+};
+
 const JobList = () => {
   const [form] = Form.useForm();
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
-  const [filters, setFilters] = useState<IFilter>({});
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+  const [filters, setFilters] = useState<IFilter>(defaultFilter);
 
   const jobCategories = useFetch<PaginatedJobCategories>(
     ['jobCategories'],
@@ -162,8 +168,8 @@ const JobList = () => {
       }).filter(([_, value]) => value && value !== 'all')
     ) as Partial<IJobList>;
 
-    setFilters(cleanedFilters);
     handlePageChange(1);
+    setFilters({ ...cleanedFilters, ...defaultFilter });
   };
 
   const resetFilters = () => {
@@ -173,8 +179,8 @@ const JobList = () => {
       salaryRange: 'all',
     });
 
-    setFilters({});
     handlePageChange(1);
+    setFilters({ ...defaultFilter });
   };
 
   const handleFilterSubmit = () => {

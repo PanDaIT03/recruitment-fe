@@ -3,8 +3,10 @@ import {
   Divider,
   Flex,
   Image,
+  List,
   message,
   Popconfirm,
+  Skeleton,
   Space,
   Upload,
   UploadProps,
@@ -21,6 +23,7 @@ import DownloadButton from '~/components/Button/DownloadButton';
 import Dragger from '~/components/Dragger/Dragger';
 import Modal from '~/components/Modal/Modal';
 import { useFetch } from '~/hooks/useFetch';
+import { IMyCV } from '~/types/User/profile';
 import icons from '~/utils/icons';
 
 const {
@@ -34,11 +37,16 @@ const Resume = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
-  const { data: myCVs } = useFetch(['getMyCV'], UserApi.getMyCv);
+  const {
+    refetch,
+    isPending,
+    data: myCVs,
+  } = useFetch(['getMyCV'], UserApi.getMyCv);
 
   const { mutate: uploadCV, isPending: isUploadCVPending } = useMutation({
     mutationFn: (params: FormData) => UserApi.uploadCV(params),
     onSuccess: (res) => {
+      refetch();
       setIsOpenModal(false);
       message.success(res?.message || 'Upload CV thành công');
     },
@@ -90,8 +98,6 @@ const Resume = () => {
     uploadCV(formData);
   };
 
-  console.log(myCVs);
-
   return (
     <>
       <Flex align="center" justify="space-between">
@@ -106,41 +112,60 @@ const Resume = () => {
         />
       </Flex>
       <Divider className="!my-3" />
-      <Space direction="vertical" size="middle" className="w-full">
-        {myCVs?.items?.map((cv, index) => (
-          <Flex key={index} align="center" justify="space-between">
-            <Flex align="center" gap={16}>
-              <Image preview={false} src={PDF_Icon} width={40} height={40} />
-              <Space direction="vertical">
-                <p className="text-base font-medium">{cv.fileName}</p>
-                <p className="text-sub">
-                  Tải lên {dayjs(cv?.createAt).format('HH:ss DD/MM/YYYY')}
-                </p>
-              </Space>
-            </Flex>
-            <Space>
-              <DownloadButton
-                url={cv.url}
-                fileName={cv.fileName}
-                title={<DownloadOutlined className="text-[#691f74]" />}
+      <List
+        itemLayout="horizontal"
+        dataSource={isPending ? ([1] as unknown as IMyCV[]) : myCVs?.items}
+        renderItem={(item) =>
+          isPending ? (
+            <List.Item>
+              <Skeleton avatar title={false} active paragraph={{ rows: 2 }} />
+            </List.Item>
+          ) : (
+            <List.Item
+              className="!border-0"
+              actions={[
+                <Space>
+                  <DownloadButton
+                    url={item.url}
+                    fileName={item.fileName}
+                    title={<DownloadOutlined className="text-[#691f74]" />}
+                  />
+                  <Popconfirm
+                    okText="Có"
+                    cancelText="Không"
+                    title="Xoá CV này"
+                    description="Bạn có chắc chắn muốn xoá CV này?"
+                    icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                    onConfirm={handleDelete}
+                  >
+                    <ButtonAction
+                      title={<CloseOutlined className="text-warning" />}
+                      className="hover:bg-light-warning"
+                    />
+                  </Popconfirm>
+                </Space>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={
+                  <Image
+                    width={40}
+                    height={40}
+                    preview={false}
+                    src={PDF_Icon}
+                  />
+                }
+                title={<p className="font-medium">{item?.fileName}</p>}
+                description={
+                  <p className="text-sub">
+                    Tải lên {dayjs(item?.createAt).format('HH:ss DD/MM/YYYY')}
+                  </p>
+                }
               />
-              <Popconfirm
-                okText="Có"
-                cancelText="Không"
-                title="Xoá CV này"
-                description="Bạn có chắc chắn muốn xoá CV này?"
-                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                onConfirm={handleDelete}
-              >
-                <ButtonAction
-                  title={<CloseOutlined className="text-warning" />}
-                  className="hover:bg-light-warning"
-                />
-              </Popconfirm>
-            </Space>
-          </Flex>
-        ))}
-      </Space>
+            </List.Item>
+          )
+        }
+      />
       <Modal
         isOpen={isOpenModal}
         title="Đăng tải CV"
