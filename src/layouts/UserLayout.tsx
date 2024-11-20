@@ -15,7 +15,6 @@ import ImgCrop from 'antd-img-crop';
 import { useForm } from 'antd/es/form/Form';
 import { Content } from 'antd/es/layout/layout';
 import {
-  // ChangeEvent,
   Dispatch,
   ReactElement,
   ReactNode,
@@ -46,8 +45,9 @@ import Modal from '~/components/Modal/Modal';
 import Select from '~/components/Select/Select';
 import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { defaultCoverImage } from '~/mocks/data';
+import { getMe } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
@@ -156,13 +156,13 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
           </Flex>
           <div>
             <p className="text-lg font-semibold">{currentUser.fullName}</p>
-            <p className="text-sm text-sub font-normal">{currentUser.email}</p>
+            <p className="text-sm text-sub">{currentUser.email}</p>
           </div>
           <div className="text-sm font-medium">
             <span>
               {currentUser.jobPosition?.title}
               <span className='before:content-["•"] before:mx-2 before:text-lg'></span>
-              <span className="text-sub font-normal">~ 1 năm kinh nghiệm</span>
+              <span className="text-sub">~ 1 năm kinh nghiệm</span>
             </span>
             <Flex align="center" gap={4}>
               <EnvironmentOutlined />
@@ -196,6 +196,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
 };
 
 const UserLayout = () => {
+  const dispatch = useAppDispatch();
   const { messageApi } = useMessage();
   const [form] = useForm<IUserInfoForm>();
 
@@ -215,11 +216,15 @@ const UserLayout = () => {
     JobsAPI.getAllJobPositions
   );
 
+  const refetchUserProfile = useCallback(() => {
+    dispatch(getMe());
+  }, []);
+
   const { mutate: updateAccountInfo, isPending: isUpdateAccountInfoPending } =
     useMutation({
       mutationFn: (params: FormData) => UserApi.updateAccountInfo(params),
       onSuccess: (res) => {
-        //refetch
+        refetchUserProfile();
         setIsOpenAvatarModal(false);
         messageApi.success(res?.message || 'Cập nhật thông tin thành công');
       },
@@ -235,7 +240,7 @@ const UserLayout = () => {
       mutationFn: (params: IUpdatePersonalInfo) =>
         UserApi.updatePersonalInfo(params),
       onSuccess: (res) => {
-        //refetch
+        refetchUserProfile();
         setIsOpenInfoModal(false);
         messageApi.success(res?.message || 'Cập nhật thông tin thành công');
       },
@@ -345,8 +350,8 @@ const UserLayout = () => {
   const handleInfoModalFinish = useCallback((values: IUserInfoForm) => {
     const params: IUpdatePersonalInfo = {
       fullName: values.fullName,
-      jobPositionsId: values.positionId?.toString(),
-      placementsId: values.placementId?.toString(),
+      jobPositionsId: values.positionId,
+      placementsId: values.placementId,
     };
 
     updatePersonalInfo(params);
@@ -408,7 +413,7 @@ const UserLayout = () => {
         ),
       },
     ];
-  }, [placements]);
+  }, [placements, jobPositions]);
 
   return (
     <Layout className="min-h-screen">
