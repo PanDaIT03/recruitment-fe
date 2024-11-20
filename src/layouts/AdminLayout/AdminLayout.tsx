@@ -1,6 +1,6 @@
 import { BellOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Badge, Button, Dropdown, Layout, Menu, MenuProps } from 'antd';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import icons from '~/utils/icons';
@@ -10,7 +10,7 @@ import './index.scss';
 const { Header, Sider, Content } = Layout;
 const { MenuUnfoldOutlined, MenuFoldOutlined } = icons;
 
-export const MENU_ITEMS = [
+const MENU_ITEMS = [
   {
     key: 'dashboard',
     label: 'Dashboard',
@@ -52,6 +52,8 @@ const AdminLayout: React.FC = () => {
 
   const [collapsed, setCollapsed] = useState(false);
 
+  const firstRender = useRef(true);
+
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
@@ -70,6 +72,12 @@ const AdminLayout: React.FC = () => {
       ],
     } as MenuProps;
   }, []);
+
+  useEffect(() => {
+    if (!firstRender) return;
+
+    navigate(location?.pathname, { state: { key: location?.pathname } });
+  }, [firstRender]);
 
   return (
     <Layout className="min-h-screen">
