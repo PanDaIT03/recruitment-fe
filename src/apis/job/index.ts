@@ -60,8 +60,11 @@ export const JobsAPI = {
   getAllJobFields: (): Promise<PaginatedJobFields> => {
     return axiosApi.get(`/job-fields/all`);
   },
-  getAllJobsApplicants: (): Promise<Application> => {
-    return axiosApi.get(`/users-jobs/applicants`);
+  getAllJobsApplicants: (statusId?: number): Promise<Application> => {
+    const payload: AxiosRequestConfig = {
+      params: statusId ? { statusId } : undefined,
+    };
+    return axiosApi.get(`/users-jobs/applicants`, payload);
   },
   getApplicantsDetail: (
     userId: number,

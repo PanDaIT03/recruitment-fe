@@ -46,13 +46,27 @@ const ModalStatusJob = ({
     const formData = form.getFieldsValue();
 
     const payload = {
-      ...formData,
+      statusId: formData?.statusId,
       jobsId: data?.jobsId,
       usersId: data?.usersId,
     };
 
     try {
       const response = await JobsAPI.updateApplicationJob(payload);
+      if (selectedStatus === 2) {
+        const payload = {
+          ...formData,
+          jobsId: data?.jobsId,
+          usersId: data?.usersId,
+        };
+
+        const response = await JobsAPI.createNewInterview(payload);
+        if (response.statusCode === 200) {
+          toast.success(response.message);
+          refetch();
+          handleCancel();
+        }
+      }
       if (response.statusCode === 200) {
         toast.success(response.message);
         refetch();
@@ -80,7 +94,7 @@ const ModalStatusJob = ({
             placeholder="Chọn trạng thái"
           />
         </Form.Item>
-        {selectedStatus === 8 && (
+        {selectedStatus === 2 && (
           <>
             <Form.Item
               label={
@@ -123,7 +137,7 @@ const ModalStatusJob = ({
 
         {selectedStatus === 10 && (
           <>
-            <Form.Item label="Trạng thái" name="reason">
+            <Form.Item label="Lý do" name="reason">
               <CustomSelect
                 options={[
                   { label: 'Không đang tìm việc', value: 1 },

@@ -1,8 +1,8 @@
 import { Badge, Card, Form, Table } from 'antd';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
 import { useFetch } from '~/hooks/useFetch';
-import { Application } from '~/types/Job';
+import { Application, StatusJob } from '~/types/Job';
 import icons from '~/utils/icons';
 
 import { useForm } from 'antd/es/form/Form';
@@ -36,6 +36,13 @@ const Recruitment: React.FC = () => {
     Application['items'][0] | null
   >(null);
 
+  const params = { type: 'Phỏng vấn' };
+
+  const { data: allStatusJob } = useFetch<StatusJob>(
+    ['getAllStatusJob', params.type],
+    () => JobsAPI.getAllStatusJob(params.type)
+  );
+
   const customBreadcrumbItems = [
     {
       path: PATH.EMPLOYER_RECRUITMENT,
@@ -45,10 +52,19 @@ const Recruitment: React.FC = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
+  const statusId = Form.useWatch('statusId', form);
+
   const { data: applicationJobs, refetch } = useFetch<Application>(
-    ['JobsApplicants'],
-    JobsAPI.getAllJobsApplicants
+    ['JobsApplicants', statusId || 'all'],
+    () => JobsAPI.getAllJobsApplicants(statusId || undefined)
   );
+
+  const statusJob = useMemo(() => {
+    return allStatusJob?.items.map((apply) => ({
+      value: apply.id,
+      label: apply.title,
+    }));
+  }, [allStatusJob]);
 
   const toggleModal = () => setIsOpenModal(!isOpenModal);
 
@@ -168,13 +184,22 @@ const Recruitment: React.FC = () => {
       <div className="flex justify-between items-center bg-white px-16">
         <div>
           <p className="font-bold">Danh sách tuyển dụng</p>
-          <p className="text-xs text-gray-500">Có 1 hồ sơ được tìm thấy</p>
+          <p className="text-xs text-gray-500">
+            Có {applicationJobs?.items.length} hồ sơ được tìm thấy
+          </p>
         </div>
         <div className="pt-4">
-          <Form form={form} layout="horizontal" className="flex gap-2">
-            <Form.Item name="title">
+          <Form
+            form={form}
+            layout="horizontal"
+            className="flex gap-2"
+            onValuesChange={() => refetch()}
+          >
+            <Form.Item name="statusId">
               <CustomSelect
+                className="w-full"
                 prefixIcon={<MenuIcon className="w-4 h-4 text-sub" />}
+                options={statusJob || []}
                 placeholder="Trạng thái"
               />
             </Form.Item>

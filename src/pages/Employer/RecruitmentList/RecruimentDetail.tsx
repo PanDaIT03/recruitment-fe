@@ -22,6 +22,7 @@ const { PlusOutlined, EditOutlined, CalendarOutlined, DeleteOutlined } = icons;
 const RecruimentDetail = () => {
   const location = useLocation();
   const data = location.state;
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedInterview, setSelectedInterview] = useState<{
     id: number;
@@ -50,6 +51,11 @@ const RecruimentDetail = () => {
     ['getApplicantsDetail', data.usersId, data.jobsId],
     () => JobsAPI.getApplicantsDetail(data[0].usersId, data[0].jobsId)
   );
+  const isBlue =
+    applicationJobs?.status?.id === 1 ||
+    applicationJobs?.status?.id === 2 ||
+    applicationJobs?.status?.id === 4;
+  const isGreen = applicationJobs?.status?.id === 3;
 
   const { data: schedulesInterview, refetch: refetchSchedules } =
     useFetch<Schedule>(['schedulesInterview', data.usersId, data.jobsId], () =>
@@ -130,8 +136,12 @@ const RecruimentDetail = () => {
               <div className="flex items-center justify-between my-2">
                 <p className="text-sub">Trạng thái</p>
                 <p>
-                  <Badge color="blue" />
-                  <span className="text-blue mx-2">
+                  <Badge
+                    color={`${isBlue ? '#1677ff' : isGreen ? '#22c55e' : '#78726de6'} `}
+                  />
+                  <span
+                    className={`${isBlue ? 'text-blue' : isGreen ? 'text-green-500' : 'text-sub'} mx-2`}
+                  >
                     {applicationJobs?.status?.title}
                   </span>
                   <span>
