@@ -15,7 +15,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
 
   if (refreshToken && !userRole) return <Outlet />;
 
-  return allowedRoles.includes(userRole || 'admin') ? (
+  return allowedRoles.includes(userRole || 'guest') ? (
     <Outlet />
   ) : (
     <Navigate to="/" replace />

@@ -1,26 +1,30 @@
-import { Avatar, Badge, Button, Card, Divider } from 'antd';
 import { useLocation } from 'react-router-dom';
-import { JobsAPI } from '~/apis/job';
-import { MenuIcon } from '~/assets/svg';
-import PDFViewer from '~/components/Pdf/ViewPdf';
-import { useFetch } from '~/hooks/useFetch';
-import icons from '~/utils/icons';
-import ModalIntervew from './ModalInterview';
 import { useState } from 'react';
+import { JobsAPI } from '~/apis/job';
+import { useFetch } from '~/hooks/useFetch';
+import ModalIntervew from './ModalInterview';
+import ModalStatusJob from '~/components/Modal/ModalStatusJob';
+import toast from '~/utils/functions/toast';
+import { Modal } from 'antd';
 import { ApplicationJobDetail } from '~/types/Job';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import useBreadcrumb from '~/hooks/useBreadcrumb';
+import CandidateCard from './components/CandidateCard ';
+import InterviewScheduleCard from './components/InterviewScheduleCard';
+import CVViewer from './components/CVViewer';
 import PATH from '~/utils/path';
-dayjs.extend(relativeTime);
-dayjs.locale('vi');
-
-const { PlusOutlined, EditOutlined, CalendarOutlined } = icons;
+import useBreadcrumb from '~/hooks/useBreadcrumb';
 
 const RecruimentDetail = () => {
   const location = useLocation();
   const data = location.state;
-  const [isOpenModal, setisOpenModal] = useState(false);
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState<{
+    id: number;
+    date: string;
+    note: string;
+  } | null>(null);
+  const [isOpenModalStatus, setIsOpenModalStatus] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
 
   const customBreadcrumbItems = [
     {
@@ -40,153 +44,83 @@ const RecruimentDetail = () => {
     () => JobsAPI.getApplicantsDetail(data[0].usersId, data[0].jobsId)
   );
 
-  const toggleModal = () => {
-    setisOpenModal(!isOpenModal);
+  const { data: schedulesInterview, refetch: refetchSchedules } = useFetch(
+    ['schedulesInterview', data.usersId, data.jobsId],
+    () => JobsAPI.getSchedulesInterview(data[0].usersId, data[0].jobsId)
+  );
+
+  const handleOpenModal = (interview?: any) => {
+    setSelectedInterview(interview);
+    setIsOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedInterview(null);
+    setIsOpenModal(false);
+  };
+
+  const handleDeleteInterview = async (id: number) => {
+    Modal.confirm({
+      title: 'Xác nhận xóa',
+      content: 'Bạn có chắc chắn muốn xóa lịch phỏng vấn này?',
+      okText: 'Xóa',
+      cancelText: 'Hủy',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        try {
+          const response = await JobsAPI.deleteSchedule(id);
+          if (response.statusCode === 200) {
+            toast.success(response.message);
+            refetchSchedules();
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
+        }
+      },
+    });
+  };
+  const toggleModal = () => setIsOpenModalStatus(!isOpenModalStatus);
+
+  const handleEditClick = (record: any) => {
+    setSelectedRecord(record);
+    setIsOpenModalStatus(true);
   };
 
   return (
     <>
-      <div className="bg-secondary border-t border-[#561d59]">
+      <div className="bg-secondary border-t border-[#561d59] w-full">
         <p className="px-16 w-full py-2">{breadcrumb}</p>
       </div>
-      <div className="px-16 py-4">
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <Card bordered={false} className="shadow-sm rounded-2xl">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <Avatar size={40} className="bg-gray-200" />
-                  <div>
-                    <h2 className="text-lg font-medium">
-                      {data[0]?.user?.fullName}
-                    </h2>
-                    <p className="text-sub">{data[0]?.job?.title}</p>
-                    <Button
-                      type="text"
-                      className="text-orange-500 px-0 flex items-center"
-                      icon={<PlusOutlined className="text-orange-500" />}
-                    >
-                      Gắn hashtag
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <Divider className="w-full" />
-              <div className="flex items-center justify-between">
-                <p className="text-sub">Vị trí</p>
-                <p>{data[0]?.job?.title}</p>
-              </div>
-              <div className="flex items-center justify-between my-2">
-                <p className="text-sub">Trạng thái</p>
-                <p>
-                  <Badge color="blue" />
-                  <span className="text-blue mx-2">
-                    {data[0]?.applicationStatus}
-                  </span>
-                  <span>
-                    <EditOutlined className="cursor-pointer" />
-                  </span>
-                </p>
-              </div>
-              <div className="flex items-center justify-between my-2">
-                <p className="text-sub">Ngày ứng tuyển</p>
-                <p>
-                  {dayjs(data[0]?.createAt).format('HH:MM DD/MM/YYYY')}
-                  <br />
-                  <span className="text-xs text-sub">
-                    {dayjs(data[0]?.createAt).fromNow()}
-                  </span>
-                </p>
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="text-sub">Cập nhật</p>
-                <p> {dayjs(data[0]?.createAt).fromNow()}</p>
-              </div>
-            </Card>
-
-            <Card
-              className="shadow-sm rounded-2xl mt-4"
-              title={
-                <div className="flex items-center space-x-2">
-                  <CalendarOutlined />
-                  <span>Lịch phỏng vấn</span>
-                </div>
-              }
-              extra={
-                <Button
-                  type="text"
-                  className="text-orange-500"
-                  icon={<PlusOutlined className="text-orange-500" />}
-                  onClick={toggleModal}
-                >
-                  Thêm
-                </Button>
-              }
-            >
-              <div className="">
-                {applicationJobs?.schedules.length === 0 ? (
-                  <div className="text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                      <span className="text-2xl">📅</span>
-                    </div>
-                    <p className="text-gray-400 mb-4">
-                      Chưa có lịch phỏng vấn nào
-                    </p>
-                    <Button
-                      type="text"
-                      className="text-orange-500"
-                      icon={<PlusOutlined className="text-orange-500" />}
-                      onClick={toggleModal}
-                    >
-                      Thêm lịch phỏng vấn
-                    </Button>
-                  </div>
-                ) : (
-                  <>
-                    <ul className="list-disc mx-2">
-                      {applicationJobs?.schedules?.map((schedule) => (
-                        <li key={schedule.id} className="my-2">
-                          <span>
-                            {dayjs(schedule.date).format('HH:MM - DD/MM/YYYY')}
-                          </span>
-                          <br />
-                          <span className="text-sub text-xs">
-                            {schedule.note}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </div>
-            </Card>
-          </div>
-          <div className="col-span-2 w-full h-full">
-            <Card
-              className="rounded-2xl"
-              title={
-                <>
-                  <div className="w-full flex items-center justify-center gap-2">
-                    <span>
-                      <MenuIcon />
-                    </span>
-                    <span>{applicationJobs?.curriculumVitae?.fileName}</span>
-                  </div>
-                </>
-              }
-            >
-              <PDFViewer
-                fileUrl={applicationJobs?.curriculumVitae?.url}
-                fileName={applicationJobs?.curriculumVitae?.fileName}
-              />
-            </Card>
-          </div>
+      <div className="mt-8 grid lg:gap-6 grid-cols-1 md:grid-cols-3 lg:grid-cols-3 px-4 lg:px-16 w-full">
+        <div className="w-full">
+          <CandidateCard
+            data={data}
+            applicationJobs={applicationJobs}
+            handleEditClick={handleEditClick}
+          />
+          <InterviewScheduleCard
+            schedulesInterview={schedulesInterview}
+            handleOpenModal={handleOpenModal}
+            handleDeleteInterview={handleDeleteInterview}
+          />
+        </div>
+        <div className="col-span-2 mt-4 lg:mt-0">
+          <CVViewer applicationJobs={applicationJobs} />
         </div>
       </div>
       <ModalIntervew
         isOpen={isOpenModal}
-        onClose={toggleModal}
+        onClose={handleCloseModal}
         data={applicationJobs}
+        refetch={refetchSchedules}
+        refetchAppJ={refetch}
+        editData={selectedInterview}
+      />
+      <ModalStatusJob
+        isOpen={isOpenModalStatus}
+        handleCancel={toggleModal}
+        data={selectedRecord}
         refetch={refetch}
       />
     </>
