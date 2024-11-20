@@ -30,7 +30,8 @@ const { FilePdfOutlined, EditOutlined } = icons;
 const Recruitment: React.FC = () => {
   const navigate = useNavigate();
   const [form] = useForm();
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<
     Application['items'][0] | null
@@ -55,8 +56,8 @@ const Recruitment: React.FC = () => {
   const statusId = Form.useWatch('statusId', form);
 
   const { data: applicationJobs, refetch } = useFetch<Application>(
-    ['JobsApplicants', statusId || 'all'],
-    () => JobsAPI.getAllJobsApplicants(statusId || undefined)
+    ['JobsApplicants', statusId || 'all', currentPage, pageSize],
+    () => JobsAPI.getAllJobsApplicants(statusId, undefined, currentPage)
   );
 
   const statusJob = useMemo(() => {
@@ -193,7 +194,10 @@ const Recruitment: React.FC = () => {
             form={form}
             layout="horizontal"
             className="flex gap-2"
-            onValuesChange={() => refetch()}
+            onValuesChange={() => {
+              setCurrentPage(1);
+              refetch();
+            }}
           >
             <Form.Item name="statusId">
               <CustomSelect
@@ -212,6 +216,16 @@ const Recruitment: React.FC = () => {
             columns={columns}
             dataSource={applicationJobs?.items}
             className="mb-4"
+            pagination={{
+              current: currentPage || 1,
+              pageSize: pageSize || 10,
+              total: applicationJobs?.pageInfo?.totalItems,
+              onChange: (page, pageSize) => {
+                setCurrentPage(page);
+                setPageSize(pageSize);
+              },
+              showSizeChanger: true,
+            }}
           />
         </Card>
       </div>
