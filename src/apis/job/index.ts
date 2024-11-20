@@ -39,9 +39,17 @@ export const JobsAPI = {
     };
     return axiosApi.get('/jobs/all', payload);
   },
-  getAllJobsForEmployer: (statusId?: number): Promise<JobPostingListProps> => {
+  getAllJobsForEmployer: (
+    statusId?: number,
+    pagination?: { page: number; pageSize: number }
+  ): Promise<JobPostingListProps> => {
     const payload: AxiosRequestConfig = {
-      params: statusId ? { statusId } : undefined,
+      params: {
+        ...(statusId ? { statusId } : {}),
+        ...(pagination
+          ? { page: pagination.page, pageSize: pagination.pageSize }
+          : {}),
+      },
     };
     return axiosApi.get(`/jobs/employer/all`, payload);
   },

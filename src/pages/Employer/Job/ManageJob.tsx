@@ -9,7 +9,7 @@ import JobListItem from './components/JobListItem';
 import PATH from '~/utils/path';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { StatusJob } from '~/types/Job';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const { MoreOutlined } = icons;
 
@@ -48,7 +48,8 @@ export interface JobPostingListProps {
 
 const ManageJob = () => {
   const [form] = useForm();
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const customBreadcrumbItems = [
     {
       path: PATH.EMPLOYER_RECRUITMENT_LIST,
@@ -82,14 +83,11 @@ const ManageJob = () => {
     data: allJobsForEmp,
     isLoading,
     refetch,
-  } = useFetch<JobPostingListProps>(['allJobsForEmp', statusId], () =>
-    JobsAPI.getAllJobsForEmployer(statusId || undefined)
+  } = useFetch<JobPostingListProps>(
+    ['allJobsForEmp', statusId, currentPage],
+    () =>
+      JobsAPI.getAllJobsForEmployer(statusId, { page: currentPage, pageSize })
   );
-
-  const pageInfo = allJobsForEmp?.pageInfo;
-  const hasMultiplePages =
-    !!allJobsForEmp?.pageInfo?.totalPages &&
-    allJobsForEmp.pageInfo.totalPages > 1;
 
   return (
     <>
@@ -138,20 +136,18 @@ const ManageJob = () => {
               <JobListItem item={item} refetch={refetch} />
             </List.Item>
           )}
-          pagination={false}
+          pagination={{
+            pageSize: allJobsForEmp?.pageInfo?.itemsPerPage || 10,
+            current: allJobsForEmp?.pageInfo?.currentPage || 1,
+            total: allJobsForEmp?.pageInfo?.totalItems,
+            onChange: (page, pageSize) => {
+              setCurrentPage(page);
+              setPageSize(pageSize);
+            },
+            showSizeChanger: true,
+          }}
         />
       </div>
-
-      {hasMultiplePages && (
-        <div className="flex justify-end">
-          <Pagination
-            current={pageInfo?.currentPage}
-            total={pageInfo?.totalItems}
-            pageSize={pageInfo?.itemsPerPage}
-            showSizeChanger={false}
-          />
-        </div>
-      )}
     </>
   );
 };
