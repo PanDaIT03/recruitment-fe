@@ -1,21 +1,25 @@
-import { Space, Tooltip } from 'antd';
+import { Col, Form, Row, Space, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { Eye } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Content from '~/components/Content/Content';
-import Switch from '~/components/Switch/Switch';
+import FilterBox from '~/components/FilterBox/FilterBox';
+import FormItem from '~/components/Form/FormItem';
+import Input from '~/components/Input/Input';
 import Table from '~/components/Table/Table';
 import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
 import { getAllJobs } from '~/store/thunk/job';
+import { colSpan } from '~/utils/constant';
 
 const JobManagement: React.FC = () => {
   const { allJobs, loading } = useAppSelector((state) => state.jobs),
-    queryParams = useQueryParams();
+    queryParams = useQueryParams(),
+    [form] = Form.useForm();
 
   const paginationParams = {
     page: Number(queryParams.get('page') || 1),
@@ -124,21 +128,46 @@ const JobManagement: React.FC = () => {
     ] as ColumnsType<any>;
   }, []);
 
+  const handleFinish = useCallback((values: any) => {
+    console.log(values);
+  }, []);
+
   return (
-    <Content className="!bg-[#2f2f41b3]">
-      <Table
-        loading={loading}
-        dataSource={jobItems}
-        columns={columns}
-        scroll={{ x: 2000 }}
-        pagination={{
-          current: pageInfo?.currentPage,
-          pageSize: pageInfo?.itemsPerPage,
-          total: pageInfo?.totalItems,
-          onChange: handlePageChange,
-        }}
-      />
-    </Content>
+    <>
+      <FilterBox form={form} onFinish={handleFinish}>
+        <Row gutter={{ xs: 8, sm: 14 }}>
+          <Col span={colSpan}>
+            <FormItem label="Hình thức làm việc" name="placement">
+              <Input placeholder="Hình thức làm việc" />
+            </FormItem>
+          </Col>
+          <Col span={colSpan}>
+            <FormItem label="Hình thức làm việc" name="placement">
+              <Input placeholder="Hình thức làm việc" />
+            </FormItem>
+          </Col>
+          <Col span={colSpan}>
+            <FormItem label="Hình thức làm việc" name="placement">
+              <Input placeholder="Hình thức làm việc" />
+            </FormItem>
+          </Col>
+        </Row>
+      </FilterBox>
+      <Content className="!bg-[#2f2f41b3]">
+        <Table
+          loading={loading}
+          dataSource={jobItems}
+          columns={columns}
+          scroll={{ x: 2000 }}
+          pagination={{
+            current: pageInfo?.currentPage,
+            pageSize: pageInfo?.itemsPerPage,
+            total: pageInfo?.totalItems,
+            onChange: handlePageChange,
+          }}
+        />
+      </Content>
+    </>
   );
 };
 
