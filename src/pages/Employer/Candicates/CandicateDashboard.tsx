@@ -1,18 +1,31 @@
 import { ArrowUpOutlined } from '@ant-design/icons';
-import { Card, Col, Row, Table, Typography } from 'antd';
+import { Badge, Card, Col, Row, Table, Typography } from 'antd';
 import dayjs from 'dayjs';
-import React from 'react';
+import React, { useState } from 'react';
 
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Calendar, Filter, Hash, User } from '~/assets/svg';
 import PATH from '~/utils/path';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
+import { useFetch } from '~/hooks/useFetch';
+import { Application } from '~/types/Job';
+import { JobsAPI } from '~/apis/job';
+import icons from '~/utils/icons';
+import ModalStatusJob from '~/components/Modal/ModalStatusJob';
+import { useNavigate } from 'react-router-dom';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
+
+const { EditOutlined } = icons;
 
 const { Title, Text, Paragraph } = Typography;
 
 const CandicateDashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<
+    Application['items'][0] | null
+  >(null);
   const customBreadcrumbItems = [
     {
       path: PATH.EMPLOYER_CANDICATES_DASHBOARD,
@@ -26,12 +39,24 @@ const CandicateDashboard: React.FC = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
+  const { data: applicationJobs, refetch } = useFetch<Application>(
+    ['JobsApplicants', 'new'],
+    () => JobsAPI.getAllJobsApplicants(undefined, 'new')
+  );
+
   const stats = [
     { title: 'Số lượng ứng viên mới', value: 0 },
     { title: 'Ứng viên tự ứng tuyển', value: 0 },
     { title: 'Ứng viên được chia sẻ', value: 0 },
     { title: 'Ứng viên từ nguồn khác', value: 0 },
   ];
+
+  const toggleModal = () => setIsOpenModal(!isOpenModal);
+
+  const handleEditClick = (record: Application['items'][0]) => {
+    setSelectedRecord(record);
+    toggleModal();
+  };
 
   const columns = [
     {
@@ -41,7 +66,7 @@ const CandicateDashboard: React.FC = () => {
           <span className="text-sm font-medium text-sub">Ứng viên</span>
         </span>
       ),
-      dataIndex: '',
+      dataIndex: ['user', 'fullName'],
     },
     {
       title: () => (
@@ -52,16 +77,52 @@ const CandicateDashboard: React.FC = () => {
           </span>
         </span>
       ),
-      dataIndex: '',
+      dataIndex: ['job', 'title'],
+      render: (value: string) => (
+        <span
+          className="cursor-pointer hover:underline"
+          onClick={() =>
+            navigate(PATH.EMPLOYER_RECRUITMENT_DETAIL, {
+              state: applicationJobs?.items,
+            })
+          }
+        >
+          {value}
+        </span>
+      ),
     },
     {
       title: () => (
         <span className="flex items-center gap-2">
           <Hash className="text-sub w-4 h-4" />
-          <span className="text-sm font-medium text-sub">Hashtags</span>
+          <span className="text-sm font-medium text-sub">Trạng thái</span>
         </span>
       ),
-      dataIndex: '',
+      dataIndex: ['status', 'title'],
+      render: (value: string, record: Application['items'][0]) => {
+        const isBlue =
+          record.status.id === 1 ||
+          record.status.id === 2 ||
+          record.status.id === 4;
+        const isGreen = record.status.id === 3;
+
+        return (
+          <p className="flex items-center gap-2">
+            <Badge
+              color={`${isBlue ? '#1677ff' : isGreen ? '#22c55e' : '#78726de6'} `}
+            />
+            <span
+              className={`${isBlue ? 'text-blue' : isGreen ? 'text-green-500' : 'text-sub'}`}
+            >
+              {value}
+            </span>
+            <EditOutlined
+              className="cursor-pointer !text-sub"
+              onClick={() => handleEditClick(record)}
+            />
+          </p>
+        );
+      },
     },
     {
       title: () => (
@@ -70,7 +131,11 @@ const CandicateDashboard: React.FC = () => {
           <span className="text-sm font-medium text-sub">Cập nhật</span>
         </span>
       ),
-      dataIndex: '',
+      dataIndex: 'employerUpdateAt',
+      render: (value: string, record: Application['items'][0]) =>
+        !value
+          ? dayjs(record.createAt).format('DD/MM/YYYY HH:MM')
+          : dayjs(value).format('DD/MM/YYYY HH:MM'),
     },
   ];
 
@@ -103,9 +168,16 @@ const CandicateDashboard: React.FC = () => {
             </Text>
           </Paragraph>
 
-          <Table columns={columns} dataSource={[]} />
+          <Table columns={columns} dataSource={applicationJobs?.items} />
         </Card>
       </div>
+
+      <ModalStatusJob
+        isOpen={isOpenModal}
+        handleCancel={toggleModal}
+        data={selectedRecord}
+        refetch={refetch}
+      />
     </>
   );
 };
