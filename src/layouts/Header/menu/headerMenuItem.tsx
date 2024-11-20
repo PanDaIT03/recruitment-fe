@@ -198,7 +198,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                         </span>
                       ),
                       icon: <LoginOutlined />,
-                      onClick: () => navigate(PATH.EMPLOYER_SIGN_IN),
+                      onClick: () => navigate(PATH.USER_SIGN_IN),
                     },
                     {
                       key: '4',
