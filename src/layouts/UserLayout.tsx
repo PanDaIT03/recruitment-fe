@@ -48,6 +48,7 @@ import { useFetch } from '~/hooks/useFetch';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { defaultCoverImage } from '~/mocks/data';
 import { getMe } from '~/store/thunk/auth';
+import { IUser } from '~/types/Auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
@@ -77,6 +78,7 @@ interface IUserInfoForm {
 }
 
 interface ISiderProps {
+  data: IUser;
   setIsOpenInfoModal: Dispatch<SetStateAction<boolean>>;
   setIsOpenAvatarModal: Dispatch<SetStateAction<boolean>>;
 }
@@ -99,7 +101,7 @@ const items: Items[] = [
       },
       {
         title: 'CV',
-        href: PATH.USER_PROFILE,
+        href: PATH.USER_RESUME,
         icon: <File />,
       },
     ],
@@ -116,9 +118,11 @@ const items: Items[] = [
   },
 ];
 
-const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
-  const { currentUser } = useAppSelector((state) => state.auth);
-
+const Sider = ({
+  data,
+  setIsOpenInfoModal,
+  setIsOpenAvatarModal,
+}: ISiderProps) => {
   return (
     <div className="w-full h-max overflow-hidden rounded-xl bg-white shadow-card p-0 shadow lg:col-span-3">
       <div className="w-full">
@@ -136,7 +140,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
                     width={108}
                     height={108}
                     preview={false}
-                    src={currentUser.avatarUrl || defaultCoverImage}
+                    src={data.avatarUrl || defaultCoverImage}
                   />
                 </div>
               </div>
@@ -155,18 +159,18 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
             />
           </Flex>
           <div>
-            <p className="text-lg font-semibold">{currentUser.fullName}</p>
-            <p className="text-sm text-sub">{currentUser.email}</p>
+            <p className="text-lg font-semibold">{data.fullName}</p>
+            <p className="text-sm text-sub">{data.email}</p>
           </div>
           <div className="text-sm font-medium">
             <span>
-              {currentUser.jobPosition?.title}
+              {data.jobPosition?.title}
               <span className='before:content-["•"] before:mx-2 before:text-lg'></span>
               <span className="text-sub">~ 1 năm kinh nghiệm</span>
             </span>
             <Flex align="center" gap={4}>
               <EnvironmentOutlined />
-              <p>{currentUser.placement?.title}</p>
+              <p>{data.placement?.title}</p>
             </Flex>
           </div>
         </Space>
@@ -180,7 +184,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
                   <Link
                     key={childIndex}
                     to={child.href}
-                    className="flex p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5] hover:text-[#000000E0]"
+                    className="flex font-medium p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5] hover:text-[#000000E0]"
                   >
                     <span>{child.icon}</span>
                     <span>{child.title}</span>
@@ -420,6 +424,7 @@ const UserLayout = () => {
       <Header />
       <div className="w-full py-4 px-8 mx-auto max-w-7xl grid grid-cols-1 gap-4 lg:grid-cols-10 max-lg:px-4">
         <Sider
+          data={currentUser}
           setIsOpenInfoModal={setIsOpenInfoModal}
           setIsOpenAvatarModal={setIsOpenAvatarModal}
         />

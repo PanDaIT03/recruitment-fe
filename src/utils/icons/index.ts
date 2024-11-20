@@ -62,6 +62,7 @@ import {
   SnippetsOutlined,
   StarOutlined,
   TeamOutlined,
+  UploadOutlined,
   UserAddOutlined,
   UsergroupAddOutlined,
   UserOutlined,
@@ -136,6 +137,7 @@ const icons = {
   CalendarFilled,
   RightCircleOutlined,
   DownOutlined,
+  UploadOutlined,
 };
 
 export default icons;

@@ -109,7 +109,11 @@ const UserApi = {
     return await axiosApi.post('/desired-jobs', params);
   },
   uploadCV: async (params: FormData) => {
-    return await axiosApi.post('/cloudinary/upload/CVs', params);
+    return await axiosApi.post('/cloudinary/upload/CVs', params, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 
   // PATCH
