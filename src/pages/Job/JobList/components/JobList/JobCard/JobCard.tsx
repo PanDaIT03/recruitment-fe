@@ -1,5 +1,6 @@
 import { Card, Flex, Space } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
+import classNames from 'classnames/bind';
 import dayjs from 'dayjs';
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
@@ -11,6 +12,9 @@ import icons from '~/utils/icons';
 import JobHeader from '../JobHeader/JobHeader';
 import JobTag from '../JobTag/JobTag';
 
+import style from './JobCard.module.scss';
+
+const cx = classNames.bind(style);
 const { ArrowRightOutlined } = icons;
 
 const JobCard = (job: JobItem) => {
@@ -34,12 +38,14 @@ const JobCard = (job: JobItem) => {
             jobPosition={job.jobPosition}
             jobCategory={job.jobCategory}
           />
-          <Paragraph className="text-sm text-sub font-medium line-clamp-2">
-            <ul
-              className="list-none"
-              dangerouslySetInnerHTML={{ __html: job?.description }}
-            ></ul>
-          </Paragraph>
+          <div className={cx('description-container')}>
+            <Paragraph className="text-sm text-sub font-medium">
+              <ul
+                className="list-none"
+                dangerouslySetInnerHTML={{ __html: job?.description }}
+              ></ul>
+            </Paragraph>
+          </div>
           <Flex align="center" justify="space-between" className="font-medium">
             <Space className="text-sub text-sm">
               <Calendar />

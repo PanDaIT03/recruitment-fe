@@ -8,21 +8,21 @@ const cx = classNames.bind(styles);
 
 interface IProps {
   value: string;
-  className?: string;
 }
 
-const Achievement = ({ value, className }: IProps) => {
+const Achievement = ({ value }: IProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const requirementsArr = value?.split('\n');
 
   return (
-    <div className={`w-full ${className}`}>
+    <div className="w-full">
       <div className={cx('content-container', isVisible ? 'expanded' : '')}>
         {requirementsArr.map((req, index) => (
           <div
             key={index}
             className={cx(
-              `requirement-item before:text-lg before:mr-1 before:content-['-'] lg:before:content-['•']`
+              'requirement-item',
+              'before:text-lg before:mr-1 before:content-["-"] lg:before:content-["•"]'
             )}
           >
             {req}
