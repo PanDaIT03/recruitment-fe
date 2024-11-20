@@ -97,6 +97,7 @@ export default {
         blue: '#1677FF',
         warning: '#DC2626',
         success: '#15803D',
+        adminPrimary: '#ffac69'
       },
       fontSize: {
         xsm: '15px',

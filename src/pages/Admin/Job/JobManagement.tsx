@@ -3,18 +3,15 @@ import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { Eye } from '~/assets/svg';
+import { Eye, FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Content from '~/components/Content/Content';
-import FilterBox from '~/components/FilterBox/FilterBox';
-import FormItem from '~/components/Form/FormItem';
-import Input from '~/components/Input/Input';
 import Table from '~/components/Table/Table';
 import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
 import { getAllJobs } from '~/store/thunk/job';
-import { colSpan } from '~/utils/constant';
+import JobFilterBox from './JobFilterBox';
 
 const JobManagement: React.FC = () => {
   const { allJobs, loading } = useAppSelector((state) => state.jobs),
@@ -26,7 +23,8 @@ const JobManagement: React.FC = () => {
     pageSize: Number(queryParams.get('pageSize') || 10),
   };
 
-  const [filterParams, setFilterParams] = useState({} as any);
+  const [filterParams, setFilterParams] = useState({} as any),
+    [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const {
     currentPage,
@@ -132,27 +130,22 @@ const JobManagement: React.FC = () => {
     console.log(values);
   }, []);
 
+  const handleOnFilterButtonClick = useCallback(() => {
+    setIsOpenFilter((prev) => !prev);
+  }, []);
+
   return (
     <>
-      <FilterBox form={form} onFinish={handleFinish}>
-        <Row gutter={{ xs: 8, sm: 14 }}>
-          <Col span={colSpan}>
-            <FormItem label="Hình thức làm việc" name="placement">
-              <Input placeholder="Hình thức làm việc" />
-            </FormItem>
-          </Col>
-          <Col span={colSpan}>
-            <FormItem label="Hình thức làm việc" name="placement">
-              <Input placeholder="Hình thức làm việc" />
-            </FormItem>
-          </Col>
-          <Col span={colSpan}>
-            <FormItem label="Hình thức làm việc" name="placement">
-              <Input placeholder="Hình thức làm việc" />
-            </FormItem>
-          </Col>
-        </Row>
-      </FilterBox>
+      <Row align={'middle'} justify={'end'}>
+        <Col>
+          <Button
+            title={<FilterAdmin />}
+            className="text-adminPrimary border-primary-110 hover:bg-primary-110 hover:text-white"
+            onClick={handleOnFilterButtonClick}
+          />
+        </Col>
+      </Row>
+      <JobFilterBox open={isOpenFilter} form={form} onFinish={handleFinish} />
       <Content className="!bg-[#2f2f41b3]">
         <Table
           loading={loading}

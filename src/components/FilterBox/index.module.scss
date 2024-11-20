@@ -1,5 +1,7 @@
 .form {
-    & label > span {
-        color: var(--admin-color-primary);
-    }
+  & label,
+  & label > span,
+  & .ant-select-item-option-content {
+    color: var(--admin-color-primary) !important;
+  }
 }
