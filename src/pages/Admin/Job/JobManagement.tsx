@@ -1,12 +1,15 @@
 import { Col, Form, Row, Space, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import classNames from 'classnames';
 import { Eye, FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
+import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
+import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
@@ -18,12 +21,17 @@ const JobManagement: React.FC = () => {
     queryParams = useQueryParams(),
     [form] = Form.useForm();
 
+  const { setTitle } = useTitle(),
+    { setBreadcrumb } = useBreadcrumb();
+
   const paginationParams = {
     page: Number(queryParams.get('page') || 1),
     pageSize: Number(queryParams.get('pageSize') || 10),
   };
 
-  const [filterParams, setFilterParams] = useState({} as any),
+  const [filterParams, setFilterParams] = useState({
+      statusId: 5,
+    } as any),
     [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const {
@@ -126,12 +134,26 @@ const JobManagement: React.FC = () => {
     ] as ColumnsType<any>;
   }, []);
 
-  const handleFinish = useCallback((values: any) => {
-    console.log(values);
+  useEffect(() => {
+    setTitle('Danh sách công việc');
+    setBreadcrumb([
+      { title: 'Quản lý công việc' },
+      { title: 'Danh sách công việc' },
+    ]);
   }, []);
 
   const handleOnFilterButtonClick = useCallback(() => {
     setIsOpenFilter((prev) => !prev);
+  }, []);
+
+  const handleFinish = useCallback((values: any) => {
+    const { placementIds, ...otherParams } = values;
+
+    setFilterParams(otherParams);
+  }, []);
+
+  const handleCancel = useCallback(() => {
+    setFilterParams({ statusId: 5 });
   }, []);
 
   return (
@@ -140,12 +162,21 @@ const JobManagement: React.FC = () => {
         <Col>
           <Button
             title={<FilterAdmin />}
-            className="text-adminPrimary border-primary-110 hover:bg-primary-110 hover:text-white"
+            className={classNames(
+              'text-admin-primary border-primary-110 hover:bg-primary-110 hover:text-white',
+              isOpenFilter && 'text-white bg-admin-primary'
+            )}
             onClick={handleOnFilterButtonClick}
           />
         </Col>
       </Row>
-      <JobFilterBox open={isOpenFilter} form={form} onFinish={handleFinish} />
+      <JobFilterBox
+        form={form}
+        open={isOpenFilter}
+        job={{ items: allJobs?.items, loading: loading }}
+        onFinish={handleFinish}
+        onCancel={handleCancel}
+      />
       <Content className="!bg-[#2f2f41b3]">
         <Table
           loading={loading}

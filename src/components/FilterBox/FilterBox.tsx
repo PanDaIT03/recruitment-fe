@@ -11,11 +11,18 @@ interface IFilterBoxProps {
   form: FormInstance<any>;
   children: React.ReactNode;
   onFinish(values: any): void;
+  onCancel: () => void;
 }
 
 const cx = classNames.bind(styles);
 
-const FilterBox = ({ open, form, children, onFinish }: IFilterBoxProps) => {
+const FilterBox = ({
+  open,
+  form,
+  children,
+  onFinish,
+  onCancel,
+}: IFilterBoxProps) => {
   const handleFinish = useCallback(() => {
     onFinish(form.getFieldsValue());
   }, [onFinish]);
@@ -28,9 +35,10 @@ const FilterBox = ({ open, form, children, onFinish }: IFilterBoxProps) => {
         form={form}
         cancelTitle="Hủy"
         submitTitle="Tìm kiếm"
-        cancelClass="text-adminPrimary border-primary-110 hover:bg-primary-110 hover:text-white"
+        cancelClass="text-admin-primary border-primary-110 hover:bg-primary-110 hover:text-white"
         submitClass="bg-primary-110 hover:bg-primary-110 hover:opacity-[.8]"
         onFinish={handleFinish}
+        onCancel={onCancel}
         className={cx('form')}
       >
         {children}

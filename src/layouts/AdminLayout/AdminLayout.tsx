@@ -1,8 +1,21 @@
 import { BellOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Badge, Button, Dropdown, Layout, Menu, MenuProps } from 'antd';
+import {
+  Avatar,
+  Badge,
+  Breadcrumb,
+  Button,
+  ConfigProvider,
+  Dropdown,
+  Layout,
+  Menu,
+  MenuProps,
+  Typography,
+} from 'antd';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
+import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
+import { useTitle } from '~/contexts/TitleProvider';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import './index.scss';
@@ -46,9 +59,14 @@ const MENU_ITEMS = [
   },
 ] as MenuProps['items'];
 
+const { Text } = Typography;
+
 const AdminLayout: React.FC = () => {
   const navigate = useNavigate(),
     location = useLocation();
+
+  const { title } = useTitle(),
+    { breadcrumb } = useBreadcrumb();
 
   const [collapsed, setCollapsed] = useState(false);
 
@@ -133,7 +151,21 @@ const AdminLayout: React.FC = () => {
             </Dropdown>
           </div>
         </Header>
-        <Content className="p-6 admin-bg">
+        <Content className="p-6 pt-0 admin-bg">
+          <Text className="font-bold text-2xl text-admin-primary">{title}</Text>
+          <ConfigProvider
+            theme={{
+              components: {
+                Breadcrumb: {
+                  itemColor: 'white',
+                  lastItemColor: '#ffac69',
+                  separatorColor: 'white',
+                },
+              },
+            }}
+          >
+            <Breadcrumb items={breadcrumb} />
+          </ConfigProvider>
           <Outlet />
         </Content>
       </Layout>
