@@ -2,12 +2,13 @@ import { Card, Flex, Space } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import classNames from 'classnames/bind';
 import dayjs from 'dayjs';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Calendar } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import { JobItem } from '~/types/Job';
+import { formatSalary } from '~/utils/functions';
 import icons from '~/utils/icons';
 import JobHeader from '../JobHeader/JobHeader';
 import JobTag from '../JobTag/JobTag';
@@ -18,6 +19,11 @@ const cx = classNames.bind(style);
 const { ArrowRightOutlined } = icons;
 
 const JobCard = (job: JobItem) => {
+  const jobSalary = useMemo(
+    () => formatSalary(job.salaryMin, job.salaryMax),
+    [job]
+  );
+
   return (
     <Card
       hoverable
@@ -32,6 +38,7 @@ const JobCard = (job: JobItem) => {
         />
         <Flex vertical gap={12}>
           <JobTag
+            salary={jobSalary}
             jobField={job.jobField}
             workType={job.workType}
             quantity={job.quantity}

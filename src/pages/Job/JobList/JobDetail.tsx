@@ -9,7 +9,7 @@ import { useMessage } from '~/contexts/MessageProvider';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
-import { formatCurrencyVN } from '~/utils/functions';
+import { formatSalary } from '~/utils/functions';
 import PATH from '~/utils/path';
 import JobApplyModal from './components/JobDetail/JobApplyModal/JobApplyModal';
 import JobContactModal from './components/JobDetail/JobContactModal/JobContactModal';
@@ -62,21 +62,10 @@ const JobDetail = () => {
       .join(', ');
   }, [currentJob]);
 
-  const jobSalary = useMemo(() => {
-    const { salaryMin, salaryMax } = currentJob;
-    if (!salaryMin && !salaryMax) return 'Thương lượng';
-
-    const min = salaryMin ? formatCurrencyVN(salaryMin / 1000) : 0;
-    const max = salaryMax ? formatCurrencyVN(salaryMax / 1000) : 0;
-
-    if (min && max) return `${min}k - ${max}k VND`;
-    if (min) return `Từ ${min}k VND`;
-    if (max) return `${max}k VND`;
-
-    return 'Thương lượng';
-  }, [currentJob]);
-
-  console.log(currentJob);
+  const jobSalary = useMemo(
+    () => formatSalary(currentJob.salaryMin, currentJob.salaryMax),
+    [currentJob]
+  );
 
   useEffect(() => {
     dispatch(getJobById(id));
