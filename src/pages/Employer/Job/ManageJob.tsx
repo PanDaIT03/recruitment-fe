@@ -147,6 +147,7 @@ const ManageJob = () => {
             current: allJobsForEmp?.pageInfo?.currentPage || 1,
             total: allJobsForEmp?.pageInfo?.totalItems,
             onChange: (page, pageSize) => {
+              window.scrollTo(0, 0);
               setCurrentPage(page);
               setPageSize(pageSize);
             },
