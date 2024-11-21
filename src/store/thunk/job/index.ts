@@ -9,7 +9,27 @@ export const getAllJobs = createAsyncThunk<
   { rejectValue: string }
 >('job/getAllJobs', async (params, { rejectWithValue }) => {
   try {
-    const response = await JobsAPI.getAllJobs(params);
+    const {
+      salaryMin,
+      salaryMax,
+      categoriesId,
+      jobFieldsId,
+      placementIds,
+      workTypesId,
+      title,
+      jobsId,
+    } = params;
+
+    const response = await JobsAPI.getAllJobs({
+      ...(salaryMin && { salaryMin }),
+      ...(salaryMax && { salaryMax }),
+      ...(categoriesId && { categoriesId }),
+      ...(jobFieldsId && { jobFieldsId }),
+      ...(placementIds && { placementIds }),
+      ...(workTypesId && { workTypesId }),
+      ...(title && { title }),
+      ...(jobsId && { jobsId }),
+    });
     return response;
   } catch (error) {
     return rejectWithValue('Có lỗi');

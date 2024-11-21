@@ -27,6 +27,11 @@ const FilterBox = ({
     onFinish(form.getFieldsValue());
   }, [onFinish]);
 
+  const handleCancel = useCallback(() => {
+    form.resetFields();
+    onCancel();
+  }, [onCancel]);
+
   return (
     <Content
       className={cx('!bg-[#2f2f41b3]', !open && 'h-0 overflow-hidden !p-0')}
@@ -38,7 +43,7 @@ const FilterBox = ({
         cancelClass="text-admin-primary border-primary-110 hover:bg-primary-110 hover:text-white"
         submitClass="bg-primary-110 hover:bg-primary-110 hover:opacity-[.8]"
         onFinish={handleFinish}
-        onCancel={onCancel}
+        onCancel={handleCancel}
         className={cx('form')}
       >
         {children}

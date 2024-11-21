@@ -29,9 +29,7 @@ const JobManagement: React.FC = () => {
     pageSize: Number(queryParams.get('pageSize') || 10),
   };
 
-  const [filterParams, setFilterParams] = useState({
-      statusId: 5,
-    } as any),
+  const [filterParams, setFilterParams] = useState({} as any),
     [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const {
@@ -147,13 +145,18 @@ const JobManagement: React.FC = () => {
   }, []);
 
   const handleFinish = useCallback((values: any) => {
-    const { placementIds, ...otherParams } = values;
+    console.log(values);
 
-    setFilterParams(otherParams);
+    setFilterParams({
+      ...values,
+      ...(values.placementIds && {
+        placementIds: values.placementIds.join(','),
+      }),
+    });
   }, []);
 
   const handleCancel = useCallback(() => {
-    setFilterParams({ statusId: 5 });
+    setFilterParams({});
   }, []);
 
   return (
