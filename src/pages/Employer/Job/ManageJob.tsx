@@ -1,4 +1,4 @@
-import { Form, List, Pagination } from 'antd';
+import { Form, List } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { JobsAPI } from '~/apis/job';
 import { Search } from '~/assets/svg';
@@ -8,6 +8,8 @@ import icons from '~/utils/icons';
 import JobListItem from './components/JobListItem';
 import PATH from '~/utils/path';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
+import { StatusJob } from '~/types/Job';
+import { useMemo, useState } from 'react';
 
 const { MoreOutlined } = icons;
 
@@ -20,7 +22,8 @@ export interface JobPosting {
   jobQuantity: number;
   userFullName: string;
   workTypeTitle: string;
-  jobstatus: string;
+  jobstatus: number;
+  status: string;
   jobCategoryName: string;
   evaluatingCount: string;
   offeringCount: string;
@@ -45,7 +48,8 @@ export interface JobPostingListProps {
 
 const ManageJob = () => {
   const [form] = useForm();
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const customBreadcrumbItems = [
     {
       path: PATH.EMPLOYER_RECRUITMENT_LIST,
@@ -59,19 +63,34 @@ const ManageJob = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
+  const params = { type: 'Công việc' };
+
+  const { data: allStatusJob } = useFetch<StatusJob>(
+    ['getAllStatusJob', params.type],
+    () => JobsAPI.getAllStatusJob(params.type)
+  );
+
+  const statusJob = useMemo(() => {
+    return allStatusJob?.items.map((apply) => ({
+      value: apply.id,
+      label: apply.title,
+    }));
+  }, [allStatusJob]);
+
+  const statusId = Form.useWatch('statusId', form);
+
   const {
     data: allJobsForEmp,
     isLoading,
     refetch,
   } = useFetch<JobPostingListProps>(
-    ['allJobsForEmp'],
-    JobsAPI.getAllJobsForEmployer
+    ['allJobsForEmp', statusId, currentPage],
+    () =>
+      JobsAPI.getAllJobsForEmployer(statusId, {
+        page: currentPage,
+        pageSize: pageSize,
+      })
   );
-
-  const pageInfo = allJobsForEmp?.pageInfo;
-  const hasMultiplePages =
-    !!allJobsForEmp?.pageInfo?.totalPages &&
-    allJobsForEmp.pageInfo.totalPages > 1;
 
   return (
     <>
@@ -86,7 +105,15 @@ const ManageJob = () => {
           </p>
         </div>
         <div className="pt-4">
-          <Form form={form} layout="horizontal" className="flex gap-2">
+          <Form
+            form={form}
+            layout="horizontal"
+            className="flex gap-2"
+            onValuesChange={() => {
+              setCurrentPage(1);
+              refetch();
+            }}
+          >
             <Form.Item name="title">
               <CustomSelect
                 prefixIcon={<Search />}
@@ -94,10 +121,11 @@ const ManageJob = () => {
                 placeholder="Chọn tên tin tuyển dụng"
               />
             </Form.Item>
-            <Form.Item name="status">
+            <Form.Item name="statusId">
               <CustomSelect
+                allowClear
                 prefixIcon={<MoreOutlined />}
-                options={[]}
+                options={statusJob || []}
                 placeholder="Chọn trạng thái"
               />
             </Form.Item>
@@ -114,20 +142,18 @@ const ManageJob = () => {
               <JobListItem item={item} refetch={refetch} />
             </List.Item>
           )}
-          pagination={false}
+          pagination={{
+            pageSize: allJobsForEmp?.pageInfo?.itemsPerPage || 10,
+            current: allJobsForEmp?.pageInfo?.currentPage || 1,
+            total: allJobsForEmp?.pageInfo?.totalItems,
+            onChange: (page, pageSize) => {
+              setCurrentPage(page);
+              setPageSize(pageSize);
+            },
+            showSizeChanger: true,
+          }}
         />
       </div>
-
-      {hasMultiplePages && (
-        <div className="flex justify-end">
-          <Pagination
-            current={pageInfo?.currentPage}
-            total={pageInfo?.totalItems}
-            pageSize={pageInfo?.itemsPerPage}
-            showSizeChanger={false}
-          />
-        </div>
-      )}
     </>
   );
 };

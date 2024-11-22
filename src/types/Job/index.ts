@@ -128,7 +128,7 @@ export interface Application {
     jobsId: number;
     job: Job;
     user: User;
-    applicationStatus: Nullable<string>;
+    status: Status;
   }[];
 }
 
@@ -143,10 +143,20 @@ interface CurriculumVitae {
   url: string;
 }
 
-interface Schedule {
+interface Status {
   id: number;
-  note: string;
-  date: string;
+  title: string;
+  code: string;
+}
+
+export interface Schedule {
+  pageInfo: PageInfo;
+  items: {
+    id: number;
+    note: string | null;
+    date: string;
+    status: Status;
+  }[];
 }
 
 export interface ApplicationJobDetail {
@@ -159,5 +169,18 @@ export interface ApplicationJobDetail {
   job: RecruimentJob;
   applicationStatus: string | null;
   curriculumVitae: CurriculumVitae;
-  schedules: Schedule[];
+  status: Status;
+}
+
+export interface StatusJob {
+  pageInfo: PageInfo;
+  items: {
+    id: number;
+    title: string;
+    code: string;
+    statusType: {
+      id: number;
+      title: string;
+    };
+  }[];
 }
