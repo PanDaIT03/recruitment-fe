@@ -28,6 +28,10 @@ html {
 
   --radio-inner-bg-color: #ff5800;
   --radio-inner-border-color: #ff5800;
+
+  --admin-color-primary: #ffac69;
+  --admin-background-color-primary: #1e1e2e;
+  --admin-header-background-color: #001529;
 }
 
 :root {
@@ -37,4 +41,18 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.admin-bg {
+  --tw-bg-opacity: 1;
+  background-color: #1e1e2e;
+}
+
+.header-bg {
+  background-color: #020220;
+}
+
+.ant-menu-item.ant-menu-item-selected.ant-menu-item-only-child {
+  color: #00538f;
+  font-weight: 500;
 }

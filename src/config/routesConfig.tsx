@@ -9,7 +9,7 @@ import ProtectedRoute from '~/routes/ProtectedRoute';
 import JobApplicationLayout from '~/layouts/JobApplicationLayout';
 
 import PATH from '~/utils/path';
-import AdminLayout from '~/layouts/AdminLayout';
+import AdminLayout from '~/layouts/AdminLayout/AdminLayout';
 import UserDetail from '~/pages/Admin/User/UserDetail';
 import EmployerAccountPage from '~/pages/Employer/Personal/EmployerAccountPage';
 

@@ -3,7 +3,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { App as AntApp } from 'antd';
 import { useEffect, useRef } from 'react';
 
+import { BreadcrumbProvider } from './contexts/BreadcrumProvider';
 import { MessageProvider } from './contexts/MessageProvider';
+import { TitleProvider } from './contexts/TitleProvider';
 import { useAppDispatch } from './hooks/useStore';
 import useToken from './hooks/useToken';
 import AppRouter from './routes/AppRouter';
@@ -40,9 +42,13 @@ function App() {
     <GoogleOAuthProvider clientId={clientId}>
       <AntApp>
         <MessageProvider>
-          <QueryClientProvider client={queryClient}>
-            <AppRouter />
-          </QueryClientProvider>
+          <TitleProvider>
+            <BreadcrumbProvider>
+              <QueryClientProvider client={queryClient}>
+                <AppRouter />
+              </QueryClientProvider>
+            </BreadcrumbProvider>
+          </TitleProvider>
         </MessageProvider>
       </AntApp>
     </GoogleOAuthProvider>
