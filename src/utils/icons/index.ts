@@ -53,6 +53,7 @@ import {
   ProfileOutlined,
   QuestionCircleOutlined,
   ReconciliationOutlined,
+  ReloadOutlined,
   RightCircleOutlined,
   SaveOutlined,
   SearchOutlined,
@@ -67,7 +68,6 @@ import {
   UsergroupAddOutlined,
   UserOutlined,
   WalletOutlined,
-  ReloadOutlined,
 } from '@ant-design/icons';
 
 const icons = {
