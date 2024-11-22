@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from 'axios';
 
 import { JobPostingListProps } from '~/pages/Employer/Job/ManageJob';
 import { PostingJobFormValues } from '~/pages/Employer/Job/PostingJob';
-import { TypeCreateIntervew } from '~/pages/Employer/RecruitmentList/ModalInterview';
+import { TypeInterview } from '~/pages/Employer/RecruitmentList/ModalInterview';
 import { IJobList } from '~/pages/Job/JobList/JobList';
 import axiosApi from '~/services/axios';
 import {
@@ -15,11 +15,19 @@ import {
   PaginatedJobFields,
   PaginatedJobPositions,
   PaginatedWorkTypes,
+  Schedule,
+  StatusJob,
 } from '~/types/Job';
 
 export interface IPaginationParms {
   page?: number;
   pageSize?: number;
+}
+
+export interface IParamsUpdateApplicationJob {
+  jobsId: number;
+  usersId: number;
+  statusId: number;
 }
 
 export const JobsAPI = {
@@ -32,8 +40,19 @@ export const JobsAPI = {
     };
     return axiosApi.get('/jobs/all', payload);
   },
-  getAllJobsForEmployer: (): Promise<JobPostingListProps> => {
-    return axiosApi.get(`/jobs/employer/all`);
+  getAllJobsForEmployer: (
+    statusId?: number,
+    pagination?: { page: number; pageSize: number }
+  ): Promise<JobPostingListProps> => {
+    const payload: AxiosRequestConfig = {
+      params: {
+        ...(statusId ? { statusId } : {}),
+        ...(pagination
+          ? { page: pagination.page, pageSize: pagination.pageSize }
+          : {}),
+      },
+    };
+    return axiosApi.get(`/jobs/employer/all`, payload);
   },
   getJobById: (id: string): Promise<JobItem> => {
     return axiosApi.get(`/jobs?id=${id}`);
@@ -53,8 +72,21 @@ export const JobsAPI = {
   getAllJobFields: (): Promise<PaginatedJobFields> => {
     return axiosApi.get(`/job-fields/all`);
   },
-  getAllJobsApplicants: (): Promise<Application> => {
-    return axiosApi.get(`/users-jobs/applicants`);
+  getAllJobsApplicants: (
+    statusId?: number,
+    type?: string,
+    pagination?: { page: number; pageSize: number }
+  ): Promise<Application> => {
+    const payload: AxiosRequestConfig = {
+      params: {
+        ...(statusId ? { statusId } : {}),
+        ...(type ? { type } : {}),
+        ...(pagination
+          ? { page: pagination.page, pageSize: pagination.pageSize }
+          : {}),
+      },
+    };
+    return axiosApi.get(`/users-jobs/applicants`, payload);
   },
   getApplicantsDetail: (
     userId: number,
@@ -63,6 +95,17 @@ export const JobsAPI = {
     return axiosApi.get(
       `/users-jobs/applicants/detail?usersId=${userId}&jobsId=${jobId}`
     );
+  },
+  getSchedulesInterview: (userId: number, jobId: number): Promise<Schedule> => {
+    return axiosApi.get(
+      `/schedules/interview?usersId=${userId}&jobsId=${jobId}`
+    );
+  },
+  getAllStatusJob: (data?: string): Promise<StatusJob> => {
+    const payload: AxiosRequestConfig = {
+      params: { type: data },
+    };
+    return axiosApi.get(`/status/all`, payload);
   },
 
   // POST
@@ -76,7 +119,7 @@ export const JobsAPI = {
       },
     });
   },
-  createNewInterview: (data: TypeCreateIntervew): Promise<IBaseResponse> => {
+  createNewInterview: (data: TypeInterview): Promise<IBaseResponse> => {
     return axiosApi.post(`/schedules`, data);
   },
 
@@ -87,9 +130,23 @@ export const JobsAPI = {
   ): Promise<JobItem | IBaseResponse> => {
     return axiosApi.patch(`/jobs/${id}`, data);
   },
+  updateInterview: (id: number, data: Partial<any>): Promise<IBaseResponse> => {
+    return axiosApi.patch(`/schedules/${id}`, data);
+  },
+  updateApplicationJob: (
+    data: IParamsUpdateApplicationJob
+  ): Promise<IBaseResponse> => {
+    return axiosApi.patch('/users-jobs', data);
+  },
+  restoreJob: (id: number): Promise<IBaseResponse> => {
+    return axiosApi.patch(`/jobs/restore/${id}`);
+  },
 
   // DELETE
   deleteJob: (id: number): Promise<IBaseResponse> => {
     return axiosApi.delete(`/jobs/${id}`);
+  },
+  deleteSchedule: (id: number): Promise<IBaseResponse> => {
+    return axiosApi.delete(`/schedules/${id}`);
   },
 };
