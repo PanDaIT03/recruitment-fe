@@ -12,6 +12,7 @@ type Response = IBaseResponse<{
 
 export interface ISignUpParams extends IBaseUser {
   roleId: number;
+  jobFieldsIds?: number[];
 }
 
 export interface IVerifyOTP {

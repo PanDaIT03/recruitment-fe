@@ -45,9 +45,9 @@ export type IUpdateAccountInfo = Partial<{
 }>;
 export type IUpdatePersonalInfo = {
   fullName: string;
-  placementsId: string;
-  jobPositionsId: string;
-  totalYearExperience?: string;
+  placementsId: number;
+  jobPositionsId: number;
+  totalYearExperience?: number;
 };
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
@@ -109,7 +109,11 @@ const UserApi = {
     return await axiosApi.post('/desired-jobs', params);
   },
   uploadCV: async (params: FormData) => {
-    return await axiosApi.post('/cloudinary/upload/CVs', params);
+    return await axiosApi.post('/cloudinary/upload/CVs', params, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 
   // PATCH

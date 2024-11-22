@@ -30,10 +30,10 @@ const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
 const UserManagement = lazy(() => import('~/pages/Admin/User/UserManagement'));
 const Blog = lazy(() => import('~/pages/Blog/Blogs'));
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
-// const JobDetail = lazy(() => import('~/components/Job/JobDetail/JobDetail'));
 const JobDetail = lazy(() => import('~/pages/Job/JobList/JobDetail'));
 const JobList = lazy(() => import('~/pages/Job/JobList/JobList'));
 const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
+const UserResume = lazy(() => import('~/pages/User/Resume/Resume'));
 const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
@@ -194,6 +194,7 @@ const routesConfig: CustomRouteObject[] = [
   createRoute('/user', undefined, UserLayout, [
     createProtectedRoute('', ['user'], <UserProfile />),
     createProtectedRoute(PATH.USER_PROFILE, ['user'], <UserProfile />),
+    createProtectedRoute(PATH.USER_RESUME, ['user'], <UserResume />),
     createProtectedRoute(PATH.USER_ACCOUNT, ['user'], <UserAccount />),
     createProtectedRoute(PATH.USER_DESIRED_JOB, ['user'], <UserDesiredJob />),
   ]),

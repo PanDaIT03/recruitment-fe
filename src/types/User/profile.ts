@@ -116,6 +116,10 @@ export interface IWorkExperience {
 
 export interface IMyCV {
   id: number;
-  url: string;
+  createBy: number;
+  createAt: string;
+  updateBy: number;
+  updateAt: string;
   fileName: string;
+  url: string;
 }

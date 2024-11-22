@@ -143,7 +143,7 @@ const SignIn = () => {
         <>
           <div className="w-full">
             <h1 className="text-base font-semibold">
-              Đăng nhập cho Người tìm việc
+              Đăng nhập
             </h1>
             <p className="text-sm text-sub mt-1">
               Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục
