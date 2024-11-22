@@ -1,3 +1,5 @@
+type NullableNumber = Nullable<number>;
+
 interface IBaseResponse<T = undefined> {
   data?: T;
   message: string;

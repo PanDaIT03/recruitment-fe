@@ -70,6 +70,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                     <span className="text-neutral-600 font-medium">CV</span>
                   ),
                   icon: <File width={16} height={16} />,
+                  onClick: () => navigate(PATH.USER_RESUME),
                 },
               ],
             },
@@ -197,7 +198,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                         </span>
                       ),
                       icon: <LoginOutlined />,
-                      onClick: () => navigate(PATH.EMPLOYER_SIGN_IN),
+                      onClick: () => navigate(PATH.USER_SIGN_IN),
                     },
                     {
                       key: '4',

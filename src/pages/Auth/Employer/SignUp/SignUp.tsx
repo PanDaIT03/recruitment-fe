@@ -1,54 +1,52 @@
+import { useMutation } from '@tanstack/react-query';
 import { Divider, Flex, Layout, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import AuthAPI from '~/apis/auth';
+import AuthAPI, { ISignUpParams } from '~/apis/auth';
 import { JobsAPI } from '~/apis/job';
-import { Fly } from '~/assets/svg';
+import { Box, Email, Fly, SkyScraper } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useFetch } from '~/hooks/useFetch';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { useAppSelector } from '~/hooks/useStore';
 import FormApplication from '~/pages/User/JobApplication/FormJobApplication';
 import { IJobApplicationForm } from '~/pages/User/JobApplication/JobApplication';
-import { checkExistedEmail } from '~/store/thunk/auth';
 import { PaginatedJobFields, PaginatedJobPositions } from '~/types/Job';
 import { ROLE } from '~/types/Role';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
-import PATH from '~/utils/path';
+
+interface SignUpFormValues {
+  companyName: string;
+  companyUrl: string;
+  jobFieldsIds: number;
+  fullName: string;
+  jobPositionsId: number;
+  phoneNumber: string;
+  email: string;
+  password: string;
+}
+
+type IEmployerSignUpForm = IJobApplicationForm;
 
 const { Title, Text } = Typography;
+
 const {
-  HomeOutlined,
   LinkOutlined,
-  ContainerOutlined,
+  LockOutlined,
+  PhoneOutlined,
   IdcardOutlined,
   CreditCardOutlined,
-  PhoneOutlined,
-  LockOutlined,
-  WalletOutlined,
 } = icons;
-
-interface SignUpFormValues<T = string> {
-  companyName: T;
-  companyUrl: T;
-  jobFieldsIds: number[];
-  fullName: T;
-  jobPositionsId: number;
-  phoneNumber: T;
-  email: T;
-  password: T;
-}
 
 const SignUp = () => {
   const [form] = useForm();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const { roles } = useAppSelector((state) => state.role);
 
@@ -62,7 +60,11 @@ const SignUp = () => {
     JobsAPI.getAllJobPositions
   );
 
-  const formItem: IJobApplicationForm = useMemo(() => {
+  const { mutate: signUp, isPending } = useMutation({
+    mutationFn: (params: ISignUpParams) => AuthAPI.signUp(params),
+  });
+
+  const formItem: IEmployerSignUpForm = useMemo(() => {
     return {
       form: form,
       children: [
@@ -82,11 +84,11 @@ const SignUp = () => {
               item: (
                 <Input
                   placeholder="Ví dụ: Tập đoàn FPT"
-                  prefix={<HomeOutlined />}
+                  prefix={<SkyScraper width={16} height={16} />}
                 />
               ),
               rules: [
-                { required: true, message: 'Vui lòng nhập Tên doanh nghiệp' },
+                { required: true, message: 'Vui lòng nhập tên doanh nghiệp' },
               ],
             },
             {
@@ -114,7 +116,7 @@ const SignUp = () => {
                       label: el.title,
                     })) || []
                   }
-                  prefixIcon={<ContainerOutlined />}
+                  prefixIcon={<Box />}
                 />
               ),
               rules: [{ required: true, message: 'Vui lòng chọn lĩnh vực' }],
@@ -141,7 +143,7 @@ const SignUp = () => {
                   prefix={<IdcardOutlined />}
                 />
               ),
-              rules: [{ required: true, message: 'Vui lòng nhập Họ và tên' }],
+              rules: [{ required: true, message: 'Vui lòng nhập họ và tên' }],
             },
             {
               name: 'jobPositionsId',
@@ -158,7 +160,7 @@ const SignUp = () => {
                   prefixIcon={<CreditCardOutlined />}
                 />
               ),
-              rules: [{ required: true, message: 'Vui lòng chọn Chức vụ' }],
+              rules: [{ required: true, message: 'Vui lòng chọn chức vụ' }],
             },
             {
               name: 'phoneNumber',
@@ -170,7 +172,7 @@ const SignUp = () => {
                 />
               ),
               rules: [
-                { required: true, message: 'Vui lòng nhập Số điện thoại' },
+                { required: true, message: 'Vui lòng nhập số điện thoại' },
               ],
             },
           ],
@@ -191,10 +193,16 @@ const SignUp = () => {
               item: (
                 <Input
                   placeholder="Ví dụ: devcui@gmail.com"
-                  prefix={<WalletOutlined />}
+                  prefix={<Email />}
                 />
               ),
-              rules: [{ required: true, message: 'Vui lòng nhập Email' }],
+              rules: [
+                {
+                  type: 'email',
+                  message: 'Email không hợp lệ',
+                },
+                { required: true, message: 'Vui lòng nhập email' },
+              ],
             },
             {
               name: 'password',
@@ -205,7 +213,10 @@ const SignUp = () => {
                   prefix={<LockOutlined />}
                 />
               ),
-              rules: [{ required: true, message: 'Vui lòng nhập Mật khẩu' }],
+              rules: [
+                { min: 8, message: 'Mật khẩu có tối thiểu 8 ký tự' },
+                { required: true, message: 'Vui lòng nhập mật khẩu' },
+              ],
             },
           ],
         },
@@ -216,29 +227,29 @@ const SignUp = () => {
   const handleFinish = async (values: SignUpFormValues) => {
     try {
       const roleId = roles.find((role) => role.title === ROLE.EMPLOYER)?.id;
-      const checkEmail = await dispatch(checkExistedEmail(values.email));
-
-      if (checkEmail) return toast.warning('Email đã tồn tại');
 
       if (!roleId) {
         toast.error('Lỗi không tìm thấy chức vụ');
         return;
       }
 
-      const payload = {
+      const payload: ISignUpParams = {
         ...values,
         roleId: roleId,
         jobFieldsIds: [values.jobFieldsIds],
       };
 
-      const response = await AuthAPI.signUp(payload);
-      const { statusCode, message } = response;
+      console.log(payload);
+      // signUp(payload);
 
-      toast[statusCode === 200 ? 'success' : 'error'](message);
-      if (statusCode === 200) {
-        form.resetFields();
-        navigate(PATH.USER_SIGN_IN);
-      }
+      // const response = await AuthAPI.signUp(payload);
+      // const { statusCode, message } = response;
+
+      // toast[statusCode === 200 ? 'success' : 'error'](message);
+      // if (statusCode === 200) {
+      //   form.resetFields();
+      //   navigate(PATH.USER_SIGN_IN);
+      // }
     } catch (error: any) {
       console.log('Unexpected error', error);
     }
@@ -247,7 +258,7 @@ const SignUp = () => {
   return (
     <Layout className="w-full min-h-screen">
       <Flex vertical gap={24}>
-        <FormWrapper form={form} onFinish={handleFinish}>
+        <FormWrapper form={form} loading={isPending} onFinish={handleFinish}>
           <Space direction="vertical" size="large" className="w-full">
             {formItem.children.map((item, index) => (
               <div
@@ -268,15 +279,13 @@ const SignUp = () => {
             ))}
           </Space>
         </FormWrapper>
-        <Flex gap={12}>
-          <Button
-            fill
-            title="Đồng ý"
-            className="w-full"
-            iconAfter={<Fly />}
-            onClick={() => form.submit()}
-          />
-        </Flex>
+        <Button
+          fill
+          title="Đồng ý"
+          className="w-full"
+          iconAfter={<Fly />}
+          onClick={() => form.submit()}
+        />
       </Flex>
     </Layout>
   );

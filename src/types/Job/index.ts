@@ -79,8 +79,6 @@ export interface PageInfo {
   totalPages: number;
 }
 
-type NullableNumber = Nullable<number>;
-
 export interface JobItem extends BaseEntityWithTitle {
   statusCode?: number;
   message?: string;
