@@ -43,7 +43,7 @@ const EmployerAccountForm: React.FC = () => {
   useEffect(() => {
     form.setFieldsValue({
       ...currentUser,
-      positionsId: currentUser?.jobPosition.id,
+      positionsId: currentUser?.jobPosition?.id,
     });
     if (currentUser?.avatarUrl) {
       setImageUrl(currentUser.avatarUrl);
