@@ -15,28 +15,27 @@ import toast from './utils/functions/toast';
 
 function App() {
   const flagRef = useRef(false);
+  const { token } = useToken();
   const dispatch = useAppDispatch();
 
-  const { token } = useToken();
   const queryClient = new QueryClient();
-
   const clientId = import.meta.env.VITE_APP_CLIENT_ID;
 
   useEffect(() => {
-    if (!token) return;
-
     if (!flagRef.current) {
-      dispatch(getMe());
       dispatch(getAllRoles());
+      if (token) dispatch(getMe());
 
       flagRef.current = true;
     }
   }, [token]);
 
-  if (!clientId) {
-    toast.error('Google Client ID is missing!');
-    return <div>Error: Google Client ID is not set.</div>;
-  }
+  useEffect(() => {
+    if (!clientId) {
+      toast.error('Google Client ID is missing!');
+      return;
+    }
+  }, [clientId]);
 
   return (
     <GoogleOAuthProvider clientId={clientId}>
