@@ -42,7 +42,7 @@ import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal from '~/components/Modal/Modal';
-import Select from '~/components/Select/Select';
+import CustomSelect from '~/components/Select/CustomSelect';
 import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -162,17 +162,23 @@ const Sider = ({
             <p className="text-lg font-semibold">{data.fullName}</p>
             <p className="text-sm text-sub">{data.email}</p>
           </div>
-          <div className="text-sm font-medium">
-            <span>
-              {data.jobPosition?.title}
-              <span className='before:content-["•"] before:mx-2 before:text-lg'></span>
-              <span className="text-sub">~ 1 năm kinh nghiệm</span>
-            </span>
-            <Flex align="center" gap={4}>
-              <EnvironmentOutlined />
-              <p>{data.placement?.title}</p>
-            </Flex>
-          </div>
+          {(data.jobPosition?.title || data.placement?.title) && (
+            <div className="text-sm font-medium">
+              {data.jobPosition?.title && (
+                <span>
+                  {data.jobPosition?.title}
+                  <span className='before:content-["•"] before:mx-2 before:text-lg'></span>
+                  <span className="text-sub">~ 1 năm kinh nghiệm</span>
+                </span>
+              )}
+              {data.placement?.title && (
+                <Flex align="center" gap={4}>
+                  <EnvironmentOutlined />
+                  <p>{data.placement?.title}</p>
+                </Flex>
+              )}
+            </div>
+          )}
         </Space>
         <div className="hidden lg:block">
           <Divider dashed className="!m-0" />
@@ -378,8 +384,9 @@ const UserLayout = () => {
         name: 'positionId',
         label: 'Chức vụ hiện tại',
         item: (
-          <Select
+          <CustomSelect
             allowClear
+            prefixIcon={<File />}
             placeholder="Chọn chức vụ"
             options={jobPositions?.items?.map((jobPosition) => ({
               label: jobPosition.title,
@@ -406,9 +413,10 @@ const UserLayout = () => {
         label: 'Nơi sống hiện tại',
         className: 'mb-0',
         item: (
-          <Select
+          <CustomSelect
             allowClear
             placeholder="Chọn thành phố"
+            prefixIcon={<EnvironmentOutlined />}
             options={placements?.items?.map((place) => ({
               value: place?.id,
               label: place?.title,
