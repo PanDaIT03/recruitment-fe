@@ -184,3 +184,18 @@ export interface StatusJob {
     };
   }[];
 }
+
+export interface IUserAppliedJob {
+  createAt: string;
+  cvViewedAt: string;
+  referrerId: string;
+  employerUpdateBy: number;
+  employerUpdateAt: string;
+  usersId: number;
+  jobsId: number;
+  job: Job;
+  curriculumVitae: CurriculumVitae;
+  status: Status;
+}
+
+export type IPaginatedUserAppliedJobs = IPaginatedData<IUserAppliedJob[]>;

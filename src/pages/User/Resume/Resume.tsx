@@ -118,7 +118,7 @@ const Resume = () => {
         renderItem={(item) =>
           isPending ? (
             <List.Item>
-              <Skeleton avatar title={false} active paragraph={{ rows: 2 }} />
+              <Skeleton avatar active title={false} paragraph={{ rows: 2 }} />
             </List.Item>
           ) : (
             <List.Item

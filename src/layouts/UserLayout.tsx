@@ -83,7 +83,7 @@ interface ISiderProps {
   setIsOpenAvatarModal: Dispatch<SetStateAction<boolean>>;
 }
 
-const { EditOutlined, EnvironmentOutlined } = icons;
+const { EditOutlined, EnvironmentOutlined, AuditOutlined } = icons;
 
 const items: Items[] = [
   {
@@ -109,6 +109,11 @@ const items: Items[] = [
   {
     title: 'Công việc',
     children: [
+      {
+        title: 'Công việc đã ứng tuyển',
+        href: PATH.USER_APPLIED_JOB,
+        icon: <AuditOutlined width={18} height={18} />,
+      },
       {
         title: 'Doanh nghiệp tiếp cận',
         href: PATH.USER_PROFILE,
