@@ -4,6 +4,7 @@ import {
   ArrowDownOutlined,
   ArrowLeftOutlined,
   ArrowRightOutlined,
+  AuditOutlined,
   BankOutlined,
   CalendarFilled,
   CalendarOutlined,
@@ -53,6 +54,7 @@ import {
   ProfileOutlined,
   QuestionCircleOutlined,
   ReconciliationOutlined,
+  ReloadOutlined,
   RightCircleOutlined,
   SaveOutlined,
   SearchOutlined,
@@ -62,6 +64,7 @@ import {
   SnippetsOutlined,
   StarOutlined,
   TeamOutlined,
+  UploadOutlined,
   UserAddOutlined,
   UsergroupAddOutlined,
   UserOutlined,
@@ -136,6 +139,9 @@ const icons = {
   CalendarFilled,
   RightCircleOutlined,
   DownOutlined,
+  UploadOutlined,
+  ReloadOutlined,
+  AuditOutlined,
 };
 
 export default icons;

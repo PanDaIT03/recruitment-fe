@@ -1,0 +1,25 @@
+.description-container {
+  height: 70px;
+  position: relative;
+  overflow: hidden;
+}
+
+.description-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 24px;
+  background: linear-gradient(transparent, white);
+  pointer-events: none;
+}
+
+.description-container .ant-typography {
+  margin-bottom: 0 !important;
+}
+
+.description-container ul {
+  margin: 0;
+  padding: 0;
+}

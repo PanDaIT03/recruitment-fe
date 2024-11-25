@@ -21,12 +21,14 @@ type TProps = {
   prefixIcon?: string | ReactNode;
   displayedType?: ISelectDisplayedType;
   configProvider?: ISelectConfigProvider;
+  configTokenProvider?: Partial<AliasToken>;
 } & SelectProps;
 
 const CustomSelect = ({
   className,
   prefixIcon,
   configProvider,
+  configTokenProvider,
   displayedType = 'default',
   ...props
 }: TProps) => {
@@ -72,6 +74,7 @@ const CustomSelect = ({
           components: {
             Select: configProvider,
           },
+          token: configTokenProvider,
         }}
       >
         <Select
