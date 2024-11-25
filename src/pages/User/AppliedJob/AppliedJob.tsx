@@ -1,15 +1,14 @@
-import { Divider, Flex, Image, List, Skeleton } from 'antd';
+import { Avatar, Divider, Flex, Image, Skeleton, Space } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import dayjs from 'dayjs';
 import { Link, useNavigate } from 'react-router-dom';
-import { JobsAPI } from '~/apis/job';
 
+import { JobsAPI } from '~/apis/job';
 import { EmptyFolder } from '~/assets/img';
 import { Lightning } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import { useFetch } from '~/hooks/useFetch';
 import { mockFileList } from '~/mocks/data';
-import { IUserAppliedJob } from '~/types/Job';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
@@ -33,55 +32,36 @@ const AppliedJob = () => {
         </h2>
       </Flex>
       <Divider className="!my-3" />
-      {appliedJobs?.items.length ? (
-        <List
-          itemLayout="vertical"
-          dataSource={
-            isPending
-              ? ([1] as unknown as IUserAppliedJob[])
-              : appliedJobs.items
-          }
-          renderItem={(item) =>
-            isPending ? (
-              <List.Item>
-                <Skeleton avatar active title={false} paragraph={{ rows: 2 }} />
-              </List.Item>
-            ) : (
-              <List.Item className="!border-0">
-                <List.Item.Meta
-                  avatar={
-                    <Image
-                      width={64}
-                      height={64}
-                      preview={false}
-                      src={defaultImgUrl}
-                      className="rounded-lg"
-                    />
-                  }
-                  title={
-                    <Link
-                      to={`/job/${item.jobsId}`}
-                      className="font-medium hover:!text-primary hover:underline"
-                    >
-                      {item?.job?.title}
-                    </Link>
-                  }
-                  description={
-                    <Flex vertical>
-                      <span className="text-primary">
-                        Viện Thẩm Mỹ Quốc Tế Mega Korea
-                      </span>
-                      <span>
-                        Đã ứng tuyển vào lúc{' '}
-                        {dayjs(item?.createAt).format('HH:mm DD/MM/YYYY')}
-                      </span>
-                    </Flex>
-                  }
-                />
-              </List.Item>
-            )
-          }
-        />
+      {isPending ? (
+        <Skeleton avatar active title={false} paragraph={{ rows: 2 }} />
+      ) : appliedJobs?.items.length ? (
+        <Flex vertical gap={20}>
+          {appliedJobs?.items.map((item) => (
+            <Flex gap={12}>
+              <Avatar
+                shape="square"
+                src={defaultImgUrl}
+                className="w-16 h-16"
+              />
+              <Space direction="vertical" size="small">
+                <Link
+                  target="_blank"
+                  to={`/job/${item.jobsId}`}
+                  className="text-base font-medium hover:!text-primary hover:underline"
+                >
+                  {item?.job?.title}
+                </Link>
+                <div>
+                  <p className="font-medium">Viện Thẩm Mỹ Quốc Tế Mega Korea</p>
+                  <p className="text-sub">
+                    Đã ứng tuyển vào lúc:{' '}
+                    {dayjs(item?.createAt).format('HH:mm DD/MM/YYYY')}
+                  </p>
+                </div>
+              </Space>
+            </Flex>
+          ))}
+        </Flex>
       ) : (
         <Flex vertical align="center" justify="center" className="gap-4">
           <Image

@@ -155,7 +155,11 @@ const Resume = () => {
                     src={PDF_Icon}
                   />
                 }
-                title={<p className="font-medium">{item?.fileName}</p>}
+                title={
+                  <p className="min-w-[109px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
+                    {item?.fileName}
+                  </p>
+                }
                 description={
                   <p className="text-sub">
                     Tải lên {dayjs(item?.createAt).format('HH:ss DD/MM/YYYY')}
