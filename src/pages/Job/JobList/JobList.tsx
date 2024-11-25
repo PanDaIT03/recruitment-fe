@@ -28,9 +28,11 @@ export interface IJobList {
   salaryMax?: number;
   categoriesId?: number;
   jobFieldsId?: number;
-  placementsId?: number;
+  placementsId?: number; // delete prop
+  placementIds?: number;
   workTypesId?: number;
   title?: string;
+  jobsId?: number;
   salaryRange?: any;
 }
 

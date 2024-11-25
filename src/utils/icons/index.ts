@@ -4,6 +4,7 @@ import {
   ArrowDownOutlined,
   ArrowLeftOutlined,
   ArrowRightOutlined,
+  AuditOutlined,
   BankOutlined,
   CalendarFilled,
   CalendarOutlined,
@@ -140,6 +141,7 @@ const icons = {
   DownOutlined,
   UploadOutlined,
   ReloadOutlined,
+  AuditOutlined,
 };
 
 export default icons;

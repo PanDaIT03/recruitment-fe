@@ -1,4 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
+
 import { JobPostingListProps } from '~/pages/Employer/Job/ManageJob';
 import { PostingJobFormValues } from '~/pages/Employer/Job/PostingJob';
 import { TypeInterview } from '~/pages/Employer/RecruitmentList/ModalInterview';
@@ -8,6 +9,7 @@ import {
   Application,
   ApplicationJobDetail,
   IJob,
+  IPaginatedUserAppliedJobs,
   JobItem,
   JobPlacement,
   PaginatedJobCategories,
@@ -38,6 +40,9 @@ export const JobsAPI = {
       params: data,
     };
     return axiosApi.get('/jobs/all', payload);
+  },
+  getUserAppliedJobs: async (): Promise<IPaginatedUserAppliedJobs> => {
+    return await axiosApi.get('/users-jobs/applied-jobs');
   },
   getAllJobsForEmployer: (
     statusId?: number,

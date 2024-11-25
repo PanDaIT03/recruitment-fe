@@ -1,14 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
-import { Divider, Flex } from 'antd';
+import { Divider } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AuthAPI, { ISignUpParams } from '~/apis/auth';
-import { Success } from '~/assets/svg';
-import Button from '~/components/Button/Button';
 import GoogleSignInButton from '~/components/Button/GoogleSignInButton';
-import Modal from '~/components/Modal/Modal';
 import { useMessage } from '~/contexts/MessageProvider';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetUser } from '~/store/reducer/auth';
@@ -17,6 +14,7 @@ import { IBaseUser } from '~/types/Auth';
 import { ROLE } from '~/types/Role';
 import toast from '~/utils/functions/toast';
 import PATH from '~/utils/path';
+import ModalSignUpSuccess from '../../components/ModalSignUpSuccess/ModalSignUpSuccess';
 import FormSignUp from './FormSignUp';
 
 const SignUp = () => {
@@ -52,17 +50,20 @@ const SignUp = () => {
       : (toast.error('Có lỗi xảy ra'), dispatch(resetUser()));
   }, [currentUser]);
 
-  const handleFinish = useCallback(async (values: IBaseUser) => {
-    const roleId = roles.find((role) => role.title === ROLE.USER)?.id;
+  const handleFinish = useCallback(
+    async (values: IBaseUser) => {
+      const roleId = roles.find((role) => role.title === ROLE.USER)?.id;
 
-    if (!roleId) {
-      toast.error('Lỗi không tìm thấy chức vụ');
-      return;
-    }
+      if (!roleId) {
+        toast.error('Lỗi không tìm thấy chức vụ');
+        return;
+      }
 
-    const params: ISignUpParams = { ...values, roleId };
-    signUp(params);
-  }, []);
+      const params: ISignUpParams = { ...values, roleId };
+      signUp(params);
+    },
+    [roles]
+  );
 
   const handleSignUpWithGoogle = useCallback((userInfo: any) => {
     try {
@@ -71,13 +72,6 @@ const SignUp = () => {
       console.log(error);
     }
   }, []);
-
-  const handleRedirectToSignIn = useCallback(() => {
-    const email = form.getFieldValue('email');
-
-    setIsOpenModal(false);
-    navigate(PATH.USER_SIGN_IN, { state: { email } });
-  }, [form]);
 
   return (
     <>
@@ -94,31 +88,11 @@ const SignUp = () => {
         <p className="text-sub text-sm">hoặc</p>
       </Divider>
       <FormSignUp loading={isPending} form={form} onFinish={handleFinish} />
-      <Modal
-        isOpen={isOpenModal}
-        title="Đăng ký thành công"
-        className="min-w-[550px]"
-        footer={
-          <Flex justify="end" gap={12}>
-            <Button title="Đóng" onClick={() => setIsOpenModal(false)} />
-            <Button
-              fill
-              title="Đến trang đăng nhập"
-              onClick={handleRedirectToSignIn}
-            />
-          </Flex>
-        }
-      >
-        <Flex vertical align="center" className="text-center" gap={8}>
-          <Success width={100} height={100} />
-          <p className="text-lg font-semibold text-green-600">
-            Chúc mừng bạn đã đăng ký tài khoản thành công!
-          </p>
-          <p className="text-sm text-sub font-medium">
-            Bạn có thể chuyển đến trang đăng nhập để sử dụng tài khoản của mình.
-          </p>
-        </Flex>
-      </Modal>
+      <ModalSignUpSuccess
+        isOpenModal={isOpenModal}
+        email={form.getFieldValue('email')}
+        setIsOpenModal={setIsOpenModal}
+      />
     </>
   );
 };

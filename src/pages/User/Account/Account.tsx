@@ -5,13 +5,15 @@ import { useEffect, useState } from 'react';
 
 import UserApi, { IUpdateAccountInfo } from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getMe } from '~/store/thunk/auth';
 import { IFormAccount } from '~/types/Account';
 import FormAccount from './FormAccount';
 
 const { Title } = Typography;
 
 const Account = () => {
+  const dispatch = useAppDispatch();
   const { messageApi } = useMessage();
   const [form] = useForm<IFormAccount>();
 
@@ -27,7 +29,7 @@ const Account = () => {
       messageApi.success(res?.message || 'Cập nhật thông tin thành công');
 
       handleCancel();
-      // dispatch(getMe());
+      dispatch(getMe());
     },
     onError: (error: any) => {
       messageApi.error(

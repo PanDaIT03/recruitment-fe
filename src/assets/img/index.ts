@@ -9,6 +9,7 @@ export { default as CardBanner5 } from './card-banner5.png';
 export { default as CardBanner6 } from './card-banner6.png';
 export { default as CardBanner7 } from './card-banner7.png';
 export { default as DISCONNECTED } from './disconnected.png';
+export { default as EmptyFolder } from './folder-empty.png';
 export { default as LanguageCenter } from './language-center.png';
 export { default as GOOGLE_LOGO } from './logo_google.png';
 export { default as MagicHat } from './magic-hat.png';
