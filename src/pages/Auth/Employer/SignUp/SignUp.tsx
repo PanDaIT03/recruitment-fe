@@ -1,8 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { Divider, Flex, Layout, Space, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 
 import AuthAPI, { ISignUpParams } from '~/apis/auth';
 import { JobsAPI } from '~/apis/job';
@@ -12,6 +11,7 @@ import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import CustomSelect from '~/components/Select/CustomSelect';
+import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore';
 import FormApplication from '~/pages/User/JobApplication/FormJobApplication';
@@ -20,6 +20,7 @@ import { PaginatedJobFields, PaginatedJobPositions } from '~/types/Job';
 import { ROLE } from '~/types/Role';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
+import ModalSignUpSuccess from '../../components/ModalSignUpSuccess/ModalSignUpSuccess';
 
 interface SignUpFormValues {
   companyName: string;
@@ -46,8 +47,9 @@ const {
 
 const SignUp = () => {
   const [form] = useForm();
-  const navigate = useNavigate();
+  const { messageApi } = useMessage();
 
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const { roles } = useAppSelector((state) => state.role);
 
   const { data: jobFields } = useFetch<PaginatedJobFields>(
@@ -62,6 +64,16 @@ const SignUp = () => {
 
   const { mutate: signUp, isPending } = useMutation({
     mutationFn: (params: ISignUpParams) => AuthAPI.signUp(params),
+    onSuccess: (res) => {
+      if (res?.statusCode === 200) {
+        setIsOpenModal(true);
+        return;
+      }
+
+      messageApi.error(`Có lỗi xảy ra: ${res?.message}`);
+    },
+    onError: (error: any) =>
+      messageApi.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`),
   });
 
   const formItem: IEmployerSignUpForm = useMemo(() => {
@@ -238,18 +250,7 @@ const SignUp = () => {
         roleId: roleId,
         jobFieldsIds: [values.jobFieldsIds],
       };
-
-      console.log(payload);
-      // signUp(payload);
-
-      // const response = await AuthAPI.signUp(payload);
-      // const { statusCode, message } = response;
-
-      // toast[statusCode === 200 ? 'success' : 'error'](message);
-      // if (statusCode === 200) {
-      //   form.resetFields();
-      //   navigate(PATH.USER_SIGN_IN);
-      // }
+      signUp(payload);
     } catch (error: any) {
       console.log('Unexpected error', error);
     }
@@ -283,10 +284,16 @@ const SignUp = () => {
           fill
           title="Đồng ý"
           className="w-full"
+          loading={isPending}
           iconAfter={<Fly />}
           onClick={() => form.submit()}
         />
       </Flex>
+      <ModalSignUpSuccess
+        isOpenModal={isOpenModal}
+        email={form.getFieldValue('email')}
+        setIsOpenModal={setIsOpenModal}
+      />
     </Layout>
   );
 };
