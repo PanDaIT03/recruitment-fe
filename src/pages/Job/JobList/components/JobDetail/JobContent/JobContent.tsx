@@ -13,6 +13,7 @@ import {
 } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import { JobItem } from '~/types/Job';
+import { defaultImgUrl } from '~/utils/constant';
 import icons from '~/utils/icons';
 import JobDescription from '../JobDescription/JobDescription';
 
@@ -157,7 +158,7 @@ const JobContent = ({
           <Flex gap={16} align="center">
             <Avatar
               shape="square"
-              src={user?.avatarUrl}
+              src={user?.avatarUrl || defaultImgUrl}
               className="w-16 h-16"
             />
             <div>
