@@ -365,8 +365,8 @@ const UserLayout = () => {
   const handleInfoModalFinish = useCallback((values: IUserInfoForm) => {
     const params: IUpdatePersonalInfo = {
       fullName: values.fullName,
-      jobPositionsId: values.positionId,
-      placementsId: values.placementId,
+      jobPositionsId: values.positionId.toString(),
+      placementsId: values.placementId.toString(),
     };
 
     updatePersonalInfo(params);
