@@ -1,0 +1,20 @@
+.list-custom > .ant-pagination-item-active {
+  border-color: #f15224 !important;
+  transition: all 0.3s;
+
+  a {
+    color: #f15224 !important;
+  }
+
+  &:hover {
+    border-color: #f16d48 !important;
+
+    a {
+      color: #f16d48 !important;
+    }
+  }
+}
+
+.list-custom > .ant-pagination-item:hover > a {
+  color: #f15224 !important;
+}
