@@ -521,11 +521,11 @@ const JobApplication = () => {
           />
         }
       >
-        <Space direction="vertical" align="center">
+        <Space direction="vertical" align="center" className="text-center">
           <h2 className="text-lg font-semibold">
             Hồ sơ của bạn đã được tạo thành công
           </h2>
-          <p className="font-medium text-sub text-center">
+          <p className="font-medium text-sub">
             Trong vòng 1-2 ngày làm việc tiếp theo, chúng tôi sẽ đánh giá hồ sơ
             tìm việc của bạn để có thể giới thiệu đến các doanh nghiệp phù hợp.
           </p>
