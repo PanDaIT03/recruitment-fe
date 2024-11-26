@@ -464,10 +464,9 @@ const JobApplication = () => {
     uploadCV(formData);
   }, [uploadFile]);
 
-  const handleFinish = (values: any) => {
+  const handleFinish = useCallback(() => {
     handleUploadCV();
-    console.log(values);
-  };
+  }, []);
 
   return (
     <Layout className="w-full min-h-screen">
