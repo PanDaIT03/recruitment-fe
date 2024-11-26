@@ -45,8 +45,8 @@ export type IUpdateAccountInfo = Partial<{
 }>;
 export type IUpdatePersonalInfo = {
   fullName: string;
-  placementsId: number;
-  jobPositionsId: number;
+  placementsId: string;
+  jobPositionsId: string;
   totalYearExperience?: number;
 };
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
