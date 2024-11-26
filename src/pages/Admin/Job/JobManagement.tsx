@@ -138,7 +138,7 @@ const JobManagement: React.FC = () => {
         ),
       },
     ] as ColumnsType<any>;
-  }, []);
+  }, [currentPage, itemsPerPage]);
 
   useEffect(() => {
     setTitle('Danh sách công việc');

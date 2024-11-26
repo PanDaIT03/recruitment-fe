@@ -25,9 +25,12 @@ const Select = ({ className, ...props }: SelectProps) => {
     if (optionA?.value === 'all') return -1;
     if (optionB?.value === 'all') return 1;
 
-    return (optionA?.label ?? '')
-      .toLowerCase()
-      .localeCompare((optionB?.label ?? '').toLowerCase());
+    if (typeof optionA?.label === 'string')
+      return (optionA?.label ?? '')
+        .toLowerCase()
+        .localeCompare((optionB?.label ?? '').toLowerCase());
+
+    return optionA;
   };
 
   return (

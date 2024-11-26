@@ -63,8 +63,8 @@ const Table = ({
         },
         components: {
           Table: {
-            colorText: '#ff0000', // Màu cho text
-            colorIcon: '#ff0000', // Màu cho icon
+            colorText: '#ff0000',
+            colorIcon: '#ff0000',
           },
         },
       }}
@@ -81,14 +81,16 @@ const Table = ({
         rowClassName={(_, index) => (index % 2 !== 0 ? 'even-row' : '')}
         {...passProps}
         pagination={{
-          current: paginationParams.current,
-          pageSize: paginationParams.pageSize,
-          onChange: paginationParams.onChange,
+          current: paginationParams?.current ?? 1,
+          pageSize: paginationParams?.pageSize ?? 10,
+          ...(paginationParams?.onChange && {
+            onChange: paginationParams.onChange,
+          }),
           pageSizeOptions: [1, 10, 20],
           showSizeChanger: true,
           className: classNames(
             '!mb-0 !mt-5 [&>li]:!mr-[8px]',
-            paginationParams.className
+            paginationParams?.className
           ),
           ...paginationParams,
         }}
