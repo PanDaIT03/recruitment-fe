@@ -8,12 +8,11 @@ import { EmptyFolder } from '~/assets/img';
 import { Lightning } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import { useFetch } from '~/hooks/useFetch';
-import { mockFileList } from '~/mocks/data';
+import { defaultImgUrl } from '~/utils/constant';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
 const { ArrowRightOutlined } = icons;
-const defaultImgUrl = mockFileList[0].url;
 
 const AppliedJob = () => {
   const navigate = useNavigate();
@@ -40,8 +39,8 @@ const AppliedJob = () => {
             <Flex gap={12}>
               <Avatar
                 shape="square"
-                src={defaultImgUrl}
                 className="w-16 h-16"
+                src={item.job.user.avatarUrl || defaultImgUrl}
               />
               <Space direction="vertical" size="small">
                 <Link
@@ -49,13 +48,13 @@ const AppliedJob = () => {
                   to={`/job/${item.jobsId}`}
                   className="text-base font-medium hover:!text-primary hover:underline"
                 >
-                  {item?.job?.title}
+                  {item.job.title}
                 </Link>
                 <div>
-                  <p className="font-medium">Viện Thẩm Mỹ Quốc Tế Mega Korea</p>
+                  <p className="font-medium">{item.job.user.companyName}</p>
                   <p className="text-sub">
                     Đã ứng tuyển vào lúc:{' '}
-                    {dayjs(item?.createAt).format('HH:mm DD/MM/YYYY')}
+                    {dayjs(item.createAt).format('HH:mm DD/MM/YYYY')}
                   </p>
                 </div>
               </Space>
