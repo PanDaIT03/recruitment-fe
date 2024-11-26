@@ -46,11 +46,24 @@ const Resume = () => {
     mutationFn: (params: FormData) => UserApi.uploadCV(params),
     onSuccess: (res) => {
       refetch();
-      setIsOpenModal(false);
+      handleCancel();
       message.success(res?.message || 'Upload CV thành công');
     },
-    onError: (error: any) =>
-      message.error(error?.response?.data?.message || 'Lỗi khi upload CV'),
+    onError: (error: any) => {
+      handleCancel();
+      message.error(error?.response?.data?.message || 'Lỗi khi upload CV');
+    },
+  });
+
+  const { mutate: deleteCV, isPending: isDelCVPending } = useMutation({
+    mutationFn: (id: number) => UserApi.deleteCV(id),
+    onSuccess: (res) => {
+      refetch();
+      message.success(res?.message || 'Xoá CV thành công');
+    },
+    onError: (error: any) => {
+      message.error(error?.response?.data?.message || 'Lỗi khi xoá CV');
+    },
   });
 
   const props: UploadProps = useMemo(
@@ -81,8 +94,13 @@ const Resume = () => {
     [uploadFile]
   );
 
-  const handleDelete = () => {
-    console.log('del');
+  const handleDeleteCV = (id: number) => {
+    if (myCVs && myCVs?.items?.length <= 1) {
+      message.warning('Không thể xoá tất cả CV');
+      return;
+    }
+
+    deleteCV(id);
   };
 
   const handleUpload = () => {
@@ -95,6 +113,11 @@ const Resume = () => {
     });
 
     uploadCV(formData);
+  };
+
+  const handleCancel = () => {
+    setIsOpenModal(false);
+    setUploadFile([]);
   };
 
   return (
@@ -112,9 +135,9 @@ const Resume = () => {
       </Flex>
       <Divider className="!my-3" />
       <List
-        loading={isPending}
         itemLayout="horizontal"
         dataSource={myCVs?.items}
+        loading={isPending || isDelCVPending}
         skeletonRender={() => (
           <List.Item className="!border-0">
             <Skeleton avatar active title={false} paragraph={{ rows: 2 }} />
@@ -136,7 +159,7 @@ const Resume = () => {
                   title="Xoá CV này"
                   description="Bạn có chắc chắn muốn xoá CV này?"
                   icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                  onConfirm={handleDelete}
+                  onConfirm={() => handleDeleteCV(item.id)}
                 >
                   <ButtonAction
                     title={<CloseOutlined className="text-warning" />}
@@ -165,11 +188,11 @@ const Resume = () => {
         )}
       />
       <Modal
-        isOpen={isOpenModal}
         title="Đăng tải CV"
+        isOpen={isOpenModal}
         loading={isUploadCVPending}
-        onCancel={() => setIsOpenModal(false)}
         onOk={handleUpload}
+        onCancel={handleCancel}
       >
         <Dragger {...props} />
       </Modal>
