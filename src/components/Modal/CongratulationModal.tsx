@@ -4,7 +4,15 @@ import Confetti_Icon from '~/assets/animations/confetti.json';
 import LordIcon from '../Icon/LordIcon';
 import Modal, { IModalProps } from './Modal';
 
-const CongratulationModal = ({ children, ...props }: IModalProps) => {
+interface IProps extends IModalProps {
+  icon?: any;
+}
+
+const CongratulationModal = ({
+  children,
+  icon = Confetti_Icon,
+  ...props
+}: IProps) => {
   return (
     <Modal
       destroyOnClose
@@ -18,7 +26,7 @@ const CongratulationModal = ({ children, ...props }: IModalProps) => {
         direction="vertical"
         className="w-full"
       >
-        <LordIcon animationData={Confetti_Icon} className="h-40 w-40" />
+        <LordIcon animationData={icon} className="h-40 w-40" />
         {children}
       </Space>
     </Modal>
