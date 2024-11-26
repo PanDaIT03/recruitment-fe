@@ -9,7 +9,6 @@ import {
   Application,
   ApplicationJobDetail,
   IJob,
-  IPaginatedUserAppliedJobs,
   JobItem,
   JobPlacement,
   PaginatedJobCategories,
@@ -19,6 +18,7 @@ import {
   Schedule,
   StatusJob,
 } from '~/types/Job';
+import { IPaginatedUserAppliedJobs } from '~/types/Job/appliedJob';
 
 export interface IPaginationParams {
   page?: number;
