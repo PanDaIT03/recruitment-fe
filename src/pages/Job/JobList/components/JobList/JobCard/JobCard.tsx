@@ -25,10 +25,7 @@ const JobCard = (job: JobItem) => {
   );
 
   return (
-    <Card
-      hoverable
-      className="border border-gray-200 hover:border-primary shadow-sm rounded-lg"
-    >
+    <Card hoverable className="border border-gray-200 shadow-sm rounded-lg">
       <Flex vertical gap={24}>
         <JobHeader
           id={job.id}

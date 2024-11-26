@@ -1,6 +1,8 @@
 import { List as AntdList, ListProps, Skeleton } from 'antd';
 import { ReactNode } from 'react';
 
+import './List.scss';
+
 interface IProps<T> extends ListProps<T> {
   skeletonCount?: number;
   skeletonRender?: () => ReactNode;
@@ -22,7 +24,9 @@ const List = <T,>({
   return (
     <AntdList
       dataSource={loading ? (skeletonCountArr as unknown as T[]) : dataSource}
-      pagination={dataSource?.length ? { ...pagination } : false}
+      pagination={
+        dataSource?.length ? { className: 'list-custom', ...pagination } : false
+      }
       renderItem={(item, index) =>
         loading ? (
           skeletonRender ? (
