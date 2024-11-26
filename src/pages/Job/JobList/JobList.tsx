@@ -34,6 +34,7 @@ export interface IJobList {
   title?: string;
   jobsId?: number;
   salaryRange?: any;
+  statusId?: number;
 }
 
 type IFilter = Partial<Omit<IJobList, 'page' | 'pageSize'>> & {
