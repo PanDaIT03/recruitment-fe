@@ -1,5 +1,6 @@
 import {
   ConfigProvider,
+  Empty,
   Table as TableAntD,
   TablePaginationConfig,
   TableProps,
@@ -8,9 +9,20 @@ import { ColumnsType } from 'antd/es/table';
 import classNames from 'classnames';
 import { memo } from 'react';
 
+import { NoData } from '~/assets/svg';
 import './index.scss';
 
 interface ITableProps extends TableProps {}
+
+const CustomerEmptyData = () => {
+  return (
+    <Empty
+      description={<span className="text-admin-primary">Không có dữ liệu</span>}
+      image={<NoData />}
+      imageStyle={{ height: '70px' }}
+    />
+  );
+};
 
 const Table = ({
   dataSource,
@@ -44,10 +56,19 @@ const Table = ({
           colorText: 'white',
           colorBorder: '#ffac69',
           colorBgTextHover: '#ffac69',
+          colorBgContainer: '#2f2f41b3',
           colorIcon: 'white',
           colorTextDisabled: '#d3d3d3',
+          colorIconHover: '#ffac69',
+        },
+        components: {
+          Table: {
+            colorText: '#ff0000', // Màu cho text
+            colorIcon: '#ff0000', // Màu cho icon
+          },
         },
       }}
+      renderEmpty={CustomerEmptyData}
     >
       <TableAntD
         size="middle"
