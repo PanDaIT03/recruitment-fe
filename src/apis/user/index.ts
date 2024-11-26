@@ -154,6 +154,9 @@ const UserApi = {
   },
 
   // DELETE
+  deleteCV: async (id: number): Promise<IBaseResponse> => {
+    return await axiosApi.delete(`/curriculum-vitaes/${id}`);
+  },
   deleteAchievement: async (id: number): Promise<IBaseResponse> => {
     return await axiosApi.delete(`/achivements/${id}`);
   },
