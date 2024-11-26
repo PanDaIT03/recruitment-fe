@@ -82,7 +82,7 @@ const TopSearchBar: React.FC<IProps> = ({
             </FormItem>
             <FormItem
               childrenSelected
-              name="placementsId"
+              name="placementIds"
               className="hidden w-full max-w-[198px] mb-3 lg:block"
             >
               <CustomSelect
