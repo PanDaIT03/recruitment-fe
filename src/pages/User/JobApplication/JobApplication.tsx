@@ -300,6 +300,7 @@ const JobApplication = () => {
               item: (
                 <CustomSelect
                   allowClear
+                  maxCount={3}
                   mode="multiple"
                   placeholder="Chọn thành phố"
                   options={placements?.items?.map((place) => ({
