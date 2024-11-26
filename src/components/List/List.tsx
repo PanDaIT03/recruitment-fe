@@ -28,7 +28,10 @@ const List = <T,>({
           skeletonRender ? (
             skeletonRender()
           ) : (
-            <AntdList.Item style={{ marginTop: '24px', borderBlockEnd: 0 }}>
+            <AntdList.Item
+              style={{ borderBlockEnd: 0, padding: '24px' }}
+              className="bg-white mt-6 border rounded-2xl"
+            >
               <Skeleton avatar active paragraph={{ rows: 3 }} />
             </AntdList.Item>
           )

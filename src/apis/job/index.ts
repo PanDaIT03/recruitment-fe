@@ -20,7 +20,7 @@ import {
   StatusJob,
 } from '~/types/Job';
 
-export interface IPaginationParms {
+export interface IPaginationParams {
   page?: number;
   pageSize?: number;
 }
@@ -34,7 +34,7 @@ export interface IParamsUpdateApplicationJob {
 export const JobsAPI = {
   // GET
   getAllJobs: (
-    data: IPaginationParms & Partial<IJobList> = { page: 1, pageSize: 10 }
+    data: IPaginationParams & Partial<IJobList> = { page: 1, pageSize: 10 }
   ): Promise<IJob> => {
     const payload: AxiosRequestConfig = {
       params: data,

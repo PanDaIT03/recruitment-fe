@@ -31,16 +31,16 @@ export interface IJobList {
   categoriesId?: number;
   jobFieldsId?: number;
   placementsId?: number; // delete prop
-  placementIds?: number;
+  placementIds?: number | string;
   workTypesId?: number;
   title?: string;
   jobsId?: number;
   salaryRange?: any;
+  type?: string;
+  statusId?: number;
 }
 
-type IFilter = Partial<Omit<IJobList, 'page' | 'pageSize'>> & {
-  statusId?: number;
-};
+type IFilter = Omit<IJobList, 'page' | 'pageSize'>;
 
 const salaryOptions: DefaultOptionType[] = [
   {
@@ -67,6 +67,7 @@ const salaryOptions: DefaultOptionType[] = [
 
 const defaultFilter: IFilter = {
   statusId: 5,
+  type: 'more',
 };
 
 const JobList = () => {

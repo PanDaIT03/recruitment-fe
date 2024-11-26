@@ -5,6 +5,7 @@ import React, {
   memo,
   ReactNode,
   SetStateAction,
+  useEffect,
   useMemo,
 } from 'react';
 
@@ -62,6 +63,10 @@ const TopSearchBar: React.FC<IProps> = ({
     onSearch(values);
   };
 
+  useEffect(() => {
+    form.setFieldValue('placementIds', 'all');
+  }, []);
+
   return (
     <div className="w-full sticky left-0 top-16 z-30 shadow-lg">
       <FormWrapper
@@ -81,7 +86,6 @@ const TopSearchBar: React.FC<IProps> = ({
               />
             </FormItem>
             <FormItem
-              childrenSelected
               name="placementIds"
               className="hidden w-full max-w-[198px] mb-3 lg:block"
             >
