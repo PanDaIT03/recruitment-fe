@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import {
   Divider,
   Flex,
@@ -8,9 +9,11 @@ import {
   UploadProps,
 } from 'antd';
 import { FormInstance, useForm } from 'antd/es/form/Form';
+import TextArea from 'antd/es/input/TextArea';
 import { DefaultOptionType } from 'antd/es/select';
 import Title from 'antd/es/typography/Title';
 import { FormItemProps } from 'antd/lib';
+import dayjs from 'dayjs';
 import {
   ChangeEvent,
   ReactElement,
@@ -21,10 +24,10 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import TextArea from 'antd/es/input/TextArea';
 import { JobsAPI } from '~/apis/job';
 import UserApi, { IDesiredJobParams } from '~/apis/user';
 import {
+  ArrowLeft,
   BackPack,
   Box,
   Calendar,
@@ -41,6 +44,7 @@ import FormItem from '~/components/Form/FormItem';
 import { IFormListProps } from '~/components/Form/FormList';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
+import CongratulationModal from '~/components/Modal/CongratulationModal';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useFetch } from '~/hooks/useFetch';
 import { formatCurrencyVN } from '~/utils/functions';
@@ -63,13 +67,16 @@ export type IJobApplicationForm = {
   }>;
 };
 
-type IForm = IDesiredJobParams;
+type IForm = Omit<IDesiredJobParams, 'salaryExpectation'> & {
+  cv: any;
+  salaryExpectation: string;
+};
 
 export const startTimeOptions: DefaultOptionType[] = [
-  { label: 'Bắt đầu ngay', value: 'immediately' },
-  { label: '1-2 tuần', value: '1-2_weeks' },
-  { label: '30 ngày', value: '30_days' },
-  { label: 'Sẽ thông báo khi có offer', value: 'upon_offer' },
+  { label: 'Bắt đầu ngay', value: 'Bắt đầu ngay' },
+  { label: '1-2 tuần', value: '1-2 tuần' },
+  { label: '30 ngày', value: '30 ngày' },
+  { label: 'Sẽ thông báo khi có offer', value: 'Sẽ thông báo khi có offer' },
 ];
 
 const { CloseOutlined, MinusCircleOutlined, StarOutlined } = icons;
@@ -78,6 +85,7 @@ const JobApplication = () => {
   const navigate = useNavigate();
   const [form] = useForm<IForm>();
 
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
   const { data: placements } = useFetch(
@@ -100,30 +108,41 @@ const JobApplication = () => {
     UserApi.getAllForeignLanguage
   );
 
-  // const { mutate: uploadCV, isPending: isUploadCVPending } = useMutation({
-  //   mutationFn: (params: FormData) => UserApi.uploadCV(params),
-  //   onSuccess: (res) => {
-  //     console.log(res);
-  //     // const params: IDesiredJobParams = {};
+  const { mutate: uploadCV, isPending: isUploadCVPending } = useMutation({
+    mutationFn: (params: FormData) => UserApi.uploadCV(params),
+    onSuccess: () => {
+      const {
+        cv,
+        yearOfBirth,
+        salaryExpectation,
+        totalYearExperience,
+        ...others
+      } = form.getFieldsValue();
 
-  //     // createNewDesiredJob(params);
-  //   },
-  //   onError: (error: any) =>
-  //     messageApi.error(error?.response?.data?.message || 'Lỗi khi upload CV'),
-  // });
+      const numericSalary = Number(salaryExpectation.replace(/[^0-9]/g, ''));
+      const formattedParams: IDesiredJobParams = {
+        salaryExpectation: numericSalary,
+        totalYearExperience: Number(totalYearExperience),
+        yearOfBirth: dayjs(yearOfBirth).format('YYYY'),
+        ...others,
+      };
 
-  // const { mutate: createNewDesiredJob, isPending: isCreateDesiredJobPending } =
-  //   useMutation({
-  //     mutationFn: (params: IDesiredJobParams) =>
-  //       UserApi.createNewDesiredJob(params),
-  //     onSuccess: (res) => {
-  //       console.log(res);
-  //     },
-  //     onError: (error: any) =>
-  //       messageApi.error(
-  //         error?.response?.data?.message || 'Lỗi khi tạo công việc mong muốn'
-  //       ),
-  //   });
+      createNewDesiredJob(formattedParams);
+    },
+    onError: (error: any) =>
+      message.error(error?.response?.data?.message || 'Lỗi khi upload CV'),
+  });
+
+  const { mutate: createNewDesiredJob, isPending: isCreateDesiredJobPending } =
+    useMutation({
+      mutationFn: (params: IDesiredJobParams) =>
+        UserApi.createNewDesiredJob(params),
+      onSuccess: () => setIsOpenModal(true),
+      onError: (error: any) =>
+        message.error(
+          error?.response?.data?.message || 'Lỗi khi tạo công việc mong muốn'
+        ),
+    });
 
   const props: UploadProps = useMemo(
     () => ({
@@ -197,7 +216,6 @@ const JobApplication = () => {
           title: 'Công việc mong muốn',
           items: [
             {
-              // name: 'field',
               name: 'jobFieldsId',
               label: 'Lĩnh vực bạn muốn ứng tuyển?',
               item: (
@@ -219,7 +237,6 @@ const JobApplication = () => {
               ],
             },
             {
-              // name: 'positions',
               name: 'jobPositionIds',
               required: true,
               label: 'Vị trí muốn ứng tuyển? (Tối đa 3 vị trí)',
@@ -264,7 +281,6 @@ const JobApplication = () => {
               },
             },
             {
-              // name: 'placements',
               name: 'jobPlacementIds',
               required: true,
               label: 'Nơi bạn mong muốn tìm việc? (Tối đa 3 địa điểm)',
@@ -295,7 +311,6 @@ const JobApplication = () => {
               ),
             },
             {
-              // name: 'salary',
               name: 'salaryExpectation',
               label: 'Mức lương kỳ vọng (VNĐ)',
               item: (
@@ -309,7 +324,6 @@ const JobApplication = () => {
               extra: 'Để trống nếu bạn muốn thương lượng sau.',
             },
             {
-              // name: 'time',
               name: 'startAfterOffer',
               label: 'Thời gian có thể bắt đầu làm việc kể từ khi nhận offer?',
               className: 'mb-0',
@@ -333,7 +347,6 @@ const JobApplication = () => {
           title: 'Thông tin & kinh nghiệm của bạn',
           items: [
             {
-              // name: 'totalYearsOfExp',
               name: 'totalYearExperience',
               label: 'Tổng số năm kinh nghiệm của bạn',
               item: (
@@ -358,7 +371,7 @@ const JobApplication = () => {
               ],
             },
             {
-              name: 'foreignLanguages', //
+              name: 'foreignLanguages',
               label: 'Khả năng ngoại ngữ (Tối đa 4 ngoại ngữ)',
               listItem: {
                 length: 4,
@@ -374,7 +387,7 @@ const JobApplication = () => {
                       className="mb-3 max-sm:border max-sm:border-dashed max-sm:p-4 max-sm:rounded-md"
                     >
                       <FormItem
-                        name={[name, 'language']}
+                        name={[name, 'id']}
                         className="m-0 max-w-[180px]"
                       >
                         <CustomSelect
@@ -388,7 +401,7 @@ const JobApplication = () => {
                       </FormItem>
                       <Flex gap={8} align="center" className="flex-1">
                         <FormItem
-                          name={[name, 'advance']}
+                          name={[name, 'level']}
                           className="w-full m-0 min-w-[250px]"
                         >
                           <CustomSelect
@@ -411,7 +424,6 @@ const JobApplication = () => {
               },
             },
             {
-              // name: 'summary',
               name: 'achivements',
               label:
                 'Tóm tắt 3-5 thành tựu hoặc lý do nổi bật khiến nhà tuyển dụng chọn bạn?',
@@ -446,12 +458,10 @@ const JobApplication = () => {
     const formData = new FormData();
     uploadFile.forEach((item) => {
       if (!item.originFileObj) return;
-      formData.append('file', item.originFileObj);
+      formData.append('files', item.originFileObj);
     });
 
-    console.log(uploadFile);
-    console.log(formData);
-    // uploadCV(formData);
+    uploadCV(formData);
   }, [uploadFile]);
 
   const handleFinish = (values: any) => {
@@ -495,11 +505,32 @@ const JobApplication = () => {
             title="Tạo hồ sơ"
             className="w-full"
             iconAfter={<Fly />}
-            // loading={isUploadCVPending || isCreateDesiredJobPending}
+            loading={isUploadCVPending || isCreateDesiredJobPending}
             onClick={() => form.submit()}
           />
         </Flex>
       </Flex>
+      <CongratulationModal
+        isOpen={isOpenModal}
+        footer={
+          <Button
+            className="w-full"
+            title="Quay về trang hồ sơ"
+            iconBefore={<ArrowLeft />}
+            onClick={() => navigate(PATH.USER_DESIRED_JOB)}
+          />
+        }
+      >
+        <Space direction="vertical" align="center">
+          <h2 className="text-lg font-semibold">
+            Hồ sơ của bạn đã được tạo thành công
+          </h2>
+          <p className="font-medium text-sub text-center">
+            Trong vòng 1-2 ngày làm việc tiếp theo, chúng tôi sẽ đánh giá hồ sơ
+            tìm việc của bạn để có thể giới thiệu đến các doanh nghiệp phù hợp.
+          </p>
+        </Space>
+      </CongratulationModal>
     </Layout>
   );
 };

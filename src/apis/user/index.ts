@@ -27,7 +27,7 @@ export interface IDesiredJobParams {
   jobPositionIds: number[];
   jobPlacementIds: number[];
   achivements: string;
-  skills: {
+  foreignLanguages: {
     level: number;
     id: number;
   }[];
