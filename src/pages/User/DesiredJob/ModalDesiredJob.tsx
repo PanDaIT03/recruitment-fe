@@ -1,29 +1,40 @@
-import { FormItemProps, ModalProps } from 'antd';
+import { useMutation } from '@tanstack/react-query';
+import { FormItemProps, message } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import {
   ChangeEvent,
+  Dispatch,
   ReactElement,
+  SetStateAction,
   useCallback,
   useEffect,
   useMemo,
 } from 'react';
 
+import {
+  DesiredJobAPI,
+  IUpdateDesiredJobParams,
+} from '~/apis/desiredJob/desiredJob';
 import { JobsAPI } from '~/apis/job';
-import { BackPack, Salary } from '~/assets/svg';
+import { BackPack, Box, Salary } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import FormList, { IFormListProps } from '~/components/Form/FormList';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
-import Modal from '~/components/Modal/Modal';
+import Modal, { IModalProps } from '~/components/Modal/Modal';
+import CustomSelect from '~/components/Select/CustomSelect';
 import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
-import { JobPlacement } from '~/types/Job';
+import { IDesiredJob } from '~/types/DesiredJob/DesiredJob';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import { startTimeOptions } from '../JobApplication/JobApplication';
 
-interface IProps extends ModalProps {
+interface IProps extends IModalProps {
   isOpen: boolean;
+  data: IDesiredJob | undefined;
+  refetch: () => void;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 interface IApplicationFormItem extends FormItemProps {
@@ -32,15 +43,48 @@ interface IApplicationFormItem extends FormItemProps {
   listItem?: IFormListProps;
 }
 
-const { CloseOutlined } = icons;
+type IForm = Omit<IUpdateDesiredJobParams, 'id' | 'salaryExpectation'> & {
+  salaryExpectation: string;
+};
 
-const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
-  const [form] = useForm();
+const { CloseOutlined, EnvironmentOutlined } = icons;
 
-  const jobPlacements = useFetch<JobPlacement>(
-    ['placements'],
+const ModalDesiredJob = ({
+  data,
+  isOpen,
+  refetch,
+  onCancel,
+  setIsOpen,
+  ...props
+}: IProps) => {
+  const [form] = useForm<IForm>();
+
+  const { data: jobFields } = useFetch(
+    ['allJobsFields'],
+    JobsAPI.getAllJobFields
+  );
+
+  const { data: jobPositions } = useFetch(
+    ['jobPositions'],
+    JobsAPI.getAllJobPositions
+  );
+
+  const { data: placements } = useFetch(
+    ['allPlacements'],
     JobsAPI.getAllPlacements
   );
+
+  const { mutate: updateDesiredJob, isPending } = useMutation({
+    mutationFn: (params: IUpdateDesiredJobParams) =>
+      DesiredJobAPI.updateDesiredJob(params),
+    onSuccess: (res) => {
+      message.success(res?.message || 'Cập nhật công việc thành công');
+
+      refetch();
+      setIsOpen(false);
+    },
+    onError: (error: any) => message.error(error?.response?.data?.message),
+  });
 
   const handleSalaryChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +94,7 @@ const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
       let formattedValue = '';
       if (numericValue) formattedValue = formatCurrencyVN(Number(numericValue));
 
-      form.setFieldValue('salary', formattedValue);
+      form.setFieldValue('salaryExpectation', formattedValue);
     },
     []
   );
@@ -58,28 +102,57 @@ const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
   const formItems: IApplicationFormItem[] = useMemo(() => {
     return [
       {
-        name: 'field',
+        name: 'jobFieldsId',
         label: 'Lĩnh vực bạn muốn ứng tuyển?',
-        item: <Select placeholder="Lĩnh vực" />,
+        item: (
+          <CustomSelect
+            allowClear
+            placeholder="Lĩnh vực"
+            prefixIcon={<Box />}
+            options={jobFields?.items.map((jobField) => ({
+              label: jobField.title,
+              value: jobField.id,
+            }))}
+          />
+        ),
+        rules: [
+          {
+            required: true,
+            message: 'Vui lòng chọn lĩnh vực bạn muốn ứng tuyển',
+          },
+        ],
       },
       {
-        name: 'positions',
         required: true,
+        name: 'jobPositionIds',
         label: 'Vị trí muốn ứng tuyển? (Tối đa 3 vị trí)',
         listItem: {
           length: 3,
           buttonTitle: 'Thêm vị trí muốn ứng tuyển',
           render: (params) => {
             const { fields, func } = params;
+            if (fields.length === 0) func.add();
 
             return fields.map((field) => (
-              <FormItem {...field} key={field.key} className="mb-3">
-                <Input
-                  allowClear
-                  className="w-full"
-                  placeholder="Ví dụ: Marketing"
-                  prefix={<BackPack />}
-                  suffix={
+              <FormItem
+                {...field}
+                key={field.key}
+                className="mb-3"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Vui lòng chọn vị trí muốn ứng tuyển',
+                  },
+                ]}
+              >
+                <CustomSelect
+                  prefixIcon={<BackPack />}
+                  placeholder="Chọn vị trí ứng truyển"
+                  options={jobPositions?.items?.map((jobPosition) => ({
+                    label: jobPosition.title,
+                    value: jobPosition.id,
+                  }))}
+                  suffixIcon={
                     fields.length > 1 && (
                       <CloseOutlined
                         className="p-2 text-[#f15224] text-base rounded-full cursor-pointer hover:bg-[#fcebe6]"
@@ -94,34 +167,25 @@ const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
         },
       },
       {
-        name: 'placement',
+        name: 'jobPlacementIds',
         label: 'Nơi bạn mong muốn tìm việc? (Tối đa 3 địa điểm)',
-        rules: [
-          {
-            validator: (_, value) => {
-              if (!value.length) return Promise.resolve();
-
-              if (value.length > 3)
-                return Promise.reject('Chỉ được chọn tối đa 3 địa điểm');
-
-              return Promise.resolve();
-            },
-          },
-        ],
+        rules: [{ required: true, message: 'Vui lòng chọn địa điểm' }],
         item: (
-          <Select
+          <CustomSelect
+            allowClear
+            maxCount={3}
             mode="multiple"
             placeholder="Chọn thành phố"
-            options={jobPlacements?.data?.items?.map((place) => ({
+            options={placements?.items?.map((place) => ({
               value: place?.id,
               label: place?.title,
             }))}
+            prefixIcon={<EnvironmentOutlined />}
           />
         ),
-        // rules: [{ required: true, message: 'Vui lòng chọn địa điểm' }],
       },
       {
-        name: 'salary',
+        name: 'salaryExpectation',
         label: 'Mức lương kỳ vọng (VNĐ)',
         item: (
           <Input
@@ -132,42 +196,78 @@ const ModalDesiredJob = ({ isOpen, ...props }: IProps) => {
           />
         ),
         extra: 'Để trống nếu bạn muốn thương lượng sau.',
-        // rules: [{ required: true, message: 'Vui lòng nhập mức lương' }],
       },
       {
-        name: 'time',
+        name: 'startAfterOffer',
         label: 'Thời gian có thể bắt đầu làm việc kể từ khi nhận offer?',
         className: 'mb-0',
         item: (
           <Select placeholder="Chọn thời gian" options={startTimeOptions} />
         ),
-        // rules: [
-        //   {
-        //     required: true,
-        //     message: 'Vui lòng chọn thời gian bắt đầu làm việc',
-        //   },
-        // ],
+        rules: [
+          {
+            required: true,
+            message: 'Vui lòng chọn thời gian bắt đầu làm việc',
+          },
+        ],
       },
     ];
-  }, [jobPlacements]);
+  }, [jobFields, jobPositions, placements, startTimeOptions]);
 
-  const handleFinish = useCallback(() => {
-    console.log('finish');
-  }, []);
+  const handleFinish = useCallback(
+    (values: IForm) => {
+      if (!data) {
+        message.error('Không tìm thấy thông tin công việc');
+        return;
+      }
+
+      const { salaryExpectation, ...others } = values;
+      const numericSalary = Number(salaryExpectation.replace(/[^0-9]/g, ''));
+
+      const params: IUpdateDesiredJobParams = {
+        id: data.id,
+        ...others,
+        salaryExpectation: numericSalary,
+      };
+      updateDesiredJob(params);
+    },
+    [data]
+  );
+
+  const handleCancel = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      form.resetFields();
+      onCancel && onCancel(e);
+    },
+    [form]
+  );
 
   useEffect(() => {
-    const positions = form.getFieldValue('positions');
+    if (!data || !isOpen) return;
 
-    if (!positions || positions.length === 0)
-      form.setFieldsValue({ positions: [''] });
-  }, []);
+    const fieldsValue: IForm = {
+      jobFieldsId: data.jobField.id,
+      startAfterOffer: data.startAfterOffer,
+      salaryExpectation: formatCurrencyVN(data.salarayExpectation),
+      jobPlacementIds: data.desiredJobsPlacement.map(
+        (jobPlacement) => jobPlacement.placementsId
+      ),
+      jobPositionIds: data.desiredJobsPosition.map(
+        (jobPosition) => jobPosition.jobPositionsId
+      ),
+    };
+    form.setFieldsValue(fieldsValue);
+  }, [data, isOpen]);
 
   return (
     <Modal
       centered
       isOpen={isOpen}
-      {...props}
+      loading={isPending}
+      onCancel={handleCancel}
+      onOk={() => form.submit()}
       title="Cập nhật công việc mong muốn"
+      {...props}
     >
       <FormWrapper form={form} onFinish={handleFinish}>
         {formItems.map((formItem) => {
