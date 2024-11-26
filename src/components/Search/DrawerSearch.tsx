@@ -90,7 +90,7 @@ const DrawerSearch: React.FC<IProps> = ({
       }
     >
       <FormWrapper form={form} onFinish={handleFinish}>
-        <FormItem label="Địa điểm" name="placement">
+        <FormItem childrenSelected label="Địa điểm" name="placementIds">
           <Select
             allowClear
             className="w-full h-10"

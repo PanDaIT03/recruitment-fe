@@ -1,4 +1,5 @@
 import { Flex, Space } from 'antd';
+import classNames from 'classnames';
 import { memo } from 'react';
 
 import Button from '~/components/Button/Button';
@@ -13,11 +14,14 @@ interface IProps extends IModalProps {
 
 const { CloseOutlined } = icons;
 
-const JobContactModal = ({ data, onCancel, ...props }: IProps) => {
+const JobContactModal = ({ data, className, onCancel, ...props }: IProps) => {
+  const customClass = classNames('sm:!max-w-md', className);
+
   return (
     <Modal
       {...props}
       title="Thông tin liên hệ"
+      className={customClass}
       footer={
         <Button
           title="Đóng"
@@ -29,13 +33,13 @@ const JobContactModal = ({ data, onCancel, ...props }: IProps) => {
       onCancel={onCancel}
     >
       <Space direction="vertical" size="middle" className="w-full">
-        <Flex className="text-xsm leading-6">
+        <Flex className="text-xsm leading-6 max-sm:flex-col">
           <p className="flex-shrink-0 text-sub font-medium min-w-[140px]">
             Tên công ty
           </p>
           <p className="flex-1 font-semibold">{data?.companyName}</p>
         </Flex>
-        <Flex className="text-xsm leading-6">
+        <Flex className="text-xsm leading-6 max-sm:flex-col">
           <p className="flex-shrink-0 text-sub font-medium min-w-[140px]">
             Email
           </p>
