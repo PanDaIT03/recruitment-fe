@@ -12,6 +12,8 @@ export const getAllJobs = createAsyncThunk<
     const {
       type,
       title,
+      page,
+      pageSize,
       jobsId,
       statusId,
       salaryMin,
@@ -23,9 +25,11 @@ export const getAllJobs = createAsyncThunk<
     } = params;
 
     const response = await JobsAPI.getAllJobs({
+      ...(page && { page }),
       ...(type && { type }),
       ...(title && { title }),
       ...(jobsId && { jobsId }),
+      ...(pageSize && { pageSize }),
       ...(statusId && { statusId }),
       ...(salaryMin && { salaryMin }),
       ...(salaryMax && { salaryMax }),
