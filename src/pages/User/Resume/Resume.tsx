@@ -46,11 +46,13 @@ const Resume = () => {
     mutationFn: (params: FormData) => UserApi.uploadCV(params),
     onSuccess: (res) => {
       refetch();
-      setIsOpenModal(false);
+      handleCancel();
       message.success(res?.message || 'Upload CV thành công');
     },
-    onError: (error: any) =>
-      message.error(error?.response?.data?.message || 'Lỗi khi upload CV'),
+    onError: (error: any) => {
+      handleCancel();
+      message.error(error?.response?.data?.message || 'Lỗi khi upload CV');
+    },
   });
 
   const { mutate: deleteCV, isPending: isDelCVPending } = useMutation({
@@ -59,8 +61,9 @@ const Resume = () => {
       refetch();
       message.success(res?.message || 'Xoá CV thành công');
     },
-    onError: (error: any) =>
-      message.error(error?.response?.data?.message || 'Lỗi khi xoá CV'),
+    onError: (error: any) => {
+      message.error(error?.response?.data?.message || 'Lỗi khi xoá CV');
+    },
   });
 
   const props: UploadProps = useMemo(
@@ -110,6 +113,11 @@ const Resume = () => {
     });
 
     uploadCV(formData);
+  };
+
+  const handleCancel = () => {
+    setIsOpenModal(false);
+    setUploadFile([]);
   };
 
   return (
@@ -183,8 +191,8 @@ const Resume = () => {
         title="Đăng tải CV"
         isOpen={isOpenModal}
         loading={isUploadCVPending}
-        onCancel={() => setIsOpenModal(false)}
         onOk={handleUpload}
+        onCancel={handleCancel}
       >
         <Dragger {...props} />
       </Modal>
