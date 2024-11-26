@@ -1,4 +1,9 @@
-import { BellOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  BellOutlined,
+  SettingOutlined,
+  SnippetsOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import {
   Avatar,
   Badge,
@@ -38,7 +43,7 @@ const MENU_ITEMS = [
   {
     key: 'jobManagement',
     label: 'Quản lý công việc',
-    icon: <SettingOutlined />,
+    icon: <SnippetsOutlined />,
     children: [
       {
         key: PATH.ADMIN_JOB_MANAGEMENT,
@@ -54,6 +59,17 @@ const MENU_ITEMS = [
       {
         key: PATH.ADMIN_USER_MANAGEMENT,
         label: 'Danh sách người dùng',
+      },
+    ],
+  },
+  {
+    key: 'system',
+    label: 'Hệ thống',
+    icon: <SettingOutlined />,
+    children: [
+      {
+        key: PATH.ADMIN_ROLE_MANAGEMENT,
+        label: 'Cập nhật vai trò',
       },
     ],
   },
