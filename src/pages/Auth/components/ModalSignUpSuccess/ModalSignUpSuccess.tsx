@@ -2,9 +2,8 @@ import { Flex } from 'antd';
 import { Dispatch, memo, SetStateAction, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Success } from '~/assets/svg';
 import Button from '~/components/Button/Button';
-import Modal from '~/components/Modal/Modal';
+import CongratulationModal from '~/components/Modal/CongratulationModal';
 import PATH from '~/utils/path';
 
 interface IProps {
@@ -22,10 +21,8 @@ const ModalSignUpSuccess = ({ isOpenModal, email, setIsOpenModal }: IProps) => {
   }, [email]);
 
   return (
-    <Modal
+    <CongratulationModal
       isOpen={isOpenModal}
-      title="Đăng ký thành công"
-      className="min-w-[550px]"
       footer={
         <Flex justify="end" gap={12}>
           <Button title="Đóng" onClick={() => setIsOpenModal(false)} />
@@ -38,7 +35,6 @@ const ModalSignUpSuccess = ({ isOpenModal, email, setIsOpenModal }: IProps) => {
       }
     >
       <Flex vertical align="center" className="text-center" gap={8}>
-        <Success width={100} height={100} />
         <p className="text-lg font-semibold text-green-600">
           Chúc mừng bạn đã đăng ký tài khoản thành công!
         </p>
@@ -46,7 +42,7 @@ const ModalSignUpSuccess = ({ isOpenModal, email, setIsOpenModal }: IProps) => {
           Bạn có thể chuyển đến trang đăng nhập để sử dụng tài khoản của mình.
         </p>
       </Flex>
-    </Modal>
+    </CongratulationModal>
   );
 };
 

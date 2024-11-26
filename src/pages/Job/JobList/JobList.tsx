@@ -300,7 +300,10 @@ const JobList = () => {
           <h2 className="text-base font-semibold">Tin tuyển dụng</h2>
           <div className="text-sm text-sub font-medium">
             Tìm thấy
-            <strong className="text-primary"> {allJobs?.items?.length} </strong>
+            <strong className="text-primary">
+              {' '}
+              {allJobs?.pageInfo.totalItems}{' '}
+            </strong>
             tin tuyển dụng
           </div>
         </div>
