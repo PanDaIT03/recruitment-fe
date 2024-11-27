@@ -136,6 +136,7 @@ const Resume = () => {
       <Divider className="!my-3" />
       <List
         itemLayout="horizontal"
+        pagination={false}
         dataSource={myCVs?.items}
         loading={isPending || isDelCVPending}
         skeletonRender={() => (

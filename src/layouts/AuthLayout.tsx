@@ -143,14 +143,15 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
     );
 
   const isLeftPanelVisible = useMemo(() => {
-    let isVisible = true;
+    let isVisible = false;
     const { pathname } = location;
 
     if (
-      pathname === PATH.USER_FORGOT_PASSWORD ||
-      pathname === PATH.USER_RESET_PASSWORD
+      pathname === PATH.USER_SIGN_IN ||
+      pathname === PATH.USER_SIGN_UP ||
+      pathname === PATH.EMPLOYER_SIGN_UP
     )
-      isVisible = false;
+      isVisible = true;
 
     return isVisible;
   }, [location]);
@@ -171,57 +172,61 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
         className="flex w-full gap-5 lg:gap-20"
       >
         <Col className={leftPanelClass}>
-          {isLeftPanelVisible && leftPanelType === LEFT_PANEL_TYPE.SIGN_IN ? (
-            <WelComeBackCat width={300} height={300} />
-          ) : leftPanelType === LEFT_PANEL_TYPE.USER_SIGN_UP ? (
-            <div className="space-y-6">
-              <h1 className="text-3xl font-semibold">
-                Bạn đang tìm việc? Để chúng tôi giúp bạn.
-              </h1>
+          {isLeftPanelVisible ? (
+            leftPanelType === LEFT_PANEL_TYPE.SIGN_IN ? (
+              <WelComeBackCat width={300} height={300} />
+            ) : leftPanelType === LEFT_PANEL_TYPE.USER_SIGN_UP ? (
               <div className="space-y-6">
-                {userItems.map((item, index) => (
-                  <Flex key={index} gap={24} align="start">
-                    <div
-                      className={`h-max text-white p-1 mt-1 rounded-md shadow-sm ${item.bgColor}`}
-                    >
-                      {item.icon}
-                    </div>
-                    <span className="text-base">{item.content}</span>
-                  </Flex>
-                ))}
-              </div>
-              <div className="space-y-6">
-                <h2 className="text-base font-semibold">
-                  Các doanh nghiệp đang tuyển dụng trên Đúng Người Đúng Việc:
-                </h2>
-                <Flex wrap gap={32}>
-                  {businessItems.map(({ key, ...others }) => (
-                    <Image key={key} preview={false} {...others} />
+                <h1 className="text-3xl font-semibold">
+                  Bạn đang tìm việc? Để chúng tôi giúp bạn.
+                </h1>
+                <div className="space-y-6">
+                  {userItems.map((item, index) => (
+                    <Flex key={index} gap={24} align="start">
+                      <div
+                        className={`h-max text-white p-1 mt-1 rounded-md shadow-sm ${item.bgColor}`}
+                      >
+                        {item.icon}
+                      </div>
+                      <span className="text-base">{item.content}</span>
+                    </Flex>
                   ))}
-                </Flex>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-6 sticky top-[30vh]">
-              <h1 className="text-3xl font-semibold">
-                Quyền lợi Nhà tuyển dụng
-              </h1>
-              <div className="space-y-6">
-                {employerItems.map((item, index) => (
-                  <Flex key={index} gap={24} align="start">
-                    <div
-                      className={`h-max text-white p-1 mt-1 rounded-md shadow-sm ${item.bgColor}`}
-                    >
-                      {item.icon}
-                    </div>
-                    <div>
-                      <p className="text-lg font-medium">{item.title}</p>
-                      <p className="text-xsm text-sub">{item.content}</p>
-                    </div>
+                </div>
+                <div className="space-y-6">
+                  <h2 className="text-base font-semibold">
+                    Các doanh nghiệp đang tuyển dụng trên Đúng Người Đúng Việc:
+                  </h2>
+                  <Flex wrap gap={32}>
+                    {businessItems.map(({ key, ...others }) => (
+                      <Image key={key} preview={false} {...others} />
+                    ))}
                   </Flex>
-                ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-6 sticky top-[30vh]">
+                <h1 className="text-3xl font-semibold">
+                  Quyền lợi Nhà tuyển dụng
+                </h1>
+                <div className="space-y-6">
+                  {employerItems.map((item, index) => (
+                    <Flex key={index} gap={24} align="start">
+                      <div
+                        className={`h-max text-white p-1 mt-1 rounded-md shadow-sm ${item.bgColor}`}
+                      >
+                        {item.icon}
+                      </div>
+                      <div>
+                        <p className="text-lg font-medium">{item.title}</p>
+                        <p className="text-xsm text-sub">{item.content}</p>
+                      </div>
+                    </Flex>
+                  ))}
+                </div>
+              </div>
+            )
+          ) : (
+            <></>
           )}
         </Col>
 
