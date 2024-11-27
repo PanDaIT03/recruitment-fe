@@ -5,6 +5,7 @@ import {
   Layout,
   message,
   Space,
+  Upload,
   UploadFile,
   UploadProps,
 } from 'antd';
@@ -19,6 +20,7 @@ import {
   ReactElement,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -47,6 +49,8 @@ import Input from '~/components/Input/Input';
 import CongratulationModal from '~/components/Modal/CongratulationModal';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useFetch } from '~/hooks/useFetch';
+import { useAppDispatch } from '~/hooks/useStore';
+import { getMe } from '~/store/thunk/auth';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -84,6 +88,7 @@ const { CloseOutlined, MinusCircleOutlined, StarOutlined } = icons;
 const JobApplication = () => {
   const navigate = useNavigate();
   const [form] = useForm<IForm>();
+  const dispatch = useAppDispatch();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
@@ -137,7 +142,10 @@ const JobApplication = () => {
     useMutation({
       mutationFn: (params: IDesiredJobParams) =>
         UserApi.createNewDesiredJob(params),
-      onSuccess: () => setIsOpenModal(true),
+      onSuccess: () => {
+        dispatch(getMe());
+        setIsOpenModal(true);
+      },
       onError: (error: any) =>
         message.error(
           error?.response?.data?.message || 'Lỗi khi tạo công việc mong muốn'
@@ -157,14 +165,14 @@ const JobApplication = () => {
           file.type ===
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 
-        if (!isValidFormat)
+        if (!isValidFormat) {
           message.error('Tệp tin không hợp lệ! Chỉ hỗ trợ PDF, DOC, DOCX.');
+          return Upload.LIST_IGNORE;
+        }
 
         const newFile: UploadFile[] = [
-          ...uploadFile,
           { uid: file.uid, name: file.name, originFileObj: file },
         ];
-
         setUploadFile(newFile);
         return false;
       },
@@ -373,12 +381,14 @@ const JobApplication = () => {
             },
             {
               name: 'foreignLanguages',
+              required: true,
               label: 'Khả năng ngoại ngữ (Tối đa 4 ngoại ngữ)',
               listItem: {
                 length: 4,
                 buttonTitle: 'Thêm ngoại ngữ',
                 render: (params) => {
                   const { fields, func } = params;
+                  if (fields.length === 0) func.add();
 
                   return fields.map(({ key, name }) => (
                     <Flex
@@ -390,6 +400,12 @@ const JobApplication = () => {
                       <FormItem
                         name={[name, 'id']}
                         className="m-0 max-w-[180px]"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng chọn khả năng ngoại ngữ',
+                          },
+                        ]}
                       >
                         <CustomSelect
                           placeholder="Chọn ngoại ngữ"
@@ -411,13 +427,15 @@ const JobApplication = () => {
                             prefixIcon={<StarOutlined width={14} height={14} />}
                           />
                         </FormItem>
-                        <Button
-                          borderType="dashed"
-                          title={
-                            <MinusCircleOutlined className="flex text-xl" />
-                          }
-                          onClick={() => func.remove(name)}
-                        />
+                        {fields.length > 1 && (
+                          <Button
+                            borderType="dashed"
+                            title={
+                              <MinusCircleOutlined className="flex text-xl" />
+                            }
+                            onClick={() => func.remove(name)}
+                          />
+                        )}
                       </Flex>
                     </Flex>
                   ));
@@ -451,7 +469,15 @@ const JobApplication = () => {
         },
       ],
     };
-  }, [form, props, languages, jobFields, jobPositions, placements]);
+  }, [
+    form,
+    props,
+    jobFields,
+    placements,
+    languages,
+    jobPositions,
+    advanceOptions,
+  ]);
 
   const handleUploadCV = useCallback(async () => {
     if (!uploadFile.length) return;
@@ -465,14 +491,20 @@ const JobApplication = () => {
     uploadCV(formData);
   }, [uploadFile]);
 
-  const handleFinish = useCallback(() => {
-    handleUploadCV();
+  useEffect(() => {
+    const { jobPositionIds, foreignLanguages } = form.getFieldsValue();
+
+    if (jobPositionIds?.[0] === undefined)
+      form.setFieldValue('jobPositionIds', [undefined]);
+
+    if (foreignLanguages?.[0] === undefined)
+      form.setFieldValue('foreignLanguages', [undefined]);
   }, []);
 
   return (
     <Layout className="w-full min-h-screen">
       <Flex vertical gap={24}>
-        <FormWrapper form={form} onFinish={handleFinish}>
+        <FormWrapper form={form} onFinish={handleUploadCV}>
           <Space direction="vertical" size="large" className="w-full">
             {formItem.children.map((item, index) => (
               <div

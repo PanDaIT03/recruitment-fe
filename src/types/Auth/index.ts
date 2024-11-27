@@ -38,7 +38,7 @@ export interface IUser {
   statusCode: number;
   placement: Placement;
   desiredJob: {
-    totalYearExperience: string;
+    totalYearExperience: number;
   };
 }
 
