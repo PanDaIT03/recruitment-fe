@@ -416,7 +416,7 @@ const JobApplication = () => {
                           prefixIcon={<Language width={14} height={14} />}
                         />
                       </FormItem>
-                      <Flex gap={8} align="center" className="flex-1">
+                      <Flex wrap gap={8} align="center" className="flex-1">
                         <FormItem
                           name={[name, 'level']}
                           className="w-full m-0 min-w-[250px]"
