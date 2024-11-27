@@ -47,7 +47,7 @@ export type IUpdatePersonalInfo = {
   fullName: string;
   placementsId: string;
   jobPositionsId: string;
-  totalYearExperience?: number;
+  totalYearExperience?: string;
 };
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;

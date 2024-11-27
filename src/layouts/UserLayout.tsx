@@ -15,6 +15,7 @@ import ImgCrop from 'antd-img-crop';
 import { useForm } from 'antd/es/form/Form';
 import { Content } from 'antd/es/layout/layout';
 import {
+  ChangeEvent,
   Dispatch,
   ReactElement,
   ReactNode,
@@ -34,6 +35,7 @@ import {
   File,
   PersonCard,
   SkyScraper,
+  SunRise,
 } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -74,7 +76,7 @@ interface IUserInfoForm {
   fullName: string;
   positionId: number;
   placementId: number;
-  totalYearsOfExp: number;
+  totalYearExperience: number;
 }
 
 interface ISiderProps {
@@ -172,8 +174,14 @@ const Sider = ({
               {data.jobPosition?.title && (
                 <span>
                   {data.jobPosition?.title}
-                  <span className='before:content-["•"] before:mx-2 before:text-lg'></span>
-                  <span className="text-sub">~ 1 năm kinh nghiệm</span>
+                  {data.desiredJob?.totalYearExperience && (
+                    <>
+                      <span className='before:content-["•"] before:mx-2 before:text-lg'></span>
+                      <span className="text-sub">
+                        ~ {data.desiredJob?.totalYearExperience} năm kinh nghiệm
+                      </span>
+                    </>
+                  )}
                 </span>
               )}
               {data.placement?.title && (
@@ -313,31 +321,32 @@ const UserLayout = () => {
       fullName: currentUser.fullName,
       placementId: currentUser.placement?.id,
       positionId: currentUser.jobPosition?.id,
+      totalYearExperience: currentUser.desiredJob?.totalYearExperience,
     });
   }, [currentUser]);
 
-  // const handleTotalYearChange = useCallback(
-  //   (event: ChangeEvent<HTMLInputElement>) => {
-  //     const value = event.target.value,
-  //       numericValue = value.replace(/[^0-9]/g, '');
+  const handleTotalYearChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value,
+        numericValue = value.replace(/[^0-9]/g, '');
 
-  //     form.setFieldValue('totalYearsOfExp', numericValue);
-  //   },
-  //   []
-  // );
+      form.setFieldValue('totalYearExperience', numericValue);
+    },
+    []
+  );
 
-  // const handleBlurTotalYear = useCallback(
-  //   (event: React.FocusEvent<HTMLInputElement, Element>) => {
-  //     let formattedValue = '';
-  //     const value = Number(event.target.value);
+  const handleBlurTotalYear = useCallback(
+    (event: React.FocusEvent<HTMLInputElement, Element>) => {
+      let formattedValue = '';
+      const value = Number(event.target.value);
 
-  //     if (value >= 50) formattedValue = '50';
-  //     else formattedValue = value.toString();
+      if (value >= 50) formattedValue = '50';
+      else formattedValue = value.toString();
 
-  //     form.setFieldValue('totalYearsOfExp', formattedValue);
-  //   },
-  //   []
-  // );
+      form.setFieldValue('totalYearExperience', formattedValue);
+    },
+    []
+  );
 
   const handleCancelInfoModal = useCallback(() => {
     setIsOpenInfoModal(false);
@@ -367,6 +376,7 @@ const UserLayout = () => {
       fullName: values.fullName,
       jobPositionsId: values.positionId.toString(),
       placementsId: values.placementId.toString(),
+      totalYearExperience: values?.totalYearExperience.toString(),
     };
 
     updatePersonalInfo(params);
@@ -400,19 +410,23 @@ const UserLayout = () => {
           />
         ),
       },
-      // {
-      //   name: 'totalYearsOfExp',
-      //   label: 'Tổng số năm kinh nghiệm của bạn',
-      //   item: (
-      //     <Input
-      //       inputMode="numeric"
-      //       prefix={<SunRise />}
-      //       placeholder="Ví dụ: 7"
-      //       onChange={handleTotalYearChange}
-      //       onBlur={(e) => handleBlurTotalYear(e)}
-      //     />
-      //   ),
-      // },
+      ...(currentUser.desiredJob?.totalYearExperience
+        ? [
+            {
+              name: 'totalYearExperience',
+              label: 'Tổng số năm kinh nghiệm của bạn',
+              item: (
+                <Input
+                  inputMode="numeric"
+                  prefix={<SunRise />}
+                  placeholder="Ví dụ: 7"
+                  onChange={handleTotalYearChange}
+                  onBlur={(e) => handleBlurTotalYear(e)}
+                />
+              ),
+            },
+          ]
+        : []),
       {
         name: 'placementId',
         label: 'Nơi sống hiện tại',
@@ -430,7 +444,7 @@ const UserLayout = () => {
         ),
       },
     ];
-  }, [placements, jobPositions]);
+  }, [currentUser, placements, jobPositions]);
 
   return (
     <Layout className="min-h-screen">
@@ -456,11 +470,11 @@ const UserLayout = () => {
         onOk={() => form.submit()}
       >
         <FormWrapper form={form} onFinish={handleInfoModalFinish}>
-          {formItems.map((formItem) => {
+          {formItems.map((formItem, index) => {
             const { item, ...others } = formItem;
 
             return (
-              <FormItem key={formItem.name} {...others}>
+              <FormItem key={index} {...others}>
                 {item}
               </FormItem>
             );
