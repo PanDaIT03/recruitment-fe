@@ -1,14 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
-import { Flex } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import AuthAPI, { IResetPasswordParams } from '~/apis/auth';
-import { Success } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import InputPassword from '~/components/Input/InputPassword';
+import CongratulationModal from '~/components/Modal/CongratulationModal';
 import { useMessage } from '~/contexts/MessageProvider';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -97,60 +96,50 @@ const ResetPassword = () => {
 
   return (
     <>
-      {isResetPasswordSuccess ? (
-        <Flex vertical justify="center" align="center" className="gap-6">
-          <Success width={64} height={64} />
-          <div className="text-center space-y-3">
-            <h2 className="text-lg text-green-500 font-semibold">
-              Mật khẩu đã được cập nhật
-            </h2>
-            <p className="text-sm text-sub">
-              Bây giờ bạn có thể đăng nhập bằng mật khẩu mới của mình
-            </p>
-          </div>
-          <p className="text-sm text-green-500 animate-pulse">
-            Đang tự động chuyển hướng...
+      <div>
+        <h2 className="text-lg font-semibold">Đặt lại mật khẩu</h2>
+        <p className="text-sm text-sub">
+          Vui lòng đặt lại mật khẩu mới cho tài khoản của bạn
+        </p>
+      </div>
+      <FormWrapper
+        form={form}
+        loading={isPending}
+        onFinish={handleFinish}
+        submitTitle="Xác nhận"
+      >
+        <FormItem
+          name="password"
+          label="Mật khẩu"
+          rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
+        >
+          <InputPassword
+            placeholder="Tối thiểu 8 ký tự"
+            prefix={<LockOutlined />}
+          />
+        </FormItem>
+        <FormItem
+          name="reEnterPassword"
+          label="Nhập lại mật khẩu"
+          rules={[{ required: true, message: 'Vui lòng nhập lại mật khẩu' }]}
+        >
+          <InputPassword
+            placeholder="Tối thiểu 8 ký tự"
+            prefix={<LockOutlined />}
+          />
+        </FormItem>
+      </FormWrapper>
+      <CongratulationModal isOpen={isResetPasswordSuccess} footer={<></>}>
+        <div className="text-center space-y-3">
+          <h2 className="text-lg font-semibold">Mật khẩu đã được cập nhật</h2>
+          <p className="text-sm text-sub font-medium">
+            Bây giờ bạn có thể đăng nhập bằng mật khẩu mới của mình
           </p>
-        </Flex>
-      ) : (
-        <>
-          <div>
-            <h2 className="text-lg font-semibold">Đặt lại mật khẩu</h2>
-            <p className="text-sm text-sub">
-              Vui lòng đặt lại mật khẩu mới cho tài khoản của bạn
-            </p>
-          </div>
-          <FormWrapper
-            form={form}
-            loading={isPending}
-            onFinish={handleFinish}
-            submitTitle="Xác nhận"
-          >
-            <FormItem
-              name="password"
-              label="Mật khẩu"
-              rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
-            >
-              <InputPassword
-                placeholder="Tối thiểu 8 ký tự"
-                prefix={<LockOutlined />}
-              />
-            </FormItem>
-            <FormItem
-              name="reEnterPassword"
-              label="Nhập lại mật khẩu"
-              rules={[
-                { required: true, message: 'Vui lòng nhập lại mật khẩu' },
-              ]}
-            >
-              <InputPassword
-                placeholder="Tối thiểu 8 ký tự"
-                prefix={<LockOutlined />}
-              />
-            </FormItem>
-          </FormWrapper>
-        </>
-      )}
+        </div>
+        <p className="text-sm text-green-500 animate-pulse">
+          Đang tự động chuyển hướng...
+        </p>
+      </CongratulationModal>
     </>
   );
 };
