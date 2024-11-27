@@ -34,6 +34,11 @@ const DesiredJob = () => {
     data: desiredJob,
   } = useFetch(['getDesiredJob'], DesiredJobAPI.getDesiredJob);
 
+  const isHasDesiredJob = useMemo(
+    () => desiredJob && Object.keys(desiredJob).length > 1,
+    [desiredJob]
+  );
+
   const desiredJobInfo: IDesiredJobInfo[] = useMemo(() => {
     return [
       {
@@ -80,11 +85,13 @@ const DesiredJob = () => {
           <Work />
           <h2 className="text-base font-bold">Công việc mong muốn</h2>
         </Flex>
-        <ButtonAction
-          tooltipTitle="Cập nhật"
-          title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
-          onClick={() => setIsOpen(true)}
-        />
+        {isHasDesiredJob && (
+          <ButtonAction
+            tooltipTitle="Cập nhật"
+            title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
+            onClick={() => setIsOpen(true)}
+          />
+        )}
       </Flex>
       <Divider className="!my-3" />
       {isPending ? (
@@ -93,7 +100,7 @@ const DesiredJob = () => {
           <Divider dashed className="!m-3" />
           <Skeleton active title={false} paragraph={{ rows: 1 }} />
         </>
-      ) : desiredJob && Object.keys(desiredJob).length ? (
+      ) : isHasDesiredJob ? (
         <>
           <Space direction="vertical" className="w-full p-2" size="middle">
             {desiredJobInfo.map((item, index) => (
