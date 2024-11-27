@@ -25,7 +25,9 @@ const List = <T,>({
     <AntdList
       dataSource={loading ? (skeletonCountArr as unknown as T[]) : dataSource}
       pagination={
-        dataSource?.length ? { className: 'list-custom', ...pagination } : false
+        dataSource?.length && typeof pagination !== 'boolean'
+          ? { className: 'list-custom', ...pagination }
+          : false
       }
       renderItem={(item, index) =>
         loading ? (
