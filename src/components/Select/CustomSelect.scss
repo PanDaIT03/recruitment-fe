@@ -1,17 +1,6 @@
 .custom-select {
   transition: all 0.2s;
 
-  .ant-select-selector {
-    border: none !important;
-    padding-left: 4px !important;
-    background: transparent !important;
-    box-shadow: none !important;
-
-    .ant-select-selection-search {
-      inset-inline-start: 4px !important;
-    }
-  }
-
   .ant-select-dropdown {
     position: absolute !important;
     top: 100% !important;
@@ -20,6 +9,21 @@
     bottom: auto !important;
     width: 100% !important;
     margin-top: 6px;
+  }
+}
+
+.custom-select .ant-select-selector {
+  border: none !important;
+  padding-left: 4px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+
+  .ant-select-selection-search {
+    inset-inline-start: 4px !important;
+  }
+
+  &>.ant-select-selection-overflow{
+    min-height: 2.5rem;
   }
 }
 
