@@ -393,9 +393,9 @@ const JobApplication = () => {
                   return fields.map(({ key, name }) => (
                     <Flex
                       wrap
-                      key={key}
                       gap={8}
-                      className="mb-3 max-sm:border max-sm:border-dashed max-sm:p-4 max-sm:rounded-md"
+                      key={key}
+                      className="mb-3 max-sm:border max-sm:border-dashed max-sm:p-4 max-sm:rounded-md max-sm:flex-col"
                     >
                       <FormItem
                         name={[name, 'id']}
@@ -416,10 +416,14 @@ const JobApplication = () => {
                           prefixIcon={<Language width={14} height={14} />}
                         />
                       </FormItem>
-                      <Flex wrap gap={8} align="center" className="flex-1">
+                      <Flex
+                        gap={8}
+                        align="center"
+                        className="flex-1 max-sm:flex-wrap"
+                      >
                         <FormItem
                           name={[name, 'level']}
-                          className="w-full m-0 min-w-[250px]"
+                          className="m-0 sm:min-w-[250px]"
                         >
                           <CustomSelect
                             options={advanceOptions}
