@@ -20,9 +20,9 @@ import FormSignUp from './FormSignUp';
 const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { messageApi } = useMessage();
 
   const [form] = useForm();
+  const { messageApi } = useMessage();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const { roles } = useAppSelector((state) => state.role);

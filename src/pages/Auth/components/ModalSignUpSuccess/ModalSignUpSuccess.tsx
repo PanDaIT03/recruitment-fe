@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Button from '~/components/Button/Button';
 import CongratulationModal from '~/components/Modal/CongratulationModal';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
 interface IProps {
@@ -11,6 +12,8 @@ interface IProps {
   isOpenModal: boolean;
   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
 }
+
+const { CloseOutlined, ArrowRightOutlined } = icons;
 
 const ModalSignUpSuccess = ({ isOpenModal, email, setIsOpenModal }: IProps) => {
   const navigate = useNavigate();
@@ -24,11 +27,17 @@ const ModalSignUpSuccess = ({ isOpenModal, email, setIsOpenModal }: IProps) => {
     <CongratulationModal
       isOpen={isOpenModal}
       footer={
-        <Flex justify="end" gap={12}>
-          <Button title="Đóng" onClick={() => setIsOpenModal(false)} />
+        <Flex gap={12}>
+          <Button
+            title="Đóng"
+            iconBefore={<CloseOutlined />}
+            onClick={() => setIsOpenModal(false)}
+          />
           <Button
             fill
+            className="w-full"
             title="Đến trang đăng nhập"
+            iconAfter={<ArrowRightOutlined />}
             onClick={handleRedirectToSignIn}
           />
         </Flex>
