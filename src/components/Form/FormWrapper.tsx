@@ -1,9 +1,10 @@
 import { Col, Form, FormInstance, Row } from 'antd';
 import { memo, ReactNode } from 'react';
 
+import { InternalNamePath } from 'antd/es/form/interface';
+import classNames from 'classnames';
 import { useAppSelector } from '~/hooks/useStore';
 import Button from '../Button/Button';
-import { InternalNamePath } from 'antd/es/form/interface';
 
 interface IProps {
   loading?: boolean;
@@ -13,6 +14,8 @@ interface IProps {
   cancelTitle?: string;
   form: FormInstance<any>;
   footer?: ReactNode;
+  cancelClass?: string;
+  submitClass?: string;
   onCancel?: () => void;
   onFinish(values: any): void;
 }
@@ -30,6 +33,8 @@ const FormWrapper = ({
   submitTitle,
   loading = false,
   className = 'w-full',
+  cancelClass,
+  submitClass,
   onCancel,
   onFinish,
 }: IProps) => {
@@ -73,7 +78,11 @@ const FormWrapper = ({
           <Row gutter={[12, 12]} justify={'end'}>
             {cancelTitle && (
               <Col>
-                <Button title={cancelTitle} onClick={onCancel} />
+                <Button
+                  className={cancelClass}
+                  title={cancelTitle}
+                  onClick={onCancel}
+                />
               </Col>
             )}
             {submitTitle && (
@@ -81,7 +90,7 @@ const FormWrapper = ({
                 <Button
                   fill
                   type="submit"
-                  className="w-full"
+                  className={classNames('w-full', submitClass)}
                   title={submitTitle}
                   loading={loading || isLoadingSignIn}
                 />

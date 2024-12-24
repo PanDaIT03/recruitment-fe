@@ -1,30 +1,35 @@
+import { useMutation } from '@tanstack/react-query';
 import {
   Divider,
   Flex,
   Layout,
   message,
   Space,
+  Upload,
   UploadFile,
   UploadProps,
 } from 'antd';
 import { FormInstance, useForm } from 'antd/es/form/Form';
+import TextArea from 'antd/es/input/TextArea';
 import { DefaultOptionType } from 'antd/es/select';
 import Title from 'antd/es/typography/Title';
 import { FormItemProps } from 'antd/lib';
+import dayjs from 'dayjs';
 import {
   ChangeEvent,
   ReactElement,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import TextArea from 'antd/es/input/TextArea';
 import { JobsAPI } from '~/apis/job';
 import UserApi, { IDesiredJobParams } from '~/apis/user';
 import {
+  ArrowLeft,
   BackPack,
   Box,
   Calendar,
@@ -41,8 +46,11 @@ import FormItem from '~/components/Form/FormItem';
 import { IFormListProps } from '~/components/Form/FormList';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
+import CongratulationModal from '~/components/Modal/CongratulationModal';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useFetch } from '~/hooks/useFetch';
+import { useAppDispatch } from '~/hooks/useStore';
+import { getMe } from '~/store/thunk/auth';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -63,13 +71,16 @@ export type IJobApplicationForm = {
   }>;
 };
 
-type IForm = IDesiredJobParams;
+type IForm = Omit<IDesiredJobParams, 'salaryExpectation'> & {
+  cv: any;
+  salaryExpectation: string;
+};
 
 export const startTimeOptions: DefaultOptionType[] = [
-  { label: 'Bắt đầu ngay', value: 'immediately' },
-  { label: '1-2 tuần', value: '1-2_weeks' },
-  { label: '30 ngày', value: '30_days' },
-  { label: 'Sẽ thông báo khi có offer', value: 'upon_offer' },
+  { label: 'Bắt đầu ngay', value: 'Bắt đầu ngay' },
+  { label: '1-2 tuần', value: '1-2 tuần' },
+  { label: '30 ngày', value: '30 ngày' },
+  { label: 'Sẽ thông báo khi có offer', value: 'Sẽ thông báo khi có offer' },
 ];
 
 const { CloseOutlined, MinusCircleOutlined, StarOutlined } = icons;
@@ -77,7 +88,9 @@ const { CloseOutlined, MinusCircleOutlined, StarOutlined } = icons;
 const JobApplication = () => {
   const navigate = useNavigate();
   const [form] = useForm<IForm>();
+  const dispatch = useAppDispatch();
 
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
   const { data: placements } = useFetch(
@@ -100,30 +113,44 @@ const JobApplication = () => {
     UserApi.getAllForeignLanguage
   );
 
-  // const { mutate: uploadCV, isPending: isUploadCVPending } = useMutation({
-  //   mutationFn: (params: FormData) => UserApi.uploadCV(params),
-  //   onSuccess: (res) => {
-  //     console.log(res);
-  //     // const params: IDesiredJobParams = {};
+  const { mutate: uploadCV, isPending: isUploadCVPending } = useMutation({
+    mutationFn: (params: FormData) => UserApi.uploadCV(params),
+    onSuccess: () => {
+      const {
+        cv,
+        yearOfBirth,
+        salaryExpectation,
+        totalYearExperience,
+        ...others
+      } = form.getFieldsValue();
 
-  //     // createNewDesiredJob(params);
-  //   },
-  //   onError: (error: any) =>
-  //     messageApi.error(error?.response?.data?.message || 'Lỗi khi upload CV'),
-  // });
+      const numericSalary = Number(salaryExpectation.replace(/[^0-9]/g, ''));
+      const formattedParams: IDesiredJobParams = {
+        salaryExpectation: numericSalary,
+        totalYearExperience: Number(totalYearExperience),
+        yearOfBirth: dayjs(yearOfBirth).format('YYYY'),
+        ...others,
+      };
 
-  // const { mutate: createNewDesiredJob, isPending: isCreateDesiredJobPending } =
-  //   useMutation({
-  //     mutationFn: (params: IDesiredJobParams) =>
-  //       UserApi.createNewDesiredJob(params),
-  //     onSuccess: (res) => {
-  //       console.log(res);
-  //     },
-  //     onError: (error: any) =>
-  //       messageApi.error(
-  //         error?.response?.data?.message || 'Lỗi khi tạo công việc mong muốn'
-  //       ),
-  //   });
+      createNewDesiredJob(formattedParams);
+    },
+    onError: (error: any) =>
+      message.error(error?.response?.data?.message || 'Lỗi khi upload CV'),
+  });
+
+  const { mutate: createNewDesiredJob, isPending: isCreateDesiredJobPending } =
+    useMutation({
+      mutationFn: (params: IDesiredJobParams) =>
+        UserApi.createNewDesiredJob(params),
+      onSuccess: () => {
+        dispatch(getMe());
+        setIsOpenModal(true);
+      },
+      onError: (error: any) =>
+        message.error(
+          error?.response?.data?.message || 'Lỗi khi tạo công việc mong muốn'
+        ),
+    });
 
   const props: UploadProps = useMemo(
     () => ({
@@ -138,14 +165,14 @@ const JobApplication = () => {
           file.type ===
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 
-        if (!isValidFormat)
+        if (!isValidFormat) {
           message.error('Tệp tin không hợp lệ! Chỉ hỗ trợ PDF, DOC, DOCX.');
+          return Upload.LIST_IGNORE;
+        }
 
         const newFile: UploadFile[] = [
-          ...uploadFile,
           { uid: file.uid, name: file.name, originFileObj: file },
         ];
-
         setUploadFile(newFile);
         return false;
       },
@@ -197,7 +224,6 @@ const JobApplication = () => {
           title: 'Công việc mong muốn',
           items: [
             {
-              // name: 'field',
               name: 'jobFieldsId',
               label: 'Lĩnh vực bạn muốn ứng tuyển?',
               item: (
@@ -219,7 +245,6 @@ const JobApplication = () => {
               ],
             },
             {
-              // name: 'positions',
               name: 'jobPositionIds',
               required: true,
               label: 'Vị trí muốn ứng tuyển? (Tối đa 3 vị trí)',
@@ -264,7 +289,6 @@ const JobApplication = () => {
               },
             },
             {
-              // name: 'placements',
               name: 'jobPlacementIds',
               required: true,
               label: 'Nơi bạn mong muốn tìm việc? (Tối đa 3 địa điểm)',
@@ -284,6 +308,7 @@ const JobApplication = () => {
               item: (
                 <CustomSelect
                   allowClear
+                  maxCount={3}
                   mode="multiple"
                   placeholder="Chọn thành phố"
                   options={placements?.items?.map((place) => ({
@@ -295,7 +320,6 @@ const JobApplication = () => {
               ),
             },
             {
-              // name: 'salary',
               name: 'salaryExpectation',
               label: 'Mức lương kỳ vọng (VNĐ)',
               item: (
@@ -309,7 +333,6 @@ const JobApplication = () => {
               extra: 'Để trống nếu bạn muốn thương lượng sau.',
             },
             {
-              // name: 'time',
               name: 'startAfterOffer',
               label: 'Thời gian có thể bắt đầu làm việc kể từ khi nhận offer?',
               className: 'mb-0',
@@ -333,7 +356,6 @@ const JobApplication = () => {
           title: 'Thông tin & kinh nghiệm của bạn',
           items: [
             {
-              // name: 'totalYearsOfExp',
               name: 'totalYearExperience',
               label: 'Tổng số năm kinh nghiệm của bạn',
               item: (
@@ -358,24 +380,32 @@ const JobApplication = () => {
               ],
             },
             {
-              name: 'foreignLanguages', //
+              name: 'foreignLanguages',
+              required: true,
               label: 'Khả năng ngoại ngữ (Tối đa 4 ngoại ngữ)',
               listItem: {
                 length: 4,
                 buttonTitle: 'Thêm ngoại ngữ',
                 render: (params) => {
                   const { fields, func } = params;
+                  if (fields.length === 0) func.add();
 
                   return fields.map(({ key, name }) => (
                     <Flex
                       wrap
-                      key={key}
                       gap={8}
-                      className="mb-3 max-sm:border max-sm:border-dashed max-sm:p-4 max-sm:rounded-md"
+                      key={key}
+                      className="mb-3 max-sm:border max-sm:border-dashed max-sm:p-4 max-sm:rounded-md max-sm:flex-col"
                     >
                       <FormItem
-                        name={[name, 'language']}
+                        name={[name, 'id']}
                         className="m-0 max-w-[180px]"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Vui lòng chọn khả năng ngoại ngữ',
+                          },
+                        ]}
                       >
                         <CustomSelect
                           placeholder="Chọn ngoại ngữ"
@@ -386,10 +416,14 @@ const JobApplication = () => {
                           prefixIcon={<Language width={14} height={14} />}
                         />
                       </FormItem>
-                      <Flex gap={8} align="center" className="flex-1">
+                      <Flex
+                        gap={8}
+                        align="center"
+                        className="flex-1 max-sm:flex-wrap"
+                      >
                         <FormItem
-                          name={[name, 'advance']}
-                          className="w-full m-0 min-w-[250px]"
+                          name={[name, 'level']}
+                          className="m-0 sm:min-w-[250px]"
                         >
                           <CustomSelect
                             options={advanceOptions}
@@ -397,13 +431,15 @@ const JobApplication = () => {
                             prefixIcon={<StarOutlined width={14} height={14} />}
                           />
                         </FormItem>
-                        <Button
-                          borderType="dashed"
-                          title={
-                            <MinusCircleOutlined className="flex text-xl" />
-                          }
-                          onClick={() => func.remove(name)}
-                        />
+                        {fields.length > 1 && (
+                          <Button
+                            borderType="dashed"
+                            title={
+                              <MinusCircleOutlined className="flex text-xl" />
+                            }
+                            onClick={() => func.remove(name)}
+                          />
+                        )}
                       </Flex>
                     </Flex>
                   ));
@@ -411,7 +447,6 @@ const JobApplication = () => {
               },
             },
             {
-              // name: 'summary',
               name: 'achivements',
               label:
                 'Tóm tắt 3-5 thành tựu hoặc lý do nổi bật khiến nhà tuyển dụng chọn bạn?',
@@ -438,7 +473,15 @@ const JobApplication = () => {
         },
       ],
     };
-  }, [form, props, languages, jobFields, jobPositions, placements]);
+  }, [
+    form,
+    props,
+    jobFields,
+    placements,
+    languages,
+    jobPositions,
+    advanceOptions,
+  ]);
 
   const handleUploadCV = useCallback(async () => {
     if (!uploadFile.length) return;
@@ -446,23 +489,26 @@ const JobApplication = () => {
     const formData = new FormData();
     uploadFile.forEach((item) => {
       if (!item.originFileObj) return;
-      formData.append('file', item.originFileObj);
+      formData.append('files', item.originFileObj);
     });
 
-    console.log(uploadFile);
-    console.log(formData);
-    // uploadCV(formData);
+    uploadCV(formData);
   }, [uploadFile]);
 
-  const handleFinish = (values: any) => {
-    handleUploadCV();
-    console.log(values);
-  };
+  useEffect(() => {
+    const { jobPositionIds, foreignLanguages } = form.getFieldsValue();
+
+    if (jobPositionIds?.[0] === undefined)
+      form.setFieldValue('jobPositionIds', [undefined]);
+
+    if (foreignLanguages?.[0] === undefined)
+      form.setFieldValue('foreignLanguages', [undefined]);
+  }, []);
 
   return (
     <Layout className="w-full min-h-screen">
       <Flex vertical gap={24}>
-        <FormWrapper form={form} onFinish={handleFinish}>
+        <FormWrapper form={form} onFinish={handleUploadCV}>
           <Space direction="vertical" size="large" className="w-full">
             {formItem.children.map((item, index) => (
               <div
@@ -495,11 +541,32 @@ const JobApplication = () => {
             title="Tạo hồ sơ"
             className="w-full"
             iconAfter={<Fly />}
-            // loading={isUploadCVPending || isCreateDesiredJobPending}
+            loading={isUploadCVPending || isCreateDesiredJobPending}
             onClick={() => form.submit()}
           />
         </Flex>
       </Flex>
+      <CongratulationModal
+        isOpen={isOpenModal}
+        footer={
+          <Button
+            className="w-full"
+            title="Quay về trang hồ sơ"
+            iconBefore={<ArrowLeft />}
+            onClick={() => navigate(PATH.USER_DESIRED_JOB)}
+          />
+        }
+      >
+        <Space direction="vertical" align="center" className="text-center">
+          <h2 className="text-lg font-semibold">
+            Hồ sơ của bạn đã được tạo thành công
+          </h2>
+          <p className="font-medium text-sub">
+            Trong vòng 1-2 ngày làm việc tiếp theo, chúng tôi sẽ đánh giá hồ sơ
+            tìm việc của bạn để có thể giới thiệu đến các doanh nghiệp phù hợp.
+          </p>
+        </Space>
+      </CongratulationModal>
     </Layout>
   );
 };

@@ -27,7 +27,7 @@ export interface IDesiredJobParams {
   jobPositionIds: number[];
   jobPlacementIds: number[];
   achivements: string;
-  skills: {
+  foreignLanguages: {
     level: number;
     id: number;
   }[];
@@ -109,7 +109,11 @@ const UserApi = {
     return await axiosApi.post('/desired-jobs', params);
   },
   uploadCV: async (params: FormData) => {
-    return await axiosApi.post('/cloudinary/upload/CVs', params);
+    return await axiosApi.post('/cloudinary/upload/CVs', params, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 
   // PATCH
@@ -150,6 +154,9 @@ const UserApi = {
   },
 
   // DELETE
+  deleteCV: async (id: number): Promise<IBaseResponse> => {
+    return await axiosApi.delete(`/curriculum-vitaes/${id}`);
+  },
   deleteAchievement: async (id: number): Promise<IBaseResponse> => {
     return await axiosApi.delete(`/achivements/${id}`);
   },

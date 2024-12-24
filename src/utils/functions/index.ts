@@ -32,12 +32,28 @@ export const fetchGoogleUserInfo = async ({
   return userInfo;
 };
 
-export function formatCurrencyVN(amount: number) {
+export const formatCurrencyVN = (amount: number) => {
   if (isNaN(amount)) return '';
   return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
+};
 
-export function formatCurrencyEN(amount: number) {
+export const formatCurrencyEN = (amount: number) => {
   if (isNaN(amount)) return '';
   return new Intl.NumberFormat('en-US').format(amount);
-}
+};
+
+export const formatSalary = (
+  salaryMin: NullableNumber,
+  salaryMax: NullableNumber
+) => {
+  if (!salaryMin && !salaryMax) return 'Thương lượng';
+
+  const min = salaryMin ? formatCurrencyVN(salaryMin / 1000) : 0;
+  const max = salaryMax ? formatCurrencyVN(salaryMax / 1000) : 0;
+
+  if (min && max) return `${min}k - ${max}k VND`;
+  if (min) return `Từ ${min}k VND`;
+  if (max) return `${max}k VND`;
+
+  return 'Thương lượng';
+};

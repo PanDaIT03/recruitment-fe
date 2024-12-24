@@ -35,16 +35,16 @@ const JobApplyModal = ({
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
   const isUsingExistingCV = useMemo(() => value === 1, [value]);
-  const { data: myCV } = useFetch(['getMyCV'], UserApi.getMyCv);
+  const { data: myCVs } = useFetch(['getMyCV'], UserApi.getMyCv);
 
   const cvOptions: DefaultOptionType[] = useMemo(() => {
     return (
-      myCV?.items?.map((item) => ({
+      myCVs?.items?.map((item) => ({
         label: item?.fileName,
         value: item?.id,
       })) || []
     );
-  }, [myCV]);
+  }, [myCVs]);
 
   const handleFinish = (values: any) => {
     const { cv } = values;

@@ -17,7 +17,7 @@ import { IUser } from '~/types/Auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
-const { LoginOutlined } = icons;
+const { LoginOutlined, AuditOutlined } = icons;
 
 interface IBaseMenu {
   currentUser: IUser;
@@ -45,7 +45,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
               label: <span className="font-semibold">Hồ sơ</span>,
               children: [
                 {
-                  key: '1',
+                  key: 'personal',
                   label: (
                     <span className="text-neutral-600 font-medium">
                       Cá nhân
@@ -55,7 +55,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                   onClick: () => navigate(PATH.USER_PROFILE),
                 },
                 {
-                  key: '2',
+                  key: 'desired-job',
                   label: (
                     <span className="text-neutral-600 font-medium">
                       Công việc mong muốn
@@ -65,11 +65,12 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                   onClick: () => navigate(PATH.USER_DESIRED_JOB),
                 },
                 {
-                  key: '3',
+                  key: 'cv',
                   label: (
                     <span className="text-neutral-600 font-medium">CV</span>
                   ),
                   icon: <File width={16} height={16} />,
+                  onClick: () => navigate(PATH.USER_RESUME),
                 },
               ],
             },
@@ -81,7 +82,17 @@ export const createUserMenu = (navigate: (path: string) => void) => {
               type: 'group' as const,
               children: [
                 {
-                  key: '4',
+                  key: 'applied-jobs',
+                  label: (
+                    <span className="text-neutral-600 font-medium">
+                      Công việc đã ứng tuyển
+                    </span>
+                  ),
+                  icon: <AuditOutlined width={18} height={18} />,
+                  onClick: () => navigate(PATH.USER_APPLIED_JOB),
+                },
+                {
+                  key: 'business-approach',
                   label: (
                     <span className="text-neutral-600 font-medium">
                       Doanh nghiệp tiếp cận
@@ -93,7 +104,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
             },
             { type: 'divider' as const, dashed: true },
             {
-              key: '5',
+              key: 'user-account',
               label: (
                 <span className="text-neutral-600 font-medium">Tài khoản</span>
               ),
@@ -104,7 +115,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
         : isEmployer
           ? [
               {
-                key: '1',
+                key: 'overview',
                 label: (
                   <span className="text-neutral-600 font-medium">
                     Tổng quan
@@ -114,7 +125,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                 onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
               },
               {
-                key: '2',
+                key: 'candidate',
                 label: (
                   <span className="text-neutral-600 font-medium">Ứng viên</span>
                 ),
@@ -122,7 +133,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                 onClick: () => navigate(PATH.EMPLOYER_CANDICATES_DASHBOARD),
               },
               {
-                key: '3',
+                key: 'post-job',
                 label: (
                   <span className="text-neutral-600 font-medium">Đăng tin</span>
                 ),
@@ -131,7 +142,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                 onClick: () => navigate(PATH.EMPLOYER_POSTING),
               },
               {
-                key: '4',
+                key: 'recruitment',
                 label: (
                   <span className="text-neutral-600 font-medium">
                     Tuyển dụng
@@ -142,7 +153,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
               },
               { type: 'divider' as const },
               {
-                key: '5',
+                key: 'employer-account',
                 label: (
                   <span className="text-neutral-600 font-medium">
                     Tài khoản
@@ -161,7 +172,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                   label: <span className="font-semibold">Người tìm việc</span>,
                   children: [
                     {
-                      key: '1',
+                      key: 'user-sign-in',
                       label: (
                         <span className="text-neutral-600 font-medium">
                           Đăng nhập
@@ -171,7 +182,7 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                       onClick: () => navigate(PATH.USER_SIGN_IN),
                     },
                     {
-                      key: '2',
+                      key: 'user-sign-up',
                       label: (
                         <span className="text-neutral-600 font-medium">
                           Đăng ký tìm việc
@@ -190,17 +201,17 @@ export const createUserMenu = (navigate: (path: string) => void) => {
                   label: <span className="font-semibold">Nhà tuyển dụng</span>,
                   children: [
                     {
-                      key: '3',
+                      key: 'employer-sign-in',
                       label: (
                         <span className="text-neutral-600 font-medium">
                           Đăng nhập
                         </span>
                       ),
                       icon: <LoginOutlined />,
-                      onClick: () => navigate(PATH.EMPLOYER_SIGN_IN),
+                      onClick: () => navigate(PATH.USER_SIGN_IN),
                     },
                     {
-                      key: '4',
+                      key: 'employer-sign-up',
                       label: (
                         <span className="text-neutral-600 font-medium">
                           Đăng ký tuyển dụng

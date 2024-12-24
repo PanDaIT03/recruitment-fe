@@ -18,6 +18,7 @@ export default {
           95: '#ADDDFF',
           99: '#ADDDFF',
           100: '#FFFFFF',
+          110: '#ffac69',
         },
         secondary: {
           10: '#3C2D16',
@@ -96,6 +97,7 @@ export default {
         blue: '#1677FF',
         warning: '#DC2626',
         success: '#15803D',
+        'admin-primary': '#ffac69',
       },
       fontSize: {
         xsm: '15px',
@@ -109,6 +111,10 @@ export default {
         'header-bgHover': '#461A53',
         'bright-orange': '#F15224',
         'button-color': 'rgba(105, 31, 116, 0.1)',
+        'admin-primary': '#ffac69',
+      },
+      borderColor: {
+        primary: "#F15224",
       },
       fill: {
         dark: '#0A0A0A',

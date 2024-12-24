@@ -15,7 +15,7 @@ import ImgCrop from 'antd-img-crop';
 import { useForm } from 'antd/es/form/Form';
 import { Content } from 'antd/es/layout/layout';
 import {
-  // ChangeEvent,
+  ChangeEvent,
   Dispatch,
   ReactElement,
   ReactNode,
@@ -35,6 +35,7 @@ import {
   File,
   PersonCard,
   SkyScraper,
+  SunRise,
 } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -43,11 +44,13 @@ import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal from '~/components/Modal/Modal';
-import Select from '~/components/Select/Select';
+import CustomSelect from '~/components/Select/CustomSelect';
 import { useMessage } from '~/contexts/MessageProvider';
 import { useFetch } from '~/hooks/useFetch';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { defaultCoverImage } from '~/mocks/data';
+import { getMe } from '~/store/thunk/auth';
+import { IUser } from '~/types/Auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
@@ -73,15 +76,16 @@ interface IUserInfoForm {
   fullName: string;
   positionId: number;
   placementId: number;
-  totalYearsOfExp: number;
+  totalYearExperience: number;
 }
 
 interface ISiderProps {
+  data: IUser;
   setIsOpenInfoModal: Dispatch<SetStateAction<boolean>>;
   setIsOpenAvatarModal: Dispatch<SetStateAction<boolean>>;
 }
 
-const { EditOutlined, EnvironmentOutlined } = icons;
+const { EditOutlined, EnvironmentOutlined, AuditOutlined } = icons;
 
 const items: Items[] = [
   {
@@ -99,7 +103,7 @@ const items: Items[] = [
       },
       {
         title: 'CV',
-        href: PATH.USER_PROFILE,
+        href: PATH.USER_RESUME,
         icon: <File />,
       },
     ],
@@ -107,6 +111,11 @@ const items: Items[] = [
   {
     title: 'Công việc',
     children: [
+      {
+        title: 'Công việc đã ứng tuyển',
+        href: PATH.USER_APPLIED_JOB,
+        icon: <AuditOutlined width={18} height={18} />,
+      },
       {
         title: 'Doanh nghiệp tiếp cận',
         href: PATH.USER_PROFILE,
@@ -116,9 +125,11 @@ const items: Items[] = [
   },
 ];
 
-const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
-  const { currentUser } = useAppSelector((state) => state.auth);
-
+const Sider = ({
+  data,
+  setIsOpenInfoModal,
+  setIsOpenAvatarModal,
+}: ISiderProps) => {
   return (
     <div className="w-full h-max overflow-hidden rounded-xl bg-white shadow-card p-0 shadow lg:col-span-3">
       <div className="w-full">
@@ -136,7 +147,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
                     width={108}
                     height={108}
                     preview={false}
-                    src={currentUser.avatarUrl || defaultCoverImage}
+                    src={data.avatarUrl || defaultCoverImage}
                   />
                 </div>
               </div>
@@ -155,20 +166,32 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
             />
           </Flex>
           <div>
-            <p className="text-lg font-semibold">{currentUser.fullName}</p>
-            <p className="text-sm text-sub font-normal">{currentUser.email}</p>
+            <p className="text-lg font-semibold">{data.fullName}</p>
+            <p className="text-sm text-sub">{data.email}</p>
           </div>
-          <div className="text-sm font-medium">
-            <span>
-              {currentUser.jobPosition?.title}
-              <span className='before:content-["•"] before:mx-2 before:text-lg'></span>
-              <span className="text-sub font-normal">~ 1 năm kinh nghiệm</span>
-            </span>
-            <Flex align="center" gap={4}>
-              <EnvironmentOutlined />
-              <p>{currentUser.placement?.title}</p>
-            </Flex>
-          </div>
+          {(data.jobPosition?.title || data.placement?.title) && (
+            <div className="text-sm font-medium">
+              {data.jobPosition?.title && (
+                <span>
+                  {data.jobPosition?.title}
+                  {data.desiredJob?.totalYearExperience && (
+                    <>
+                      <span className='before:content-["•"] before:mx-2 before:text-lg'></span>
+                      <span className="text-sub">
+                        ~ {data.desiredJob?.totalYearExperience} năm kinh nghiệm
+                      </span>
+                    </>
+                  )}
+                </span>
+              )}
+              {data.placement?.title && (
+                <Flex align="center" gap={4}>
+                  <EnvironmentOutlined />
+                  <p>{data.placement?.title}</p>
+                </Flex>
+              )}
+            </div>
+          )}
         </Space>
         <div className="hidden lg:block">
           <Divider dashed className="!m-0" />
@@ -180,7 +203,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
                   <Link
                     key={childIndex}
                     to={child.href}
-                    className="flex p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5] hover:text-[#000000E0]"
+                    className="flex font-medium p-2 items-center gap-2 rounded-md cursor-pointer hover:bg-[#f5f5f5] hover:text-[#000000E0]"
                   >
                     <span>{child.icon}</span>
                     <span>{child.title}</span>
@@ -196,6 +219,7 @@ const Sider = ({ setIsOpenInfoModal, setIsOpenAvatarModal }: ISiderProps) => {
 };
 
 const UserLayout = () => {
+  const dispatch = useAppDispatch();
   const { messageApi } = useMessage();
   const [form] = useForm<IUserInfoForm>();
 
@@ -215,11 +239,15 @@ const UserLayout = () => {
     JobsAPI.getAllJobPositions
   );
 
+  const refetchUserProfile = useCallback(() => {
+    dispatch(getMe());
+  }, []);
+
   const { mutate: updateAccountInfo, isPending: isUpdateAccountInfoPending } =
     useMutation({
       mutationFn: (params: FormData) => UserApi.updateAccountInfo(params),
       onSuccess: (res) => {
-        //refetch
+        refetchUserProfile();
         setIsOpenAvatarModal(false);
         messageApi.success(res?.message || 'Cập nhật thông tin thành công');
       },
@@ -235,7 +263,7 @@ const UserLayout = () => {
       mutationFn: (params: IUpdatePersonalInfo) =>
         UserApi.updatePersonalInfo(params),
       onSuccess: (res) => {
-        //refetch
+        refetchUserProfile();
         setIsOpenInfoModal(false);
         messageApi.success(res?.message || 'Cập nhật thông tin thành công');
       },
@@ -293,31 +321,32 @@ const UserLayout = () => {
       fullName: currentUser.fullName,
       placementId: currentUser.placement?.id,
       positionId: currentUser.jobPosition?.id,
+      totalYearExperience: currentUser.desiredJob?.totalYearExperience,
     });
   }, [currentUser]);
 
-  // const handleTotalYearChange = useCallback(
-  //   (event: ChangeEvent<HTMLInputElement>) => {
-  //     const value = event.target.value,
-  //       numericValue = value.replace(/[^0-9]/g, '');
+  const handleTotalYearChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value,
+        numericValue = value.replace(/[^0-9]/g, '');
 
-  //     form.setFieldValue('totalYearsOfExp', numericValue);
-  //   },
-  //   []
-  // );
+      form.setFieldValue('totalYearExperience', numericValue);
+    },
+    []
+  );
 
-  // const handleBlurTotalYear = useCallback(
-  //   (event: React.FocusEvent<HTMLInputElement, Element>) => {
-  //     let formattedValue = '';
-  //     const value = Number(event.target.value);
+  const handleBlurTotalYear = useCallback(
+    (event: React.FocusEvent<HTMLInputElement, Element>) => {
+      let formattedValue = '';
+      const value = Number(event.target.value);
 
-  //     if (value >= 50) formattedValue = '50';
-  //     else formattedValue = value.toString();
+      if (value >= 50) formattedValue = '50';
+      else formattedValue = value.toString();
 
-  //     form.setFieldValue('totalYearsOfExp', formattedValue);
-  //   },
-  //   []
-  // );
+      form.setFieldValue('totalYearExperience', formattedValue);
+    },
+    []
+  );
 
   const handleCancelInfoModal = useCallback(() => {
     setIsOpenInfoModal(false);
@@ -345,8 +374,9 @@ const UserLayout = () => {
   const handleInfoModalFinish = useCallback((values: IUserInfoForm) => {
     const params: IUpdatePersonalInfo = {
       fullName: values.fullName,
-      jobPositionsId: values.positionId?.toString(),
-      placementsId: values.placementId?.toString(),
+      jobPositionsId: values.positionId.toString(),
+      placementsId: values.placementId.toString(),
+      totalYearExperience: values?.totalYearExperience.toString(),
     };
 
     updatePersonalInfo(params);
@@ -369,8 +399,9 @@ const UserLayout = () => {
         name: 'positionId',
         label: 'Chức vụ hiện tại',
         item: (
-          <Select
+          <CustomSelect
             allowClear
+            prefixIcon={<File />}
             placeholder="Chọn chức vụ"
             options={jobPositions?.items?.map((jobPosition) => ({
               label: jobPosition.title,
@@ -379,27 +410,32 @@ const UserLayout = () => {
           />
         ),
       },
-      // {
-      //   name: 'totalYearsOfExp',
-      //   label: 'Tổng số năm kinh nghiệm của bạn',
-      //   item: (
-      //     <Input
-      //       inputMode="numeric"
-      //       prefix={<SunRise />}
-      //       placeholder="Ví dụ: 7"
-      //       onChange={handleTotalYearChange}
-      //       onBlur={(e) => handleBlurTotalYear(e)}
-      //     />
-      //   ),
-      // },
+      ...(currentUser.desiredJob?.totalYearExperience
+        ? [
+            {
+              name: 'totalYearExperience',
+              label: 'Tổng số năm kinh nghiệm của bạn',
+              item: (
+                <Input
+                  inputMode="numeric"
+                  prefix={<SunRise />}
+                  placeholder="Ví dụ: 7"
+                  onChange={handleTotalYearChange}
+                  onBlur={(e) => handleBlurTotalYear(e)}
+                />
+              ),
+            },
+          ]
+        : []),
       {
         name: 'placementId',
         label: 'Nơi sống hiện tại',
         className: 'mb-0',
         item: (
-          <Select
+          <CustomSelect
             allowClear
             placeholder="Chọn thành phố"
+            prefixIcon={<EnvironmentOutlined />}
             options={placements?.items?.map((place) => ({
               value: place?.id,
               label: place?.title,
@@ -408,13 +444,14 @@ const UserLayout = () => {
         ),
       },
     ];
-  }, [placements]);
+  }, [currentUser, placements, jobPositions]);
 
   return (
     <Layout className="min-h-screen">
       <Header />
       <div className="w-full py-4 px-8 mx-auto max-w-7xl grid grid-cols-1 gap-4 lg:grid-cols-10 max-lg:px-4">
         <Sider
+          data={currentUser}
           setIsOpenInfoModal={setIsOpenInfoModal}
           setIsOpenAvatarModal={setIsOpenAvatarModal}
         />
@@ -433,11 +470,11 @@ const UserLayout = () => {
         onOk={() => form.submit()}
       >
         <FormWrapper form={form} onFinish={handleInfoModalFinish}>
-          {formItems.map((formItem) => {
+          {formItems.map((formItem, index) => {
             const { item, ...others } = formItem;
 
             return (
-              <FormItem key={formItem.name} {...others}>
+              <FormItem key={index} {...others}>
                 {item}
               </FormItem>
             );

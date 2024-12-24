@@ -1,4 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
+
 import { JobPostingListProps } from '~/pages/Employer/Job/ManageJob';
 import { PostingJobFormValues } from '~/pages/Employer/Job/PostingJob';
 import { TypeInterview } from '~/pages/Employer/RecruitmentList/ModalInterview';
@@ -17,8 +18,9 @@ import {
   Schedule,
   StatusJob,
 } from '~/types/Job';
+import { IPaginatedUserAppliedJobs } from '~/types/Job/appliedJob';
 
-export interface IPaginationParms {
+export interface IPaginationParams {
   page?: number;
   pageSize?: number;
 }
@@ -32,12 +34,15 @@ export interface IParamsUpdateApplicationJob {
 export const JobsAPI = {
   // GET
   getAllJobs: (
-    data: IPaginationParms & Partial<IJobList> = { page: 1, pageSize: 10 }
+    data: IPaginationParams & Partial<IJobList> = { page: 1, pageSize: 10 }
   ): Promise<IJob> => {
     const payload: AxiosRequestConfig = {
       params: data,
     };
     return axiosApi.get('/jobs/all', payload);
+  },
+  getUserAppliedJobs: async (): Promise<IPaginatedUserAppliedJobs> => {
+    return await axiosApi.get('/users-jobs/applied-jobs');
   },
   getAllJobsForEmployer: (
     statusId?: number,

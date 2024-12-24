@@ -1,10 +1,12 @@
-import { Form, List, Radio, Space } from 'antd';
+import { Form, Space } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { Box, File, Salary, Television } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
+import List from '~/components/List/List';
+import { Radio, RadioGroup } from '~/components/Radio/Radio';
 import DrawerSearch from '~/components/Search/DrawerSearch';
 import TopSearchBar from '~/components/Search/TopSearchBar';
 import CustomSelect from '~/components/Select/CustomSelect';
@@ -28,13 +30,17 @@ export interface IJobList {
   salaryMax?: number;
   categoriesId?: number;
   jobFieldsId?: number;
-  placementsId?: number;
+  placementsId?: number; // delete prop
+  placementIds?: number | string;
   workTypesId?: number;
   title?: string;
+  jobsId?: number;
   salaryRange?: any;
+  type?: string;
+  statusId?: number;
 }
 
-type IFilter = Partial<Omit<IJobList, 'page' | 'pageSize'>>;
+type IFilter = Omit<IJobList, 'page' | 'pageSize'>;
 
 const salaryOptions: DefaultOptionType[] = [
   {
@@ -59,12 +65,17 @@ const salaryOptions: DefaultOptionType[] = [
   },
 ];
 
+const defaultFilter: IFilter = {
+  statusId: 5,
+  type: 'more',
+};
+
 const JobList = () => {
   const [form] = Form.useForm();
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
-  const [filters, setFilters] = useState<IFilter>({});
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+  const [filters, setFilters] = useState<IFilter>(defaultFilter);
 
   const jobCategories = useFetch<PaginatedJobCategories>(
     ['jobCategories'],
@@ -162,19 +173,14 @@ const JobList = () => {
       }).filter(([_, value]) => value && value !== 'all')
     ) as Partial<IJobList>;
 
-    setFilters(cleanedFilters);
     handlePageChange(1);
+    setFilters({ ...cleanedFilters, ...defaultFilter });
   };
 
   const resetFilters = () => {
     form.resetFields();
-    form.setFieldsValue({
-      jobFieldsId: 'all',
-      salaryRange: 'all',
-    });
-
-    setFilters({});
     handlePageChange(1);
+    setFilters({ ...defaultFilter });
   };
 
   const handleFilterSubmit = () => {
@@ -247,8 +253,8 @@ const JobList = () => {
 
       <DrawerSearch
         form={form}
-        open={isOpenDrawer}
         title="Lọc tin"
+        open={isOpenDrawer}
         onCancel={resetFilters}
         onFilter={handleFilterSubmit}
         setIsOpenDrawer={setIsOpenDrawer}
@@ -257,31 +263,31 @@ const JobList = () => {
           <Select options={jobFieldsOptions} className="w-full h-10" />
         </FormItem>
         <FormItem name="workTypesId" label="Hình thức làm việc">
-          <Radio.Group className="flex flex-col gap-4">
+          <RadioGroup className="flex flex-col gap-4">
             {workTypes?.data?.items.map?.((type) => (
               <Radio value={type.id} key={type.id}>
                 {type.title}
               </Radio>
             ))}
-          </Radio.Group>
+          </RadioGroup>
         </FormItem>
         <FormItem name="categoriesId" label="Loại công việc">
-          <Radio.Group className="flex flex-col gap-4">
+          <RadioGroup className="flex flex-col gap-4">
             {jobCategories?.data?.items.map?.((category) => (
               <Radio value={category.id} key={category.id}>
                 {category.name}
               </Radio>
             ))}
-          </Radio.Group>
+          </RadioGroup>
         </FormItem>
         <FormItem name="salaryRange" label="Tất cả mức lương">
-          <Radio.Group className="flex flex-col gap-4">
+          <RadioGroup className="flex flex-col gap-4">
             {salaryOptions.map((option) => (
               <Radio key={option.value} value={option.value}>
                 {option.label}
               </Radio>
             ))}
-          </Radio.Group>
+          </RadioGroup>
         </FormItem>
       </DrawerSearch>
 
@@ -294,30 +300,30 @@ const JobList = () => {
           <h2 className="text-base font-semibold">Tin tuyển dụng</h2>
           <div className="text-sm text-sub font-medium">
             Tìm thấy
-            <strong className="text-primary"> {allJobs?.items?.length} </strong>
+            <strong className="text-primary">
+              {' '}
+              {allJobs?.pageInfo.totalItems}{' '}
+            </strong>
             tin tuyển dụng
           </div>
         </div>
         <List
           loading={loading}
+          skeletonCount={3}
           itemLayout="vertical"
           dataSource={allJobs?.items}
-          renderItem={(job: JobItem) => (
+          renderItem={(item) => (
             <List.Item style={{ borderBlockEnd: 0 }}>
-              <JobCard {...job} />
+              <JobCard {...item} />
             </List.Item>
           )}
-          pagination={
-            allJobs && allJobs?.items?.length
-              ? {
-                  current: currentPage,
-                  pageSize: itemsPerPage,
-                  total: allJobs?.pageInfo?.totalItems,
-                  onChange: handlePageChange,
-                  showSizeChanger: false,
-                }
-              : false
-          }
+          pagination={{
+            current: currentPage,
+            pageSize: itemsPerPage,
+            showSizeChanger: false,
+            total: allJobs?.pageInfo?.totalItems,
+            onChange: handlePageChange,
+          }}
         />
       </Space>
     </div>
