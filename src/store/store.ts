@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import { authReducer } from './reducer/auth';
+import { functionalReducer } from './reducer/functional';
 import { jobReducer } from './reducer/job';
 import { roleReducer } from './reducer/role';
 
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   jobs: jobReducer,
   role: roleReducer,
+  functional: functionalReducer,
 });
 
 export const store = configureStore({
