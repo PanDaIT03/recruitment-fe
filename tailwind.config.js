@@ -113,6 +113,9 @@ export default {
         'button-color': 'rgba(105, 31, 116, 0.1)',
         'admin-primary': '#ffac69',
       },
+      borderColor: {
+        primary: "#F15224",
+      },
       fill: {
         dark: '#0A0A0A',
         primary: '#f15224',

@@ -1,42 +1,45 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { IPaginationParms, JobsAPI } from '~/apis/job';
+import { IPaginationParams, JobsAPI } from '~/apis/job';
 import { IJobList } from '~/pages/Job/JobList/JobList';
 import { IJob, JobItem } from '~/types/Job';
 
 export const getAllJobs = createAsyncThunk<
   IJob,
-  IPaginationParms & IJobList,
+  IPaginationParams & IJobList,
   { rejectValue: string }
 >('job/getAllJobs', async (params, { rejectWithValue }) => {
   try {
     const {
+      type,
+      title,
+      page,
+      pageSize,
+      jobsId,
+      statusId,
       salaryMin,
       salaryMax,
-      categoriesId,
       jobFieldsId,
       placementIds,
       workTypesId,
-      title,
-      jobsId,
-      page,
-      pageSize,
-      statusId,
-      type = 'less',
+      categoriesId,
     } = params;
 
     const response = await JobsAPI.getAllJobs({
-      type,
+      ...(page && { page }),
+      ...(type && { type }),
+      ...(title && { title }),
+      ...(jobsId && { jobsId }),
+      ...(pageSize && { pageSize }),
+      ...(statusId && { statusId }),
       ...(salaryMin && { salaryMin }),
       ...(salaryMax && { salaryMax }),
-      ...(categoriesId && { categoriesId }),
       ...(jobFieldsId && { jobFieldsId }),
+      ...(workTypesId && { workTypesId }),
+      ...(categoriesId && { categoriesId }),
       ...(placementIds && { placementIds }),
       ...(workTypesId && { workTypesId }),
       ...(title && { title }),
       ...(jobsId && { jobsId }),
-      ...(statusId && { statusId }),
-      ...(page && { page }),
-      ...(pageSize && { pageSize }),
     });
     return response;
   } catch (error) {

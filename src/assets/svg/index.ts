@@ -1,6 +1,7 @@
 export { ReactComponent as Achievement } from './achievement.svg';
 export { ReactComponent as AddUser } from './add-user.svg';
 export { ReactComponent as Down } from './arrow-down.svg';
+export { ReactComponent as ArrowLeft } from './arrow-left.svg';
 export { ReactComponent as AvatarPlaceHolder } from './avatar-placeholder.svg';
 export { ReactComponent as BackPack } from './backpack.svg';
 export { ReactComponent as Bag } from './bag.svg';

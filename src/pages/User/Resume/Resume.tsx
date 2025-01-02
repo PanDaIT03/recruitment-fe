@@ -3,7 +3,6 @@ import {
   Divider,
   Flex,
   Image,
-  List,
   message,
   Popconfirm,
   Skeleton,
@@ -21,9 +20,9 @@ import { File } from '~/assets/svg';
 import ButtonAction from '~/components/Button/ButtonAction';
 import DownloadButton from '~/components/Button/DownloadButton';
 import Dragger from '~/components/Dragger/Dragger';
+import List from '~/components/List/List';
 import Modal from '~/components/Modal/Modal';
 import { useFetch } from '~/hooks/useFetch';
-import { IMyCV } from '~/types/User/profile';
 import icons from '~/utils/icons';
 
 const {
@@ -47,11 +46,24 @@ const Resume = () => {
     mutationFn: (params: FormData) => UserApi.uploadCV(params),
     onSuccess: (res) => {
       refetch();
-      setIsOpenModal(false);
+      handleCancel();
       message.success(res?.message || 'Upload CV thành công');
     },
-    onError: (error: any) =>
-      message.error(error?.response?.data?.message || 'Lỗi khi upload CV'),
+    onError: (error: any) => {
+      handleCancel();
+      message.error(error?.response?.data?.message || 'Lỗi khi upload CV');
+    },
+  });
+
+  const { mutate: deleteCV, isPending: isDelCVPending } = useMutation({
+    mutationFn: (id: number) => UserApi.deleteCV(id),
+    onSuccess: (res) => {
+      refetch();
+      message.success(res?.message || 'Xoá CV thành công');
+    },
+    onError: (error: any) => {
+      message.error(error?.response?.data?.message || 'Lỗi khi xoá CV');
+    },
   });
 
   const props: UploadProps = useMemo(
@@ -82,8 +94,13 @@ const Resume = () => {
     [uploadFile]
   );
 
-  const handleDelete = () => {
-    console.log('del');
+  const handleDeleteCV = (id: number) => {
+    if (myCVs && myCVs?.items?.length <= 1) {
+      message.warning('Không thể xoá tất cả CV');
+      return;
+    }
+
+    deleteCV(id);
   };
 
   const handleUpload = () => {
@@ -96,6 +113,11 @@ const Resume = () => {
     });
 
     uploadCV(formData);
+  };
+
+  const handleCancel = () => {
+    setIsOpenModal(false);
+    setUploadFile([]);
   };
 
   return (
@@ -114,68 +136,64 @@ const Resume = () => {
       <Divider className="!my-3" />
       <List
         itemLayout="horizontal"
-        dataSource={isPending ? ([1] as unknown as IMyCV[]) : myCVs?.items}
-        renderItem={(item) =>
-          isPending ? (
-            <List.Item>
-              <Skeleton avatar active title={false} paragraph={{ rows: 2 }} />
-            </List.Item>
-          ) : (
-            <List.Item
-              className="!border-0"
-              actions={[
-                <Space>
-                  <DownloadButton
-                    url={item.url}
-                    fileName={item.fileName}
-                    title={<DownloadOutlined className="text-[#691f74]" />}
+        pagination={false}
+        dataSource={myCVs?.items}
+        loading={isPending || isDelCVPending}
+        skeletonRender={() => (
+          <List.Item className="!border-0">
+            <Skeleton avatar active title={false} paragraph={{ rows: 2 }} />
+          </List.Item>
+        )}
+        renderItem={(item) => (
+          <List.Item
+            className="!border-0"
+            actions={[
+              <Space>
+                <DownloadButton
+                  url={item.url}
+                  fileName={item.fileName}
+                  title={<DownloadOutlined className="text-[#691f74]" />}
+                />
+                <Popconfirm
+                  okText="Có"
+                  cancelText="Không"
+                  title="Xoá CV này"
+                  description="Bạn có chắc chắn muốn xoá CV này?"
+                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                  onConfirm={() => handleDeleteCV(item.id)}
+                >
+                  <ButtonAction
+                    title={<CloseOutlined className="text-warning" />}
+                    className="hover:bg-light-warning"
                   />
-                  <Popconfirm
-                    okText="Có"
-                    cancelText="Không"
-                    title="Xoá CV này"
-                    description="Bạn có chắc chắn muốn xoá CV này?"
-                    icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                    onConfirm={handleDelete}
-                  >
-                    <ButtonAction
-                      title={<CloseOutlined className="text-warning" />}
-                      className="hover:bg-light-warning"
-                    />
-                  </Popconfirm>
-                </Space>,
-              ]}
-            >
-              <List.Item.Meta
-                avatar={
-                  <Image
-                    width={40}
-                    height={40}
-                    preview={false}
-                    src={PDF_Icon}
-                  />
-                }
-                title={
-                  <p className="min-w-[109px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
-                    {item?.fileName}
-                  </p>
-                }
-                description={
-                  <p className="text-sub">
-                    Tải lên {dayjs(item?.createAt).format('HH:ss DD/MM/YYYY')}
-                  </p>
-                }
-              />
-            </List.Item>
-          )
-        }
+                </Popconfirm>
+              </Space>,
+            ]}
+          >
+            <List.Item.Meta
+              avatar={
+                <Image width={40} height={40} preview={false} src={PDF_Icon} />
+              }
+              title={
+                <p className="min-w-[109px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
+                  {item?.fileName}
+                </p>
+              }
+              description={
+                <p className="text-sub">
+                  Tải lên {dayjs(item?.createAt).format('HH:ss DD/MM/YYYY')}
+                </p>
+              }
+            />
+          </List.Item>
+        )}
       />
       <Modal
-        isOpen={isOpenModal}
         title="Đăng tải CV"
+        isOpen={isOpenModal}
         loading={isUploadCVPending}
-        onCancel={() => setIsOpenModal(false)}
         onOk={handleUpload}
+        onCancel={handleCancel}
       >
         <Dragger {...props} />
       </Modal>

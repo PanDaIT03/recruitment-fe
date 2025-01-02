@@ -1,12 +1,16 @@
-import { Divider, Flex, Image, Space, Tag } from 'antd';
+import { Divider, Flex, Image, Skeleton, Space, Tag } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import dayjs from 'dayjs';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
 import { NetWorking } from '~/assets/img';
 import { Work } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
+import { useFetch } from '~/hooks/useFetch';
+import { formatSalary } from '~/utils/functions';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import PingIcon from './components/PingIcon';
@@ -22,37 +26,53 @@ const { PlusOutlined, EditOutlined } = icons;
 const DesiredJob = () => {
   const navigate = useNavigate();
 
-  const [state, setState] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const {
+    refetch,
+    isPending,
+    data: desiredJob,
+  } = useFetch(['getDesiredJob'], DesiredJobAPI.getDesiredJob);
+
+  const isHasDesiredJob = useMemo(
+    () => desiredJob && Object.keys(desiredJob).length > 1,
+    [desiredJob]
+  );
 
   const desiredJobInfo: IDesiredJobInfo[] = useMemo(() => {
     return [
       {
         title: 'Lĩnh vực',
-        content: 'IT - Phần mềm',
+        content: desiredJob?.jobField?.title,
       },
       {
         title: 'Vị trí ứng tuyển',
-        content: <Tag color="magenta">FE Dev</Tag>,
+        content: desiredJob?.desiredJobsPosition?.map((jobPosition, index) => (
+          <Tag key={index} color="magenta">
+            {jobPosition?.jobPosition?.title}
+          </Tag>
+        )),
       },
       {
         title: 'Địa điểm',
-        content: 'Hồ Chí Minh',
+        content: desiredJob?.desiredJobsPlacement
+          ?.map((jobPlacement) => jobPlacement?.placement?.title)
+          .join(', '),
       },
       {
         title: 'Mức lương kỳ vọng',
-        content: <Tag color="green">8tr VND</Tag>,
+        content: (
+          <Tag color="green">
+            {formatSalary(0, desiredJob?.salarayExpectation)}
+          </Tag>
+        ),
       },
       {
         title: 'Thời gian bắt đầu',
-        content: '30 ngày',
+        content: desiredJob?.startAfterOffer,
       },
     ];
-  }, []);
-
-  useEffect(() => {
-    setState(false);
-  }, []);
+  }, [desiredJob]);
 
   const handleCancel = useCallback(() => {
     setIsOpen(false);
@@ -65,18 +85,30 @@ const DesiredJob = () => {
           <Work />
           <h2 className="text-base font-bold">Công việc mong muốn</h2>
         </Flex>
-        <ButtonAction
-          tooltipTitle="Cập nhật"
-          title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
-          onClick={() => setIsOpen(true)}
-        />
+        {isHasDesiredJob && (
+          <ButtonAction
+            tooltipTitle="Cập nhật"
+            title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
+            onClick={() => setIsOpen(true)}
+          />
+        )}
       </Flex>
       <Divider className="!my-3" />
-      {state ? (
+      {isPending ? (
+        <>
+          <Skeleton active title={false} paragraph={{ rows: 5 }} />
+          <Divider dashed className="!m-3" />
+          <Skeleton active title={false} paragraph={{ rows: 1 }} />
+        </>
+      ) : isHasDesiredJob ? (
         <>
           <Space direction="vertical" className="w-full p-2" size="middle">
             {desiredJobInfo.map((item, index) => (
-              <Flex key={index} align="center" justify="space-between">
+              <Flex
+                key={index}
+                justify="space-between"
+                className="max-sm:flex-col sm:items-center"
+              >
                 <p className="text-sm text-sub leading-6 font-medium">
                   {item.title}
                 </p>
@@ -84,18 +116,20 @@ const DesiredJob = () => {
               </Flex>
             ))}
           </Space>
-          <Divider dashed />
+          <Divider dashed className="!m-3" />
           <Flex
-            align="center"
             justify="space-between"
-            className="px-2 pb-4 pt-2"
+            className="px-2 pb-4 pt-2 max-sm:flex-col sm:items-center"
           >
             <p className="text-sm text-sub leading-6 font-medium">
               Trạng thái chia sẻ
             </p>
-            <Flex align="center" justify="center" gap={8}>
-              <PingIcon status="pending" />
-              <p className="text-sm text-[#2563EB] font-medium">Đang duyệt</p>
+            <Flex gap={8} align="center" className="sm:justify-center">
+              <PingIcon status="success" />
+              <p className="text-sm text-lime-500 font-medium">
+                Chia sẻ vào{' '}
+                {dayjs(desiredJob?.createAt).format('HH:mm DD/MM/YYYY')}
+              </p>
             </Flex>
           </Flex>
         </>
@@ -119,7 +153,13 @@ const DesiredJob = () => {
           />
         </Flex>
       )}
-      <ModalDesiredJob isOpen={isOpen} onCancel={handleCancel} />
+      <ModalDesiredJob
+        isOpen={isOpen}
+        data={desiredJob}
+        refetch={refetch}
+        setIsOpen={setIsOpen}
+        onCancel={handleCancel}
+      />
     </>
   );
 };

@@ -27,7 +27,7 @@ export interface IDesiredJobParams {
   jobPositionIds: number[];
   jobPlacementIds: number[];
   achivements: string;
-  skills: {
+  foreignLanguages: {
     level: number;
     id: number;
   }[];
@@ -45,9 +45,9 @@ export type IUpdateAccountInfo = Partial<{
 }>;
 export type IUpdatePersonalInfo = {
   fullName: string;
-  placementsId: number;
-  jobPositionsId: number;
-  totalYearExperience?: number;
+  placementsId: string;
+  jobPositionsId: string;
+  totalYearExperience?: string;
 };
 export type IUpdateWorkExperience = IUserProfileData & { id: number };
 export type IPaginatedLanguage = IPaginatedData<ILanguageComboBox[]>;
@@ -154,6 +154,9 @@ const UserApi = {
   },
 
   // DELETE
+  deleteCV: async (id: number): Promise<IBaseResponse> => {
+    return await axiosApi.delete(`/curriculum-vitaes/${id}`);
+  },
   deleteAchievement: async (id: number): Promise<IBaseResponse> => {
     return await axiosApi.delete(`/achivements/${id}`);
   },

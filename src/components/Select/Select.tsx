@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { memo } from 'react';
 
 const Select = ({ className, ...props }: SelectProps) => {
-  const customClass = classNames('h-10', className);
+  const customClass = classNames('min-h-10', className);
 
   const handleFilterOption = (input: any, option: any) => {
     if (typeof option?.label === 'number')

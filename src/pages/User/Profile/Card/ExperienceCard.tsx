@@ -5,8 +5,8 @@ import { memo } from 'react';
 
 import UserApi from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
-import { mockFileList } from '~/mocks/data';
 import { IWorkExperience } from '~/types/User/profile';
+import { defaultImgUrl } from '~/utils/constant';
 import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
@@ -15,8 +15,6 @@ interface IProps {
   refetch: () => void;
   onEdit: (index: number, sectionType: ProfileSectionType) => void;
 }
-
-const defaultImgUrl = mockFileList[0].url;
 
 const ExperienceCard = ({ data, refetch, onEdit }: IProps) => {
   const { messageApi } = useMessage();

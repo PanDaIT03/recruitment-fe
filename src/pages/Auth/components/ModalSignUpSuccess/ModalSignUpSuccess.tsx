@@ -2,9 +2,9 @@ import { Flex } from 'antd';
 import { Dispatch, memo, SetStateAction, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Success } from '~/assets/svg';
 import Button from '~/components/Button/Button';
-import Modal from '~/components/Modal/Modal';
+import CongratulationModal from '~/components/Modal/CongratulationModal';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
 interface IProps {
@@ -12,6 +12,8 @@ interface IProps {
   isOpenModal: boolean;
   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
 }
+
+const { CloseOutlined, ArrowRightOutlined } = icons;
 
 const ModalSignUpSuccess = ({ isOpenModal, email, setIsOpenModal }: IProps) => {
   const navigate = useNavigate();
@@ -22,23 +24,26 @@ const ModalSignUpSuccess = ({ isOpenModal, email, setIsOpenModal }: IProps) => {
   }, [email]);
 
   return (
-    <Modal
+    <CongratulationModal
       isOpen={isOpenModal}
-      title="Đăng ký thành công"
-      className="min-w-[550px]"
       footer={
-        <Flex justify="end" gap={12}>
-          <Button title="Đóng" onClick={() => setIsOpenModal(false)} />
+        <Flex gap={12}>
+          <Button
+            title="Đóng"
+            iconBefore={<CloseOutlined />}
+            onClick={() => setIsOpenModal(false)}
+          />
           <Button
             fill
+            className="w-full"
             title="Đến trang đăng nhập"
+            iconAfter={<ArrowRightOutlined />}
             onClick={handleRedirectToSignIn}
           />
         </Flex>
       }
     >
       <Flex vertical align="center" className="text-center" gap={8}>
-        <Success width={100} height={100} />
         <p className="text-lg font-semibold text-green-600">
           Chúc mừng bạn đã đăng ký tài khoản thành công!
         </p>
@@ -46,7 +51,7 @@ const ModalSignUpSuccess = ({ isOpenModal, email, setIsOpenModal }: IProps) => {
           Bạn có thể chuyển đến trang đăng nhập để sử dụng tài khoản của mình.
         </p>
       </Flex>
-    </Modal>
+    </CongratulationModal>
   );
 };
 
