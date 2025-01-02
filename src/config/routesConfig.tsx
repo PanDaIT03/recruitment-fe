@@ -9,6 +9,7 @@ import EmployerLayout from '~/pages/Employer/EmployerLayout';
 import ProtectedRoute from '~/routes/ProtectedRoute';
 
 import AdminLayout from '~/layouts/AdminLayout/AdminLayout';
+import FunctionalManagement from '~/pages/Admin/Functionals/FunctionalManagement';
 import RoleManagement from '~/pages/Admin/Role/RoleManagement';
 import UserDetail from '~/pages/Admin/User/UserDetail';
 import EmployerAccountPage from '~/pages/Employer/Personal/EmployerAccountPage';
@@ -146,6 +147,11 @@ const routesConfig: CustomRouteObject[] = [
       PATH.ADMIN_ROLE_MANAGEMENT,
       ['admin'],
       <RoleManagement />
+    ),
+    createProtectedRoute(
+      PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
+      ['admin'],
+      <FunctionalManagement />
     ),
   ]),
 
