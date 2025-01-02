@@ -64,56 +64,6 @@ const MENU_ITEMS = [
     ],
   },
 ] as MenuProps['items'];
-// const MENU_ITEMS = [
-//   {
-//     key: 'dashboard',
-//     label: 'Dashboard',
-//     icon: <BellOutlined />,
-//     children: [
-//       {
-//         key: PATH.ADMIN_DASHBOARD,
-//         label: 'Tổng quan',
-//       },
-//     ],
-//   },
-//   {
-//     key: 'jobManagement',
-//     label: 'Quản lý công việc',
-//     icon: <SnippetsOutlined />,
-//     children: [
-//       {
-//         key: PATH.ADMIN_JOB_MANAGEMENT,
-//         label: 'Danh sách công việc',
-//       },
-//     ],
-//   },
-//   {
-//     key: 'userManagement',
-//     label: 'Danh sách người dùng',
-//     icon: <UserOutlined />,
-//     children: [
-//       {
-//         key: PATH.ADMIN_USER_MANAGEMENT,
-//         label: 'Danh sách người dùng',
-//       },
-//     ],
-//   },
-//   {
-//     key: 'system',
-//     label: 'Hệ thống',
-//     icon: <SettingOutlined />,
-//     children: [
-//       {
-//         key: PATH.ADMIN_ROLE_MANAGEMENT,
-//         label: 'Danh sách vai trò',
-//       },
-//       {
-//         key: PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
-//         label: 'Danh sách chức năng',
-//       },
-//     ],
-//   },
-// ] as MenuProps['items'];
 
 const { Text } = Typography;
 
@@ -159,10 +109,10 @@ const AdminLayout: React.FC = () => {
     navigate(location?.pathname, { state: { key: location?.pathname } });
   }, [firstRender]);
 
-  console.log('Key:', location.state?.key);
-  console.log('Parent Key:', defaultOpenKeys);
-  console.log('Selected Key:', location.state?.key ? [location.state.key] : []);
-  console.log('Default Open Keys:', defaultOpenKeys);
+  // console.log('Key:', location.state?.key);
+  // console.log('Parent Key:', defaultOpenKeys);
+  // console.log('Selected Key:', location.state?.key ? [location.state.key] : []);
+  // console.log('Default Open Keys:', defaultOpenKeys);
 
   return (
     <Layout className="min-h-screen">
@@ -222,7 +172,7 @@ const AdminLayout: React.FC = () => {
             </Dropdown>
           </div>
         </Header>
-        <Content className="p-6 pt-0 admin-bg">
+        <Content className="p-6 pt-3 admin-bg">
           <Text className="font-bold text-2xl text-admin-primary">{title}</Text>
           <ConfigProvider
             theme={{

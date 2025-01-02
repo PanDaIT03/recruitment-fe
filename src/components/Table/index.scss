@@ -1,19 +1,17 @@
-.ant-table-thead {
-  .ant-table-cell {
-    font-size: 14px !important;
-    line-height: 18px !important;
-    font-weight: 700 !important;
-    color: var(--admin-color-primary) !important;
-    border: none !important;
-    background-color: #2f2f41 !important;
+.admin-custom-table .ant-table-thead .ant-table-cell {
+  font-size: 14px !important;
+  line-height: 18px !important;
+  font-weight: 700 !important;
+  color: var(--admin-color-primary) !important;
+  border: none !important;
+  background-color: #2f2f41 !important;
 
-    &::before {
-      display: none;
-    }
+  &::before {
+    display: none;
   }
 }
 
-.ant-table-row {
+.admin-custom-table .ant-table-row {
   background-color: #2f2f41;
 
   .ant-table-cell {
@@ -25,12 +23,12 @@
   }
 }
 
-.ant-table-cell-fix-right-first {
+.admin-custom-table .ant-table-cell-fix-right-first {
   background-color: #2f2f41 !important;
   opacity: 1;
 }
 
-.ant-pagination-item-active {
+.admin-custom-table .ant-pagination-item-active {
   background-color: var(--admin-color-primary) !important;
   border-color: var(--admin-color-primary) !important;
 
@@ -39,7 +37,7 @@
   }
 }
 
-.ant-select-dropdown {
+.admin-custom-table > .ant-select-dropdown {
   background-color: #2f2f41;
 
   & .ant-select-item-option-selected {
@@ -59,7 +57,7 @@
   }
 }
 
-.ant-pagination-options {
+.admin-custom-table .ant-pagination-options {
   & .ant-select-selector {
     background-color: #2f2f41b3 !important;
 
@@ -75,6 +73,10 @@
   }
 }
 
-.ant-table-container .ant-table-content .ant-table-tbody .ant-table-cell svg {
-  color: var(--admin-color-primary) !important;
+.admin-custom-table .ant-table-container .ant-table-content {
+  background-color: #2f2f41b3;
+
+  & .ant-table-tbody .ant-table-cell svg {
+    color: var(--admin-color-primary) !important;
+  }
 }

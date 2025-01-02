@@ -7,12 +7,9 @@ import {
 } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import classNames from 'classnames';
-import { memo } from 'react';
 
 import { NoData } from '~/assets/svg';
 import './index.scss';
-
-interface ITableProps extends TableProps {}
 
 const CustomerEmptyData = () => {
   return (
@@ -24,16 +21,17 @@ const CustomerEmptyData = () => {
   );
 };
 
-const Table = ({
+const Table = <T extends object>({
   dataSource,
   columns,
   loading,
   pagination,
   className,
   ...passProps
-}: ITableProps) => {
+}: TableProps<T>) => {
   const paginationParams = pagination as TablePaginationConfig;
-  const tableClasses = classNames(className, '');
+  const tableClasses = classNames('admin-custom-table', className);
+
   const formattedColumns = columns?.map((col) => ({
     ...col,
     render: (value, record, index) => {
@@ -52,15 +50,15 @@ const Table = ({
   return (
     <ConfigProvider
       theme={{
-        token: {
-          colorText: 'white',
-          colorBorder: '#ffac69',
-          colorBgTextHover: '#ffac69',
-          colorBgContainer: '#2f2f41b3',
-          colorIcon: 'white',
-          colorTextDisabled: '#d3d3d3',
-          colorIconHover: '#ffac69',
-        },
+        // token: {
+        // colorText: 'white',
+        // colorBorder: '#ffac69',
+        // colorBgTextHover: '#ffac69',
+        // colorBgContainer: '#2f2f41b3',
+        // colorIcon: 'white',
+        // colorTextDisabled: '#d3d3d3',
+        // colorIconHover: '#ffac69',
+        // },
         components: {
           Table: {
             colorText: '#ff0000',
@@ -76,8 +74,8 @@ const Table = ({
         dataSource={dataSource}
         className={tableClasses}
         columns={formattedColumns}
-        rowKey={(record) => record?.id ?? 'id'}
         scroll={{ x: 'max-content' }}
+        rowKey={(_, index) => index ?? 'id'}
         rowClassName={(_, index) => (index % 2 !== 0 ? 'even-row' : '')}
         {...passProps}
         pagination={{
@@ -99,4 +97,4 @@ const Table = ({
   );
 };
 
-export default memo(Table);
+export default Table;
