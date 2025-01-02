@@ -1,4 +1,9 @@
-import { BellOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  BellOutlined,
+  SettingOutlined,
+  SnippetsOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import {
   Avatar,
   Badge,
@@ -36,28 +41,79 @@ const MENU_ITEMS = [
     ],
   },
   {
-    key: 'jobManagement',
-    label: 'Quản lý công việc',
-    icon: <SettingOutlined />,
+    key: 'management',
+    label: 'Quản lý',
+    icon: <SnippetsOutlined />,
     children: [
       {
         key: PATH.ADMIN_JOB_MANAGEMENT,
         label: 'Danh sách công việc',
       },
-    ],
-  },
-  {
-    key: 'userManagement',
-    label: 'Danh sách người dùng',
-    icon: <UserOutlined />,
-    children: [
       {
         key: PATH.ADMIN_USER_MANAGEMENT,
         label: 'Danh sách người dùng',
       },
+      {
+        key: PATH.ADMIN_ROLE_MANAGEMENT,
+        label: 'Danh sách vai trò',
+      },
+      {
+        key: PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
+        label: 'Danh sách chức năng',
+      },
     ],
   },
 ] as MenuProps['items'];
+// const MENU_ITEMS = [
+//   {
+//     key: 'dashboard',
+//     label: 'Dashboard',
+//     icon: <BellOutlined />,
+//     children: [
+//       {
+//         key: PATH.ADMIN_DASHBOARD,
+//         label: 'Tổng quan',
+//       },
+//     ],
+//   },
+//   {
+//     key: 'jobManagement',
+//     label: 'Quản lý công việc',
+//     icon: <SnippetsOutlined />,
+//     children: [
+//       {
+//         key: PATH.ADMIN_JOB_MANAGEMENT,
+//         label: 'Danh sách công việc',
+//       },
+//     ],
+//   },
+//   {
+//     key: 'userManagement',
+//     label: 'Danh sách người dùng',
+//     icon: <UserOutlined />,
+//     children: [
+//       {
+//         key: PATH.ADMIN_USER_MANAGEMENT,
+//         label: 'Danh sách người dùng',
+//       },
+//     ],
+//   },
+//   {
+//     key: 'system',
+//     label: 'Hệ thống',
+//     icon: <SettingOutlined />,
+//     children: [
+//       {
+//         key: PATH.ADMIN_ROLE_MANAGEMENT,
+//         label: 'Danh sách vai trò',
+//       },
+//       {
+//         key: PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
+//         label: 'Danh sách chức năng',
+//       },
+//     ],
+//   },
+// ] as MenuProps['items'];
 
 const { Text } = Typography;
 
@@ -91,11 +147,22 @@ const AdminLayout: React.FC = () => {
     } as MenuProps;
   }, []);
 
+  const defaultOpenKeys = useMemo(() => {
+    return (MENU_ITEMS?.find((item: any) =>
+      item?.children?.find((i: any) => i?.key === location?.state?.key)
+    )?.key ?? null) as string;
+  }, [location]);
+
   useEffect(() => {
     if (!firstRender) return;
 
     navigate(location?.pathname, { state: { key: location?.pathname } });
   }, [firstRender]);
+
+  console.log('Key:', location.state?.key);
+  console.log('Parent Key:', defaultOpenKeys);
+  console.log('Selected Key:', location.state?.key ? [location.state.key] : []);
+  console.log('Default Open Keys:', defaultOpenKeys);
 
   return (
     <Layout className="min-h-screen">
@@ -112,9 +179,13 @@ const AdminLayout: React.FC = () => {
           theme="dark"
           mode="inline"
           items={MENU_ITEMS}
-          defaultOpenKeys={[location.state?.key]}
-          selectedKeys={[location.state?.key]}
-          onSelect={(e) => navigate(e.key, { state: { key: e.key } })}
+          defaultOpenKeys={defaultOpenKeys ? [defaultOpenKeys] : []}
+          selectedKeys={location.state?.key ? [location.state.key] : []}
+          onSelect={(e) =>
+            navigate(e?.key, {
+              state: { key: e?.key, parentKey: e?.keyPath?.[1] },
+            })
+          }
         />
       </Sider>
       <Layout>

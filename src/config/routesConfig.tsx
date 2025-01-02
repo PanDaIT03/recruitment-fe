@@ -2,16 +2,18 @@ import React, { ComponentType, lazy, ReactNode } from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
 import AuthLayout from '~/layouts/AuthLayout';
+import JobApplicationLayout from '~/layouts/JobApplicationLayout';
 import MainLayout from '~/layouts/MainLayout';
 import UserLayout from '~/layouts/UserLayout';
 import EmployerLayout from '~/pages/Employer/EmployerLayout';
 import ProtectedRoute from '~/routes/ProtectedRoute';
-import JobApplicationLayout from '~/layouts/JobApplicationLayout';
 
-import PATH from '~/utils/path';
 import AdminLayout from '~/layouts/AdminLayout/AdminLayout';
+import FunctionalManagement from '~/pages/Admin/Functionals/FunctionalManagement';
+import RoleManagement from '~/pages/Admin/Role/RoleManagement';
 import UserDetail from '~/pages/Admin/User/UserDetail';
 import EmployerAccountPage from '~/pages/Employer/Personal/EmployerAccountPage';
+import PATH from '~/utils/path';
 
 const AddNewCandicate = lazy(
   () => import('~/pages/Employer/Candicates/AddNewCandicate')
@@ -141,6 +143,16 @@ const routesConfig: CustomRouteObject[] = [
       <UserManagement />
     ),
     createProtectedRoute(PATH.ADMIN_USER_DETAIL, ['admin'], <UserDetail />),
+    createProtectedRoute(
+      PATH.ADMIN_ROLE_MANAGEMENT,
+      ['admin'],
+      <RoleManagement />
+    ),
+    createProtectedRoute(
+      PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
+      ['admin'],
+      <FunctionalManagement />
+    ),
   ]),
 
   // Employer

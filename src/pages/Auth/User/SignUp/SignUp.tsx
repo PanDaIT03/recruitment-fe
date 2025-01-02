@@ -52,7 +52,7 @@ const SignUp = () => {
 
   const handleFinish = useCallback(
     async (values: IBaseUser) => {
-      const roleId = roles.find((role) => role.title === ROLE.USER)?.id;
+      const roleId = roles.items.find((role) => role.title === ROLE.USER)?.id;
 
       if (!roleId) {
         toast.error('Lỗi không tìm thấy chức vụ');

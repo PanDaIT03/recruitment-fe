@@ -1,9 +1,10 @@
 import { Col, Form, Row, Space, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import classNames from 'classnames';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import classNames from 'classnames';
+import { IPaginationParms } from '~/apis/job';
 import { Eye, FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Content from '~/components/Content/Content';
@@ -13,6 +14,7 @@ import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
+import { IJobList } from '~/pages/Job/JobList/JobList';
 import { getAllJobs } from '~/store/thunk/job';
 import JobFilterBox from './JobFilterBox';
 
@@ -29,8 +31,14 @@ const JobManagement: React.FC = () => {
     pageSize: Number(queryParams.get('pageSize') || 10),
   };
 
-  const [filterParams, setFilterParams] = useState({} as any),
+  const [filterParams, setFilterParams] = useState({
+      type: 'more',
+    } as any),
     [isOpenFilter, setIsOpenFilter] = useState(false);
+
+  const defaultFilter: IPaginationParms & Partial<IJobList> = useMemo(() => {
+    return { type: 'more' };
+  }, []);
 
   const {
     currentPage,
@@ -130,7 +138,7 @@ const JobManagement: React.FC = () => {
         ),
       },
     ] as ColumnsType<any>;
-  }, []);
+  }, [currentPage, itemsPerPage]);
 
   useEffect(() => {
     setTitle('Danh sách công việc');
@@ -144,20 +152,22 @@ const JobManagement: React.FC = () => {
     setIsOpenFilter((prev) => !prev);
   }, []);
 
-  const handleFinish = useCallback((values: any) => {
-    console.log(values);
-
-    setFilterParams({
-      ...values,
-      ...(values.placementIds && {
-        placementIds: values.placementIds.join(','),
-      }),
-    });
-  }, []);
+  const handleFinish = useCallback(
+    (values: any) => {
+      setFilterParams({
+        ...defaultFilter,
+        ...values,
+        ...(values.placementIds && {
+          placementIds: values.placementIds.join(','),
+        }),
+      });
+    },
+    [defaultFilter]
+  );
 
   const handleCancel = useCallback(() => {
-    setFilterParams({});
-  }, []);
+    setFilterParams({ ...defaultFilter });
+  }, [defaultFilter]);
 
   return (
     <>
@@ -176,7 +186,6 @@ const JobManagement: React.FC = () => {
       <JobFilterBox
         form={form}
         open={isOpenFilter}
-        job={{ items: allJobs?.items, loading: loading }}
         onFinish={handleFinish}
         onCancel={handleCancel}
       />

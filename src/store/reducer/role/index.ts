@@ -1,15 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getAllRoles } from '~/store/thunk/role';
+import { PageInfo } from '~/types/Job';
 import { IRole } from '~/types/Role';
 
 interface IRoleState {
   loading?: boolean;
-  roles: IRole[];
+  roles: {
+    items: IRole[];
+    pageInfo: PageInfo;
+  };
 }
 
 const initialState: IRoleState = {
   loading: false,
-  roles: [] as IRole[],
+  roles: {
+    items: [] as IRole[],
+    pageInfo: {} as PageInfo,
+  },
+  // roles: [] as IRole[],
 };
 
 const roleSlice = createSlice({
@@ -22,14 +30,11 @@ const roleSlice = createSlice({
         state.loading = true;
       })
       .addCase(getAllRoles.fulfilled, (state, action) => {
-        const { items } = action.payload;
-
         state.loading = false;
-        state.roles = items;
+        state.roles = action.payload;
       })
       .addCase(getAllRoles.rejected, (state) => {
         state.loading = false;
-        state.roles = [];
       });
   },
 });

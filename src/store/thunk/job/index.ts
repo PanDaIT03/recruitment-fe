@@ -37,6 +37,9 @@ export const getAllJobs = createAsyncThunk<
       ...(workTypesId && { workTypesId }),
       ...(categoriesId && { categoriesId }),
       ...(placementIds && { placementIds }),
+      ...(workTypesId && { workTypesId }),
+      ...(title && { title }),
+      ...(jobsId && { jobsId }),
     });
     return response;
   } catch (error) {
