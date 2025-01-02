@@ -9,8 +9,7 @@ import { StatusAPIs } from '~/apis/status';
 import FilterBox from '~/components/FilterBox/FilterBox';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { IGetAllStatusParams } from '~/types/Status';
-import { colSpan } from '~/utils/constant';
-import { SELECT_PROPS } from '../constants';
+import { colSpan, SELECT_PROPS } from '~/utils/constant';
 
 interface IJobFilterBoxProps {
   open: boolean;

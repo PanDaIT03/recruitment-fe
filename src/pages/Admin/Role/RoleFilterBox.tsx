@@ -1,15 +1,16 @@
+import { useMutation } from '@tanstack/react-query';
 import { Col, FormInstance, message, Row, Typography } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
+import { DefaultOptionType } from 'antd/es/select';
 import { memo, useEffect, useState } from 'react';
 
-import { useMutation } from '@tanstack/react-query';
-import { DefaultOptionType } from 'antd/es/select';
-import { IPaginationParms } from '~/apis/job';
+// import { IPaginationParms } from '~/apis/job';
+import { IPaginationParams } from '~/apis/job';
 import { RoleApi } from '~/apis/role/role';
 import FilterBox from '~/components/FilterBox/FilterBox';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { IRole } from '~/types/Role';
-import { SELECT_PROPS } from '../constants';
+import { SELECT_PROPS } from '~/utils/constant';
 
 interface IRoleFilterBoxProps {
   open: boolean;
@@ -30,7 +31,7 @@ const RoleFilterBox = ({
 
   const { mutate: getAllRolesMutate, isPending: isGetAllRolesMutatePending } =
     useMutation({
-      mutationFn: (params: IPaginationParms & Partial<IRole>) =>
+      mutationFn: (params: IPaginationParams & Partial<IRole>) =>
         RoleApi.getAllRoles(params),
       onSuccess: (res: any) => {
         if (res?.items)
