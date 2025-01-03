@@ -20,6 +20,7 @@ const PATH = {
   ADMIN_JOB_MANAGEMENT: '/admin/job-management',
   ADMIN_ROLE_MANAGEMENT: '/admin/role-management',
   ADMIN_FUNCTIONAL_MANAGEMENT: '/admin/functional-management',
+  ADMIN_FUNCTIONAL_GROUP_MANAGEMENT: '/admin/functional-group-management',
   // Employer
   EMPLOYER_DASHBOARD: '/employer/dashboard',
   EMPLOYER_POSTING: '/employer/posting-job',

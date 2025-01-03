@@ -40,6 +40,9 @@ const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const UserAppliedJob = lazy(() => import('~/pages/User/AppliedJob/AppliedJob'));
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
+const FunctionalGroupManagement = lazy(
+  () => import('~/pages/Admin/FunctionalGroup/FunctionalGroup')
+);
 const PostingJob = lazy(() => import('~/pages/Employer/Job/PostingJob'));
 const UserDesiredJob = lazy(() => import('~/pages/User/DesiredJob/DesiredJob'));
 const EmployerDashboard = lazy(
@@ -152,6 +155,11 @@ const routesConfig: CustomRouteObject[] = [
       PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
       ['admin'],
       <FunctionalManagement />
+    ),
+    createProtectedRoute(
+      PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT,
+      ['admin'],
+      <FunctionalGroupManagement />
     ),
   ]),
 

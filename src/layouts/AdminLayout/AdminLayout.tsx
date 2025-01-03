@@ -1,6 +1,5 @@
 import {
   BellOutlined,
-  SettingOutlined,
   SnippetsOutlined,
   UserOutlined,
 } from '@ant-design/icons';
@@ -60,6 +59,10 @@ const MENU_ITEMS = [
       {
         key: PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
         label: 'Danh sách chức năng',
+      },
+      {
+        key: PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT,
+        label: 'Danh sách nhóm chức năng',
       },
     ],
   },
