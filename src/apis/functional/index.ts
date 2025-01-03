@@ -1,8 +1,10 @@
 import axiosApi from '~/services/axios';
 
-interface IGetAllFunctionalParams {
-  page: number;
-  pageSize: number;
+export interface IGetAllFunctionalParams {
+  page?: number;
+  pageSize?: number;
+  title?: string;
+  code?: string;
 }
 
 export interface ICreateFunctionalParams {
@@ -15,7 +17,7 @@ export interface IUpdateFunctionalParams extends ICreateFunctionalParams {
 }
 
 export const FunctionalAPI = {
-  getAllFunctionals: async (params?: IGetAllFunctionalParams) => {
+  getAllFunctionals: async (params: IGetAllFunctionalParams) => {
     return await axiosApi.get('/functionals/all', { params });
   },
   createFunctional: async (params: ICreateFunctionalParams) => {

@@ -2,12 +2,13 @@ import { useMutation } from '@tanstack/react-query';
 import { Col, Flex, message, Popconfirm, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
-import classNames from 'classnames';
 import { memo, useCallback, useMemo, useState } from 'react';
 
+import dayjs from 'dayjs';
 import {
   FunctionalAPI,
   ICreateFunctionalParams,
+  IGetAllFunctionalParams,
   IUpdateFunctionalParams,
 } from '~/apis/functional';
 import { FilterAdmin } from '~/assets/svg';
@@ -17,6 +18,7 @@ import Content from '~/components/Content/Content';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
+import Modal from '~/components/Modal/Modal';
 import Table from '~/components/Table/Table';
 import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
@@ -24,7 +26,6 @@ import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionals } from '~/store/thunk/functional';
 import { IFunctionalItem } from '~/types/Functional';
 import icons from '~/utils/icons';
-import AdminModal from '../components/AdminModal/AdminModal';
 import FilterFunctional from './FilterFunctional';
 
 interface IForm {
@@ -49,6 +50,8 @@ const FunctionalManagement = () => {
   const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const [editIndex, setEditIndex] = useState(-1);
+  const [filters, setFilters] = useState<IGetAllFunctionalParams>();
+
   const { functionals, loading } = useAppSelector((state) => state.functional);
 
   const { mutate: createFunctional, isPending: isCreateFunctionalPending } =
@@ -59,7 +62,7 @@ const FunctionalManagement = () => {
         message.success(res?.message || 'Tạo mới thành công');
 
         handleModalCancel();
-        dispatch(getAllFunctionals());
+        refetchFunctionals();
       },
       onError: (error: any) => {
         message.error(
@@ -76,7 +79,7 @@ const FunctionalManagement = () => {
         message.success(res?.message || 'Cập nhật thành công');
 
         handleModalCancel();
-        dispatch(getAllFunctionals());
+        refetchFunctionals();
       },
       onError: (error: any) => {
         message.error(
@@ -88,10 +91,8 @@ const FunctionalManagement = () => {
   const { mutate: deleteFunctional } = useMutation({
     mutationFn: (id: number) => FunctionalAPI.deleteFunctional(id),
     onSuccess: (res) => {
-      console.log(res);
-
       message.success(res?.message || 'Xóa thành công');
-      dispatch(getAllFunctionals());
+      refetchFunctionals();
     },
     onError: (error: any) => {
       message.error(
@@ -106,13 +107,14 @@ const FunctionalManagement = () => {
   };
 
   const { currentPage, itemsPerPage, handlePageChange } = usePagination({
+    extraParams: filters,
+    items: functionals?.items,
     fetchAction: getAllFunctionals,
     pageInfo: {
       currentPage: paginationParams.page,
       itemsPerPage: paginationParams.pageSize,
       totalItems: functionals?.pageInfo?.totalItems || 0,
     },
-    items: functionals?.items,
   });
 
   const columns = useMemo(() => {
@@ -133,6 +135,18 @@ const FunctionalManagement = () => {
         width: 50,
         title: 'Mã',
         dataIndex: 'code',
+      },
+      {
+        width: 180,
+        title: 'Người tạo',
+        dataIndex: ['tcreateUser', 'fullName'],
+      },
+      {
+        width: 200,
+        title: 'Ngày tạo',
+        dataIndex: 'createDate',
+        render: (value: string) =>
+          value ? dayjs(value).format('DD/MM/YYYY HH:MM') : '-',
       },
       {
         width: 50,
@@ -168,6 +182,16 @@ const FunctionalManagement = () => {
       },
     ] as ColumnsType<IFunctionalItem>;
   }, [paginationParams]);
+
+  const refetchFunctionals = useCallback(() => {
+    const params: IGetAllFunctionalParams = { ...paginationParams, ...filters };
+    dispatch(getAllFunctionals(params));
+  }, [filters, paginationParams]);
+
+  const handleCancelFilter = useCallback(() => {
+    setIsOpenFilter(false);
+    setFilters({});
+  }, []);
 
   const handleEdit = useCallback(
     (record: IFunctionalItem) => {
@@ -215,23 +239,25 @@ const FunctionalManagement = () => {
         <Col>
           <Button
             title={<FilterAdmin />}
-            className={classNames(
-              'text-admin-primary border-primary-110 hover:bg-primary-110 hover:text-white',
-              isOpenFilter && 'text-white bg-admin-primary'
-            )}
-            onClick={() => setIsOpenFilter(true)}
+            className={'bg-white'}
+            onClick={() => setIsOpenFilter(!isOpenFilter)}
           />
         </Col>
         <Col>
           <Button
+            fill
             title="Tạo"
             iconBefore={<PlusOutlined />}
             onClick={() => setIsOpenModal(true)}
           />
         </Col>
       </Row>
-      <FilterFunctional />
-      <Content className="!bg-[#2f2f41b3]">
+      <FilterFunctional
+        isOpen={isOpenFilter}
+        onCancel={handleCancelFilter}
+        onFinish={(values) => setFilters({ ...values })}
+      />
+      <Content>
         <Table<IFunctionalItem>
           loading={loading}
           columns={columns}
@@ -245,8 +271,8 @@ const FunctionalManagement = () => {
           }}
         />
       </Content>
-      <AdminModal
-        open={isOpenModal}
+      <Modal
+        isOpen={isOpenModal}
         title="Thêm chức năng"
         footer={
           <Flex justify="end" gap={16}>
@@ -271,7 +297,6 @@ const FunctionalManagement = () => {
           <FormItem
             label="Mã"
             name="code"
-            labelClassName="text-white"
             rules={[{ required: true, message: 'Vui lòng nhập mã' }]}
           >
             <Input />
@@ -279,13 +304,12 @@ const FunctionalManagement = () => {
           <FormItem
             label="Chức năng"
             name="title"
-            labelClassName="text-white"
             rules={[{ required: true, message: 'Vui lòng nhập chức năng' }]}
           >
             <Input />
           </FormItem>
         </FormWrapper>
-      </AdminModal>
+      </Modal>
     </>
   );
 };

@@ -23,7 +23,7 @@ const AdminDashboard: React.FC = () => {
   ];
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen">
       <Row gutter={16}>
         <Col span={8}>
           <Card className="shadow-lg">

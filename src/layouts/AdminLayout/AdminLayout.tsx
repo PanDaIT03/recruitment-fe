@@ -1,8 +1,4 @@
-import {
-  BellOutlined,
-  SnippetsOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { BellOutlined, SnippetsOutlined } from '@ant-design/icons';
 import {
   Avatar,
   Badge,
@@ -10,22 +6,27 @@ import {
   Button,
   ConfigProvider,
   Dropdown,
+  Flex,
   Layout,
   Menu,
   MenuProps,
   Typography,
 } from 'antd';
+import classNames from 'classnames';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
+import { AvatarPlaceHolder, HeaderLogoPrimary } from '~/assets/svg';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import './index.scss';
 
+const { Text } = Typography;
 const { Header, Sider, Content } = Layout;
-const { MenuUnfoldOutlined, MenuFoldOutlined } = icons;
+const { MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, LogoutOutlined } =
+  icons;
 
 const MENU_ITEMS = [
   {
@@ -68,8 +69,6 @@ const MENU_ITEMS = [
   },
 ] as MenuProps['items'];
 
-const { Text } = Typography;
-
 const AdminLayout: React.FC = () => {
   const navigate = useNavigate(),
     location = useLocation();
@@ -90,11 +89,13 @@ const AdminLayout: React.FC = () => {
       items: [
         {
           key: '1',
+          icon: <UserOutlined />,
           label: <Link to="/admin/profile">Trang cá nhân</Link>,
         },
         {
           key: '2',
-          label: <p>Đăng xuất</p>,
+          icon: <LogoutOutlined />,
+          label: <span>Đăng xuất</span>,
         },
       ],
     } as MenuProps;
@@ -112,25 +113,29 @@ const AdminLayout: React.FC = () => {
     navigate(location?.pathname, { state: { key: location?.pathname } });
   }, [firstRender]);
 
-  // console.log('Key:', location.state?.key);
-  // console.log('Parent Key:', defaultOpenKeys);
-  // console.log('Selected Key:', location.state?.key ? [location.state.key] : []);
-  // console.log('Default Open Keys:', defaultOpenKeys);
-
   return (
     <Layout className="min-h-screen">
       <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={toggleCollapsed}
-        theme="dark"
         width={250}
+        collapsible
+        theme="light"
         trigger={null}
+        collapsed={collapsed}
+        className="drop-shadow-lg"
+        onCollapse={toggleCollapsed}
       >
-        <div className="p-4 text-center text-[#ffac69]">LOGO</div>
+        <Flex justify="center" className="py-2">
+          <HeaderLogoPrimary
+            className={classNames(
+              'h-full cursor-pointer',
+              collapsed ? 'max-w-7' : 'max-w-11'
+            )}
+            onClick={() => navigate(PATH.ROOT)}
+          />
+        </Flex>
         <Menu
-          theme="dark"
           mode="inline"
+          theme="light"
           items={MENU_ITEMS}
           defaultOpenKeys={defaultOpenKeys ? [defaultOpenKeys] : []}
           selectedKeys={location.state?.key ? [location.state.key] : []}
@@ -142,40 +147,42 @@ const AdminLayout: React.FC = () => {
         />
       </Sider>
       <Layout>
-        <Header className="flex items-center justify-between admin-bg px-4 shadow-md">
+        <Header className="sticky flex bg-white items-center justify-between px-4 shadow-md top-0 right-0 z-50 rounded-b-md">
           <div>
             <Button
               type="text"
               icon={
                 collapsed ? (
-                  <MenuUnfoldOutlined className="text-[#ffac69]" />
+                  <MenuUnfoldOutlined className="text-[#f15224]" />
                 ) : (
-                  <MenuFoldOutlined className="text-[#ffac69]" />
+                  <MenuFoldOutlined className="text-[#f15224]" />
                 )
               }
-              onClick={() => setCollapsed(!collapsed)}
               style={{
                 fontSize: '16px',
               }}
+              onClick={() => setCollapsed(!collapsed)}
             />
           </div>
           <div className="flex items-center justify-end mt-2 gap-4">
             <Badge count={5}>
-              <BellOutlined
-                className="text-[#ffac69]"
-                style={{ fontSize: '18px' }}
-              />
+              <BellOutlined style={{ fontSize: '18px' }} />
             </Badge>
-            <Dropdown menu={dropdownMenu}>
+            <Dropdown
+              arrow
+              menu={dropdownMenu}
+              placement="bottomLeft"
+              trigger={['click']}
+            >
               <Avatar
-                size="large"
-                className="bg-white"
-                icon={<UserOutlined className="text-[#ffac69]" />}
+                alt="avatar"
+                className="!w-8 !h-8 border-gray-200 border cursor-pointer"
+                src={<AvatarPlaceHolder className="!w-8 !h-8" />}
               />
             </Dropdown>
           </div>
         </Header>
-        <Content className="p-6 pt-3 admin-bg">
+        <Content className="p-6 pt-3">
           <Text className="font-bold text-2xl text-admin-primary">{title}</Text>
           <ConfigProvider
             theme={{
