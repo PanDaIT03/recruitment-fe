@@ -70,6 +70,8 @@ const MENU_ITEMS = [
 ] as MenuProps['items'];
 
 const AdminLayout: React.FC = () => {
+  const firstRender = useRef(true);
+
   const navigate = useNavigate(),
     location = useLocation();
 
@@ -77,8 +79,6 @@ const AdminLayout: React.FC = () => {
     { breadcrumb } = useBreadcrumb();
 
   const [collapsed, setCollapsed] = useState(false);
-
-  const firstRender = useRef(true);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -183,21 +183,23 @@ const AdminLayout: React.FC = () => {
           </div>
         </Header>
         <Content className="p-6 pt-3">
-          <Text className="font-bold text-2xl text-admin-primary">{title}</Text>
+          <Text className="font-bold text-2xl text-[#f15227]">{title}</Text>
           <ConfigProvider
             theme={{
               components: {
                 Breadcrumb: {
-                  itemColor: 'white',
-                  lastItemColor: '#ffac69',
-                  separatorColor: 'white',
+                  itemColor: '#959292',
+                  lastItemColor: '#f15227',
+                  separatorColor: '#f15227',
                 },
               },
             }}
           >
             <Breadcrumb items={breadcrumb} />
           </ConfigProvider>
-          <Outlet />
+          <div className="mt-4">
+            <Outlet />
+          </div>
         </Content>
       </Layout>
     </Layout>

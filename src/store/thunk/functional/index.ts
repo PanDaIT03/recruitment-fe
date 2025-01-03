@@ -7,8 +7,15 @@ export const getAllFunctionals = createAsyncThunk(
   'functionals/getAllFunctionals',
   async (params: IGetAllFunctionalParams, { rejectWithValue }) => {
     try {
-      const response = await FunctionalAPI.getAllFunctionals(params);
+      const { page, pageSize, title, code } = params;
+      const formattedParams: IGetAllFunctionalParams = {
+        ...(page && { page }),
+        ...(pageSize && { pageSize }),
+        ...(title && { title: title?.trim() }),
+        ...(code && { code: code?.trim() }),
+      };
 
+      const response = await FunctionalAPI.getAllFunctionals(formattedParams);
       return response;
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
