@@ -35,6 +35,7 @@ export { ReactComponent as LeftArrow } from './left-arrow.svg';
 export { ReactComponent as Lightning } from './lightning.svg';
 export { ReactComponent as Link } from './link.svg';
 export { ReactComponent as Location } from './location.svg';
+export { ReactComponent as HeaderLogoPrimary } from './logo-primary.svg';
 export { ReactComponent as LogoTextColor } from './logo-text-color.svg';
 export { ReactComponent as HeaderLogoFillColor } from './logo-text-fill-color.svg';
 export { ReactComponent as HeaderLogo } from './logo-text-mix-white.svg';
@@ -59,4 +60,3 @@ export { ReactComponent as UserAvatar } from './user_avatar.svg';
 export { ReactComponent as Users } from './users.svg';
 export { ReactComponent as WelComeBackCat } from './welcome-back-cat.svg';
 export { ReactComponent as Work } from './work.svg';
-

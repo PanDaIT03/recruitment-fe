@@ -4,12 +4,14 @@ import { ReactElement } from 'react';
 
 type IProps = {
   children: ReactElement;
+  labelClassName?: string;
   childrenSelected?: boolean;
 } & FormItemProps;
 
 const FormItem = ({
   children,
   className,
+  labelClassName,
   childrenSelected = false,
   ...props
 }: IProps) => {
@@ -21,7 +23,11 @@ const FormItem = ({
       className={customClass}
       labelCol={{ span: props.label ? 24 : 0 }}
       initialValue={childrenSelected ? 'all' : undefined}
-      label={<span className="font-medium">{props.label}</span>}
+      label={
+        <span className={classNames('font-medium', labelClassName)}>
+          {props.label}
+        </span>
+      }
     >
       {children}
     </Form.Item>

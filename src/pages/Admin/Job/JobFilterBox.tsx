@@ -6,11 +6,12 @@ import { memo, useEffect, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { StatusAPIs } from '~/apis/status';
+import Content from '~/components/Content/Content';
 import FilterBox from '~/components/FilterBox/FilterBox';
+import FormWrapper from '~/components/Form/FormWrapper';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { IGetAllStatusParams } from '~/types/Status';
-import { colSpan } from '~/utils/constant';
-import { SELECT_PROPS } from '../constants';
+import { colSpan, SELECT_PROPS } from '~/utils/constant';
 
 interface IJobFilterBoxProps {
   open: boolean;
@@ -132,52 +133,55 @@ const JobFilterBox = ({
   }, [open]);
 
   return (
-    <FilterBox open={open} form={form} onFinish={onFinish} onCancel={onCancel}>
-      <Row gutter={{ xs: 8, sm: 14 }}>
-        <Col span={colSpan}>
-          <FormItem label="Hình thức làm việc" name="workTypesId">
-            <CustomSelect
-              placeholder="Chọn hình thức làm việc"
-              options={workTypeOptions}
-              loading={isGetAllWorkTypesPending}
-              {...SELECT_PROPS}
-            />
-          </FormItem>
-        </Col>
-        <Col span={colSpan}>
-          <FormItem label="Công việc" name="jobsId">
-            <CustomSelect
-              placeholder="Chọn công việc"
-              options={jobOptions}
-              loading={isGetAllJobsMutatePending}
-              {...SELECT_PROPS}
-            />
-          </FormItem>
-        </Col>
-        <Col span={colSpan}>
-          <FormItem label="Khu vực" name="placementIds">
-            <CustomSelect
-              mode="multiple"
-              maxTagCount={4}
-              placeholder="Chọn khu vực"
-              options={placementOptions}
-              loading={isGetAllPlacementsMutatePending}
-              {...SELECT_PROPS}
-            />
-          </FormItem>
-        </Col>
-        <Col span={colSpan}>
-          <FormItem label="Trạng thái" name="statusId">
-            <CustomSelect
-              placeholder="Chọn trạng thái"
-              options={statusOptions}
-              loading={isGetAllStatusMutatePending}
-              {...SELECT_PROPS}
-            />
-          </FormItem>
-        </Col>
-      </Row>
-    </FilterBox>
+    // <FilterBox open={open} form={form} onFinish={onFinish} onCancel={onCancel}></FilterBox>
+    <Content isOpen={open}>
+      <FormWrapper form={form} onFinish={onFinish} onCancel={onCancel}>
+        <Row gutter={{ xs: 8, sm: 14 }}>
+          <Col span={colSpan}>
+            <FormItem label="Hình thức làm việc" name="workTypesId">
+              <CustomSelect
+                placeholder="Chọn hình thức làm việc"
+                options={workTypeOptions}
+                loading={isGetAllWorkTypesPending}
+                // {...SELECT_PROPS}
+              />
+            </FormItem>
+          </Col>
+          <Col span={colSpan}>
+            <FormItem label="Công việc" name="jobsId">
+              <CustomSelect
+                placeholder="Chọn công việc"
+                options={jobOptions}
+                loading={isGetAllJobsMutatePending}
+                // {...SELECT_PROPS}
+              />
+            </FormItem>
+          </Col>
+          <Col span={colSpan}>
+            <FormItem label="Khu vực" name="placementIds">
+              <CustomSelect
+                mode="multiple"
+                maxTagCount={4}
+                placeholder="Chọn khu vực"
+                options={placementOptions}
+                loading={isGetAllPlacementsMutatePending}
+                // {...SELECT_PROPS}
+              />
+            </FormItem>
+          </Col>
+          <Col span={colSpan}>
+            <FormItem label="Trạng thái" name="statusId">
+              <CustomSelect
+                placeholder="Chọn trạng thái"
+                options={statusOptions}
+                loading={isGetAllStatusMutatePending}
+                // {...SELECT_PROPS}
+              />
+            </FormItem>
+          </Col>
+        </Row>
+      </FormWrapper>
+    </Content>
   );
 };
 

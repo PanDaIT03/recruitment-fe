@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { IPaginationParms } from '~/apis/job';
+import { IPaginationParams } from '~/apis/job';
 import { Eye, FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Content from '~/components/Content/Content';
@@ -36,7 +36,7 @@ const JobManagement: React.FC = () => {
     } as any),
     [isOpenFilter, setIsOpenFilter] = useState(false);
 
-  const defaultFilter: IPaginationParms & Partial<IJobList> = useMemo(() => {
+  const defaultFilter: IPaginationParams & Partial<IJobList> = useMemo(() => {
     return { type: 'more' };
   }, []);
 
@@ -175,10 +175,7 @@ const JobManagement: React.FC = () => {
         <Col>
           <Button
             title={<FilterAdmin />}
-            className={classNames(
-              'text-admin-primary border-primary-110 hover:bg-primary-110 hover:text-white',
-              isOpenFilter && 'text-white bg-admin-primary'
-            )}
+            className={'bg-white'}
             onClick={handleOnFilterButtonClick}
           />
         </Col>
@@ -189,7 +186,7 @@ const JobManagement: React.FC = () => {
         onFinish={handleFinish}
         onCancel={handleCancel}
       />
-      <Content className="!bg-[#2f2f41b3]">
+      <Content>
         <Table
           loading={loading}
           dataSource={jobItems}
