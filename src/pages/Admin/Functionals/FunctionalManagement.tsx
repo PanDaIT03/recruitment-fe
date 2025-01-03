@@ -127,7 +127,7 @@ const FunctionalManagement = () => {
           index + 1 + paginationParams.pageSize * (paginationParams.page - 1),
       },
       {
-        width: 200,
+        width: 250,
         dataIndex: 'title',
         title: 'Tên chức năng',
       },
@@ -139,12 +139,24 @@ const FunctionalManagement = () => {
       {
         width: 180,
         title: 'Người tạo',
-        dataIndex: ['tcreateUser', 'fullName'],
+        dataIndex: ['creator', 'fullName'],
       },
       {
         width: 200,
         title: 'Ngày tạo',
-        dataIndex: 'createDate',
+        dataIndex: 'createAt',
+        render: (value: string) =>
+          value ? dayjs(value).format('DD/MM/YYYY HH:MM') : '-',
+      },
+      {
+        width: 180,
+        title: 'Người chỉnh sửa',
+        dataIndex: ['updater', 'fullName'],
+      },
+      {
+        width: 200,
+        title: 'Ngày chỉnh sửa',
+        dataIndex: 'updateAt',
         render: (value: string) =>
           value ? dayjs(value).format('DD/MM/YYYY HH:MM') : '-',
       },
