@@ -11,6 +11,10 @@ import classNames from 'classnames';
 import { NoData } from '~/assets/svg';
 import './index.scss';
 
+interface IBaseTWithID {
+  id: number | string;
+}
+
 const CustomerEmptyData = () => {
   return (
     <Empty
@@ -21,7 +25,7 @@ const CustomerEmptyData = () => {
   );
 };
 
-const Table = <T extends object>({
+const Table = <T extends IBaseTWithID>({
   dataSource,
   columns,
   loading,
@@ -75,7 +79,7 @@ const Table = <T extends object>({
         className={tableClasses}
         columns={formattedColumns}
         scroll={{ x: 'max-content' }}
-        rowKey={(_, index) => index ?? 'id'}
+        rowKey={(record) => record?.id ?? 'id'}
         rowClassName={(_, index) => (index % 2 !== 0 ? 'even-row' : '')}
         {...passProps}
         pagination={{
