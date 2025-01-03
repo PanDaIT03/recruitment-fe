@@ -33,9 +33,7 @@ const FilterBox = ({
   }, [onCancel]);
 
   return (
-    <Content
-      className={cx('!bg-[#2f2f41b3]', !open && 'h-0 overflow-hidden !p-0')}
-    >
+    <Content className={`${!open && 'h-0 overflow-hidden !p-0'}`}>
       <FormWrapper
         form={form}
         cancelTitle="Hủy"

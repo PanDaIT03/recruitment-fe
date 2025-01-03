@@ -1,16 +1,17 @@
-import { ConfigProvider, MappingAlgorithm, SelectProps } from 'antd';
+import { ConfigProvider, Empty, MappingAlgorithm, SelectProps } from 'antd';
 import { AliasToken } from 'antd/es/theme/internal';
 import { ComponentToken } from 'antd/lib/select/style';
+import classNames from 'classnames';
 import { memo, ReactNode, useEffect, useRef, useState } from 'react';
 
-import classNames from 'classnames';
+import { NoData } from '~/assets/svg';
 import { applyTailwindClass } from '~/utils/functions';
 import Icon from '../Icon/Icon';
 import './CustomSelect.scss';
 import Select from './Select';
 
 type ISelectDisplayedType = 'text' | 'default';
-type ISelectConfigProvider =
+export type ISelectConfigProvider =
   | (Partial<ComponentToken> &
       Partial<AliasToken> & {
         algorithm?: boolean | MappingAlgorithm | MappingAlgorithm[];
@@ -23,6 +24,16 @@ type TProps = {
   configProvider?: ISelectConfigProvider;
   configTokenProvider?: Partial<AliasToken>;
 } & SelectProps;
+
+const CustomerEmptyData = () => {
+  return (
+    <Empty
+      description={<span className="text-admin-primary">Không có dữ liệu</span>}
+      image={<NoData />}
+      imageStyle={{ height: '70px' }}
+    />
+  );
+};
 
 const CustomSelect = ({
   className,
@@ -72,10 +83,15 @@ const CustomSelect = ({
       <ConfigProvider
         theme={{
           components: {
-            Select: configProvider,
+            Select: {
+              ...configProvider,
+              colorBgContainer: '#2f2f41b3',
+              colorIconHover: '#ffac69',
+            },
           },
           token: configTokenProvider,
         }}
+        renderEmpty={CustomerEmptyData}
       >
         <Select
           popupMatchSelectWidth={false}

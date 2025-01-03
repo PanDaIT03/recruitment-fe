@@ -11,5 +11,5 @@ export interface IStatusType {
 }
 
 export interface IGetAllStatusParams {
-  type: 'Phỏng vấn' | 'Công việc' | 'Lịch trình';
+  type: 'interview' | 'job' | 'schedule';
 }
