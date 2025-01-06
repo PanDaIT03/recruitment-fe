@@ -2,9 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import { Col, Flex, message, Popconfirm, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
-import { memo, useCallback, useMemo, useState } from 'react';
-
 import dayjs from 'dayjs';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
   FunctionalAPI,
   ICreateFunctionalParams,
@@ -20,6 +20,8 @@ import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal from '~/components/Modal/Modal';
 import Table from '~/components/Table/Table';
+import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
+import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -45,6 +47,9 @@ const FunctionalManagement = () => {
   const [form] = useForm<IForm>();
   const dispatch = useAppDispatch();
   const queryParams = useQueryParams();
+
+  const { setTitle } = useTitle();
+  const { setBreadcrumb } = useBreadcrumb();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
@@ -116,6 +121,11 @@ const FunctionalManagement = () => {
       totalItems: functionals?.pageInfo?.totalItems || 0,
     },
   });
+
+  useEffect(() => {
+    setTitle('Danh sách chức năng');
+    setBreadcrumb([{ title: 'Quản lý' }, { title: 'Danh sách chức năng' }]);
+  }, []);
 
   const columns = useMemo(() => {
     return [

@@ -1,4 +1,5 @@
 import { BellOutlined, SnippetsOutlined } from '@ant-design/icons';
+import { googleLogout } from '@react-oauth/google';
 import {
   Avatar,
   Badge,
@@ -13,12 +14,20 @@ import {
   Typography,
 } from 'antd';
 import classNames from 'classnames';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { AvatarPlaceHolder, HeaderLogoPrimary } from '~/assets/svg';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
+import { useAppDispatch } from '~/hooks/useStore';
+import { signOut } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import './index.scss';
@@ -55,7 +64,7 @@ const MENU_ITEMS = [
       },
       {
         key: PATH.ADMIN_ROLE_MANAGEMENT,
-        label: 'Danh sách vai trò',
+        label: 'Danh sách chức vụ',
       },
       {
         key: PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
@@ -70,19 +79,24 @@ const MENU_ITEMS = [
 ] as MenuProps['items'];
 
 const AdminLayout: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useAppDispatch();
+
+  const { title } = useTitle();
+  const { breadcrumb } = useBreadcrumb();
+
   const firstRender = useRef(true);
-
-  const navigate = useNavigate(),
-    location = useLocation();
-
-  const { title } = useTitle(),
-    { breadcrumb } = useBreadcrumb();
-
   const [collapsed, setCollapsed] = useState(false);
 
-  const toggleCollapsed = () => {
+  const toggleCollapsed = useCallback(() => {
     setCollapsed(!collapsed);
-  };
+  }, []);
+
+  const handleSignOut = useCallback(() => {
+    googleLogout();
+    dispatch(signOut()).then(() => navigate(PATH.ROOT));
+  }, []);
 
   const dropdownMenu = useMemo(() => {
     return {
@@ -90,12 +104,13 @@ const AdminLayout: React.FC = () => {
         {
           key: '1',
           icon: <UserOutlined />,
-          label: <Link to="/admin/profile">Trang cá nhân</Link>,
+          label: <Link to="#">Trang cá nhân</Link>,
         },
         {
           key: '2',
-          icon: <LogoutOutlined />,
-          label: <span>Đăng xuất</span>,
+          icon: <LogoutOutlined className="!text-warning" />,
+          label: <span className="text-warning font-medium">Đăng xuất</span>,
+          onClick: handleSignOut,
         },
       ],
     } as MenuProps;
@@ -166,13 +181,13 @@ const AdminLayout: React.FC = () => {
           </div>
           <div className="flex items-center justify-end mt-2 gap-4">
             <Badge count={5}>
-              <BellOutlined style={{ fontSize: '18px' }} />
+              <BellOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
             </Badge>
             <Dropdown
               arrow
               menu={dropdownMenu}
-              placement="bottomLeft"
               trigger={['click']}
+              placement="bottomLeft"
             >
               <Avatar
                 alt="avatar"
