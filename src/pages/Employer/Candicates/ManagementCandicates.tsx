@@ -52,7 +52,11 @@ const ManagementCandicates = () => {
 
   const statusId = Form.useWatch('statusId', form);
 
-  const { data: applicationJobs, refetch } = useFetch<Application>(
+  const {
+    data: applicationJobs,
+    refetch,
+    isLoading,
+  } = useFetch<Application>(
     ['JobsApplicants', statusId || 'all', currentPage, pageSize],
     () =>
       JobsAPI.getAllJobsApplicants(statusId, undefined, {
@@ -187,6 +191,7 @@ const ManagementCandicates = () => {
       </div>
       <div className="p-4 px-16">
         <Table
+          loading={isLoading}
           columns={columns}
           dataSource={applicationJobs?.items}
           pagination={{
@@ -194,6 +199,7 @@ const ManagementCandicates = () => {
             pageSize: applicationJobs?.pageInfo?.itemsPerPage || 10,
             total: applicationJobs?.pageInfo?.totalItems,
             onChange: (page, pageSize) => {
+              window.scrollTo(0, 0);
               setCurrentPage(page);
               setPageSize(pageSize);
             },

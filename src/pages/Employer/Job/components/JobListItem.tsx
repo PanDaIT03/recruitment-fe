@@ -1,5 +1,4 @@
 import { Badge, Dropdown, Tag } from 'antd';
-import dayjs from 'dayjs';
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { JobsAPI } from '~/apis/job';
@@ -42,6 +41,7 @@ const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
   const [isOpenModalDeleteJob, setIsOpenModalDeleteJob] = useState(false);
   const [isOpenModalRecoverJob, setIsOpenModalRecoverJob] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<number | null>(null);
+
   const isActiveJob = item.jobstatus === JOB_STATUS.ACTIVE;
   const isInActiveJob = item.jobstatus === JOB_STATUS.INACTIVE;
 
@@ -117,7 +117,9 @@ const JobListItem: React.FC<JobListItemProps> = ({ item, refetch }) => {
             <UserOutlined />
           </span>
           <span className="mx-2 text-sm">{item.userFullName}</span>
-          <span className="text-sm">• {dayjs(item.jobCreateAt).fromNow()}</span>
+          {/* <span className="text-sm">
+            • {dayjs(item.jobCreateAt)?.fromNow() || 'N/A'}
+          </span> */}
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           <Tag
