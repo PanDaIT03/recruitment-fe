@@ -59,6 +59,11 @@ const FunctionalManagement = () => {
 
   const { functionals, loading } = useAppSelector((state) => state.functional);
 
+  const paginationParams = {
+    page: Number(queryParams.get('page') || 1),
+    pageSize: Number(queryParams.get('pageSize') || 10),
+  };
+
   const { mutate: createFunctional, isPending: isCreateFunctionalPending } =
     useMutation({
       mutationFn: (params: ICreateFunctionalParams) =>
@@ -105,11 +110,6 @@ const FunctionalManagement = () => {
       );
     },
   });
-
-  const paginationParams = {
-    page: Number(queryParams.get('page') || 1),
-    pageSize: Number(queryParams.get('pageSize') || 10),
-  };
 
   const { currentPage, itemsPerPage, handlePageChange } = usePagination({
     extraParams: filters,
@@ -283,7 +283,6 @@ const FunctionalManagement = () => {
         <Table<IFunctionalItem>
           loading={loading}
           columns={columns}
-          scroll={{ x: 'max-content' }}
           dataSource={functionals?.items}
           pagination={{
             current: currentPage,

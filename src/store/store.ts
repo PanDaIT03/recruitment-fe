@@ -7,6 +7,7 @@ import {
 
 import { authReducer } from './reducer/auth';
 import { functionalReducer } from './reducer/functional';
+import { functionalGroupReducer } from './reducer/functionalGroup';
 import { jobReducer } from './reducer/job';
 import { roleReducer } from './reducer/role';
 
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   jobs: jobReducer,
   role: roleReducer,
   functional: functionalReducer,
+  functionalGroup: functionalGroupReducer,
 });
 
 export const store = configureStore({

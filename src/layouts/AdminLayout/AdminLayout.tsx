@@ -1,4 +1,4 @@
-import { BellOutlined, SnippetsOutlined } from '@ant-design/icons';
+import { BellOutlined } from '@ant-design/icons';
 import { googleLogout } from '@react-oauth/google';
 import {
   Avatar,
@@ -23,7 +23,12 @@ import React, {
 } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { AvatarPlaceHolder, HeaderLogoPrimary } from '~/assets/svg';
+import {
+  AvatarPlaceHolder,
+  Dashboard,
+  HeaderLogoPrimary,
+  List,
+} from '~/assets/svg';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import { useAppDispatch } from '~/hooks/useStore';
@@ -41,7 +46,7 @@ const MENU_ITEMS = [
   {
     key: 'dashboard',
     label: 'Dashboard',
-    icon: <BellOutlined />,
+    icon: <Dashboard />,
     children: [
       {
         key: PATH.ADMIN_DASHBOARD,
@@ -52,7 +57,7 @@ const MENU_ITEMS = [
   {
     key: 'management',
     label: 'Quản lý',
-    icon: <SnippetsOutlined />,
+    icon: <List />,
     children: [
       {
         key: PATH.ADMIN_JOB_MANAGEMENT,
@@ -124,7 +129,6 @@ const AdminLayout: React.FC = () => {
 
   useEffect(() => {
     if (!firstRender) return;
-
     navigate(location?.pathname, { state: { key: location?.pathname } });
   }, [firstRender]);
 
