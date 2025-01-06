@@ -1,12 +1,11 @@
 import { Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import classNames from 'classnames';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+
 import { Edit, FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
-
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
@@ -47,40 +46,40 @@ const RoleManagement = () => {
     });
 
   useEffect(() => {
-    setTitle('Cập nhật vai trò');
-    setBreadcrumb([{ title: 'Hệ thống' }, { title: 'Cập nhật vai trò' }]);
+    setTitle('Danh sách chức vụ');
+    setBreadcrumb([{ title: 'Quản lý' }, { title: 'Danh sách chức vụ' }]);
   }, []);
 
   const columns = useMemo(() => {
     return [
       {
-        title: 'STT',
         width: 50,
+        title: 'STT',
         render: (_: any, __: any, index: number) =>
           (currentPage - 1) * itemsPerPage + index + 1,
       },
       {
+        width: 100,
         title: 'Tên chức vụ',
-        width: 150,
         dataIndex: 'title',
         render: (value: string) => <Text className="capitalize">{value}</Text>,
       },
       {
+        width: 350,
         title: 'Mô tả chức vụ',
-        width: 150,
         dataIndex: 'description',
       },
       {
+        width: 150,
         title: 'Chức năng',
-        width: 150,
         dataIndex: 'description',
       },
       {
-        title: 'Thao tác',
+        width: 60,
         key: 'actions',
-        width: 30,
         fixed: 'right',
         align: 'center',
+        title: 'Thao tác',
         render: () => (
           <Space size={'middle'}>
             <Tooltip title="Chỉnh sửa">
@@ -116,10 +115,7 @@ const RoleManagement = () => {
         <Col>
           <Button
             title={<FilterAdmin />}
-            className={classNames(
-              'text-admin-primary border-primary-110 hover:bg-primary-110 hover:text-white',
-              isOpenFilter && 'text-white bg-admin-primary'
-            )}
+            className="bg-white"
             onClick={handleOnFilterButtonClick}
           />
         </Col>
@@ -130,12 +126,12 @@ const RoleManagement = () => {
         onCancel={handleCancelFilter}
         onFinish={handleFinishFilter}
       />
-      <Content className="!bg-[#2f2f41b3]">
+      <Content>
         <Table
           columns={columns}
           dataSource={items}
           loading={loading}
-          scroll={{ x: 1800 }}
+          scroll={{ x: 1000 }}
           pagination={{
             current: pageInfo?.currentPage,
             pageSize: pageInfo?.itemsPerPage,

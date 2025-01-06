@@ -7,11 +7,10 @@ import { memo, useEffect, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
 import { StatusAPIs } from '~/apis/status';
 import Content from '~/components/Content/Content';
-import FilterBox from '~/components/FilterBox/FilterBox';
 import FormWrapper from '~/components/Form/FormWrapper';
-import CustomSelect from '~/components/Select/CustomSelect';
+import Select from '~/components/Select/Select';
 import { IGetAllStatusParams } from '~/types/Status';
-import { colSpan, SELECT_PROPS } from '~/utils/constant';
+import { colSpan } from '~/utils/constant';
 
 interface IJobFilterBoxProps {
   open: boolean;
@@ -139,7 +138,7 @@ const JobFilterBox = ({
         <Row gutter={{ xs: 8, sm: 14 }}>
           <Col span={colSpan}>
             <FormItem label="Hình thức làm việc" name="workTypesId">
-              <CustomSelect
+              <Select
                 placeholder="Chọn hình thức làm việc"
                 options={workTypeOptions}
                 loading={isGetAllWorkTypesPending}
@@ -149,7 +148,7 @@ const JobFilterBox = ({
           </Col>
           <Col span={colSpan}>
             <FormItem label="Công việc" name="jobsId">
-              <CustomSelect
+              <Select
                 placeholder="Chọn công việc"
                 options={jobOptions}
                 loading={isGetAllJobsMutatePending}
@@ -159,7 +158,7 @@ const JobFilterBox = ({
           </Col>
           <Col span={colSpan}>
             <FormItem label="Khu vực" name="placementIds">
-              <CustomSelect
+              <Select
                 mode="multiple"
                 maxTagCount={4}
                 placeholder="Chọn khu vực"
@@ -171,7 +170,7 @@ const JobFilterBox = ({
           </Col>
           <Col span={colSpan}>
             <FormItem label="Trạng thái" name="statusId">
-              <CustomSelect
+              <Select
                 placeholder="Chọn trạng thái"
                 options={statusOptions}
                 loading={isGetAllStatusMutatePending}

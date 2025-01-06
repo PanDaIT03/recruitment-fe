@@ -1,6 +1,5 @@
 import { Col, Form, Row, Space, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import classNames from 'classnames';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -142,10 +141,7 @@ const JobManagement: React.FC = () => {
 
   useEffect(() => {
     setTitle('Danh sách công việc');
-    setBreadcrumb([
-      { title: 'Quản lý công việc' },
-      { title: 'Danh sách công việc' },
-    ]);
+    setBreadcrumb([{ title: 'Quản lý' }, { title: 'Danh sách công việc' }]);
   }, []);
 
   const handleOnFilterButtonClick = useCallback(() => {
