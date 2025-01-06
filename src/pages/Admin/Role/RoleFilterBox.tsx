@@ -4,13 +4,12 @@ import FormItem from 'antd/es/form/FormItem';
 import { DefaultOptionType } from 'antd/es/select';
 import { memo, useEffect, useState } from 'react';
 
-// import { IPaginationParms } from '~/apis/job';
 import { IPaginationParams } from '~/apis/job';
 import { RoleApi } from '~/apis/role/role';
-import FilterBox from '~/components/FilterBox/FilterBox';
-import CustomSelect from '~/components/Select/CustomSelect';
+import Content from '~/components/Content/Content';
+import FormWrapper from '~/components/Form/FormWrapper';
+import Select from '~/components/Select/Select';
 import { IRole } from '~/types/Role';
-import { SELECT_PROPS } from '~/utils/constant';
 
 interface IRoleFilterBoxProps {
   open: boolean;
@@ -57,30 +56,36 @@ const RoleFilterBox = ({
   }, []);
 
   return (
-    <FilterBox open={open} form={form} onFinish={onFinish} onCancel={onCancel}>
-      <Row gutter={{ xs: 8, sm: 14 }}>
-        <Col span={12}>
-          <FormItem label="Chức vụ" name="rolesId">
-            <CustomSelect
-              placeholder="Chọn chức vụ"
-              options={roleOptions}
-              loading={isGetAllRolesMutatePending}
-              {...SELECT_PROPS}
-            />
-          </FormItem>
-        </Col>
-        <Col span={12}>
-          <FormItem label="Chức năng" name="functionalIds">
-            <CustomSelect
-              placeholder="Chọn chức năng"
-              options={[]}
-              loading={false}
-              {...SELECT_PROPS}
-            />
-          </FormItem>
-        </Col>
-      </Row>
-    </FilterBox>
+    <Content isOpen={open}>
+      <FormWrapper
+        form={form}
+        cancelTitle="Hủy"
+        submitTitle="Tìm kiếm"
+        onFinish={onFinish}
+        onCancel={onCancel}
+      >
+        <Row gutter={{ xs: 8, sm: 14 }}>
+          <Col span={12}>
+            <FormItem label="Chức vụ" name="rolesId">
+              <Select
+                options={roleOptions}
+                placeholder="Chọn chức vụ"
+                loading={isGetAllRolesMutatePending}
+              />
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem label="Chức năng" name="functionalIds">
+              <Select
+                options={[]}
+                loading={false}
+                placeholder="Chọn chức năng"
+              />
+            </FormItem>
+          </Col>
+        </Row>
+      </FormWrapper>
+    </Content>
   );
 };
 
