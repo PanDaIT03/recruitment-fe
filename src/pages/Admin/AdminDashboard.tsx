@@ -1,29 +1,43 @@
-import React from 'react';
-import { Row, Col, Card, Statistic, Progress } from 'antd';
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
+import { Card, Col, Progress, Row, Statistic } from 'antd';
+import { useEffect, useMemo } from 'react';
 import {
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
 } from 'recharts';
 
-const AdminDashboard: React.FC = () => {
-  const data = [
-    { month: 'January', jobPosts: 65 },
-    { month: 'February', jobPosts: 59 },
-    { month: 'March', jobPosts: 80 },
-    { month: 'April', jobPosts: 81 },
-    { month: 'May', jobPosts: 56 },
-    { month: 'June', jobPosts: 55 },
-  ];
+import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
+import { useTitle } from '~/contexts/TitleProvider';
+
+const AdminDashboard = () => {
+  const { setTitle } = useTitle();
+  const { setBreadcrumb } = useBreadcrumb();
+
+  const data = useMemo(
+    () => [
+      { month: 'January', jobPosts: 65 },
+      { month: 'February', jobPosts: 59 },
+      { month: 'March', jobPosts: 80 },
+      { month: 'April', jobPosts: 81 },
+      { month: 'May', jobPosts: 56 },
+      { month: 'June', jobPosts: 55 },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    setTitle('Tổng quan');
+    setBreadcrumb([{ title: 'Dashboard' }, { title: 'Tổng quan' }]);
+  }, []);
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen">
       <Row gutter={16}>
         <Col span={8}>
           <Card className="shadow-lg">
