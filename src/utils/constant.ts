@@ -11,9 +11,9 @@ export const colSpan = 8;
 export const defaultImgUrl = mockFileList[0].url;
 
 export enum JOB_STATUS {
-  ACTIVE = 5,
-  INACTIVE = 6,
-  DELETED = 7,
+  ACTIVE = 6,
+  INACTIVE = 7,
+  DELETED = 8,
 }
 
 export const SELECT_PROPS = {
