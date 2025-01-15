@@ -17,7 +17,7 @@ import { IUser } from '~/types/Auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
-const { LoginOutlined, AuditOutlined } = icons;
+const { LoginOutlined, AuditOutlined, AppstoreOutlined } = icons;
 
 interface IBaseMenu {
   currentUser: IUser;
@@ -32,7 +32,12 @@ export const createUserMenu = (navigate: (path: string) => void) => {
       ? [
           {
             key: 'admin-menu',
-            label: <span className="text-neutral-600 font-medium">Admin</span>,
+            icon: <AppstoreOutlined />,
+            label: (
+              <span className="text-neutral-600 font-medium">
+                Trang quản lý
+              </span>
+            ),
             onClick: () => navigate(PATH.ADMIN_DASHBOARD),
           },
         ]
