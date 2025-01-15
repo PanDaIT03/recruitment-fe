@@ -1,6 +1,7 @@
 import { Col, Form, Row, Space, Tooltip, Typography } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Edit, FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
@@ -12,21 +13,25 @@ import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
 import { getAllRoles } from '~/store/thunk/role';
+import icons from '~/utils/icons';
+import PATH from '~/utils/path';
 import RoleFilterBox from './RoleFilterBox';
 
 const { Text } = Typography;
+const { PlusOutlined } = icons;
 
 const RoleManagement = () => {
-  const queryParams = useQueryParams(),
-    [form] = Form.useForm();
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const queryParams = useQueryParams();
+
+  const { setTitle } = useTitle();
+  const { setBreadcrumb } = useBreadcrumb();
 
   const { roles, loading } = useAppSelector((state) => state.role);
 
-  const { setTitle } = useTitle(),
-    { setBreadcrumb } = useBreadcrumb();
-
-  const [filterParams, setFilterParams] = useState({} as any),
-    [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [filterParams, setFilterParams] = useState({} as any);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const paginationParams = {
     page: Number(queryParams.get('page') || 1),
@@ -116,12 +121,20 @@ const RoleManagement = () => {
 
   return (
     <>
-      <Row align={'middle'} justify={'end'}>
+      <Row gutter={[8, 16]} align={'middle'} justify={'end'}>
         <Col>
           <Button
             title={<FilterAdmin />}
             className="bg-white"
             onClick={handleOnFilterButtonClick}
+          />
+        </Col>
+        <Col>
+          <Button
+            fill
+            title="Tạo"
+            iconBefore={<PlusOutlined />}
+            onClick={() => navigate(PATH.ADMIN_DETAIL_ROLE_MANAGEMENT)}
           />
         </Col>
       </Row>

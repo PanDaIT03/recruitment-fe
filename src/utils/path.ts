@@ -19,6 +19,7 @@ const PATH = {
   ADMIN_USER_DETAIL: '/admin/user-detail',
   ADMIN_JOB_MANAGEMENT: '/admin/job-management',
   ADMIN_ROLE_MANAGEMENT: '/admin/role-management',
+  ADMIN_DETAIL_ROLE_MANAGEMENT: '/admin/detail-role-management',
   ADMIN_FUNCTIONAL_MANAGEMENT: '/admin/functional-management',
   ADMIN_FUNCTIONAL_GROUP_MANAGEMENT: '/admin/functional-group-management',
   // Employer
