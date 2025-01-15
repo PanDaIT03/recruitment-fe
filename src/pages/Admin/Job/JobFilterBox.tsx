@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Col, FormInstance, message, Row } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import { DefaultOptionType } from 'antd/es/select';
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { StatusAPIs } from '~/apis/status';
@@ -131,10 +131,21 @@ const JobFilterBox = ({
     getAllJobsMutate();
   }, [open]);
 
+  const handleCancel = useCallback(() => {
+    form.resetFields();
+    onCancel();
+  }, []);
+
   return (
     // <FilterBox open={open} form={form} onFinish={onFinish} onCancel={onCancel}></FilterBox>
     <Content isOpen={open}>
-      <FormWrapper form={form} onFinish={onFinish} onCancel={onCancel}>
+      <FormWrapper
+        form={form}
+        cancelTitle="Hủy"
+        submitTitle="Tìm kiếm"
+        onFinish={onFinish}
+        onCancel={handleCancel}
+      >
         <Row gutter={{ xs: 8, sm: 14 }}>
           <Col span={colSpan}>
             <FormItem label="Hình thức làm việc" name="workTypesId">
@@ -147,11 +158,11 @@ const JobFilterBox = ({
             </FormItem>
           </Col>
           <Col span={colSpan}>
-            <FormItem label="Công việc" name="jobsId">
+            <FormItem label="Trạng thái" name="statusId">
               <Select
-                placeholder="Chọn công việc"
-                options={jobOptions}
-                loading={isGetAllJobsMutatePending}
+                placeholder="Chọn trạng thái"
+                options={statusOptions}
+                loading={isGetAllStatusMutatePending}
                 // {...SELECT_PROPS}
               />
             </FormItem>
@@ -159,8 +170,9 @@ const JobFilterBox = ({
           <Col span={colSpan}>
             <FormItem label="Khu vực" name="placementIds">
               <Select
+                allowClear
                 mode="multiple"
-                maxTagCount={4}
+                maxTagCount={6}
                 placeholder="Chọn khu vực"
                 options={placementOptions}
                 loading={isGetAllPlacementsMutatePending}
@@ -169,12 +181,12 @@ const JobFilterBox = ({
               />
             </FormItem>
           </Col>
-          <Col span={colSpan}>
-            <FormItem label="Trạng thái" name="statusId">
+          <Col span={16}>
+            <FormItem label="Công việc" name="jobsId">
               <Select
-                placeholder="Chọn trạng thái"
-                options={statusOptions}
-                loading={isGetAllStatusMutatePending}
+                placeholder="Chọn công việc"
+                options={jobOptions}
+                loading={isGetAllJobsMutatePending}
                 // {...SELECT_PROPS}
               />
             </FormItem>

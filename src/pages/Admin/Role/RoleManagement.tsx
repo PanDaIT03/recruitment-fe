@@ -65,14 +65,19 @@ const RoleManagement = () => {
         render: (value: string) => <Text className="capitalize">{value}</Text>,
       },
       {
-        width: 350,
+        width: 250,
         title: 'Mô tả chức vụ',
         dataIndex: 'description',
       },
       {
-        width: 150,
+        width: 250,
         title: 'Chức năng',
-        dataIndex: 'description',
+        dataIndex: 'rolesFunctionals',
+        render: (value) => {
+          console.log(value);
+
+          return value?.map((item: any) => item?.functional?.title)?.join(', ');
+        },
       },
       {
         width: 60,
@@ -84,8 +89,8 @@ const RoleManagement = () => {
           <Space size={'middle'}>
             <Tooltip title="Chỉnh sửa">
               <Button
-                className="border-none hover:bg-transparent p-0"
                 title={<Edit />}
+                className="border-none hover:bg-transparent p-0"
               />
             </Tooltip>
           </Space>

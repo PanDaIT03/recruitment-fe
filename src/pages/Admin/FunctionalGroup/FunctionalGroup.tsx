@@ -1,10 +1,19 @@
-import { Flex, Popconfirm } from 'antd';
+import { Col, Flex, Popconfirm, Row } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import TextArea from 'antd/es/input/TextArea';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FilterAdmin } from '~/assets/svg';
 
+import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import Content from '~/components/Content/Content';
+import FormItem from '~/components/Form/FormItem';
+import FormWrapper from '~/components/Form/FormWrapper';
+import Input from '~/components/Input/Input';
+import Modal from '~/components/Modal/Modal';
+import Select from '~/components/Select/Select';
 import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
@@ -15,15 +24,26 @@ import { getAllFunctionalGroups } from '~/store/thunk/functionalGroup';
 import { IFunctionalItem } from '~/types/Functional';
 import { IFunctionalGroupItem } from '~/types/FunctionalGroup';
 import icons from '~/utils/icons';
+import FilterFunctionalGroup from './FilterFunctionalGroup';
 
-const { EditOutlined, CloseOutlined, QuestionCircleOutlined } = icons;
+const {
+  EditOutlined,
+  CloseOutlined,
+  PlusOutlined,
+  SaveOutlined,
+  QuestionCircleOutlined,
+} = icons;
 
 const FunctionalGroup = () => {
+  const [form] = useForm();
   const dispatch = useAppDispatch();
   const queryParams = useQueryParams();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const { functionalGroups, loading } = useAppSelector(
     (state) => state.functionalGroup
@@ -138,8 +158,34 @@ const FunctionalGroup = () => {
     ] as ColumnsType<IFunctionalGroupItem>;
   }, [paginationParams]);
 
+  const handleCancelModal = useCallback(() => {
+    setIsOpenModal(false);
+  }, []);
+
+  const handleFinishModal = useCallback((values: any) => {
+    console.log('finish', values);
+  }, []);
+
   return (
     <>
+      <Row gutter={[8, 16]} align={'middle'} justify={'end'}>
+        <Col>
+          <Button
+            title={<FilterAdmin />}
+            className={'bg-white'}
+            onClick={() => setIsOpenFilter(true)}
+          />
+        </Col>
+        <Col>
+          <Button
+            fill
+            title="Tạo"
+            iconBefore={<PlusOutlined />}
+            onClick={() => setIsOpenModal(true)}
+          />
+        </Col>
+      </Row>
+      <FilterFunctionalGroup />
       <Content>
         <Table
           loading={loading}
@@ -153,6 +199,36 @@ const FunctionalGroup = () => {
           }}
         />
       </Content>
+      <Modal
+        isOpen={isOpenModal}
+        title="Tạo nhóm chức năng"
+        footer={
+          <Flex justify="end" gap={16}>
+            <Button
+              title="Hủy"
+              iconBefore={<CloseOutlined />}
+              onClick={handleCancelModal}
+            />
+            <Button fill title="Lưu" iconBefore={<SaveOutlined />} />
+          </Flex>
+        }
+        onCancel={handleCancelModal}
+      >
+        <FormWrapper form={form} onFinish={handleFinishModal}>
+          <FormItem label="Tên nhóm chức năng">
+            <Input placeholder="Ví dụ: Quản lý người dùng" />
+          </FormItem>
+          <FormItem label="Chức năng">
+            <Select placeholder="Chọn chức năng" />
+          </FormItem>
+          <FormItem label="Mô tả">
+            <TextArea
+              className="!min-h-20 py-1 bg-[#FAFAFA]"
+              placeholder="Ví dụ: Quản lý người dùng..."
+            />
+          </FormItem>
+        </FormWrapper>
+      </Modal>
     </>
   );
 };

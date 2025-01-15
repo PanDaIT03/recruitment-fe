@@ -320,14 +320,14 @@ const FunctionalManagement = () => {
             name="code"
             rules={[{ required: true, message: 'Vui lòng nhập mã' }]}
           >
-            <Input />
+            <Input placeholder="Ví dụ: Tạo công việc ứng tuyển" />
           </FormItem>
           <FormItem
             label="Chức năng"
             name="title"
             rules={[{ required: true, message: 'Vui lòng nhập chức năng' }]}
           >
-            <Input />
+            <Input placeholder="Ví dụ: create_new_job	" />
           </FormItem>
         </FormWrapper>
       </Modal>
