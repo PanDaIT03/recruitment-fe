@@ -75,9 +75,7 @@ const FunctionalManagement = () => {
         refetchFunctionals();
       },
       onError: (error: any) => {
-        message.error(
-          `Cập nhật thông tin thất bại: ${error?.response?.data?.message}`
-        );
+        message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
       },
     });
 

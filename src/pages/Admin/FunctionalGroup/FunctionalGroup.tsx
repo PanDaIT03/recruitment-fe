@@ -1,4 +1,5 @@
-import { Col, Flex, Popconfirm, Row } from 'antd';
+import { useMutation } from '@tanstack/react-query';
+import { Col, Flex, message, Popconfirm, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
 import { ColumnsType } from 'antd/es/table';
@@ -6,6 +7,11 @@ import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FilterAdmin } from '~/assets/svg';
 
+import { FunctionalAPI, IGetAllFunctionalParams } from '~/apis/functional';
+import {
+  FunctionalGroupAPI,
+  ICreateFuncGroupParams,
+} from '~/apis/functionalGroup';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import Content from '~/components/Content/Content';
@@ -26,6 +32,12 @@ import { IFunctionalGroupItem } from '~/types/FunctionalGroup';
 import icons from '~/utils/icons';
 import FilterFunctionalGroup from './FilterFunctionalGroup';
 
+interface IFunctionalGroupForm {
+  title: string;
+  description: string;
+  functionalIds: string[];
+}
+
 const {
   EditOutlined,
   CloseOutlined,
@@ -35,9 +47,10 @@ const {
 } = icons;
 
 const FunctionalGroup = () => {
-  const [form] = useForm();
   const dispatch = useAppDispatch();
   const queryParams = useQueryParams();
+
+  const [functionalForm] = useForm<IFunctionalGroupForm>();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
@@ -65,6 +78,35 @@ const FunctionalGroup = () => {
     },
   });
 
+  const {
+    data: functionals,
+    mutate: getAllFunctionals,
+    isPending: isGetAllFunctionalsPending,
+  } = useMutation({
+    mutationFn: (params: IGetAllFunctionalParams) =>
+      FunctionalAPI.getAllFunctionals(params),
+    onError: (error: any) => {
+      message.error(error?.response?.data?.message);
+    },
+  });
+
+  const {
+    mutate: createFunctionalGroup,
+    isPending: isCreateFunctionalGroupPending,
+  } = useMutation({
+    mutationFn: (params: ICreateFuncGroupParams) =>
+      FunctionalGroupAPI.createFunctionalGroup(params),
+    onSuccess: (res) => {
+      message.success(res?.message);
+
+      refetchFunctionalGroup();
+      handleCancelModal();
+    },
+    onError: (error: any) => {
+      message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
+    },
+  });
+
   useEffect(() => {
     setTitle('Danh sách nhóm chức năng');
     setBreadcrumb([
@@ -72,6 +114,12 @@ const FunctionalGroup = () => {
       { title: 'Danh sách nhóm chức năng' },
     ]);
   }, []);
+
+  useEffect(() => {
+    if (!isOpenModal) return;
+
+    getAllFunctionals({});
+  }, [isOpenModal]);
 
   const columns = useMemo(() => {
     return [
@@ -105,7 +153,7 @@ const FunctionalGroup = () => {
         dataIndex: ['creator', 'fullName'],
       },
       {
-        width: 200,
+        width: 150,
         title: 'Ngày tạo',
         dataIndex: 'createAt',
         render: (value: string) =>
@@ -117,7 +165,7 @@ const FunctionalGroup = () => {
         dataIndex: ['updater', 'fullName'],
       },
       {
-        width: 200,
+        width: 150,
         title: 'Ngày chỉnh sửa',
         dataIndex: 'updateAt',
         render: (value: string) =>
@@ -128,42 +176,42 @@ const FunctionalGroup = () => {
         fixed: 'right',
         align: 'center',
         title: 'Thao tác',
-        render: (_, record) => {
-          console.log(record);
-
-          return (
-            <Flex justify="center">
-              <ButtonAction tooltipTitle="Chỉnh sửa" title={<EditOutlined />} />
-              <Popconfirm
-                okText="Có"
-                cancelText="Không"
-                placement="topLeft"
-                title={<span className="text-black">Xoá mục này</span>}
-                description={
-                  <span className="text-black">
-                    Bạn có chắc chắn muốn xoá mục này?
-                  </span>
-                }
-                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-              >
-                <ButtonAction
-                  tooltipTitle="Xóa"
-                  title={<CloseOutlined style={{ color: 'red' }} />}
-                />
-              </Popconfirm>
-            </Flex>
-          );
-        },
+        render: (_, record) => (
+          <Flex justify="center">
+            <ButtonAction tooltipTitle="Chỉnh sửa" title={<EditOutlined />} />
+            <Popconfirm
+              okText="Có"
+              cancelText="Không"
+              placement="topLeft"
+              title={<span className="text-black">Xoá mục này</span>}
+              description={
+                <span className="text-black">
+                  Bạn có chắc chắn muốn xoá mục này?
+                </span>
+              }
+              icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+            >
+              <ButtonAction tooltipTitle="Xóa" title={<CloseOutlined />} />
+            </Popconfirm>
+          </Flex>
+        ),
       },
     ] as ColumnsType<IFunctionalGroupItem>;
   }, [paginationParams]);
 
+  const refetchFunctionalGroup = useCallback(() => {
+    dispatch(getAllFunctionalGroups({}));
+  }, []);
+
   const handleCancelModal = useCallback(() => {
+    functionalForm.resetFields();
     setIsOpenModal(false);
   }, []);
 
-  const handleFinishModal = useCallback((values: any) => {
-    console.log('finish', values);
+  const handleFinishModal = useCallback((values: IFunctionalGroupForm) => {
+    createFunctionalGroup({
+      ...values,
+    });
   }, []);
 
   return (
@@ -207,21 +255,55 @@ const FunctionalGroup = () => {
             <Button
               title="Hủy"
               iconBefore={<CloseOutlined />}
+              loading={isCreateFunctionalGroupPending}
               onClick={handleCancelModal}
             />
-            <Button fill title="Lưu" iconBefore={<SaveOutlined />} />
+            <Button
+              fill
+              title="Lưu"
+              iconBefore={<SaveOutlined />}
+              loading={isCreateFunctionalGroupPending}
+              onClick={() => functionalForm.submit()}
+            />
           </Flex>
         }
         onCancel={handleCancelModal}
       >
-        <FormWrapper form={form} onFinish={handleFinishModal}>
-          <FormItem label="Tên nhóm chức năng">
+        <FormWrapper
+          footer={<></>}
+          form={functionalForm}
+          onFinish={handleFinishModal}
+        >
+          <FormItem
+            name="title"
+            label="Tên nhóm chức năng"
+            rules={[
+              { required: true, message: 'Vui lòng nhập tên nhóm chức năng' },
+            ]}
+          >
             <Input placeholder="Ví dụ: Quản lý người dùng" />
           </FormItem>
-          <FormItem label="Chức năng">
-            <Select placeholder="Chọn chức năng" />
+          <FormItem
+            name="functionalIds"
+            label="Chức năng"
+            rules={[{ required: true, message: 'Vui lòng chọn chức năng' }]}
+          >
+            <Select
+              allowClear
+              mode="multiple"
+              placeholder="Chọn chức năng"
+              loading={isGetAllFunctionalsPending}
+              options={functionals?.items?.map((item: any) => ({
+                label: item?.title,
+                value: item?.id,
+              }))}
+            />
           </FormItem>
-          <FormItem label="Mô tả">
+          <FormItem
+            name="description"
+            label="Mô tả"
+            rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}
+          >
             <TextArea
               className="!min-h-20 py-1 bg-[#FAFAFA]"
               placeholder="Ví dụ: Quản lý người dùng..."
