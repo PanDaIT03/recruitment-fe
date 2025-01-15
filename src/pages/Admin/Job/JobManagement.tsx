@@ -162,6 +162,7 @@ const JobManagement: React.FC = () => {
   );
 
   const handleCancel = useCallback(() => {
+    setIsOpenFilter(false);
     setFilterParams({ ...defaultFilter });
   }, [defaultFilter]);
 

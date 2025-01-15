@@ -1,9 +1,9 @@
 import { Col, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import FormItem from 'antd/es/form/FormItem';
 import { memo, useCallback } from 'react';
 
 import Content from '~/components/Content/Content';
-import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 

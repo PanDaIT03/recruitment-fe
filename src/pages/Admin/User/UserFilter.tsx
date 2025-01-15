@@ -1,8 +1,8 @@
 import { Col, FormInstance, Row } from 'antd';
+import FormItem from 'antd/es/form/FormItem';
 import { memo, useCallback } from 'react';
 
 import Content from '~/components/Content/Content';
-import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
