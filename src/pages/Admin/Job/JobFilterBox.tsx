@@ -164,6 +164,7 @@ const JobFilterBox = ({
                 placeholder="Chọn khu vực"
                 options={placementOptions}
                 loading={isGetAllPlacementsMutatePending}
+                size="large"
                 // {...SELECT_PROPS}
               />
             </FormItem>
