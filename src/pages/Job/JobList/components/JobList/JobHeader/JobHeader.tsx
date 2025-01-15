@@ -11,7 +11,7 @@ const { HomeOutlined } = icons;
 
 const JobHeader = ({ id, title, user, jobsPlacements }: IProps) => {
   const placements = jobsPlacements
-    .map((jobPlacement) => jobPlacement.placement.title)
+    ?.map((jobPlacement) => jobPlacement?.placement?.title)
     .join(', ');
 
   return (

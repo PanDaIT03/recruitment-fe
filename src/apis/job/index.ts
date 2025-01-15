@@ -50,7 +50,7 @@ export const JobsAPI = {
   ): Promise<JobPostingListProps> => {
     const payload: AxiosRequestConfig = {
       params: {
-        ...(statusId ? { statusId } : {}),
+        ...(statusId ? { statusId } : { statusId: 6 }),
         ...(pagination
           ? { page: pagination.page, pageSize: pagination.pageSize }
           : {}),

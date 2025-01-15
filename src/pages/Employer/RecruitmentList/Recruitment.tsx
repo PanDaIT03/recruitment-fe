@@ -23,6 +23,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import ModalStatusJob from '~/components/Modal/ModalStatusJob/index';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import MobileCard from './components/ListRecruimentCard';
+import { IGetAllStatusParams } from '~/types/Status';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
@@ -38,7 +39,7 @@ const Recruitment: React.FC = () => {
     Application['items'][0] | null
   >(null);
 
-  const params = { type: 'Phỏng vấn' };
+  const params: IGetAllStatusParams = { type: 'interview' };
 
   const { data: allStatusJob } = useFetch<StatusJob>(
     ['getAllStatusJob', params.type],
@@ -56,7 +57,11 @@ const Recruitment: React.FC = () => {
 
   const statusId = Form.useWatch('statusId', form);
 
-  const { data: applicationJobs, refetch } = useFetch<Application>(
+  const {
+    data: applicationJobs,
+    refetch,
+    isLoading,
+  } = useFetch<Application>(
     ['JobsApplicants', statusId || 'all', currentPage, pageSize],
     () =>
       JobsAPI.getAllJobsApplicants(statusId, undefined, {
@@ -219,6 +224,7 @@ const Recruitment: React.FC = () => {
 
       <div className="block md:hidden mt-4 w-full px-4">
         <List
+          loading={isLoading}
           dataSource={applicationJobs?.items}
           renderItem={(record) => (
             <MobileCard
@@ -245,6 +251,7 @@ const Recruitment: React.FC = () => {
         <div className="hidden md:block">
           <Card className="mt-6 text-center shadow-md">
             <Table
+              loading={isLoading}
               columns={columns}
               dataSource={applicationJobs?.items}
               className="mb-4"
@@ -253,6 +260,7 @@ const Recruitment: React.FC = () => {
                 pageSize: applicationJobs?.pageInfo?.itemsPerPage || pageSize,
                 total: applicationJobs?.pageInfo?.totalItems,
                 onChange: (page, pageSize) => {
+                  window.scrollTo(0, 0);
                   setCurrentPage(page);
                   setPageSize(pageSize);
                 },
