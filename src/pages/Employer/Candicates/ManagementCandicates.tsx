@@ -9,6 +9,7 @@ import CustomSelect from '~/components/Select/CustomSelect';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useFetch } from '~/hooks/useFetch';
 import { Application, StatusJob } from '~/types/Job';
+import { IGetAllStatusParams } from '~/types/Status';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 const { EditOutlined } = icons;
@@ -36,7 +37,7 @@ const ManagementCandicates = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
-  const params = { type: 'Phỏng vấn' };
+  const params: IGetAllStatusParams = { type: 'interview' };
 
   const { data: allStatusJob } = useFetch<StatusJob>(
     ['getAllStatusJob', params.type],
@@ -159,7 +160,9 @@ const ManagementCandicates = () => {
       <div className="flex justify-between pt-4 bg-white">
         <Paragraph className="flex flex-col px-16">
           <Text strong>Ứng viên</Text>
-          <Text>Có 6 ứng viên được tìm thấy</Text>
+          <Text className="text-sub">
+            Có {applicationJobs?.items.length || 0} ứng viên được tìm thấy
+          </Text>
         </Paragraph>
         <div className="px-16">
           <Form

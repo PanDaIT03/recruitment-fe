@@ -23,6 +23,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import ModalStatusJob from '~/components/Modal/ModalStatusJob/index';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import MobileCard from './components/ListRecruimentCard';
+import { IGetAllStatusParams } from '~/types/Status';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
@@ -38,7 +39,7 @@ const Recruitment: React.FC = () => {
     Application['items'][0] | null
   >(null);
 
-  const params = { type: 'Phỏng vấn' };
+  const params: IGetAllStatusParams = { type: 'interview' };
 
   const { data: allStatusJob } = useFetch<StatusJob>(
     ['getAllStatusJob', params.type],
