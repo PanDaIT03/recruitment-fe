@@ -29,10 +29,19 @@ const data = [
 ];
 
 const EmployerDashboard: React.FC = () => {
-  const { data: applicationJobs } = useFetch<Application>(
-    ['JobsApplicants'],
+  const { data: applicationJobsInterview } = useFetch<Application>(
+    ['JobsApplicantsInterview'],
     () =>
       JobsAPI.getAllJobsApplicants(3, undefined, {
+        page: 1,
+        pageSize: 1000,
+      })
+  );
+
+  const { data: applicationJobsWork } = useFetch<Application>(
+    ['JobsApplicantsWork'],
+    () =>
+      JobsAPI.getAllJobsApplicants(10, undefined, {
         page: 1,
         pageSize: 1000,
       })
@@ -58,8 +67,8 @@ const EmployerDashboard: React.FC = () => {
         </div>
         <div className="grid gap-1">
           <Card title="Phỏng vấn sắp tới" className="shadow-md p-4">
-            {applicationJobs?.items?.length !== 0 ? (
-              applicationJobs?.items?.map((users) => (
+            {applicationJobsInterview?.items?.length !== 0 ? (
+              applicationJobsInterview?.items?.map((users) => (
                 <div key={users?.user?.id} className="mb-2">
                   <h3 className="text-[14px] font-semibold">
                     {users?.user?.fullName} - {users?.job?.title}
@@ -85,10 +94,30 @@ const EmployerDashboard: React.FC = () => {
           </Card>
 
           <Card title="Ứng viên sắp đi làm" className="shadow-md">
-            <Empty
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description="Không có ứng viên nào sắp đi làm"
-            />
+            {applicationJobsWork?.items?.length !== 0 ? (
+              applicationJobsWork?.items?.map((users) => (
+                <div key={users?.user?.id} className="mb-2">
+                  <h3 className="text-[14px] font-semibold">
+                    {users?.user?.fullName} - {users?.job?.title}
+                  </h3>
+                  <ul className="list-disc px-6 space-y-2 mt-2">
+                    {users?.schedules?.map((schedule, index) => (
+                      <li key={index} className="text-xs text-gray-700">
+                        <span className="font-medium">
+                          {dayjs(schedule.date).format('HH:mm DD/MM/YYYY')}
+                        </span>
+                        <span className="ml-2 text-sub">{schedule.note}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            ) : (
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description="Không có ứng viên nào sắp đi làm"
+              />
+            )}
           </Card>
         </div>
       </div>

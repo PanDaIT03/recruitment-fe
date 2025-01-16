@@ -177,7 +177,11 @@ const EmployerAccountForm: React.FC = () => {
           <Input placeholder="Nhập website công ty" className="rounded-md" />
         </Form.Item>
 
-        <Form.Item name="jobPositionsId" label="Cấp bậc">
+        <Form.Item
+          name="jobPositionsId"
+          label="Cấp bậc"
+          rules={[{ required: true, message: 'Vui lòng chọn chức vụ!' }]}
+        >
           <Select placeholder="Chức vụ">
             {jobPositions?.items.map?.((position) => (
               <Option key={position.id} value={position.id}>

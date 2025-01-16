@@ -66,17 +66,7 @@ const CandidateCard = ({
       </div>
       <div className="flex items-center justify-between my-2">
         <p className="text-sub">Ngày ứng tuyển</p>
-        <p>
-          {dayjs(data[0]?.createAt).format('HH:MM DD/MM/YYYY')}
-          <br />
-          <span className="text-xs text-sub">
-            {dayjs(data[0]?.createAt).fromNow()}
-          </span>
-        </p>
-      </div>
-      <div className="flex items-center justify-between">
-        <p className="text-sub">Cập nhật</p>
-        <p> {dayjs(data[0]?.createAt).fromNow()}</p>
+        <p>{dayjs(data[0]?.createAt).format('HH:MM DD/MM/YYYY')}</p>
       </div>
     </Card>
   );
