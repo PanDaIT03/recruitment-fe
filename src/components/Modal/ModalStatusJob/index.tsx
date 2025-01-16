@@ -54,7 +54,7 @@ const ModalStatusJob = ({
 
     try {
       const response = await JobsAPI.updateApplicationJob(payload);
-      if (selectedStatus === 2) {
+      if (selectedStatus === 3) {
         const payload = {
           ...formData,
           jobsId: data?.jobsId,
