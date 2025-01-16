@@ -11,6 +11,7 @@ import { FunctionalAPI, IGetAllFunctionalParams } from '~/apis/functional';
 import {
   FunctionalGroupAPI,
   ICreateFuncGroupParams,
+  IUpdateFuncGroupParams,
 } from '~/apis/functionalGroup';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -35,7 +36,7 @@ import FilterFunctionalGroup from './FilterFunctionalGroup';
 interface IFunctionalGroupForm {
   title: string;
   description: string;
-  functionalIds: string[];
+  functionalIds: number[];
 }
 
 const {
@@ -57,6 +58,8 @@ const FunctionalGroup = () => {
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
+
+  const [editIndex, setEditIndex] = useState<number>();
 
   const { functionalGroups, loading } = useAppSelector(
     (state) => state.functionalGroup
@@ -104,6 +107,40 @@ const FunctionalGroup = () => {
     },
     onError: (error: any) => {
       message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
+    },
+  });
+
+  const {
+    mutate: updateFunctionalGroup,
+    isPending: isUpdateFunctionalGroupPending,
+  } = useMutation({
+    mutationFn: (params: IUpdateFuncGroupParams) =>
+      FunctionalGroupAPI.updateFunctionalGroup(params),
+    onSuccess: (res) => {
+      message.success(res?.message);
+
+      setEditIndex(undefined);
+      refetchFunctionalGroup();
+      handleCancelModal();
+    },
+    onError: (error: any) => {
+      message.error(`Cập nhật thất bại: ${error?.response?.data?.message}`);
+    },
+  });
+
+  const {
+    mutate: deleteFunctionalGroup,
+    isPending: isDeleteFunctionalGroupPending,
+  } = useMutation({
+    mutationFn: (id: number) => FunctionalGroupAPI.deleteFunctionalGroup(id),
+    onSuccess: (res) => {
+      message.success(res?.message);
+
+      refetchFunctionalGroup();
+      handleCancelModal();
+    },
+    onError: (error: any) => {
+      message.error(`Xóa thất bại: ${error?.response?.data?.message}`);
     },
   });
 
@@ -178,7 +215,12 @@ const FunctionalGroup = () => {
         title: 'Thao tác',
         render: (_, record) => (
           <Flex justify="center">
-            <ButtonAction tooltipTitle="Chỉnh sửa" title={<EditOutlined />} />
+            <ButtonAction
+              tooltipTitle="Chỉnh sửa"
+              title={<EditOutlined />}
+              disabled={isDeleteFunctionalGroupPending}
+              onClick={() => handleEdit(record)}
+            />
             <Popconfirm
               okText="Có"
               cancelText="Không"
@@ -190,17 +232,33 @@ const FunctionalGroup = () => {
                 </span>
               }
               icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+              onConfirm={() => deleteFunctionalGroup(record?.id)}
             >
-              <ButtonAction tooltipTitle="Xóa" title={<CloseOutlined />} />
+              <ButtonAction
+                tooltipTitle="Xóa"
+                title={<CloseOutlined />}
+                disabled={isDeleteFunctionalGroupPending}
+              />
             </Popconfirm>
           </Flex>
         ),
       },
     ] as ColumnsType<IFunctionalGroupItem>;
-  }, [paginationParams]);
+  }, [paginationParams, isDeleteFunctionalGroupPending]);
 
   const refetchFunctionalGroup = useCallback(() => {
     dispatch(getAllFunctionalGroups({}));
+  }, []);
+
+  const handleEdit = useCallback((record: IFunctionalGroupItem) => {
+    setIsOpenModal(true);
+    setEditIndex(record?.id);
+
+    functionalForm.setFieldsValue({
+      title: record?.title,
+      description: record?.description,
+      functionalIds: record?.functionals?.map((item) => item.id),
+    });
   }, []);
 
   const handleCancelModal = useCallback(() => {
@@ -208,11 +266,23 @@ const FunctionalGroup = () => {
     setIsOpenModal(false);
   }, []);
 
-  const handleFinishModal = useCallback((values: IFunctionalGroupForm) => {
-    createFunctionalGroup({
-      ...values,
-    });
-  }, []);
+  const handleFinishModal = useCallback(
+    (values: IFunctionalGroupForm) => {
+      if (editIndex === undefined || editIndex === null) {
+        createFunctionalGroup({
+          ...values,
+        });
+        return;
+      }
+
+      const params: IUpdateFuncGroupParams = {
+        ...values,
+        id: editIndex,
+      };
+      updateFunctionalGroup(params);
+    },
+    [editIndex]
+  );
 
   return (
     <>
@@ -221,6 +291,7 @@ const FunctionalGroup = () => {
           <Button
             title={<FilterAdmin />}
             className={'bg-white'}
+            disabled={isDeleteFunctionalGroupPending}
             onClick={() => setIsOpenFilter(true)}
           />
         </Col>
@@ -229,6 +300,7 @@ const FunctionalGroup = () => {
             fill
             title="Tạo"
             iconBefore={<PlusOutlined />}
+            disabled={isDeleteFunctionalGroupPending}
             onClick={() => setIsOpenModal(true)}
           />
         </Col>
@@ -255,14 +327,18 @@ const FunctionalGroup = () => {
             <Button
               title="Hủy"
               iconBefore={<CloseOutlined />}
-              loading={isCreateFunctionalGroupPending}
+              loading={
+                isCreateFunctionalGroupPending || isUpdateFunctionalGroupPending
+              }
               onClick={handleCancelModal}
             />
             <Button
               fill
               title="Lưu"
               iconBefore={<SaveOutlined />}
-              loading={isCreateFunctionalGroupPending}
+              loading={
+                isCreateFunctionalGroupPending || isUpdateFunctionalGroupPending
+              }
               onClick={() => functionalForm.submit()}
             />
           </Flex>
