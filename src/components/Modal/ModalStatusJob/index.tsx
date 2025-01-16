@@ -95,7 +95,7 @@ const ModalStatusJob = ({
             placeholder="Chọn trạng thái"
           />
         </Form.Item>
-        {selectedStatus === 2 && (
+        {selectedStatus === 3 && (
           <>
             <Form.Item
               label={

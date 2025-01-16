@@ -41,12 +41,12 @@ const RecruimentDetail = () => {
 
   const { data: applicationJobs, refetch } = useFetch<ApplicationJobDetail>(
     ['getApplicantsDetail', data.usersId, data.jobsId],
-    () => JobsAPI.getApplicantsDetail(data[0].usersId, data[0].jobsId)
+    () => JobsAPI.getApplicantsDetail(data.usersId, data.jobsId)
   );
 
   const { data: schedulesInterview, refetch: refetchSchedules } = useFetch(
     ['schedulesInterview', data.usersId, data.jobsId],
-    () => JobsAPI.getSchedulesInterview(data[0].usersId, data[0].jobsId)
+    () => JobsAPI.getSchedulesInterview(data.usersId, data.jobsId)
   );
 
   const handleOpenModal = (interview?: any) => {
