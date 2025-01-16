@@ -312,7 +312,7 @@ const FunctionalManagement = () => {
         }
         onCancel={handleModalCancel}
       >
-        <FormWrapper form={form} onFinish={handleFinish}>
+        <FormWrapper footer={<></>} form={form} onFinish={handleFinish}>
           <FormItem
             label="Mã"
             name="code"
