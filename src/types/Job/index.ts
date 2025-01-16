@@ -129,6 +129,13 @@ export interface Application {
     job: Job;
     user: User;
     status: Status;
+    schedules: [
+      {
+        id: number;
+        note: string;
+        date: string;
+      },
+    ];
   }[];
 }
 
