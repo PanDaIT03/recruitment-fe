@@ -78,11 +78,8 @@ const RoleManagement = () => {
         width: 250,
         title: 'Chức năng',
         dataIndex: 'rolesFunctionals',
-        render: (value) => {
-          console.log(value);
-
-          return value?.map((item: any) => item?.functional?.title)?.join(', ');
-        },
+        render: (value) =>
+          value?.map((item: any) => item?.functional?.title)?.join(', '),
       },
       {
         width: 60,

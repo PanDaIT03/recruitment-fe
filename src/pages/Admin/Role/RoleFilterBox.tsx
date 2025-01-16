@@ -2,13 +2,14 @@ import { useMutation } from '@tanstack/react-query';
 import { Col, FormInstance, message, Row, Typography } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import { DefaultOptionType } from 'antd/es/select';
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import { IPaginationParams } from '~/apis/job';
 import { RoleApi } from '~/apis/role/role';
 import Content from '~/components/Content/Content';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Select from '~/components/Select/Select';
+import { useAppSelector } from '~/hooks/useStore';
 import { IRole } from '~/types/Role';
 
 interface IRoleFilterBoxProps {
@@ -27,6 +28,7 @@ const RoleFilterBox = ({
   onFinish,
 }: IRoleFilterBoxProps) => {
   const [roleOptions, setRoleOptions] = useState([] as DefaultOptionType[]);
+  const { functionals, loading } = useAppSelector((state) => state.functional);
 
   const { mutate: getAllRolesMutate, isPending: isGetAllRolesMutatePending } =
     useMutation({
@@ -55,6 +57,11 @@ const RoleFilterBox = ({
     getAllRolesMutate({});
   }, []);
 
+  const handleCancel = useCallback(() => {
+    form.resetFields();
+    onCancel();
+  }, []);
+
   return (
     <Content isOpen={open}>
       <FormWrapper
@@ -62,7 +69,7 @@ const RoleFilterBox = ({
         cancelTitle="Hủy"
         submitTitle="Tìm kiếm"
         onFinish={onFinish}
-        onCancel={onCancel}
+        onCancel={handleCancel}
       >
         <Row gutter={{ xs: 8, sm: 14 }}>
           <Col span={12}>
@@ -77,9 +84,12 @@ const RoleFilterBox = ({
           <Col span={12}>
             <FormItem label="Chức năng" name="functionalIds">
               <Select
-                options={[]}
-                loading={false}
+                loading={loading}
                 placeholder="Chọn chức năng"
+                options={functionals?.items?.map((item) => ({
+                  label: item?.title,
+                  value: item?.id,
+                }))}
               />
             </FormItem>
           </Col>
