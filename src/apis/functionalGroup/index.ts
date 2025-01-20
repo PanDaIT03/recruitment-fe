@@ -3,6 +3,8 @@ import axiosApi from '~/services/axios';
 export interface IGetFuncGroupParams {
   page?: number;
   pageSize?: number;
+  title?: string;
+  functionalGroupIds?: number[]
 }
 
 export interface ICreateFuncGroupParams {

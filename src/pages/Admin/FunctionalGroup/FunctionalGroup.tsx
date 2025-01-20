@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Col, Flex, message, Popconfirm, Row } from 'antd';
+import { Col, Flex, message, Popconfirm, Row, Spin } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
 import { ColumnsType } from 'antd/es/table';
@@ -31,7 +31,9 @@ import { getAllFunctionalGroups } from '~/store/thunk/functionalGroup';
 import { IFunctionalItem } from '~/types/Functional';
 import { IFunctionalGroupItem } from '~/types/FunctionalGroup';
 import icons from '~/utils/icons';
-import FilterFunctionalGroup from './FilterFunctionalGroup';
+import FilterFunctionalGroup, {
+  IFilterFunctionalGroupForm,
+} from './FilterFunctionalGroup';
 
 interface IFunctionalGroupForm {
   title: string;
@@ -60,6 +62,7 @@ const FunctionalGroup = () => {
   const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const [editIndex, setEditIndex] = useState<number>();
+  const [filter, setFilter] = useState<Partial<IFilterFunctionalGroupForm>>();
 
   const { functionalGroups, loading } = useAppSelector(
     (state) => state.functionalGroup
@@ -71,7 +74,7 @@ const FunctionalGroup = () => {
   };
 
   const { currentPage, itemsPerPage, handlePageChange } = usePagination({
-    // extraParams: filters,
+    extraParams: filter,
     items: functionalGroups?.items,
     fetchAction: getAllFunctionalGroups,
     pageInfo: {
@@ -181,8 +184,11 @@ const FunctionalGroup = () => {
         width: 350,
         dataIndex: 'functionals',
         title: 'Nhóm chức năng',
-        render: (value: IFunctionalItem[]) =>
-          value?.map((item) => item?.title)?.join(', '),
+        render: (value: IFunctionalItem[]) => (
+          <p className="line-clamp-2">
+            {value?.map((item) => item?.title)?.join(', ')}
+          </p>
+        ),
       },
       {
         width: 180,
@@ -218,7 +224,6 @@ const FunctionalGroup = () => {
             <ButtonAction
               tooltipTitle="Chỉnh sửa"
               title={<EditOutlined />}
-              disabled={isDeleteFunctionalGroupPending}
               onClick={() => handleEdit(record)}
             />
             <Popconfirm
@@ -234,17 +239,13 @@ const FunctionalGroup = () => {
               icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
               onConfirm={() => deleteFunctionalGroup(record?.id)}
             >
-              <ButtonAction
-                tooltipTitle="Xóa"
-                title={<CloseOutlined />}
-                disabled={isDeleteFunctionalGroupPending}
-              />
+              <ButtonAction tooltipTitle="Xóa" title={<CloseOutlined />} />
             </Popconfirm>
           </Flex>
         ),
       },
     ] as ColumnsType<IFunctionalGroupItem>;
-  }, [paginationParams, isDeleteFunctionalGroupPending]);
+  }, [paginationParams]);
 
   const refetchFunctionalGroup = useCallback(() => {
     dispatch(getAllFunctionalGroups({}));
@@ -260,6 +261,19 @@ const FunctionalGroup = () => {
       functionalIds: record?.functionals?.map((item) => item.id),
     });
   }, []);
+
+  const handleCancelFilter = useCallback(() => {
+    setFilter({});
+    setIsOpenFilter(false);
+  }, []);
+
+  const handleFinishFilter = useCallback(
+    (values: IFilterFunctionalGroupForm) => {
+      console.log(values);
+      setFilter((prev) => ({ ...prev, ...values }));
+    },
+    []
+  );
 
   const handleCancelModal = useCallback(() => {
     functionalForm.resetFields();
@@ -285,14 +299,13 @@ const FunctionalGroup = () => {
   );
 
   return (
-    <>
+    <Spin spinning={isDeleteFunctionalGroupPending}>
       <Row gutter={[8, 16]} align={'middle'} justify={'end'}>
         <Col>
           <Button
             title={<FilterAdmin />}
             className={'bg-white'}
-            disabled={isDeleteFunctionalGroupPending}
-            onClick={() => setIsOpenFilter(true)}
+            onClick={() => setIsOpenFilter(!isOpenFilter)}
           />
         </Col>
         <Col>
@@ -300,12 +313,15 @@ const FunctionalGroup = () => {
             fill
             title="Tạo"
             iconBefore={<PlusOutlined />}
-            disabled={isDeleteFunctionalGroupPending}
             onClick={() => setIsOpenModal(true)}
           />
         </Col>
       </Row>
-      <FilterFunctionalGroup />
+      <FilterFunctionalGroup
+        isOpen={isOpenFilter}
+        onCancel={handleCancelFilter}
+        onFinish={handleFinishFilter}
+      />
       <Content>
         <Table
           loading={loading}
@@ -321,7 +337,7 @@ const FunctionalGroup = () => {
       </Content>
       <Modal
         isOpen={isOpenModal}
-        title="Tạo nhóm chức năng"
+        title={editIndex ? 'Chỉnh sửa nhóm chức năng' : 'Tạo nhóm chức năng'}
         footer={
           <Flex justify="end" gap={16}>
             <Button
@@ -387,7 +403,7 @@ const FunctionalGroup = () => {
           </FormItem>
         </FormWrapper>
       </Modal>
-    </>
+    </Spin>
   );
 };
 

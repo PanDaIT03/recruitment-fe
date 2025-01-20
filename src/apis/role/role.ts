@@ -1,21 +1,31 @@
-import { AxiosRequestConfig } from 'axios';
-
 import axiosApi from '~/services/axios';
 import { IRole } from '~/types/Role';
-import { IPaginationParms } from '../job';
+import { IPaginationParams } from '../job';
+
+export interface ICreateRoleParam {
+  title: string;
+  description: string;
+  functionalIds: number[];
+}
+
+export interface IUpdateRoleParam extends ICreateRoleParam {
+  id: number;
+}
 
 export const RoleApi = {
   getAllRoles: async (
-    params: IPaginationParms & Partial<IRole>
+    params: IPaginationParams & Partial<IRole>
   ): Promise<IPaginatedData<IRole[]>> => {
-    const payload = {
-      params: {
-        ...(params?.page && { page: params.page }),
-        ...(params?.pageSize && { pageSize: params.pageSize }),
-        ...(params?.id && { id: params.id }),
-      },
-    } as AxiosRequestConfig;
-
-    return axiosApi.get('/roles/all', payload);
+    return axiosApi.get('/roles/all', { params });
+  },
+  createRole: async (params: ICreateRoleParam) => {
+    return axiosApi.post('/roles', params);
+  },
+  updateRole: async (params: IUpdateRoleParam) => {
+    const { id, ...others } = params;
+    return axiosApi.patch(`/roles/${id}`, others);
+  },
+  deleteRole: async (id: number) => {
+    return axiosApi.delete(`/roles/${id}`);
   },
 };

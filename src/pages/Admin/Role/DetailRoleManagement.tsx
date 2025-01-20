@@ -1,7 +1,18 @@
-import { Checkbox, Divider, Flex, Form, Input, Space, Spin } from 'antd';
+import { useMutation } from '@tanstack/react-query';
+import {
+  Checkbox,
+  Divider,
+  Flex,
+  Form,
+  Input,
+  message,
+  Space,
+  Spin,
+} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ICreateRoleParam, IUpdateRoleParam, RoleApi } from '~/apis/role/role';
 
 import Button from '~/components/Button/Button';
 import Content from '~/components/Content/Content';
@@ -10,15 +21,16 @@ import FormWrapper from '~/components/Form/FormWrapper';
 import List from '~/components/List/List';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
+import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionalGroups } from '~/store/thunk/functionalGroup';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
 interface IFunctionalForm {
-  roleName: string;
+  title: string;
   description: string;
-  functionalsId: number[];
+  functionalIds: number[];
 }
 
 const { SaveOutlined } = icons;
@@ -26,6 +38,9 @@ const { SaveOutlined } = icons;
 const DetailRoleManagement = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const queryParams = useQueryParams();
+
+  const roleId = queryParams.get('id');
   const [functionalForm] = Form.useForm<IFunctionalForm>();
 
   const { setTitle } = useTitle();
@@ -35,18 +50,76 @@ const DetailRoleManagement = () => {
     (state) => state.functionalGroup
   );
 
+  const { mutate: createRole, isPending: isCreateRolePending } = useMutation({
+    mutationFn: (params: ICreateRoleParam) => RoleApi.createRole(params),
+    onSuccess: (res) => {
+      message.success(res?.message);
+      navigate(PATH.ADMIN_ROLE_MANAGEMENT);
+    },
+    onError: (error: any) => {
+      message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
+    },
+  });
+
+  const { mutate: getRoleById, isPending: isGetRoleByIdPending } = useMutation({
+    mutationFn: (id: number) => RoleApi.getAllRoles({ id: id }),
+    onSuccess: (res) => {
+      const item = res?.items?.[0];
+
+      functionalForm.setFieldsValue({
+        title: item?.title,
+        description: item?.description,
+        functionalIds: item?.rolesFunctionals?.map(
+          (item) => item?.functionalsId
+        ),
+      });
+    },
+    onError: (error: any) => {
+      message.error(error?.response?.data?.message);
+    },
+  });
+
+  const { mutate: updateRole, isPending: isUpdateRolePending } = useMutation({
+    mutationFn: (params: IUpdateRoleParam) => RoleApi.updateRole(params),
+    onSuccess: (res) => {
+      message.success(res?.message);
+      navigate(PATH.ADMIN_ROLE_MANAGEMENT);
+    },
+    onError: (error: any) => {
+      message.error(`Cập nhật thất bại: ${error?.response?.data?.message}`);
+    },
+  });
+
+  const isSpinning = useMemo(
+    () =>
+      loading ||
+      isCreateRolePending ||
+      isGetRoleByIdPending ||
+      isUpdateRolePending,
+    [loading, isCreateRolePending, isGetRoleByIdPending, isUpdateRolePending]
+  );
+
   const refetchFunctionalGroup = useCallback(() => {
     dispatch(getAllFunctionalGroups({}));
   }, []);
 
   useEffect(() => {
-    setTitle('Thêm mới chức vụ');
+    let title = '';
+    if (roleId === null || roleId === undefined) title = 'Thêm mới chức vụ';
+    else title = 'Chỉnh sửa chức vụ';
+
+    setTitle(title);
     setBreadcrumb([
       { title: 'Quản lý' },
       { title: 'Danh sách chức vụ', href: PATH.ADMIN_ROLE_MANAGEMENT },
-      { title: 'Thêm mới chức vụ' },
+      { title: title },
     ]);
-  }, []);
+  }, [roleId]);
+
+  useEffect(() => {
+    if (roleId === null || roleId === undefined) return;
+    getRoleById(+roleId);
+  }, [roleId]);
 
   useEffect(() => {
     refetchFunctionalGroup();
@@ -57,13 +130,34 @@ const DetailRoleManagement = () => {
     navigate(PATH.ADMIN_ROLE_MANAGEMENT);
   }, []);
 
-  const handleFinish = useCallback((values: IFunctionalForm) => {
-    console.log(values);
-  }, []);
+  const handleFinish = useCallback(
+    (values: IFunctionalForm) => {
+      const { title, description, functionalIds } = values;
+
+      if (roleId) {
+        const params: IUpdateRoleParam = {
+          id: +roleId,
+          functionalIds,
+          title: title?.trim(),
+          description: description?.trim(),
+        };
+
+        updateRole(params);
+        return;
+      }
+
+      createRole({
+        functionalIds,
+        title: title?.trim(),
+        description: description?.trim(),
+      });
+    },
+    [roleId]
+  );
 
   return (
     <>
-      <Spin spinning={loading}>
+      <Spin spinning={isSpinning}>
         <FormWrapper
           form={functionalForm}
           footer={
@@ -80,11 +174,11 @@ const DetailRoleManagement = () => {
           onFinish={handleFinish}
         >
           <div className="grid grid-cols-10 gap-4">
-            <Content className="col-span-3">
+            <Content className="col-span-4">
               <h2 className="text-base font-semibold">1. Thông tin chức vụ</h2>
               <Space direction="vertical" className="w-full pt-2 pl-2">
                 <FormItem
-                  name="roleName"
+                  name="title"
                   label="Tên chức vụ"
                   rules={[
                     { required: true, message: 'Vui lòng nhập tên chức vụ' },
@@ -105,7 +199,7 @@ const DetailRoleManagement = () => {
                 </FormItem>
               </Space>
             </Content>
-            <Content className="col-span-7">
+            <Content className="col-span-6">
               <Space direction="vertical" className="w-full">
                 <h2 className="text-base font-semibold">
                   2. Phân quyền chức năng
@@ -113,10 +207,10 @@ const DetailRoleManagement = () => {
                 <div className="bg-white py-2 px-4 rounded-md w-full overflow-auto">
                   <ul className="flex text-[#F15227] font-medium mb-2">
                     <li className="min-w-[200px]">Tên nhóm chức năng</li>
-                    <li className="min-w-[266px] pl-6">Chức năng</li>
-                    <li className="min-w-[250px]">Mã chức năng</li>
+                    <li className="min-w-[336px]">Chức năng</li>
+                    <li className="min-w-[150px]">Mã chức năng</li>
                   </ul>
-                  <FormItem name="functionalsId">
+                  <FormItem name="functionalIds">
                     <Checkbox.Group className="w-full">
                       <List
                         className="w-full"
@@ -142,21 +236,24 @@ const DetailRoleManagement = () => {
                                 </p>
                                 <Flex vertical gap={gap}>
                                   {record?.functionals?.length ? (
-                                    record?.functionals?.map((functional) => (
-                                      <Checkbox
-                                        value={functional.id}
-                                        className="min-w-[50px]"
-                                      >
-                                        <Flex>
-                                          <p className="min-w-[242px]">
-                                            {functional?.title}
-                                          </p>
-                                          <p className="min-w-[250px]">
-                                            {functional?.code}
-                                          </p>
-                                        </Flex>
-                                      </Checkbox>
-                                    ))
+                                    record?.functionals?.map(
+                                      (functional, index) => (
+                                        <Checkbox
+                                          key={index}
+                                          value={functional.id}
+                                          className="min-w-[50px]"
+                                        >
+                                          <Flex>
+                                            <p className="min-w-[312px]">
+                                              {functional?.title}
+                                            </p>
+                                            <p className="min-w-[250px]">
+                                              {functional?.code}
+                                            </p>
+                                          </Flex>
+                                        </Checkbox>
+                                      )
+                                    )
                                   ) : (
                                     <Flex className="">
                                       <p className="min-w-[266px]">-</p>
