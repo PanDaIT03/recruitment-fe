@@ -17,7 +17,6 @@ const initialState: IRoleState = {
     items: [] as IRole[],
     pageInfo: {} as PageInfo,
   },
-  // roles: [] as IRole[],
 };
 
 const roleSlice = createSlice({

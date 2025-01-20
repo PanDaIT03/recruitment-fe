@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Col, Flex, message, Popconfirm, Row } from 'antd';
+import { Col, Flex, message, Popconfirm, Row, Spin } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -75,9 +75,7 @@ const FunctionalManagement = () => {
         refetchFunctionals();
       },
       onError: (error: any) => {
-        message.error(
-          `Cập nhật thông tin thất bại: ${error?.response?.data?.message}`
-        );
+        message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
       },
     });
 
@@ -98,18 +96,17 @@ const FunctionalManagement = () => {
       },
     });
 
-  const { mutate: deleteFunctional } = useMutation({
-    mutationFn: (id: number) => FunctionalAPI.deleteFunctional(id),
-    onSuccess: (res) => {
-      message.success(res?.message || 'Xóa thành công');
-      refetchFunctionals();
-    },
-    onError: (error: any) => {
-      message.error(
-        `Cập nhật thông tin thất bại: ${error?.response?.data?.message}`
-      );
-    },
-  });
+  const { mutate: deleteFunctional, isPending: isDeleteFunctionalPending } =
+    useMutation({
+      mutationFn: (id: number) => FunctionalAPI.deleteFunctional(id),
+      onSuccess: (res) => {
+        message.success(res?.message || 'Xóa thành công');
+        refetchFunctionals();
+      },
+      onError: (error: any) => {
+        message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`);
+      },
+    });
 
   const { currentPage, itemsPerPage, handlePageChange } = usePagination({
     extraParams: filters,
@@ -187,12 +184,8 @@ const FunctionalManagement = () => {
                 okText="Có"
                 cancelText="Không"
                 placement="topLeft"
-                title={<span className="text-black">Xoá mục này</span>}
-                description={
-                  <span className="text-black">
-                    Bạn có chắc chắn muốn xoá mục này?
-                  </span>
-                }
+                title="Xoá mục này"
+                description="Bạn có chắc chắn muốn xoá mục này?"
                 icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                 onConfirm={() => handleDelete(record.id)}
               >
@@ -256,7 +249,7 @@ const FunctionalManagement = () => {
   }, [editIndex]);
 
   return (
-    <>
+    <Spin spinning={isDeleteFunctionalPending}>
       <Row gutter={[8, 16]} align={'middle'} justify={'end'}>
         <Col>
           <Button
@@ -294,7 +287,7 @@ const FunctionalManagement = () => {
       </Content>
       <Modal
         isOpen={isOpenModal}
-        title="Thêm chức năng"
+        title={editIndex ? 'Chỉnh sửa chức năng' : 'Thêm chức năng'}
         footer={
           <Flex justify="end" gap={16}>
             <Button
@@ -314,7 +307,7 @@ const FunctionalManagement = () => {
         }
         onCancel={handleModalCancel}
       >
-        <FormWrapper form={form} onFinish={handleFinish}>
+        <FormWrapper footer={<></>} form={form} onFinish={handleFinish}>
           <FormItem
             label="Mã"
             name="code"
@@ -331,7 +324,7 @@ const FunctionalManagement = () => {
           </FormItem>
         </FormWrapper>
       </Modal>
-    </>
+    </Spin>
   );
 };
 

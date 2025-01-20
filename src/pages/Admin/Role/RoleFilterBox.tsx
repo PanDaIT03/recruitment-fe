@@ -1,15 +1,13 @@
-import { useMutation } from '@tanstack/react-query';
-import { Col, FormInstance, message, Row, Typography } from 'antd';
+import { Col, FormInstance, Row } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
-import { DefaultOptionType } from 'antd/es/select';
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 
-import { IPaginationParams } from '~/apis/job';
-import { RoleApi } from '~/apis/role/role';
 import Content from '~/components/Content/Content';
 import FormWrapper from '~/components/Form/FormWrapper';
+import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
-import { IRole } from '~/types/Role';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getAllFunctionals } from '~/store/thunk/functional';
 
 interface IRoleFilterBoxProps {
   open: boolean;
@@ -18,41 +16,23 @@ interface IRoleFilterBoxProps {
   onCancel: () => void;
 }
 
-const { Text } = Typography;
-
 const RoleFilterBox = ({
   form,
   open,
   onCancel,
   onFinish,
 }: IRoleFilterBoxProps) => {
-  const [roleOptions, setRoleOptions] = useState([] as DefaultOptionType[]);
-
-  const { mutate: getAllRolesMutate, isPending: isGetAllRolesMutatePending } =
-    useMutation({
-      mutationFn: (params: IPaginationParams & Partial<IRole>) =>
-        RoleApi.getAllRoles(params),
-      onSuccess: (res: any) => {
-        if (res?.items)
-          setRoleOptions(
-            res.items.map(
-              (item: any) =>
-                ({
-                  label: <Text className="capitalize">{item?.title}</Text>,
-                  value: item?.id,
-                }) as DefaultOptionType
-            )
-          );
-      },
-      onError: (error) => {
-        message.error(
-          `Lỗi khi lấy danh sách chức vụ. ${error?.message ?? error}`
-        );
-      },
-    });
+  const dispatch = useAppDispatch();
+  const { functionals, loading } = useAppSelector((state) => state.functional);
 
   useEffect(() => {
-    getAllRolesMutate({});
+    if (!open) return;
+    dispatch(getAllFunctionals({}));
+  }, [open]);
+
+  const handleCancel = useCallback(() => {
+    form.resetFields();
+    onCancel();
   }, []);
 
   return (
@@ -62,24 +42,25 @@ const RoleFilterBox = ({
         cancelTitle="Hủy"
         submitTitle="Tìm kiếm"
         onFinish={onFinish}
-        onCancel={onCancel}
+        onCancel={handleCancel}
       >
         <Row gutter={{ xs: 8, sm: 14 }}>
           <Col span={12}>
-            <FormItem label="Chức vụ" name="rolesId">
-              <Select
-                options={roleOptions}
-                placeholder="Chọn chức vụ"
-                loading={isGetAllRolesMutatePending}
-              />
+            <FormItem label="Tên chức vụ" name="title">
+              <Input allowClear placeholder="Ví dụ: admin" />
             </FormItem>
           </Col>
           <Col span={12}>
             <FormItem label="Chức năng" name="functionalIds">
               <Select
-                options={[]}
-                loading={false}
+                allowClear
+                mode="multiple"
+                loading={loading}
                 placeholder="Chọn chức năng"
+                options={functionals?.items?.map((item) => ({
+                  label: item?.title,
+                  value: item?.id,
+                }))}
               />
             </FormItem>
           </Col>
