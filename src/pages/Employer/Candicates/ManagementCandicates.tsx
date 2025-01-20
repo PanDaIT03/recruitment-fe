@@ -9,6 +9,7 @@ import CustomSelect from '~/components/Select/CustomSelect';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 import { useFetch } from '~/hooks/useFetch';
 import { Application, StatusJob } from '~/types/Job';
+import { IGetAllStatusParams } from '~/types/Status';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 const { EditOutlined } = icons;
@@ -36,7 +37,7 @@ const ManagementCandicates = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
-  const params = { type: 'Phỏng vấn' };
+  const params: IGetAllStatusParams = { type: 'interview' };
 
   const { data: allStatusJob } = useFetch<StatusJob>(
     ['getAllStatusJob', params.type],
@@ -52,7 +53,11 @@ const ManagementCandicates = () => {
 
   const statusId = Form.useWatch('statusId', form);
 
-  const { data: applicationJobs, refetch } = useFetch<Application>(
+  const {
+    data: applicationJobs,
+    refetch,
+    isLoading,
+  } = useFetch<Application>(
     ['JobsApplicants', statusId || 'all', currentPage, pageSize],
     () =>
       JobsAPI.getAllJobsApplicants(statusId, undefined, {
@@ -155,7 +160,9 @@ const ManagementCandicates = () => {
       <div className="flex justify-between pt-4 bg-white">
         <Paragraph className="flex flex-col px-16">
           <Text strong>Ứng viên</Text>
-          <Text>Có 6 ứng viên được tìm thấy</Text>
+          <Text className="text-sub">
+            Có {applicationJobs?.items.length || 0} ứng viên được tìm thấy
+          </Text>
         </Paragraph>
         <div className="px-16">
           <Form
@@ -187,6 +194,7 @@ const ManagementCandicates = () => {
       </div>
       <div className="p-4 px-16">
         <Table
+          loading={isLoading}
           columns={columns}
           dataSource={applicationJobs?.items}
           pagination={{
@@ -194,6 +202,7 @@ const ManagementCandicates = () => {
             pageSize: applicationJobs?.pageInfo?.itemsPerPage || 10,
             total: applicationJobs?.pageInfo?.totalItems,
             onChange: (page, pageSize) => {
+              window.scrollTo(0, 0);
               setCurrentPage(page);
               setPageSize(pageSize);
             },

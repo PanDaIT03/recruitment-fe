@@ -6,20 +6,26 @@ import { memo, useCallback } from 'react';
 import Content from '~/components/Content/Content';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
+import Select from '~/components/Select/Select';
+import { useAppSelector } from '~/hooks/useStore';
 
 interface IProps {
   isOpen: boolean;
   onCancel: () => void;
-  onFinish: (values: IFilterFunctionalForm) => void;
+  onFinish: (values: IFilterFunctionalGroupForm) => void;
 }
 
-export interface IFilterFunctionalForm {
-  code: string;
+export interface IFilterFunctionalGroupForm {
   title: string;
+  functionalGroupIds: number[];
 }
 
-const FilterFunctional = ({ isOpen, onCancel, onFinish }: IProps) => {
-  const [form] = useForm<IFilterFunctionalForm>();
+const FilterFunctionalGroup = ({ isOpen, onCancel, onFinish }: IProps) => {
+  const [form] = useForm<IFilterFunctionalGroupForm>();
+
+  const { functionalGroups, loading } = useAppSelector(
+    (state) => state.functionalGroup
+  );
 
   const handleCancel = useCallback(() => {
     form.resetFields();
@@ -37,13 +43,21 @@ const FilterFunctional = ({ isOpen, onCancel, onFinish }: IProps) => {
       >
         <Row gutter={[8, 16]} align="middle">
           <Col span={12}>
-            <FormItem name="title" label="Tên chức năng">
+            <FormItem name="title" label="Tên nhóm chức năng">
               <Input placeholder="Ví dụ: Chỉnh sửa công việc..." />
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem name="code" label="Mã">
-              <Input placeholder="Ví dụ: edit_job" />
+            <FormItem name="functionalGroupIds" label="Nhóm chức năng">
+              <Select
+                mode="multiple"
+                loading={loading}
+                placeholder="Chọn nhóm chức năng"
+                options={functionalGroups?.items?.map((item) => ({
+                  label: item?.title,
+                  value: item?.id,
+                }))}
+              />
             </FormItem>
           </Col>
         </Row>
@@ -52,4 +66,4 @@ const FilterFunctional = ({ isOpen, onCancel, onFinish }: IProps) => {
   );
 };
 
-export default memo(FilterFunctional);
+export default memo(FilterFunctionalGroup);

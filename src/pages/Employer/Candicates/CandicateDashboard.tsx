@@ -41,7 +41,11 @@ const CandicateDashboard: React.FC = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
-  const { data: applicationJobs, refetch } = useFetch<Application>(
+  const {
+    data: applicationJobs,
+    refetch,
+    isLoading,
+  } = useFetch<Application>(
     ['JobsApplicants', 'new', currentPage.toString(), pageSize.toString()],
     () =>
       JobsAPI.getAllJobsApplicants(undefined, 'new', {
@@ -175,6 +179,7 @@ const CandicateDashboard: React.FC = () => {
           </Paragraph>
 
           <Table
+            loading={isLoading}
             columns={columns}
             dataSource={applicationJobs?.items}
             pagination={{
@@ -182,6 +187,7 @@ const CandicateDashboard: React.FC = () => {
               pageSize: applicationJobs?.pageInfo?.itemsPerPage || 10,
               total: applicationJobs?.pageInfo?.totalItems,
               onChange: (page, pageSize) => {
+                window.scrollTo(0, 0);
                 setCurrentPage(page);
                 setPageSize(pageSize);
               },

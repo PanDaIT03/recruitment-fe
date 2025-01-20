@@ -66,7 +66,7 @@ const salaryOptions: DefaultOptionType[] = [
 ];
 
 const defaultFilter: IFilter = {
-  statusId: 5,
+  // statusId: 5,
   type: 'more',
 };
 

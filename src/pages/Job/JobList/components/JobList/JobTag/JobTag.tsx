@@ -39,16 +39,16 @@ const JobTag = ({
       {salary}
     </Tag>
     <Tag icon={<BackPack />} color="green">
-      {jobPosition.title}
+      {jobPosition?.title}
     </Tag>
     <Tag icon={<Box />} color="purple">
-      {jobField.title}
+      {jobField?.title}
     </Tag>
     <Tag icon={<ClockCircleOutlined />} color="cyan">
-      {jobCategory.name}
+      {jobCategory?.name}
     </Tag>
     <Tag icon={<Television />} color="blue">
-      {workType.title}
+      {workType?.title}
     </Tag>
     <Tag icon={<Users width={16} height={16} />} color="magenta">
       {quantity}

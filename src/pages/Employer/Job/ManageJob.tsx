@@ -1,15 +1,16 @@
 import { Form, List } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { useMemo, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
 import { Search } from '~/assets/svg';
 import CustomSelect from '~/components/Select/CustomSelect';
-import { useFetch } from '~/hooks/useFetch';
-import icons from '~/utils/icons';
-import JobListItem from './components/JobListItem';
-import PATH from '~/utils/path';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
+import { useFetch } from '~/hooks/useFetch';
 import { StatusJob } from '~/types/Job';
-import { useMemo, useState } from 'react';
+import icons from '~/utils/icons';
+import PATH from '~/utils/path';
+import JobListItem from './components/JobListItem';
+import { IGetAllStatusParams } from '~/types/Status';
 
 const { MoreOutlined } = icons;
 
@@ -63,17 +64,28 @@ const ManageJob = () => {
 
   const breadcrumb = useBreadcrumb(customBreadcrumbItems, 'text-white');
 
-  const params = { type: 'Công việc' };
+  const params: IGetAllStatusParams = { type: 'job' };
 
   const { data: allStatusJob } = useFetch<StatusJob>(
     ['getAllStatusJob', params.type],
     () => JobsAPI.getAllStatusJob(params.type)
   );
 
+  const { data: allJobsCbx } = useFetch(['getAllJobsCbx'], () =>
+    JobsAPI.getAllJobs({ type: 'less' })
+  );
+
   const statusJob = useMemo(() => {
     return allStatusJob?.items.map((apply) => ({
       value: apply.id,
       label: apply.title,
+    }));
+  }, [allStatusJob]);
+
+  const jobsCbx = useMemo(() => {
+    return allJobsCbx?.items.map((job) => ({
+      value: job.id,
+      label: `${job?.user?.companyName} - ${job?.title}`,
     }));
   }, [allStatusJob]);
 
@@ -117,7 +129,7 @@ const ManageJob = () => {
             <Form.Item name="title">
               <CustomSelect
                 prefixIcon={<Search />}
-                options={[]}
+                options={jobsCbx || []}
                 placeholder="Chọn tên tin tuyển dụng"
               />
             </Form.Item>
@@ -147,6 +159,7 @@ const ManageJob = () => {
             current: allJobsForEmp?.pageInfo?.currentPage || 1,
             total: allJobsForEmp?.pageInfo?.totalItems,
             onChange: (page, pageSize) => {
+              window.scrollTo(0, 0);
               setCurrentPage(page);
               setPageSize(pageSize);
             },
