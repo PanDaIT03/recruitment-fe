@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetEmailStatus, resetUser } from '~/store/reducer/auth';
 import {
   checkExistedEmail,
+  getMe,
   signIn,
   signInWithGoogle,
 } from '~/store/thunk/auth';
@@ -37,6 +38,7 @@ const SignIn = () => {
 
   const { mutate: verifyOTP } = useMutation({
     mutationFn: (params: IVerifyOTP) => AuthAPI.verifyOTP(params),
+    onSuccess: () => dispatch(getMe()),
     onError: (error: any) => messageApi.error(error?.response?.data?.message),
   });
 
@@ -142,9 +144,7 @@ const SignIn = () => {
       ) : (
         <>
           <div className="w-full">
-            <h1 className="text-base font-semibold">
-              Đăng nhập
-            </h1>
+            <h1 className="text-base font-semibold">Đăng nhập</h1>
             <p className="text-sm text-sub mt-1">
               Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục
             </p>
