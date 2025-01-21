@@ -361,11 +361,7 @@ const FunctionalGroup = () => {
         }
         onCancel={handleCancelModal}
       >
-        <FormWrapper
-          footer={<></>}
-          form={functionalForm}
-          onFinish={handleFinishModal}
-        >
+        <FormWrapper form={functionalForm} onFinish={handleFinishModal}>
           <FormItem
             name="title"
             label="Tên nhóm chức năng"
