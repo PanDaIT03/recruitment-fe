@@ -17,7 +17,7 @@ import { useAppSelector } from '~/hooks/useStore';
 import { getAllRoles } from '~/store/thunk/role';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
-import RoleFilterBox from './RoleFilterBox';
+import RoleFilter from './RoleFilter';
 
 const { Text } = Typography;
 const { PlusOutlined, EditOutlined } = icons;
@@ -168,7 +168,7 @@ const RoleManagement = () => {
           />
         </Col>
       </Row>
-      <RoleFilterBox
+      <RoleFilter
         form={form}
         open={isOpenFilter}
         onCancel={handleCancelFilter}
