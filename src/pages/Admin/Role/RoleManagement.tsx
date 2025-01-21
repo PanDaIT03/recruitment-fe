@@ -1,18 +1,9 @@
-import {
-  Col,
-  Form,
-  message,
-  Popconfirm,
-  Row,
-  Space,
-  Spin,
-  Typography,
-} from 'antd';
+import { Col, Form, Row, Space, Typography } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import dayjs from 'dayjs';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import dayjs from 'dayjs';
 import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -22,21 +13,17 @@ import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { useAppSelector } from '~/hooks/useStore';
 import { getAllRoles } from '~/store/thunk/role';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import RoleFilterBox from './RoleFilterBox';
-import { useMutation } from '@tanstack/react-query';
-import { RoleApi } from '~/apis/role/role';
 
 const { Text } = Typography;
-const { PlusOutlined, EditOutlined, QuestionCircleOutlined, CloseOutlined } =
-  icons;
+const { PlusOutlined, EditOutlined } = icons;
 
 const RoleManagement = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const [form] = Form.useForm();
   const queryParams = useQueryParams();
@@ -65,17 +52,6 @@ const RoleManagement = () => {
         totalItems: roles?.pageInfo?.totalItems ?? 0,
       },
     });
-
-  // const { mutate: deleteRole, isPending: isDeleteRolePending } = useMutation({
-  //   mutationFn: (id: number) => RoleApi.deleteRole(id),
-  //   onSuccess: (res) => {
-  //     message.success(res?.message || 'Xóa chức vụ thành công');
-  //     dispatch(getAllRoles({}));
-  //   },
-  //   onError: (error: any) => {
-  //     message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`);
-  //   },
-  // });
 
   useEffect(() => {
     setTitle('Danh sách chức vụ');
@@ -152,17 +128,6 @@ const RoleManagement = () => {
                 )
               }
             />
-            {/* <Popconfirm
-              okText="Có"
-              cancelText="Không"
-              placement="topLeft"
-              title="Xoá mục này"
-              description="Bạn có chắc chắn muốn xoá mục này?"
-              icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-              onConfirm={() => handleDelete(record.id)}
-            >
-              <ButtonAction tooltipTitle="Xóa" title={<CloseOutlined />} />
-            </Popconfirm> */}
           </Space>
         ),
       },
@@ -183,11 +148,6 @@ const RoleManagement = () => {
       functionalIds: params?.functionalIds,
     });
   }, []);
-
-  // const handleDelete = useCallback((id: number) => {
-  //   console.log('delete', id);
-  //   deleteRole(id);
-  // }, []);
 
   return (
     <>

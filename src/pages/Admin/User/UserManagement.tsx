@@ -1,24 +1,26 @@
-import { Avatar, Col, Popconfirm, Row, Space, Tag, Tooltip } from 'antd';
+import { Col, Image, Row, Space, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
+import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import UserApi from '~/apis/user';
 import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
+import ButtonAction from '~/components/Button/ButtonAction';
 import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
-import { useFetch } from '~/hooks/useFetch';
+import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
-import { UserListResponse } from '~/types/User';
+import { useAppSelector } from '~/hooks/useStore';
+import { getAllUserAdmin } from '~/store/thunk/userAdmin';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import UserFilter from './UserFilter';
 
-const { UserOutlined, EyeOutlined, EditOutlined } = icons;
+const { EyeOutlined, EditOutlined } = icons;
 
 const UserManagement: React.FC = () => {
   const [form] = useForm();
@@ -28,22 +30,23 @@ const UserManagement: React.FC = () => {
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
 
+  const { userAdmin, loading } = useAppSelector((state) => state.userAdmin);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
-
-  const { data: allUser } = useFetch<UserListResponse>(
-    ['allUsers'],
-    UserApi.getAllUser
-  );
 
   const paginationParams = {
     page: Number(queryParams.get('page') || 1),
     pageSize: Number(queryParams.get('pageSize') || 10),
   };
 
-  const sorttedUserById = useMemo(
-    () => allUser?.items?.sort((a, b) => a.id - b.id),
-    [allUser]
-  );
+  const { currentPage, itemsPerPage, handlePageChange } = usePagination({
+    items: userAdmin.items,
+    fetchAction: getAllUserAdmin,
+    pageInfo: {
+      currentPage: paginationParams.page,
+      itemsPerPage: paginationParams.pageSize,
+      totalItems: userAdmin.pageInfo.totalItems,
+    },
+  });
 
   useEffect(() => {
     setTitle('Danh sách người dùng');
@@ -65,33 +68,32 @@ const UserManagement: React.FC = () => {
         title: 'Tên người dùng',
       },
       {
-        width: 150,
-        title: 'Hình ảnh',
-        dataIndex: 'avatar',
-        render: (avatar: string) => (
-          <Avatar
-            className="shadow-lg"
-            icon={<UserOutlined />}
-            src={avatar}
-            size="large"
-          />
-        ),
-      },
-      {
         width: 200,
         title: 'Email',
         dataIndex: 'email',
       },
       {
         width: 150,
-        title: 'Trạng thái',
-        dataIndex: 'isActive',
-        render: (isActive: boolean) =>
-          isActive ? (
-            <Tag color="orange">Hoạt động</Tag>
-          ) : (
-            <Tag color="red">Bị chặn</Tag>
-          ),
+        align: 'center',
+        title: 'Hình ảnh',
+        dataIndex: 'avatarUrl',
+        render: (avatar: string) => (
+          <Image
+            width={50}
+            height={50}
+            src={avatar}
+            className="shadow-lg rounded-full"
+          />
+        ),
+      },
+      {
+        width: 200,
+        title: 'Lĩnh vực công việc',
+        dataIndex: 'usersJobFields',
+        render: (value) =>
+          value?.length
+            ? value?.map((item: any) => item?.jobField?.title)?.join(', ')
+            : '-',
       },
       {
         width: 100,
@@ -100,24 +102,55 @@ const UserManagement: React.FC = () => {
         className: 'capitalize',
       },
       {
-        key: 'actions',
+        width: 150,
+        title: 'Trạng thái',
+        dataIndex: 'isActive',
+        render: (isActive: boolean) =>
+          isActive ? (
+            <Tag color="green">Hoạt động</Tag>
+          ) : (
+            <Tag color="red">Bị chặn</Tag>
+          ),
+      },
+      {
+        width: 180,
+        title: 'Người tạo',
+        dataIndex: ['creator', 'fullName'],
+      },
+      {
+        width: 200,
+        title: 'Ngày tạo',
+        dataIndex: 'createAt',
+        render: (value: string) =>
+          value ? dayjs(value).format('DD/MM/YYYY HH:MM') : '-',
+      },
+      {
+        width: 180,
+        title: 'Người chỉnh sửa',
+        dataIndex: ['updater', 'fullName'],
+      },
+      {
+        width: 200,
+        title: 'Ngày chỉnh sửa',
+        dataIndex: 'updateAt',
+        render: (value: string) =>
+          value ? dayjs(value).format('DD/MM/YYYY HH:MM') : '-',
+      },
+      {
+        width: 100,
         fixed: 'right',
         align: 'center',
         title: 'Thao tác',
         render: (record: any) => (
           <Space>
-            <Popconfirm title="Bạn chắc chắn rằng muốn chặn người dùng này?">
-              <Button title={<EditOutlined />} />
-            </Popconfirm>
-            <Tooltip title="Xem chi tiết">
-              <Button
-                fill
-                title={<EyeOutlined />}
-                onClick={() =>
-                  navigate(PATH.ADMIN_USER_DETAIL, { state: record })
-                }
-              />
-            </Tooltip>
+            <ButtonAction title={<EditOutlined />} tooltipTitle="Chỉnh sửa" />
+            <ButtonAction
+              title={<EyeOutlined />}
+              tooltipTitle="Xem chi tiết"
+              onClick={() =>
+                navigate(PATH.ADMIN_USER_DETAIL, { state: record })
+              }
+            />
           </Space>
         ),
       },
@@ -153,9 +186,14 @@ const UserManagement: React.FC = () => {
       <Content>
         <Table
           columns={columns}
-          dataSource={sorttedUserById}
-          rowKey={(record) => record?.id}
-          pagination={{ pageSize: 10 }}
+          loading={loading}
+          dataSource={userAdmin.items}
+          pagination={{
+            current: currentPage,
+            pageSize: itemsPerPage,
+            total: userAdmin?.pageInfo?.totalItems,
+            onChange: handlePageChange,
+          }}
         />
       </Content>
     </>
