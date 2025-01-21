@@ -1,6 +1,6 @@
 import { AxiosHeaders, InternalAxiosRequestConfig } from 'axios';
 import axiosApi from '~/services/axios';
-import { IGetCVResponse, UserListResponse } from '~/types/User';
+import { IGetCVResponse } from '~/types/User';
 import {
   IAchievement,
   IForeignLanguage,
@@ -59,9 +59,6 @@ const headers: AxiosHeaders = new AxiosHeaders({
 
 const UserApi = {
   // GET
-  getAllUser: async (): Promise<UserListResponse> => {
-    return await axiosApi.get('/users/all');
-  },
   getMyCv: async (): Promise<IGetCVResponse> => {
     return await axiosApi.get('/curriculum-vitaes/my-CVs');
   },
