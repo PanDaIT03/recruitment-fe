@@ -1,4 +1,4 @@
-import { Avatar, Col, Row, Space, Tag } from 'antd';
+import { Col, Image, Row, Space, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -20,7 +20,7 @@ import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import UserFilter from './UserFilter';
 
-const { UserOutlined, EyeOutlined, EditOutlined } = icons;
+const { EyeOutlined, EditOutlined } = icons;
 
 const UserManagement: React.FC = () => {
   const [form] = useForm();
@@ -68,22 +68,23 @@ const UserManagement: React.FC = () => {
         title: 'Tên người dùng',
       },
       {
-        width: 150,
-        title: 'Hình ảnh',
-        dataIndex: 'avatar',
-        render: (avatar: string) => (
-          <Avatar
-            size="large"
-            src={avatar}
-            icon={<UserOutlined />}
-            className="shadow-lg"
-          />
-        ),
-      },
-      {
         width: 200,
         title: 'Email',
         dataIndex: 'email',
+      },
+      {
+        width: 150,
+        align: 'center',
+        title: 'Hình ảnh',
+        dataIndex: 'avatarUrl',
+        render: (avatar: string) => (
+          <Image
+            width={50}
+            height={50}
+            src={avatar}
+            className="shadow-lg rounded-full"
+          />
+        ),
       },
       {
         width: 200,
