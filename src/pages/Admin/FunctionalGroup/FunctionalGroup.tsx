@@ -183,7 +183,7 @@ const FunctionalGroup = () => {
       {
         width: 350,
         dataIndex: 'functionals',
-        title: 'Nhóm chức năng',
+        title: 'Chức năng',
         render: (value: IFunctionalItem[]) => (
           <p className="line-clamp-2">
             {value?.map((item) => item?.title)?.join(', ')}
@@ -269,7 +269,6 @@ const FunctionalGroup = () => {
 
   const handleFinishFilter = useCallback(
     (values: IFilterFunctionalGroupForm) => {
-      console.log(values);
       setFilter((prev) => ({ ...prev, ...values }));
     },
     []
