@@ -33,6 +33,7 @@ export const signInWithGoogle = createAsyncThunk(
 
       if (statusCode === 200) dispatch(getMe());
     } catch (error: any) {
+      toast.error(error?.response?.data?.message);
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
     }
   }

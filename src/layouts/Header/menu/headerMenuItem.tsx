@@ -31,14 +31,22 @@ export const createUserMenu = (navigate: (path: string) => void) => {
     ...(isAdmin
       ? [
           {
-            key: 'admin-menu',
-            icon: <AppstoreOutlined />,
-            label: (
-              <span className="text-neutral-600 font-medium">
-                Trang quản lý
-              </span>
-            ),
-            onClick: () => navigate(PATH.ADMIN_DASHBOARD),
+            key: 'admin-group',
+            type: 'group' as const,
+            className: '[&>div]:!text-[#1c1917]',
+            label: <span className="font-semibold">Quản lý</span>,
+            children: [
+              {
+                key: 'admin-menu',
+                icon: <AppstoreOutlined />,
+                label: (
+                  <span className="text-neutral-600 font-medium">
+                    Trang quản lý
+                  </span>
+                ),
+                onClick: () => navigate(PATH.ADMIN_DASHBOARD),
+              },
+            ],
           },
         ]
       : isUser
@@ -120,41 +128,53 @@ export const createUserMenu = (navigate: (path: string) => void) => {
         : isEmployer
           ? [
               {
-                key: 'overview',
-                label: (
-                  <span className="text-neutral-600 font-medium">
-                    Tổng quan
-                  </span>
-                ),
-                icon: <SkyScraper width={18} height={18} />,
-                onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
-              },
-              {
-                key: 'candidate',
-                label: (
-                  <span className="text-neutral-600 font-medium">Ứng viên</span>
-                ),
-                icon: <Community width={18} height={18} />,
-                onClick: () => navigate(PATH.EMPLOYER_CANDICATES_DASHBOARD),
-              },
-              {
-                key: 'post-job',
-                label: (
-                  <span className="text-neutral-600 font-medium">Đăng tin</span>
-                ),
-                icon: <Work width={18} height={18} />,
+                key: 'employer-group',
+                className: '[&>div]:!text-[#1c1917]',
+                label: <span className="font-semibold">Tuyển dụng</span>,
+                type: 'group' as const,
+                children: [
+                  {
+                    key: 'overview',
+                    label: (
+                      <span className="text-neutral-600 font-medium">
+                        Tổng quan
+                      </span>
+                    ),
+                    icon: <SkyScraper width={18} height={18} />,
+                    onClick: () => navigate(PATH.EMPLOYER_DASHBOARD),
+                  },
+                  {
+                    key: 'candidate',
+                    label: (
+                      <span className="text-neutral-600 font-medium">
+                        Ứng viên
+                      </span>
+                    ),
+                    icon: <Community width={18} height={18} />,
+                    onClick: () => navigate(PATH.EMPLOYER_CANDICATES_DASHBOARD),
+                  },
+                  {
+                    key: 'post-job',
+                    label: (
+                      <span className="text-neutral-600 font-medium">
+                        Đăng tin
+                      </span>
+                    ),
+                    icon: <Work width={18} height={18} />,
 
-                onClick: () => navigate(PATH.EMPLOYER_POSTING),
-              },
-              {
-                key: 'recruitment',
-                label: (
-                  <span className="text-neutral-600 font-medium">
-                    Tuyển dụng
-                  </span>
-                ),
-                icon: <Users width={18} height={18} />,
-                onClick: () => navigate(PATH.EMPLOYER_RECRUITMENT),
+                    onClick: () => navigate(PATH.EMPLOYER_POSTING),
+                  },
+                  {
+                    key: 'recruitment',
+                    label: (
+                      <span className="text-neutral-600 font-medium">
+                        Tuyển dụng
+                      </span>
+                    ),
+                    icon: <Users width={18} height={18} />,
+                    onClick: () => navigate(PATH.EMPLOYER_RECRUITMENT),
+                  },
+                ],
               },
               { type: 'divider' as const },
               {
