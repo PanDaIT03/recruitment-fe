@@ -4,7 +4,7 @@ export interface IGetFuncGroupParams {
   page?: number;
   pageSize?: number;
   title?: string;
-  functionalGroupIds?: number[]
+  functionalIds?: number[]
 }
 
 export interface ICreateFuncGroupParams {

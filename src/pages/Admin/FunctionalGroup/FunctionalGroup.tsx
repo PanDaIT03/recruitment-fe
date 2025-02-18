@@ -183,7 +183,7 @@ const FunctionalGroup = () => {
       {
         width: 350,
         dataIndex: 'functionals',
-        title: 'Nhóm chức năng',
+        title: 'Chức năng',
         render: (value: IFunctionalItem[]) => (
           <p className="line-clamp-2">
             {value?.map((item) => item?.title)?.join(', ')}
@@ -215,7 +215,7 @@ const FunctionalGroup = () => {
           value ? dayjs(value).format('DD/MM/YYYY HH:MM') : '-',
       },
       {
-        width: 50,
+        width: 80,
         fixed: 'right',
         align: 'center',
         title: 'Thao tác',
@@ -269,7 +269,6 @@ const FunctionalGroup = () => {
 
   const handleFinishFilter = useCallback(
     (values: IFilterFunctionalGroupForm) => {
-      console.log(values);
       setFilter((prev) => ({ ...prev, ...values }));
     },
     []
@@ -361,11 +360,7 @@ const FunctionalGroup = () => {
         }
         onCancel={handleCancelModal}
       >
-        <FormWrapper
-          footer={<></>}
-          form={functionalForm}
-          onFinish={handleFinishModal}
-        >
+        <FormWrapper form={functionalForm} onFinish={handleFinishModal}>
           <FormItem
             name="title"
             label="Tên nhóm chức năng"

@@ -38,12 +38,12 @@ const FilterFunctional = ({ isOpen, onCancel, onFinish }: IProps) => {
         <Row gutter={[8, 16]} align="middle">
           <Col span={12}>
             <FormItem name="title" label="Tên chức năng">
-              <Input placeholder="Ví dụ: Chỉnh sửa công việc..." />
+              <Input allowClear placeholder="Ví dụ: Chỉnh sửa công việc..." />
             </FormItem>
           </Col>
           <Col span={12}>
             <FormItem name="code" label="Mã">
-              <Input placeholder="Ví dụ: edit_job" />
+              <Input allowClear placeholder="Ví dụ: edit_job" />
             </FormItem>
           </Col>
         </Row>

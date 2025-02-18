@@ -16,7 +16,7 @@ interface IRoleFilterBoxProps {
   onCancel: () => void;
 }
 
-const RoleFilterBox = ({
+const RoleFilter = ({
   form,
   open,
   onCancel,
@@ -70,4 +70,4 @@ const RoleFilterBox = ({
   );
 };
 
-export default memo(RoleFilterBox);
+export default memo(RoleFilter);

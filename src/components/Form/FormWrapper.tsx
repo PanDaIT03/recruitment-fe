@@ -79,8 +79,8 @@ const FormWrapper = ({
             {cancelTitle && (
               <Col>
                 <Button
-                  className={cancelClass}
                   title={cancelTitle}
+                  className={cancelClass}
                   onClick={onCancel}
                 />
               </Col>
@@ -90,9 +90,9 @@ const FormWrapper = ({
                 <Button
                   fill
                   type="submit"
-                  className={classNames('w-full', submitClass)}
                   title={submitTitle}
                   loading={loading || isLoadingSignIn}
+                  className={classNames('w-full', submitClass)}
                 />
               </Col>
             )}

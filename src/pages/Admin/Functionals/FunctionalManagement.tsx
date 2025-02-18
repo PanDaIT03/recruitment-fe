@@ -168,7 +168,7 @@ const FunctionalManagement = () => {
           value ? dayjs(value).format('DD/MM/YYYY HH:MM') : '-',
       },
       {
-        width: 50,
+        width: 80,
         fixed: 'right',
         align: 'center',
         title: 'Thao tác',

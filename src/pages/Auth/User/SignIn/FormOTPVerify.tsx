@@ -16,6 +16,7 @@ import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 
 interface IProps {
+  loading: boolean;
   onReset: () => void;
   onFinish(value: any): void;
 }
@@ -27,7 +28,7 @@ const initCountdown = {
   isLoading: true,
 };
 
-const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
+const FormOTPVerify = ({ loading, onReset, onFinish }: IProps) => {
   const [form] = useForm();
   const { messageApi } = useMessage();
 
@@ -98,7 +99,12 @@ const FormOTPVerify = ({ onReset, onFinish }: IProps) => {
           * Kiểm tra mục spam/quảng cáo nếu không tìm thấy email.
         </p>
       </div>
-      <FormWrapper form={form} submitTitle="Đăng nhập" onFinish={handleFinish}>
+      <FormWrapper
+        form={form}
+        loading={loading}
+        submitTitle="Đăng nhập"
+        onFinish={handleFinish}
+      >
         <FormItem
           name="verifyCode"
           labelCol={{ span: 24 }}

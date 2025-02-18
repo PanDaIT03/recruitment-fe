@@ -1,6 +1,8 @@
 import { Avatar, Card, Tag } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
+
 import useBreadcrumb from '~/hooks/useBreadcrumb';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 
@@ -27,6 +29,12 @@ const BlogPost: React.FC<BlogPostProps> = ({
   date,
   image,
 }) => {
+  const { setDocTitle } = useDocumentTitle();
+
+  useEffect(() => {
+    setDocTitle('Blog | Đúng người đúng việc');
+  }, []);
+
   return (
     <Card className="mb-8 shadow-md">
       <img src={image} alt={title} className="w-full h-48 object-cover mb-4" />
