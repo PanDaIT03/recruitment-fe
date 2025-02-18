@@ -1,7 +1,7 @@
 import { Divider, Flex, Image, Skeleton, Space, Tag } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import dayjs from 'dayjs';
-import { ReactNode, useCallback, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
@@ -9,6 +9,7 @@ import { NetWorking } from '~/assets/img';
 import { Work } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useFetch } from '~/hooks/useFetch';
 import { formatSalary } from '~/utils/functions';
 import icons from '~/utils/icons';
@@ -25,6 +26,7 @@ const { PlusOutlined, EditOutlined } = icons;
 
 const DesiredJob = () => {
   const navigate = useNavigate();
+  const { setDocTitle } = useDocumentTitle();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -73,6 +75,10 @@ const DesiredJob = () => {
       },
     ];
   }, [desiredJob]);
+
+  useEffect(() => {
+    setDocTitle('Công việc mong muốn | Đúng người đúng việc');
+  }, []);
 
   const handleCancel = useCallback(() => {
     setIsOpen(false);

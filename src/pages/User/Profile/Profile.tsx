@@ -6,6 +6,7 @@ import UserApi from '~/apis/user';
 import { BriefCase, LanguageCenter, MagicHat, Summary } from '~/assets/img';
 import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
 import { useMessage } from '~/contexts/MessageProvider';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useAppSelector } from '~/hooks/useStore';
 import ProfileSection, {
   IProfileSection,
@@ -35,10 +36,12 @@ const initExperience = [] as IWorkExperience[];
 
 const Profile = () => {
   const { messageApi } = useMessage();
-  const { currentUser } = useAppSelector((state) => state.auth);
+  const { setDocTitle } = useDocumentTitle();
 
   const [editIndex, setEditIndex] = useState<number>(-1);
   const [selectedItem, setSelectedItem] = useState('');
+
+  const { currentUser } = useAppSelector((state) => state.auth);
 
   const [workExperiences, setWorkExperiences] =
     useState<IWorkExperience[]>(initExperience);
@@ -85,6 +88,10 @@ const Profile = () => {
       messageApi.error(error?.response?.data?.message);
     },
   });
+
+  useEffect(() => {
+    setDocTitle('Hồ sơ của tôi | Đúng người đúng việc');
+  }, []);
 
   useEffect(() => {
     if (!Object.keys(currentUser).length) return;

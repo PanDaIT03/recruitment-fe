@@ -1,12 +1,20 @@
 import { useEffect } from 'react';
+
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetEmailStatus } from '~/store/reducer/auth';
-import HomeBanner from './Banner/HomeBanner';
 import BannerImage from './Banner/BannerImage';
+import HomeBanner from './Banner/HomeBanner';
 
 const Home = () => {
   const dispatch = useAppDispatch();
+  const { setDocTitle } = useDocumentTitle();
+
   const { emailStatus } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    setDocTitle('Đúng người đúng việc');
+  }, []);
 
   useEffect(() => {
     if (!emailStatus?.statusCode) return;
