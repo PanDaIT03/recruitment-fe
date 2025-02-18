@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 const useDocumentTitle = () => {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState('Đúng người đúng việc');
 
   useEffect(() => {
     document.title = title;
