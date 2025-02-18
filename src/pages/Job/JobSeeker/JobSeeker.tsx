@@ -12,6 +12,7 @@ import TopSearchBar from '~/components/Search/TopSearchBar';
 import CustomSelect from '~/components/Select/CustomSelect';
 import Select from '~/components/Select/Select';
 import { useMessage } from '~/contexts/MessageProvider';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore';
 import { IJobSeeker } from '~/types/JobSeeker/JobSeeker';
@@ -85,6 +86,7 @@ const data: IJobSeeker[] = [
 const JobSeeker = () => {
   const [form] = useForm();
   const { messageApi } = useMessage();
+  const { setDocTitle } = useDocumentTitle();
 
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const { role } = useAppSelector((state) => state.auth.currentUser);
@@ -155,6 +157,7 @@ const JobSeeker = () => {
 
   useEffect(() => {
     handleInitForm();
+    setDocTitle('Danh sách ứng viên | Đúng người đúng việc');
   }, []);
 
   return (

@@ -1,12 +1,14 @@
 import { Avatar, Divider, Flex, Image, Skeleton, Space } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
 import dayjs from 'dayjs';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { JobsAPI } from '~/apis/job';
 import { EmptyFolder } from '~/assets/img';
 import { Lightning } from '~/assets/svg';
 import Button from '~/components/Button/Button';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useFetch } from '~/hooks/useFetch';
 import { defaultImgUrl } from '~/utils/constant';
 import icons from '~/utils/icons';
@@ -16,11 +18,16 @@ const { ArrowRightOutlined } = icons;
 
 const AppliedJob = () => {
   const navigate = useNavigate();
+  const { setDocTitle } = useDocumentTitle();
 
   const { data: appliedJobs, isPending } = useFetch(
     ['getUserAppliedJobs'],
     JobsAPI.getUserAppliedJobs
   );
+
+  useEffect(() => {
+    setDocTitle('Công việc đã ứng tuyển | Đúng người đúng việc');
+  }, []);
 
   return (
     <>

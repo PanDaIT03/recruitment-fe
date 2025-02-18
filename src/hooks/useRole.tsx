@@ -7,8 +7,8 @@ const useRole = () => {
 
   const userRoleId = currentUser?.role?.id;
 
-  const isGuest = !roles?.length || !Object.keys(currentUser).length;
-  const roleTitle = roles.find((role) => role.id === userRoleId)?.title;
+  const isGuest = !roles?.items.length || !Object.keys(currentUser).length;
+  const roleTitle = roles.items.find((role) => role.id === userRoleId)?.title;
 
   const isUser = roleTitle === ROLE.USER;
   const isAdmin = roleTitle === ROLE.ADMIN;

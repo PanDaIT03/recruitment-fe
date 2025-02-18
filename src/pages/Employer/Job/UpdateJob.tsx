@@ -79,7 +79,8 @@ const UpdateJob = () => {
         dispatch(getJobById(currentJob?.id.toString()));
         handleCloseModal();
       }
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
       console.error('Error updating job:', error);
     }
   };

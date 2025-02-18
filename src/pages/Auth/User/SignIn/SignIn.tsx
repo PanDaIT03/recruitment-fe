@@ -11,9 +11,11 @@ import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { resetEmailStatus, resetUser } from '~/store/reducer/auth';
 import {
   checkExistedEmail,
+  getMe,
   signIn,
   signInWithGoogle,
 } from '~/store/thunk/auth';
+import { getAllRoles } from '~/store/thunk/role';
 import { IBaseUser } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
 import path from '~/utils/path';
@@ -35,8 +37,12 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
 
-  const { mutate: verifyOTP } = useMutation({
+  const { mutate: verifyOTP, isPending: isVerifyOTPPending } = useMutation({
     mutationFn: (params: IVerifyOTP) => AuthAPI.verifyOTP(params),
+    onSuccess: () => {
+      dispatch(getMe());
+      dispatch(getAllRoles({}));
+    },
     onError: (error: any) => messageApi.error(error?.response?.data?.message),
   });
 
@@ -134,6 +140,7 @@ const SignIn = () => {
             />
           ) : (
             <FormOTPVerify
+              loading={isVerifyOTPPending}
               onFinish={handleOTPVerify}
               onReset={handleBackToSignIn}
             />
@@ -142,9 +149,7 @@ const SignIn = () => {
       ) : (
         <>
           <div className="w-full">
-            <h1 className="text-base font-semibold">
-              Đăng nhập
-            </h1>
+            <h1 className="text-base font-semibold">Đăng nhập</h1>
             <p className="text-sm text-sub mt-1">
               Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục
             </p>

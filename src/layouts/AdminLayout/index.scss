@@ -1,32 +1,32 @@
-.ant-menu-submenu-open.ant-menu-submenu-selected {
-  & .ant-menu-submenu-title {
-    background-color: #1e1e2e;
-    font-weight: 700;
-    color: rgb(0 83 143 / var(--tw-text-opacity));
+// .ant-menu-submenu-open.ant-menu-submenu-selected {
+//   & .ant-menu-submenu-title {
+//     background-color: #1e1e2e;
+//     font-weight: 700;
+//     color: rgb(0 83 143 / var(--tw-text-opacity));
 
-    & > span,
-    & > i {
-      color: var(--admin-color-primary);
-    }
-  }
+//     & > span,
+//     & > i {
+//       color: var(--admin-color-primary);
+//     }
+//   }
 
-  & > .ant-menu-inline {
-    background-color: transparent;
+//   & > .ant-menu-inline {
+//     background-color: transparent;
 
-    & > li {
-      background-color: #1e1e2e;
+//     & > li {
+//       background-color: #1e1e2e;
 
-      & > span {
-        color: var(--admin-color-primary);
-      }
-    }
-  }
-}
+//       & > span {
+//         color: var(--admin-color-primary);
+//       }
+//     }
+//   }
+// }
 
-.ant-menu-submenu-selected > div {
-  & > span,
-  & > span > svg,
-  & > i {
-    color: var(--admin-color-primary) !important;
-  }
-}
+// .ant-menu-submenu-selected > div {
+//   & > span,
+//   & > span > svg,
+//   & > i {
+//     color: var(--admin-color-primary) !important;
+//   }
+// }

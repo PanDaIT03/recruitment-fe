@@ -3,7 +3,10 @@ import classNames from 'classnames';
 import { memo } from 'react';
 
 const Select = ({ className, ...props }: SelectProps) => {
-  const customClass = classNames('min-h-10', className);
+  const customClass = classNames(
+    'min-h-10 [&>.ant-select-selector]:min-h-10',
+    className
+  );
 
   const handleFilterOption = (input: any, option: any) => {
     if (typeof option?.label === 'number')
@@ -25,9 +28,12 @@ const Select = ({ className, ...props }: SelectProps) => {
     if (optionA?.value === 'all') return -1;
     if (optionB?.value === 'all') return 1;
 
-    return (optionA?.label ?? '')
-      .toLowerCase()
-      .localeCompare((optionB?.label ?? '').toLowerCase());
+    if (typeof optionA?.label === 'string')
+      return (optionA?.label ?? '')
+        .toLowerCase()
+        .localeCompare((optionB?.label ?? '').toLowerCase());
+
+    return optionA;
   };
 
   return (

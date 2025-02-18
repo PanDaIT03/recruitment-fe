@@ -9,6 +9,7 @@ import CustomSelect from '../../Select/CustomSelect';
 import { MenuIcon, Tag } from '~/assets/svg';
 import './index.scss';
 import toast from '~/utils/functions/toast';
+import { IGetAllStatusParams } from '~/types/Status';
 
 interface ModalProps {
   data: any;
@@ -25,7 +26,7 @@ const ModalStatusJob = ({
 }: ModalProps) => {
   const [form] = useForm();
   const [selectedStatus, setSelectedStatus] = useState<number | null>(null);
-  const params = { type: 'Phỏng vấn' };
+  const params: IGetAllStatusParams = { type: 'interview' };
   const { data: allStatusJob } = useFetch<StatusJob>(
     ['getAllStatusJob', params.type],
     () => JobsAPI.getAllStatusJob(params.type)
@@ -53,7 +54,7 @@ const ModalStatusJob = ({
 
     try {
       const response = await JobsAPI.updateApplicationJob(payload);
-      if (selectedStatus === 2) {
+      if (selectedStatus === 3) {
         const payload = {
           ...formData,
           jobsId: data?.jobsId,
@@ -94,7 +95,7 @@ const ModalStatusJob = ({
             placeholder="Chọn trạng thái"
           />
         </Form.Item>
-        {selectedStatus === 2 && (
+        {selectedStatus === 3 && (
           <>
             <Form.Item
               label={

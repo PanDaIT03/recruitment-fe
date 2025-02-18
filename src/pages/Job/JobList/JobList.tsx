@@ -1,6 +1,6 @@
 import { Form, Space } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { Box, File, Salary, Television } from '~/assets/svg';
@@ -11,6 +11,7 @@ import DrawerSearch from '~/components/Search/DrawerSearch';
 import TopSearchBar from '~/components/Search/TopSearchBar';
 import CustomSelect from '~/components/Select/CustomSelect';
 import Select from '~/components/Select/Select';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
@@ -66,16 +67,18 @@ const salaryOptions: DefaultOptionType[] = [
 ];
 
 const defaultFilter: IFilter = {
-  statusId: 5,
+  // statusId: 5,
   type: 'more',
 };
 
 const JobList = () => {
   const [form] = Form.useForm();
-  const { allJobs, loading } = useAppSelector((state) => state.jobs);
+  const { setDocTitle } = useDocumentTitle();
 
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [filters, setFilters] = useState<IFilter>(defaultFilter);
+
+  const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
   const jobCategories = useFetch<PaginatedJobCategories>(
     ['jobCategories'],
@@ -138,6 +141,10 @@ const JobList = () => {
     ],
     [jobFields]
   );
+
+  useEffect(() => {
+    setDocTitle('Tin tuyển dụng | Đúng người đúng việc');
+  }, []);
 
   const handleSearch = (values: IJobList) => {
     let salaryMin: number | undefined;

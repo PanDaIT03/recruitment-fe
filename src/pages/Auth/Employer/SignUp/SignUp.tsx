@@ -238,7 +238,7 @@ const SignUp = () => {
 
   const handleFinish = async (values: SignUpFormValues) => {
     try {
-      const roleId = roles.find((role) => role.title === ROLE.EMPLOYER)?.id;
+      const roleId = roles.items.find((role) => role.title === ROLE.EMPLOYER)?.id;
 
       if (!roleId) {
         toast.error('Lỗi không tìm thấy chức vụ');

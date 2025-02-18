@@ -1,29 +1,15 @@
 import React, { ComponentType, lazy, ReactNode } from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
+import AdminLayout from '~/layouts/AdminLayout/AdminLayout';
 import AuthLayout from '~/layouts/AuthLayout';
+import JobApplicationLayout from '~/layouts/JobApplicationLayout';
 import MainLayout from '~/layouts/MainLayout';
 import UserLayout from '~/layouts/UserLayout';
 import EmployerLayout from '~/pages/Employer/EmployerLayout';
+
 import ProtectedRoute from '~/routes/ProtectedRoute';
-import JobApplicationLayout from '~/layouts/JobApplicationLayout';
-
 import PATH from '~/utils/path';
-import AdminLayout from '~/layouts/AdminLayout/AdminLayout';
-import UserDetail from '~/pages/Admin/User/UserDetail';
-import EmployerAccountPage from '~/pages/Employer/Personal/EmployerAccountPage';
-
-const AddNewCandicate = lazy(
-  () => import('~/pages/Employer/Candicates/AddNewCandicate')
-);
-
-const Recruitment = lazy(
-  () => import('~/pages/Employer/RecruitmentList/Recruitment')
-);
-
-const RecruitmentDetail = lazy(
-  () => import('~/pages/Employer/RecruitmentList/RecruimentDetail')
-);
 
 const Home = lazy(() => import('~/pages/Home/Home'));
 const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
@@ -37,9 +23,25 @@ const UserResume = lazy(() => import('~/pages/User/Resume/Resume'));
 const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const UserAppliedJob = lazy(() => import('~/pages/User/AppliedJob/AppliedJob'));
+const UserDetail = lazy(() => import('~/pages/Admin/User/UserDetail'));
+
 const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
+const FunctionalGroupManagement = lazy(
+  () => import('~/pages/Admin/FunctionalGroup/FunctionalGroup')
+);
+const RoleManagement = lazy(() => import('~/pages/Admin/Role/RoleManagement'));
+const RoleDetailManagement = lazy(
+  () => import('~/pages/Admin/Role/DetailRoleManagement')
+);
+const FunctionalManagement = lazy(
+  () => import('~/pages/Admin/Functionals/FunctionalManagement')
+);
+
 const PostingJob = lazy(() => import('~/pages/Employer/Job/PostingJob'));
 const UserDesiredJob = lazy(() => import('~/pages/User/DesiredJob/DesiredJob'));
+const EmployerAccountPage = lazy(
+  () => import('~/pages/Employer/Personal/EmployerAccountPage')
+);
 const EmployerDashboard = lazy(
   () => import('~/pages/Employer/Dashboard/EmployerDashboard')
 );
@@ -51,6 +53,7 @@ const ManagementCandicates = lazy(
 );
 const RecruitmentList = lazy(() => import('~/pages/Employer/Job/ManageJob'));
 const UpdateJob = lazy(() => import('~/pages/Employer/Job/UpdateJob'));
+
 const UserSignIn = lazy(() => import('~/pages/Auth/User/SignIn/SignIn'));
 const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
 const UserForgotPassword = lazy(
@@ -67,6 +70,16 @@ const EmployerSignUp = lazy(
 );
 const UserJobApplication = lazy(
   () => import('~/pages/User/JobApplication/JobApplication')
+);
+
+const AddNewCandicate = lazy(
+  () => import('~/pages/Employer/Candicates/AddNewCandicate')
+);
+const Recruitment = lazy(
+  () => import('~/pages/Employer/RecruitmentList/Recruitment')
+);
+const RecruitmentDetail = lazy(
+  () => import('~/pages/Employer/RecruitmentList/RecruimentDetail')
 );
 
 type CustomRouteObject = RouteObject & {
@@ -141,6 +154,26 @@ const routesConfig: CustomRouteObject[] = [
       <UserManagement />
     ),
     createProtectedRoute(PATH.ADMIN_USER_DETAIL, ['admin'], <UserDetail />),
+    createProtectedRoute(
+      PATH.ADMIN_ROLE_MANAGEMENT,
+      ['admin'],
+      <RoleManagement />
+    ),
+    createProtectedRoute(
+      PATH.ADMIN_DETAIL_ROLE_MANAGEMENT,
+      ['admin'],
+      <RoleDetailManagement />
+    ),
+    createProtectedRoute(
+      PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
+      ['admin'],
+      <FunctionalManagement />
+    ),
+    createProtectedRoute(
+      PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT,
+      ['admin'],
+      <FunctionalGroupManagement />
+    ),
   ]),
 
   // Employer

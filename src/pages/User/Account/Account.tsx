@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 import UserApi, { IUpdateAccountInfo } from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getMe } from '~/store/thunk/auth';
 import { IFormAccount } from '~/types/Account';
@@ -14,8 +15,10 @@ const { Title } = Typography;
 
 const Account = () => {
   const dispatch = useAppDispatch();
-  const { messageApi } = useMessage();
   const [form] = useForm<IFormAccount>();
+
+  const { messageApi } = useMessage();
+  const { setDocTitle } = useDocumentTitle();
 
   const [isChangeName, setIsChangeName] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
@@ -37,6 +40,10 @@ const Account = () => {
       );
     },
   });
+
+  useEffect(() => {
+    setDocTitle('Trang tài khoản | Đúng người đúng việc');
+  }, []);
 
   const handleSetFormDefault = () => {
     const formValues: IFormAccount = {
