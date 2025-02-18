@@ -161,7 +161,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
       location.pathname === PATH.USER_SIGN_UP ||
       location.pathname === PATH.EMPLOYER_SIGN_UP
     )
-      dispatch(getAllRoles());
+      dispatch(getAllRoles({}));
   }, [location]);
 
   return (

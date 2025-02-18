@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import AuthAPI from '~/apis/auth';
 import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
 import toast from '~/utils/functions/toast';
+import { getAllRoles } from '../role';
 
 enum TYPE_LOGIN {
   TYPE_SYSTEM = 'system',
@@ -32,6 +33,7 @@ export const signInWithGoogle = createAsyncThunk(
 
       if (statusCode === 200) dispatch(getMe());
     } catch (error: any) {
+      toast.error(error?.response?.data?.message);
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
     }
   }
@@ -44,7 +46,10 @@ export const signIn = createAsyncThunk(
       const payload = { ...data, type: TYPE_LOGIN.TYPE_SYSTEM };
       const { statusCode } = await AuthAPI.signIn(payload);
 
-      if (statusCode === 200) dispatch(getMe());
+      if (statusCode === 200) {
+        dispatch(getMe());
+        dispatch(getAllRoles({}));
+      }
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');

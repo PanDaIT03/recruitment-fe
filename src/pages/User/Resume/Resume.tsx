@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import { UploadFile } from 'antd/lib';
 import dayjs from 'dayjs';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import UserApi from '~/apis/user';
 import { PDF_Icon } from '~/assets/img';
@@ -22,6 +22,7 @@ import DownloadButton from '~/components/Button/DownloadButton';
 import Dragger from '~/components/Dragger/Dragger';
 import List from '~/components/List/List';
 import Modal from '~/components/Modal/Modal';
+import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useFetch } from '~/hooks/useFetch';
 import icons from '~/utils/icons';
 
@@ -33,6 +34,8 @@ const {
 } = icons;
 
 const Resume = () => {
+  const { setDocTitle } = useDocumentTitle();
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
@@ -93,6 +96,10 @@ const Resume = () => {
     }),
     [uploadFile]
   );
+
+  useEffect(() => {
+    setDocTitle('Hồ sơ của tôi | Đúng người đúng việc');
+  }, []);
 
   const handleDeleteCV = (id: number) => {
     if (myCVs && myCVs?.items?.length <= 1) {

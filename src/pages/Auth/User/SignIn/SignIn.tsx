@@ -15,6 +15,7 @@ import {
   signIn,
   signInWithGoogle,
 } from '~/store/thunk/auth';
+import { getAllRoles } from '~/store/thunk/role';
 import { IBaseUser } from '~/types/Auth';
 import toast from '~/utils/functions/toast';
 import path from '~/utils/path';
@@ -36,9 +37,12 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignInWithOTP, setIsSignInWithOTP] = useState(false);
 
-  const { mutate: verifyOTP } = useMutation({
+  const { mutate: verifyOTP, isPending: isVerifyOTPPending } = useMutation({
     mutationFn: (params: IVerifyOTP) => AuthAPI.verifyOTP(params),
-    onSuccess: () => dispatch(getMe()),
+    onSuccess: () => {
+      dispatch(getMe());
+      dispatch(getAllRoles({}));
+    },
     onError: (error: any) => messageApi.error(error?.response?.data?.message),
   });
 
@@ -136,6 +140,7 @@ const SignIn = () => {
             />
           ) : (
             <FormOTPVerify
+              loading={isVerifyOTPPending}
               onFinish={handleOTPVerify}
               onReset={handleBackToSignIn}
             />
