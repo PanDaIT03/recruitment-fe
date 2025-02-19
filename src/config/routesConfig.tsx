@@ -1,7 +1,7 @@
 import React, { ComponentType, lazy, ReactNode } from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
 
-import AdminLayout from '~/layouts/AdminLayout/AdminLayout';
+import AdminLayout from '~/layouts/AdminLayout';
 import AuthLayout from '~/layouts/AuthLayout';
 import JobApplicationLayout from '~/layouts/JobApplicationLayout';
 import MainLayout from '~/layouts/MainLayout';
