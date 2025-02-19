@@ -31,7 +31,10 @@ export const signInWithGoogle = createAsyncThunk(
       const payload = { ...data, type: TYPE_LOGIN.TYPE_GOOGLE };
       const { statusCode } = await AuthAPI.signInWithGoogle(payload);
 
-      if (statusCode === 200) dispatch(getMe());
+      if (statusCode === 200) {
+        dispatch(getMe());
+        dispatch(getAllRoles({}));
+      }
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
       return rejectWithValue(error?.message || 'Có lỗi xảy ra');
