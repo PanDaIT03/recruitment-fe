@@ -10,7 +10,6 @@ import { useAppDispatch } from './hooks/useStore';
 import useToken from './hooks/useToken';
 import AppRouter from './routes/AppRouter';
 import { getMe } from './store/thunk/auth';
-import { getAllRoles } from './store/thunk/role';
 import toast from './utils/functions/toast';
 
 function App() {
@@ -23,9 +22,7 @@ function App() {
 
   useEffect(() => {
     if (!flagRef.current) {
-      dispatch(getAllRoles({}));
       if (token) dispatch(getMe());
-
       flagRef.current = true;
     }
   }, [token]);
