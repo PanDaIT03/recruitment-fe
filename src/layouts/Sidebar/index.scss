@@ -1,0 +1,16 @@
+.custome-menu .ant-menu-submenu-selected .ant-menu-submenu-title {
+  background-color: rgb(241 249 255) !important;
+
+  &::before {
+    content: '';
+    width: 3px;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    background-color: #003056;
+  }
+
+  .ant-menu-item-icon {
+    fill: #00538f;
+  }
+}
