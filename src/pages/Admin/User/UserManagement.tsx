@@ -1,10 +1,12 @@
-import { Col, Flex, Image, Row, Space, Spin, Tag } from 'antd';
+import { useMutation } from '@tanstack/react-query';
+import { Col, Flex, Image, message, Row, Space, Spin, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { IUpdateUserRole, UserAdminApi } from '~/apis/userAdmin';
 import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -19,7 +21,7 @@ import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllUserAdmin } from '~/store/thunk/userAdmin';
 import { IUserAdminItem } from '~/types/User/userAdmin';
 import icons from '~/utils/icons';
@@ -27,6 +29,7 @@ import PATH from '~/utils/path';
 import UserFilter from './UserFilter';
 
 interface IUserAdminForm {
+  userId: number;
   fullName: string;
   email: string;
   role: number;
@@ -37,6 +40,7 @@ const { EyeOutlined, EditOutlined, CloseOutlined, SaveOutlined } = icons;
 const UserManagement: React.FC = () => {
   const navigate = useNavigate();
   const { setTitle } = useTitle();
+  const dispatch = useAppDispatch();
   const queryParams = useQueryParams();
   const { setBreadcrumb } = useBreadcrumb();
 
@@ -63,6 +67,21 @@ const UserManagement: React.FC = () => {
       totalItems: userAdmin.pageInfo.totalItems,
     },
   });
+
+  const { mutate: updateUserRole, isPending: isUpdateUserRolePending } =
+    useMutation({
+      mutationFn: (params: IUpdateUserRole) =>
+        UserAdminApi.updateUserRole(params),
+      onSuccess: (res) => {
+        message.success(res?.message || 'Cập nhật thành công');
+
+        handleCancelModal();
+        refetchUserAdmin();
+      },
+      onError: (error: any) => {
+        message.error(error?.response?.data?.message);
+      },
+    });
 
   useEffect(() => {
     setTitle('Danh sách người dùng');
@@ -177,8 +196,13 @@ const UserManagement: React.FC = () => {
     ] as ColumnsType<IUserAdminItem>;
   }, [paginationParams]);
 
+  const refetchUserAdmin = useCallback(() => {
+    dispatch(getAllUserAdmin());
+  }, []);
+
   const handleEdit = useCallback((record: IUserAdminItem) => {
     formUserAdmin.setFieldsValue({
+      userId: record.id,
       email: record?.email,
       fullName: record?.fullName,
       role: record?.role?.id,
@@ -196,9 +220,18 @@ const UserManagement: React.FC = () => {
     setIsOpenFilter(false);
   }, []);
 
-  const handleFinishEditUser = useCallback((values: IUserAdminForm) => {
-    console.log('finish', values);
-  }, []);
+  const handleFinishEditUser = useCallback(
+    (values: IUserAdminForm) => {
+      console.log('finish', values);
+      const params: IUpdateUserRole = {
+        roleId: values.role,
+        userId: formUserAdmin.getFieldValue('userId'),
+      };
+
+      updateUserRole(params);
+    },
+    [formUserAdmin]
+  );
 
   const handleCancelModal = useCallback(() => {
     formUserAdmin.resetFields();
@@ -242,12 +275,14 @@ const UserManagement: React.FC = () => {
             <Button
               title="Hủy"
               iconBefore={<CloseOutlined />}
+              loading={isUpdateUserRolePending}
               onClick={handleCancelModal}
             />
             <Button
               fill
               title="Lưu"
               iconBefore={<SaveOutlined />}
+              loading={isUpdateUserRolePending}
               onClick={() => formUserAdmin.submit()}
             />
           </Flex>

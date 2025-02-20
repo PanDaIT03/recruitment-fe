@@ -376,7 +376,7 @@ const UserLayout = () => {
       fullName: values.fullName,
       jobPositionsId: values.positionId.toString(),
       placementsId: values.placementId.toString(),
-      totalYearExperience: values?.totalYearExperience.toString(),
+      totalYearExperience: values?.totalYearExperience?.toString(),
     };
 
     updatePersonalInfo(params);
