@@ -280,11 +280,13 @@ const UserDetail = () => {
             <Button
               title="Hủy"
               iconBefore={<CloseOutlined />}
+              loading={isUpdateUserPending}
               onClick={() => navigate(PATH.ADMIN_USER_MANAGEMENT)}
             />
             <Button
               fill
               title="Lưu"
+              loading={isUpdateUserPending}
               iconBefore={<SaveOutlined />}
               onClick={() => form.submit()}
             />
