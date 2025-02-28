@@ -174,14 +174,14 @@ const Recruitment: React.FC = () => {
           <Edit className="w-4 h-4 text-sub" />
         </span>
       ),
-      render: () => (
+      render: (record: Application['items']) => (
         <FilePdfOutlined
           className="cursor-pointer"
-          onClick={() =>
-            navigate(PATH.EMPLOYER_RECRUITMENT_DETAIL, {
-              state: applicationJobs?.items,
-            })
-          }
+          onClick={() => {
+            return navigate(PATH.EMPLOYER_RECRUITMENT_DETAIL, {
+              state: record,
+            });
+          }}
         />
       ),
     },

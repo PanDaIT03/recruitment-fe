@@ -33,7 +33,7 @@ const RecruimentDetail = () => {
     },
     {
       path: PATH.EMPLOYER_RECRUITMENT_DETAIL,
-      label: data[0]?.user?.fullName || '',
+      label: data?.user?.fullName || '',
     },
   ];
 
@@ -41,12 +41,12 @@ const RecruimentDetail = () => {
 
   const { data: applicationJobs, refetch } = useFetch<ApplicationJobDetail>(
     ['getApplicantsDetail', data.usersId, data.jobsId],
-    () => JobsAPI.getApplicantsDetail(data[0].usersId, data[0].jobsId)
+    () => JobsAPI.getApplicantsDetail(data.usersId, data.jobsId)
   );
 
   const { data: schedulesInterview, refetch: refetchSchedules } = useFetch(
     ['schedulesInterview', data.usersId, data.jobsId],
-    () => JobsAPI.getSchedulesInterview(data[0].usersId, data[0].jobsId)
+    () => JobsAPI.getSchedulesInterview(data.usersId, data.jobsId)
   );
 
   const handleOpenModal = (interview?: any) => {
@@ -99,11 +99,13 @@ const RecruimentDetail = () => {
             applicationJobs={applicationJobs}
             handleEditClick={handleEditClick}
           />
-          <InterviewScheduleCard
-            schedulesInterview={schedulesInterview}
-            handleOpenModal={handleOpenModal}
-            handleDeleteInterview={handleDeleteInterview}
-          />
+          {data?.status?.id === 3 && (
+            <InterviewScheduleCard
+              schedulesInterview={schedulesInterview}
+              handleOpenModal={handleOpenModal}
+              handleDeleteInterview={handleDeleteInterview}
+            />
+          )}
         </div>
         <div className="col-span-2 mt-4 lg:mt-0">
           <CVViewer applicationJobs={applicationJobs} />
