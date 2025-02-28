@@ -16,7 +16,7 @@ const Table = <T extends IBaseTWithID>({
   const formattedColumns = columns?.map((col) => ({
     ...col,
     render: (value, record, index) => {
-      const valueIsNotValid = !value || value == null;
+      const valueIsNotValid = value === undefined || value === null;
 
       return col.render
         ? valueIsNotValid
