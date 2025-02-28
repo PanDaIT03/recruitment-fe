@@ -1,10 +1,13 @@
-import { Col, Flex, Image, Row, Space, Spin, Tag } from 'antd';
+import { useMutation } from '@tanstack/react-query';
+import { Col, Flex, message, Row, Space, Spin, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { DefaultOptionType } from 'antd/es/select';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { IAdminUpdateUser, UserAdminApi } from '~/apis/userAdmin';
 import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -19,7 +22,7 @@ import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
 import useQueryParams from '~/hooks/useQueryParams';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllUserAdmin } from '~/store/thunk/userAdmin';
 import { IUserAdminItem } from '~/types/User/userAdmin';
 import icons from '~/utils/icons';
@@ -27,16 +30,24 @@ import PATH from '~/utils/path';
 import UserFilter from './UserFilter';
 
 interface IUserAdminForm {
+  userId: number;
   fullName: string;
   email: string;
   role: number;
+  status: string;
 }
 
 const { EyeOutlined, EditOutlined, CloseOutlined, SaveOutlined } = icons;
 
+const statusOptions: DefaultOptionType[] = [
+  { label: 'Hoạt động', value: 'true' },
+  { label: 'Ngừng hoạt động', value: 'false' },
+];
+
 const UserManagement: React.FC = () => {
   const navigate = useNavigate();
   const { setTitle } = useTitle();
+  const dispatch = useAppDispatch();
   const queryParams = useQueryParams();
   const { setBreadcrumb } = useBreadcrumb();
 
@@ -64,6 +75,19 @@ const UserManagement: React.FC = () => {
     },
   });
 
+  const { mutate: updateUserRole, isPending: isUpdateUserRolePending } =
+    useMutation({
+      mutationFn: (params: IAdminUpdateUser) => UserAdminApi.updateUser(params),
+      onSuccess: (res) => {
+        message.success(res?.message || 'Cập nhật thành công');
+
+        handleCancelModal();
+        refetchUserAdmin();
+      },
+      onError: (error: any) =>
+        message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`),
+    });
+
   useEffect(() => {
     setTitle('Danh sách người dùng');
     setBreadcrumb([{ title: 'Quản lý' }, { title: 'Danh sách người dùng' }]);
@@ -79,7 +103,7 @@ const UserManagement: React.FC = () => {
           index + 1 + paginationParams.pageSize * (paginationParams.page - 1),
       },
       {
-        width: 150,
+        width: 180,
         dataIndex: 'fullName',
         title: 'Tên người dùng',
       },
@@ -87,29 +111,6 @@ const UserManagement: React.FC = () => {
         width: 200,
         title: 'Email',
         dataIndex: 'email',
-      },
-      {
-        width: 150,
-        align: 'center',
-        title: 'Hình ảnh',
-        dataIndex: 'avatarUrl',
-        render: (avatar: string) => (
-          <Image
-            width={50}
-            height={50}
-            src={avatar}
-            className="shadow-lg rounded-full"
-          />
-        ),
-      },
-      {
-        width: 200,
-        title: 'Lĩnh vực công việc',
-        dataIndex: 'usersJobFields',
-        render: (value) =>
-          value?.length
-            ? value?.map((item: any) => item?.jobField?.title)?.join(', ')
-            : '-',
       },
       {
         width: 100,
@@ -125,7 +126,7 @@ const UserManagement: React.FC = () => {
           isActive ? (
             <Tag color="green">Hoạt động</Tag>
           ) : (
-            <Tag color="red">Bị chặn</Tag>
+            <Tag color="red">Ngừng hoạt động</Tag>
           ),
       },
       {
@@ -177,11 +178,17 @@ const UserManagement: React.FC = () => {
     ] as ColumnsType<IUserAdminItem>;
   }, [paginationParams]);
 
+  const refetchUserAdmin = useCallback(() => {
+    dispatch(getAllUserAdmin());
+  }, []);
+
   const handleEdit = useCallback((record: IUserAdminItem) => {
     formUserAdmin.setFieldsValue({
+      userId: record.id,
       email: record?.email,
-      fullName: record?.fullName,
       role: record?.role?.id,
+      fullName: record?.fullName,
+      status: record?.isActive?.toString(),
     });
 
     setIsOpenModal(true);
@@ -196,9 +203,20 @@ const UserManagement: React.FC = () => {
     setIsOpenFilter(false);
   }, []);
 
-  const handleFinishEditUser = useCallback((values: IUserAdminForm) => {
-    console.log('finish', values);
-  }, []);
+  const handleFinishEditUser = useCallback(
+    (values: IUserAdminForm) => {
+      const { role, status } = values;
+      const userId = formUserAdmin.getFieldValue('userId');
+
+      const params: IAdminUpdateUser = {
+        userId,
+        roleId: role,
+        status: status === 'true' ? true : false,
+      };
+      updateUserRole(params);
+    },
+    [formUserAdmin]
+  );
 
   const handleCancelModal = useCallback(() => {
     formUserAdmin.resetFields();
@@ -242,12 +260,14 @@ const UserManagement: React.FC = () => {
             <Button
               title="Hủy"
               iconBefore={<CloseOutlined />}
+              loading={isUpdateUserRolePending}
               onClick={handleCancelModal}
             />
             <Button
               fill
               title="Lưu"
               iconBefore={<SaveOutlined />}
+              loading={isUpdateUserRolePending}
               onClick={() => formUserAdmin.submit()}
             />
           </Flex>
@@ -273,6 +293,17 @@ const UserManagement: React.FC = () => {
                 label: item?.title,
                 value: item?.id,
               }))}
+            />
+          </FormItem>
+          <FormItem
+            label="Trạng thái"
+            name="status"
+            rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+          >
+            <Select
+              loading={roleLoading}
+              options={statusOptions}
+              placeholder="Chọn trạng thái"
             />
           </FormItem>
         </FormWrapper>
