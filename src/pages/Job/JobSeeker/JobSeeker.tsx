@@ -107,7 +107,7 @@ const JobSeeker = () => {
     );
 
     return [...jobFieldItems, ...defaultFieldOptions];
-  }, []);
+  }, [jobFields]);
 
   const handleInitForm = () => {
     form.setFieldsValue({ experience: 'all', field: 'all' });
@@ -173,8 +173,8 @@ const JobSeeker = () => {
             showSearch={false}
             displayedType="text"
             className="w-full h-full"
-            options={optionsExperience}
             prefixIcon={<BackPack />}
+            options={optionsExperience}
           />
         </FormItem>
         <FormItem name="field" className="w-full h-10 max-w-44 mb-0">

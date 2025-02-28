@@ -72,8 +72,12 @@ const AdminLayout: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!firstRender) return;
-    navigate(location?.pathname, { state: { key: location?.pathname } });
+    if (firstRender.current) {
+      firstRender.current = false;
+      navigate(location.pathname, {
+        state: { ...location.state, key: location.pathname },
+      });
+    }
   }, [firstRender]);
 
   return (

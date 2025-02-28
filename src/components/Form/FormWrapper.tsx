@@ -1,4 +1,4 @@
-import { Col, Form, FormInstance, Row } from 'antd';
+import { Col, Form, FormProps, FormInstance, Row } from 'antd';
 import { memo, ReactNode } from 'react';
 
 import { InternalNamePath } from 'antd/es/form/interface';
@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { useAppSelector } from '~/hooks/useStore';
 import Button from '../Button/Button';
 
-interface IProps {
+type IProps = {
   loading?: boolean;
   children: ReactNode;
   className?: string;
@@ -18,7 +18,7 @@ interface IProps {
   submitClass?: string;
   onCancel?: () => void;
   onFinish(values: any): void;
-}
+} & FormProps;
 
 interface IErrorFields {
   name: InternalNamePath;
@@ -37,6 +37,7 @@ const FormWrapper = ({
   submitClass,
   onCancel,
   onFinish,
+  ...passProps
 }: IProps) => {
   const { loading: isLoadingSignIn } = useAppSelector((state) => state.auth);
 
@@ -72,6 +73,7 @@ const FormWrapper = ({
         autoComplete="on"
         onFinish={handleFinish}
         onFinishFailed={({ errorFields }) => handleFinishFailed(errorFields)}
+        {...passProps}
       >
         {children}
         {footer || (
