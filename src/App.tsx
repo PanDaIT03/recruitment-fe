@@ -24,8 +24,8 @@ function App() {
   useEffect(() => {
     if (!flagRef.current) {
       dispatch(getAllRoles({}));
-      if (token) dispatch(getMe());
 
+      if (token) dispatch(getMe());
       flagRef.current = true;
     }
   }, [token]);

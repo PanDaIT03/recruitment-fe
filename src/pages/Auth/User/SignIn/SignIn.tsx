@@ -25,8 +25,9 @@ import FormSignIn from './FormSignIn';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useAppDispatch();
+  
+  const location = useLocation();
   const { messageApi } = useMessage();
 
   const [form] = useForm<IBaseUser>();
