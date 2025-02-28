@@ -1,17 +1,21 @@
 import axiosApi from '~/services/axios';
 
-export interface IUpdateUserRole {
+export interface IAdminUpdateUser {
   userId: number;
-  roleId: number;
+  roleId?: number;
+  status?: boolean | string;
+}
+
+export interface IGetAllUserAdmin {
+  id?: string;
 }
 
 export const UserAdminApi = {
-  getAllUserAdmin: async () => {
-    return await axiosApi.get('/users/all');
+  getAllUserAdmin: async (params?: IGetAllUserAdmin) => {
+    return await axiosApi.get('/admin/all', { params });
   },
-  updateUserRole: async (params: IUpdateUserRole) => {
-    return await axiosApi.patch(`/users/update-role/${params.userId}`, {
-      roleId: params.roleId,
-    });
+  updateUser: async (params: IAdminUpdateUser) => {
+    const { userId, ...rest } = params;
+    return await axiosApi.patch(`/admin/update-user/${userId}`, rest);
   },
 };

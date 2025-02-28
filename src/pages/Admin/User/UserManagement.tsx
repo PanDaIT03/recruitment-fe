@@ -1,12 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
-import { Col, Flex, Image, message, Row, Space, Spin, Tag } from 'antd';
+import { Col, Flex, message, Row, Space, Spin, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import { DefaultOptionType } from 'antd/es/select';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { IUpdateUserRole, UserAdminApi } from '~/apis/userAdmin';
+import { IAdminUpdateUser, UserAdminApi } from '~/apis/userAdmin';
 import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -33,9 +34,15 @@ interface IUserAdminForm {
   fullName: string;
   email: string;
   role: number;
+  status: string;
 }
 
 const { EyeOutlined, EditOutlined, CloseOutlined, SaveOutlined } = icons;
+
+const statusOptions: DefaultOptionType[] = [
+  { label: 'Hoạt động', value: 'true' },
+  { label: 'Ngừng hoạt động', value: 'false' },
+];
 
 const UserManagement: React.FC = () => {
   const navigate = useNavigate();
@@ -70,17 +77,15 @@ const UserManagement: React.FC = () => {
 
   const { mutate: updateUserRole, isPending: isUpdateUserRolePending } =
     useMutation({
-      mutationFn: (params: IUpdateUserRole) =>
-        UserAdminApi.updateUserRole(params),
+      mutationFn: (params: IAdminUpdateUser) => UserAdminApi.updateUser(params),
       onSuccess: (res) => {
         message.success(res?.message || 'Cập nhật thành công');
 
         handleCancelModal();
         refetchUserAdmin();
       },
-      onError: (error: any) => {
-        message.error(error?.response?.data?.message);
-      },
+      onError: (error: any) =>
+        message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`),
     });
 
   useEffect(() => {
@@ -98,7 +103,7 @@ const UserManagement: React.FC = () => {
           index + 1 + paginationParams.pageSize * (paginationParams.page - 1),
       },
       {
-        width: 150,
+        width: 180,
         dataIndex: 'fullName',
         title: 'Tên người dùng',
       },
@@ -106,29 +111,6 @@ const UserManagement: React.FC = () => {
         width: 200,
         title: 'Email',
         dataIndex: 'email',
-      },
-      {
-        width: 150,
-        align: 'center',
-        title: 'Hình ảnh',
-        dataIndex: 'avatarUrl',
-        render: (avatar: string) => (
-          <Image
-            width={50}
-            height={50}
-            src={avatar}
-            className="shadow-lg rounded-full"
-          />
-        ),
-      },
-      {
-        width: 200,
-        title: 'Lĩnh vực công việc',
-        dataIndex: 'usersJobFields',
-        render: (value) =>
-          value?.length
-            ? value?.map((item: any) => item?.jobField?.title)?.join(', ')
-            : '-',
       },
       {
         width: 100,
@@ -144,7 +126,7 @@ const UserManagement: React.FC = () => {
           isActive ? (
             <Tag color="green">Hoạt động</Tag>
           ) : (
-            <Tag color="red">Bị chặn</Tag>
+            <Tag color="red">Ngừng hoạt động</Tag>
           ),
       },
       {
@@ -204,8 +186,9 @@ const UserManagement: React.FC = () => {
     formUserAdmin.setFieldsValue({
       userId: record.id,
       email: record?.email,
-      fullName: record?.fullName,
       role: record?.role?.id,
+      fullName: record?.fullName,
+      status: record?.isActive?.toString(),
     });
 
     setIsOpenModal(true);
@@ -222,12 +205,14 @@ const UserManagement: React.FC = () => {
 
   const handleFinishEditUser = useCallback(
     (values: IUserAdminForm) => {
-      console.log('finish', values);
-      const params: IUpdateUserRole = {
-        roleId: values.role,
-        userId: formUserAdmin.getFieldValue('userId'),
-      };
+      const { role, status } = values;
+      const userId = formUserAdmin.getFieldValue('userId');
 
+      const params: IAdminUpdateUser = {
+        userId,
+        roleId: role,
+        status: status === 'true' ? true : false,
+      };
       updateUserRole(params);
     },
     [formUserAdmin]
@@ -308,6 +293,17 @@ const UserManagement: React.FC = () => {
                 label: item?.title,
                 value: item?.id,
               }))}
+            />
+          </FormItem>
+          <FormItem
+            label="Trạng thái"
+            name="status"
+            rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+          >
+            <Select
+              loading={roleLoading}
+              options={statusOptions}
+              placeholder="Chọn trạng thái"
             />
           </FormItem>
         </FormWrapper>
