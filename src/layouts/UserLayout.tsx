@@ -81,7 +81,7 @@ interface IUserInfoForm {
 
 interface ISiderProps {
   data: IUser;
-  setIsOpenInfoModal: Dispatch<SetStateAction<boolean>>;
+  onEditUserInfo: (data: IUser) => void;
   setIsOpenAvatarModal: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -125,11 +125,7 @@ const items: Items[] = [
   },
 ];
 
-const Sider = ({
-  data,
-  setIsOpenInfoModal,
-  setIsOpenAvatarModal,
-}: ISiderProps) => {
+const Sider = ({ data, onEditUserInfo, setIsOpenAvatarModal }: ISiderProps) => {
   return (
     <div className="w-full h-max overflow-hidden rounded-xl bg-white shadow-card p-0 shadow lg:col-span-3">
       <div className="w-full">
@@ -162,7 +158,7 @@ const Sider = ({
               title="Sửa"
               borderType="dashed"
               iconBefore={<EditOutlined />}
-              onClick={() => setIsOpenInfoModal(true)}
+              onClick={() => onEditUserInfo(data)}
             />
           </Flex>
           <div>
@@ -357,15 +353,24 @@ const UserLayout = () => {
     setIsOpenAvatarModal(false);
   }, []);
 
+  const handleEditUserInfo = useCallback((data: IUser) => {
+    setIsOpenInfoModal(true);
+
+    const { fullName, placement, jobPosition, desiredJob } = data;
+    form.setFieldsValue({
+      fullName,
+      placementId: placement?.id,
+      positionId: jobPosition?.id,
+      totalYearExperience: desiredJob?.totalYearExperience,
+    });
+  }, []);
+
   const handleAvatarModalFinish = useCallback(() => {
     if (!fileList.length) return;
 
     const formData = new FormData();
     fileList.forEach((file) => {
-      if (file.originFileObj) {
-        console.log(fileList, !!file.originFileObj);
-        formData.append('file', file.originFileObj);
-      }
+      if (file.originFileObj) formData.append('file', file.originFileObj);
     });
 
     updateAccountInfo(formData);
@@ -398,6 +403,7 @@ const UserLayout = () => {
       {
         name: 'positionId',
         label: 'Chức vụ hiện tại',
+        rules: [{ required: true, message: 'Vui lòng chọn Chức vụ' }],
         item: (
           <CustomSelect
             allowClear
@@ -415,6 +421,9 @@ const UserLayout = () => {
             {
               name: 'totalYearExperience',
               label: 'Tổng số năm kinh nghiệm của bạn',
+              rules: [
+                { required: true, message: 'Vui lòng nhập số năm kinh nghiệm' },
+              ],
               item: (
                 <Input
                   inputMode="numeric"
@@ -431,6 +440,9 @@ const UserLayout = () => {
         name: 'placementId',
         label: 'Nơi sống hiện tại',
         className: 'mb-0',
+        rules: [
+          { required: true, message: 'Vui lòng nhập số năm kinh nghiệm' },
+        ],
         item: (
           <CustomSelect
             allowClear
@@ -452,7 +464,7 @@ const UserLayout = () => {
       <div className="w-full py-4 px-8 mx-auto max-w-7xl grid grid-cols-1 gap-4 lg:grid-cols-10 max-lg:px-4">
         <Sider
           data={currentUser}
-          setIsOpenInfoModal={setIsOpenInfoModal}
+          onEditUserInfo={handleEditUserInfo}
           setIsOpenAvatarModal={setIsOpenAvatarModal}
         />
         <Content className="bg-gray-100 lg:col-span-7">
