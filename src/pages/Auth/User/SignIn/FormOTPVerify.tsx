@@ -3,7 +3,7 @@ import { Flex, Tooltip } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import FormItem from 'antd/es/form/FormItem';
 import Countdown from 'antd/es/statistic/Countdown';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import OtpInput from 'react-otp-input';
 
 import AuthAPI from '~/apis/auth';
@@ -43,12 +43,18 @@ const FormOTPVerify = ({ loading, onReset, onFinish }: IProps) => {
     onError: (error: any) => messageApi.error(error?.response?.data?.message),
   });
 
-  const handleChange = (otp: string) => {
-    setOtp(otp);
-  };
+  useEffect(() => {
+    if (!emailStatus || (emailStatus && !Object.keys(emailStatus).length))
+      return;
+
+    sendOTPToEmail(emailStatus?.email);
+  }, []);
+
+  const handleChange = (otp: string) => setOtp(otp);
 
   const handleFinish = (value: any) => {
     const { verifyCode } = value;
+
     if (verifyCode.length < 6) {
       form.setFields([
         {
@@ -58,7 +64,6 @@ const FormOTPVerify = ({ loading, onReset, onFinish }: IProps) => {
       ]);
       return;
     }
-
     onFinish(value);
   };
 
@@ -72,7 +77,6 @@ const FormOTPVerify = ({ loading, onReset, onFinish }: IProps) => {
       isLoading: false,
       deadline: Date.now() + 1000 * 10,
     });
-
     sendOTPToEmail(emailStatus.email);
   };
 
