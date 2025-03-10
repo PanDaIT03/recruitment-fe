@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { Flex, Image } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { useEffect, useState } from 'react';
@@ -106,7 +107,17 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
     if (!languages) return;
 
     const options: DefaultOptionType[] = languages?.items.map((language) => ({
-      label: language.title,
+      label: (
+        <Flex justify="space-between">
+          <span>{language?.title}</span>
+          <Image
+            width={16}
+            height={12}
+            preview={false}
+            src={language?.imageUrl}
+          />
+        </Flex>
+      ),
       value: language.id,
     }));
 
