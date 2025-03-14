@@ -5,7 +5,6 @@ import TextArea from 'antd/es/input/TextArea';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FilterAdmin } from '~/assets/svg';
 
 import { FunctionalAPI, IGetAllFunctionalParams } from '~/apis/functional';
 import {
@@ -13,6 +12,7 @@ import {
   ICreateFuncGroupParams,
   IUpdateFuncGroupParams,
 } from '~/apis/functionalGroup';
+import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import Content from '~/components/Content/Content';
@@ -25,7 +25,6 @@ import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
-import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionalGroups } from '~/store/thunk/functionalGroup';
 import { IFunctionalItem } from '~/types/Functional';
@@ -51,8 +50,6 @@ const {
 
 const FunctionalGroup = () => {
   const dispatch = useAppDispatch();
-  const { queryParams } = useQueryParams();
-
   const [functionalForm] = useForm<IFunctionalGroupForm>();
 
   const { setTitle } = useTitle();
@@ -68,20 +65,11 @@ const FunctionalGroup = () => {
     (state) => state.functionalGroup
   );
 
-  const paginationParams = {
-    page: Number(queryParams.get('page') || 1),
-    pageSize: Number(queryParams.get('pageSize') || 10),
-  };
-
-  const { currentPage, itemsPerPage, handlePageChange } = usePagination({
+  const { pageInfo, handlePageChange } = usePagination({
     extraParams: filter,
     items: functionalGroups?.items,
     fetchAction: getAllFunctionalGroups,
-    pageInfo: {
-      currentPage: paginationParams.page,
-      itemsPerPage: paginationParams.pageSize,
-      totalItems: functionalGroups?.pageInfo?.totalItems || 0,
-    },
+    setFilterParams: setFilter,
   });
 
   const {
@@ -168,7 +156,7 @@ const FunctionalGroup = () => {
         title: 'STT',
         align: 'center',
         render: (_, __, index: number) =>
-          index + 1 + paginationParams.pageSize * (paginationParams.page - 1),
+          index + 1 + pageInfo.pageSize * (pageInfo.page - 1),
       },
       {
         width: 200,
@@ -245,7 +233,7 @@ const FunctionalGroup = () => {
         ),
       },
     ] as ColumnsType<IFunctionalGroupItem>;
-  }, [paginationParams]);
+  }, [pageInfo]);
 
   const refetchFunctionalGroup = useCallback(() => {
     dispatch(getAllFunctionalGroups({}));
@@ -327,8 +315,8 @@ const FunctionalGroup = () => {
           columns={columns}
           dataSource={functionalGroups.items}
           pagination={{
-            current: currentPage,
-            pageSize: itemsPerPage,
+            current: pageInfo.page,
+            pageSize: pageInfo.pageSize,
             total: functionalGroups?.pageInfo?.totalItems,
             onChange: handlePageChange,
           }}

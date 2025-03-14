@@ -11,7 +11,6 @@ import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
-import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
 import { IJobList } from '~/pages/Job/JobList/JobList';
 import { getAllJobs } from '~/store/thunk/job';
@@ -29,21 +28,12 @@ const initialFilterParams = {
 } as any;
 
 const JobManagement = () => {
-  const { queryParams } = useQueryParams();
   const [formFilter] = Form.useForm<IFilterForm>();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
 
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
-
-  const paginationParams = useMemo(
-    () => ({
-      page: Number(queryParams.get('page') || 1),
-      pageSize: Number(queryParams.get('pageSize') || 10),
-    }),
-    [queryParams]
-  );
 
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [filterParams, setFilterParams] = useState(initialFilterParams);
@@ -54,20 +44,14 @@ const JobManagement = () => {
 
   const {
     pageInfo,
-    currentPage,
-    itemsPerPage,
     items: jobItems,
     handlePageChange,
     hanldeClearURLSearchParams,
   } = usePagination({
+    items: allJobs?.items,
     fetchAction: getAllJobs,
     extraParams: filterParams,
-    items: allJobs?.items,
-    pageInfo: {
-      currentPage: paginationParams?.page,
-      itemsPerPage: paginationParams?.pageSize,
-      totalItems: allJobs?.pageInfo?.totalItems ?? 0,
-    },
+    setFilterParams: setFilterParams,
   });
 
   const columns = useMemo(() => {
@@ -76,7 +60,7 @@ const JobManagement = () => {
         title: 'STT',
         width: 50,
         render: (_: any, __: any, index: number) =>
-          (currentPage - 1) * itemsPerPage + index + 1,
+          (pageInfo.page - 1) * pageInfo.pageSize + index + 1,
       },
       {
         title: 'Tiêu đề công việc',
@@ -151,7 +135,7 @@ const JobManagement = () => {
         ),
       },
     ] as ColumnsType<any>;
-  }, [currentPage, itemsPerPage]);
+  }, [pageInfo]);
 
   useEffect(() => {
     setTitle('Danh sách công việc');
@@ -206,9 +190,9 @@ const JobManagement = () => {
           dataSource={jobItems}
           scroll={{ x: 2000 }}
           pagination={{
-            current: pageInfo?.currentPage,
-            pageSize: pageInfo?.itemsPerPage,
-            total: pageInfo?.totalItems,
+            current: pageInfo.page,
+            pageSize: pageInfo.pageSize,
+            total: allJobs?.pageInfo?.totalPages,
             onChange: handlePageChange,
           }}
         />

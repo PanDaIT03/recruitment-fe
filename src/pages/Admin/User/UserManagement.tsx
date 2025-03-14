@@ -31,7 +31,6 @@ import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
-import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllUserAdmin } from '~/store/thunk/userAdmin';
 import { IUserAdminItem } from '~/types/User/userAdmin';
@@ -57,7 +56,6 @@ const statusOptions: CheckboxOptionType[] = [
 const UserManagement: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { queryParams } = useQueryParams();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
@@ -73,23 +71,11 @@ const UserManagement: React.FC = () => {
   const { userAdmin, loading } = useAppSelector((state) => state.userAdmin);
   const { roles, loading: roleLoading } = useAppSelector((state) => state.role);
 
-  const paginationParams = useMemo(
-    () => ({
-      page: Number(queryParams.get('page') || 1),
-      pageSize: Number(queryParams.get('pageSize') || 10),
-    }),
-    [queryParams]
-  );
-
-  const { currentPage, itemsPerPage, handlePageChange } = usePagination({
+  const { pageInfo, handlePageChange } = usePagination({
     items: userAdmin.items,
     extraParams: filterParams,
     fetchAction: getAllUserAdmin,
-    pageInfo: {
-      currentPage: paginationParams.page,
-      itemsPerPage: paginationParams.pageSize,
-      totalItems: userAdmin.pageInfo.totalItems,
-    },
+    setFilterParams: setFilterParams,
   });
 
   const { mutate: updateUser, isPending: isUpdateUserPending } = useMutation({
@@ -116,7 +102,7 @@ const UserManagement: React.FC = () => {
         title: 'STT',
         dataIndex: 'id',
         render: (_: any, __: any, index: number) =>
-          index + 1 + paginationParams.pageSize * (paginationParams.page - 1),
+          index + 1 + pageInfo.pageSize * (pageInfo.page - 1),
       },
       {
         width: 180,
@@ -201,7 +187,7 @@ const UserManagement: React.FC = () => {
         ),
       },
     ] as ColumnsType<IUserAdminItem>;
-  }, [userAdmin, paginationParams]);
+  }, [userAdmin, pageInfo]);
 
   const refetchUserAdmin = useCallback(() => {
     dispatch(getAllUserAdmin());
@@ -270,8 +256,8 @@ const UserManagement: React.FC = () => {
           columns={columns}
           dataSource={userAdmin.items}
           pagination={{
-            current: currentPage,
-            pageSize: itemsPerPage,
+            current: pageInfo.page,
+            pageSize: pageInfo.pageSize,
             total: userAdmin?.pageInfo?.totalItems,
             onChange: handlePageChange,
           }}

@@ -169,13 +169,13 @@ const JobFilterBox = ({
       form={form}
       onFinish={onFinish}
       onCancel={onCancel}
-      setFilterParams={setFilterParams}
       onSetFormValues={handleSetFieldValues}
     >
       <Row gutter={{ xs: 8, sm: 14 }}>
         <Col span={colSpan}>
           <FormItem label="Hình thức làm việc" name="workTypesId">
             <Select
+              allowClear
               options={workTypeOptions}
               loading={isGetAllWorkTypesPending}
               placeholder="Chọn hình thức làm việc"
@@ -185,6 +185,7 @@ const JobFilterBox = ({
         <Col span={colSpan}>
           <FormItem label="Trạng thái" name="statusId">
             <Select
+              allowClear
               options={statusOptions}
               placeholder="Chọn trạng thái"
               loading={isGetAllStatusMutatePending}
@@ -207,6 +208,7 @@ const JobFilterBox = ({
         <Col span={16}>
           <FormItem label="Công việc" name="jobsId">
             <Select
+              allowClear
               options={jobOptions}
               placeholder="Chọn công việc"
               loading={isGetAllJobsMutatePending}
