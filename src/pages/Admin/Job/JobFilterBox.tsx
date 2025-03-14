@@ -118,7 +118,9 @@ const JobFilterBox = ({
             res.items.map(
               (item: any) =>
                 ({
-                  label: `${item?.user?.companyName} - ${item?.title}`,
+                  label: item?.user?.companyName
+                    ? `${item?.user?.companyName} - ${item?.title}`
+                    : item?.title,
                   value: item?.id,
                 }) as DefaultOptionType
             )
@@ -160,6 +162,8 @@ const JobFilterBox = ({
     getAllPlacementsMutate();
     getAllStatusMutate({ type: 'job' });
   }, []);
+
+  console.log(jobOptions);
 
   return (
     <FilterBox
