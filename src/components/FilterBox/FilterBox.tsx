@@ -1,28 +1,46 @@
 import { FormInstance } from 'antd';
-import classNames from 'classnames/bind';
-import React, { memo, useCallback } from 'react';
+import {
+  Dispatch,
+  memo,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 
+import useQueryParams from '~/hooks/useQueryParams';
 import Content from '../Content/Content';
 import FormWrapper from '../Form/FormWrapper';
-import styles from './index.module.scss';
 
 interface IFilterBoxProps {
   open: boolean;
   form: FormInstance<any>;
-  children: React.ReactNode;
-  onFinish(values: any): void;
+  children: ReactNode;
+  defaultFilter?: any;
+  cancelTitle?: string;
+  submitTitle?: string;
   onCancel: () => void;
+  onFinish(values: any): void;
+  setFilterParams: Dispatch<SetStateAction<any>>;
+  onSetFormValues?: (form: FormInstance<any>, filterParams: any) => void;
 }
-
-const cx = classNames.bind(styles);
 
 const FilterBox = ({
   open,
   form,
   children,
+  defaultFilter,
+  cancelTitle = 'Hủy',
+  submitTitle = 'Tìm kiếm',
   onFinish,
   onCancel,
+  setFilterParams,
+  onSetFormValues,
 }: IFilterBoxProps) => {
+  const firstRender = useRef(true);
+  const { searchParams } = useQueryParams();
+
   const handleFinish = useCallback(() => {
     onFinish(form.getFieldsValue());
   }, [onFinish]);
@@ -32,17 +50,38 @@ const FilterBox = ({
     onCancel();
   }, [onCancel]);
 
+  useEffect(() => {
+    if (!firstRender.current) return;
+    firstRender.current = false;
+
+    setFilterParams({ ...searchParams, ...defaultFilter });
+
+    const formattedObject = Object.entries(searchParams).reduce(
+      (prevVal, currentVal) => {
+        const [key, value] = currentVal;
+        if (value) prevVal[key] = value;
+
+        return prevVal;
+      },
+      {} as Record<string, any>
+    );
+
+    if (onSetFormValues) {
+      onSetFormValues(form, formattedObject);
+      return;
+    }
+
+    form.setFieldsValue(formattedObject);
+  }, [form, searchParams, defaultFilter, onSetFormValues]);
+
   return (
-    <Content className={`${!open && 'h-0 overflow-hidden !p-0'}`}>
+    <Content isOpen={open}>
       <FormWrapper
         form={form}
-        cancelTitle="Hủy"
-        submitTitle="Tìm kiếm"
-        cancelClass="text-admin-primary border-primary-110 hover:bg-primary-110 hover:text-white"
-        submitClass="bg-primary-110 hover:bg-primary-110 hover:opacity-[.8]"
+        cancelTitle={cancelTitle}
+        submitTitle={submitTitle}
         onFinish={handleFinish}
         onCancel={handleCancel}
-        className={cx('form')}
       >
         {children}
       </FormWrapper>
