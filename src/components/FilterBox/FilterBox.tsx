@@ -22,7 +22,6 @@ interface IFilterBoxProps {
   submitTitle?: string;
   onCancel: () => void;
   onFinish(values: any): void;
-  setFilterParams: Dispatch<SetStateAction<any>>;
   onSetFormValues?: (form: FormInstance<any>, filterParams: any) => void;
 }
 
@@ -35,7 +34,6 @@ const FilterBox = ({
   submitTitle = 'Tìm kiếm',
   onFinish,
   onCancel,
-  setFilterParams,
   onSetFormValues,
 }: IFilterBoxProps) => {
   const firstRender = useRef(true);
@@ -53,8 +51,6 @@ const FilterBox = ({
   useEffect(() => {
     if (!firstRender.current) return;
     firstRender.current = false;
-
-    setFilterParams({ ...searchParams, ...defaultFilter });
 
     const formattedObject = Object.entries(searchParams).reduce(
       (prevVal, currentVal) => {
