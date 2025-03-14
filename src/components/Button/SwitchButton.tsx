@@ -4,14 +4,14 @@ import { memo } from 'react';
 
 interface ISwitchProps extends SwitchProps {}
 
-const Switch = (switchProps: ISwitchProps) => {
+const SwitchButton = (switchProps: ISwitchProps) => {
   const classes = classNames(classNames, '');
 
   return (
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#ffac69',
+          colorPrimary: '#F15227',
         },
       }}
     >
@@ -20,4 +20,4 @@ const Switch = (switchProps: ISwitchProps) => {
   );
 };
 
-export default memo(Switch);
+export default memo(SwitchButton);
