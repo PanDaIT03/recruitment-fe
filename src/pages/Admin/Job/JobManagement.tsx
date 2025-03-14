@@ -17,34 +17,45 @@ import { IJobList } from '~/pages/Job/JobList/JobList';
 import { getAllJobs } from '~/store/thunk/job';
 import JobFilterBox from './JobFilterBox';
 
-const JobManagement: React.FC = () => {
-  const { allJobs, loading } = useAppSelector((state) => state.jobs),
-    queryParams = useQueryParams(),
-    [form] = Form.useForm();
+interface IFilterForm {
+  workTypesId: number;
+  statusId: number;
+  jobsId: number;
+  placementIds: number[];
+}
 
-  const { setTitle } = useTitle(),
-    { setBreadcrumb } = useBreadcrumb();
+const initialFilterParams = {
+  type: 'more',
+} as any;
+
+const JobManagement = () => {
+  const { queryParams } = useQueryParams();
+  const [formFilter] = Form.useForm<IFilterForm>();
+
+  const { setTitle } = useTitle();
+  const { setBreadcrumb } = useBreadcrumb();
+
+  const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
   const paginationParams = {
     page: Number(queryParams.get('page') || 1),
     pageSize: Number(queryParams.get('pageSize') || 10),
   };
 
-  const [filterParams, setFilterParams] = useState({
-      type: 'more',
-    } as any),
-    [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [filterParams, setFilterParams] = useState(initialFilterParams);
 
   const defaultFilter: IPaginationParams & Partial<IJobList> = useMemo(() => {
     return { type: 'more' };
   }, []);
 
   const {
+    pageInfo,
     currentPage,
     itemsPerPage,
     items: jobItems,
-    pageInfo,
     handlePageChange,
+    hanldeClearURLSearchParams,
   } = usePagination({
     fetchAction: getAllJobs,
     extraParams: filterParams,
@@ -164,6 +175,7 @@ const JobManagement: React.FC = () => {
   const handleCancel = useCallback(() => {
     setIsOpenFilter(false);
     setFilterParams({ ...defaultFilter });
+    hanldeClearURLSearchParams(defaultFilter);
   }, [defaultFilter]);
 
   return (
@@ -178,16 +190,17 @@ const JobManagement: React.FC = () => {
         </Col>
       </Row>
       <JobFilterBox
-        form={form}
+        form={formFilter}
         open={isOpenFilter}
         onFinish={handleFinish}
         onCancel={handleCancel}
+        setFilterParams={setFilterParams}
       />
       <Content>
         <Table
           loading={loading}
-          dataSource={jobItems}
           columns={columns}
+          dataSource={jobItems}
           scroll={{ x: 2000 }}
           pagination={{
             current: pageInfo?.currentPage,
