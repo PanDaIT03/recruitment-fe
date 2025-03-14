@@ -46,9 +46,10 @@ const statusOptions: DefaultOptionType[] = [
 
 const UserManagement: React.FC = () => {
   const navigate = useNavigate();
-  const { setTitle } = useTitle();
   const dispatch = useAppDispatch();
-  const queryParams = useQueryParams();
+  const { queryParams } = useQueryParams();
+
+  const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
 
   const [formFilter] = useForm();

@@ -51,7 +51,7 @@ const {
 
 const FunctionalGroup = () => {
   const dispatch = useAppDispatch();
-  const queryParams = useQueryParams();
+  const { queryParams } = useQueryParams();
 
   const [functionalForm] = useForm<IFunctionalGroupForm>();
 

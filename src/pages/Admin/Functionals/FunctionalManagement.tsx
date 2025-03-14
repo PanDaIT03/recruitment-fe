@@ -46,7 +46,7 @@ const {
 const FunctionalManagement = () => {
   const [form] = useForm<IForm>();
   const dispatch = useAppDispatch();
-  const queryParams = useQueryParams();
+  const { queryParams } = useQueryParams();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();

@@ -26,7 +26,7 @@ const RoleManagement = () => {
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
-  const queryParams = useQueryParams();
+  const { queryParams } = useQueryParams();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
