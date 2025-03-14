@@ -44,6 +44,17 @@ interface IForm {
 const initialUserInfo = {} as IUserAdminItem;
 const { SaveOutlined, CloseOutlined } = icons;
 
+const radOptions: CheckboxGroupProps<boolean>['options'] = [
+  {
+    label: 'Hoạt động',
+    value: true,
+  },
+  {
+    label: 'Ngừng hoạt động',
+    value: false,
+  },
+];
+
 const UserDetail = () => {
   const location = useLocation();
   const [form] = useForm<IForm>();
@@ -74,21 +85,6 @@ const UserDetail = () => {
     onError: (error: any) =>
       message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`),
   });
-
-  const radioOptions = useMemo(
-    () =>
-      [
-        {
-          label: 'Đang hoạt động',
-          value: true,
-        },
-        {
-          label: 'Ngừng hoạt động',
-          value: false,
-        },
-      ] as CheckboxGroupProps<boolean>['options'],
-    []
-  );
 
   const formItems = useMemo(
     () =>
@@ -129,7 +125,7 @@ const UserDetail = () => {
                     {
                       name: 'status',
                       label: 'Trạng thái',
-                      component: <RadioGroup options={radioOptions} />,
+                      component: <RadioGroup options={radOptions} />,
                     },
                   ]
                 : []),
@@ -164,14 +160,14 @@ const UserDetail = () => {
                     {
                       name: 'status',
                       label: 'Trạng thái',
-                      component: <RadioGroup options={radioOptions} />,
+                      component: <RadioGroup options={radOptions} />,
                     },
                   ]),
             ],
           },
         ],
       }) as IFormItem,
-    [form, isEmployer, radioOptions, roles]
+    [form, isEmployer, radOptions, roles]
   );
 
   useEffect(() => {

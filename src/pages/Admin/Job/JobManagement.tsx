@@ -1,7 +1,7 @@
 import { Col, Form, Row, Space, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { IPaginationParams } from '~/apis/job';
 import { Eye, FilterAdmin } from '~/assets/svg';
@@ -37,10 +37,13 @@ const JobManagement = () => {
 
   const { allJobs, loading } = useAppSelector((state) => state.jobs);
 
-  const paginationParams = {
-    page: Number(queryParams.get('page') || 1),
-    pageSize: Number(queryParams.get('pageSize') || 10),
-  };
+  const paginationParams = useMemo(
+    () => ({
+      page: Number(queryParams.get('page') || 1),
+      pageSize: Number(queryParams.get('pageSize') || 10),
+    }),
+    [queryParams]
+  );
 
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [filterParams, setFilterParams] = useState(initialFilterParams);

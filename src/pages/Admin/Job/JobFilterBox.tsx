@@ -163,8 +163,6 @@ const JobFilterBox = ({
     getAllStatusMutate({ type: 'job' });
   }, []);
 
-  console.log(jobOptions);
-
   return (
     <FilterBox
       open={open}
