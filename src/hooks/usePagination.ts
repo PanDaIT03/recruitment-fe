@@ -1,3 +1,4 @@
+import queryString from 'query-string';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '~/hooks/useStore';
@@ -9,26 +10,28 @@ interface PaginationInfo {
 }
 
 interface UsePaginationProps<T, P extends { page: number; pageSize: number }> {
-  fetchAction: (params: P) => any;
-  pageInfo?: PaginationInfo;
   items?: T[];
+  pageInfo?: PaginationInfo;
   extraParams?: Partial<Omit<P, 'page' | 'pageSize'>> | undefined;
+  fetchAction: (params: P) => any;
 }
 
 function usePagination<T, P extends { page: number; pageSize: number }>({
-  fetchAction,
-  pageInfo,
   items,
+  pageInfo,
   extraParams,
+  fetchAction,
 }: UsePaginationProps<T, P>) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const isInitialMount = useRef(true);
+
   const [currentPage, setCurrentPage] = useState(pageInfo?.currentPage || 1);
   const [itemsPerPage, setItemsPerPage] = useState(
     pageInfo?.itemsPerPage || 10
   );
-  const dispatch = useAppDispatch();
-  const isInitialMount = useRef(true);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const handlePageChange = useCallback((page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -36,39 +39,63 @@ function usePagination<T, P extends { page: number; pageSize: number }>({
     window.scrollTo(0, 0);
   }, []);
 
+  const hanldeClearURLSearchParams = useCallback((defaultParams?: any) => {
+    const urlParams = { ...defaultParams, page: 1, pageSize: 10 };
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: queryString.stringify(urlParams),
+      },
+      { replace: true }
+    );
+  }, []);
+
   const fetchData = useCallback(() => {
+    const urlParams = queryString.parseUrl(location.search);
     const params = {
       page: currentPage,
       pageSize: itemsPerPage,
+      ...urlParams.query,
       ...extraParams,
     } as P;
 
-    navigate(`?page=${currentPage}&pageSize=${itemsPerPage}`, {
-      state: location.state,
-    });
+    const queryParams = Object.entries(params).reduce(
+      (prevVal, currentVal) => {
+        const [key, value] = currentVal;
+        if (value) prevVal[key] = value;
 
+        return prevVal;
+      },
+      {} as Record<string, any>
+    );
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: queryString.stringify(queryParams),
+      },
+      { replace: true }
+    );
     dispatch(fetchAction(params));
-  }, [dispatch, fetchAction, currentPage, itemsPerPage, extraParams]);
+  }, [currentPage, itemsPerPage, extraParams]);
 
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      fetchData();
-    } else {
-      const timer = setTimeout(() => {
-        fetchData();
-      }, 300);
-
+    if (!isInitialMount.current) {
+      const timer = setTimeout(() => fetchData(), 300);
       return () => clearTimeout(timer);
     }
+
+    isInitialMount.current = false;
   }, [fetchData]);
 
   return {
+    items,
+    pageInfo,
     currentPage,
     itemsPerPage,
-    pageInfo,
-    items,
     handlePageChange,
+    hanldeClearURLSearchParams,
   };
 }
 
