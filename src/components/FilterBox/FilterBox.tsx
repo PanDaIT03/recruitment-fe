@@ -1,13 +1,5 @@
 import { FormInstance } from 'antd';
-import {
-  Dispatch,
-  memo,
-  ReactNode,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react';
+import { memo, ReactNode, useCallback, useEffect, useRef } from 'react';
 
 import useQueryParams from '~/hooks/useQueryParams';
 import Content from '../Content/Content';

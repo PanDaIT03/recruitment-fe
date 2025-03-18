@@ -2,17 +2,10 @@ import { useMutation } from '@tanstack/react-query';
 import { Col, FormInstance, message, Row } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import { DefaultOptionType } from 'antd/es/select';
-import {
-  Dispatch,
-  memo,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
-import { StatusAPIs } from '~/apis/status';
+import { StatusAPI } from '~/apis/status';
 import FilterBox from '~/components/FilterBox/FilterBox';
 import Select from '~/components/Select/Select';
 import { IGetAllStatusParams } from '~/types/Status';
@@ -23,7 +16,6 @@ interface IJobFilterBoxProps {
   form: FormInstance<any>;
   onCancel: () => void;
   onFinish(values: any): void;
-  setFilterParams: Dispatch<SetStateAction<any>>;
 }
 
 const initialOptions = [] as DefaultOptionType[];
@@ -33,7 +25,6 @@ const JobFilterBox = ({
   open,
   onFinish,
   onCancel,
-  setFilterParams,
 }: IJobFilterBoxProps) => {
   const [jobOptions, setJobOptions] = useState(initialOptions);
   const [statusOptions, setStatusOptions] = useState(initialOptions);
@@ -89,7 +80,7 @@ const JobFilterBox = ({
   const { mutate: getAllStatusMutate, isPending: isGetAllStatusMutatePending } =
     useMutation({
       mutationFn: (params: IGetAllStatusParams) =>
-        StatusAPIs.getAllStatus(params),
+        StatusAPI.getAllStatus(params),
       onSuccess: (res: any) => {
         if (res?.items)
           setStatusOptions(
