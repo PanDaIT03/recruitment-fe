@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import {
   Divider,
   Flex,
+  Image,
   Layout,
   message,
   Space,
@@ -410,7 +411,17 @@ const JobApplication = () => {
                         <CustomSelect
                           placeholder="Chọn ngoại ngữ"
                           options={languages?.items.map((language) => ({
-                            label: language.title,
+                            label: (
+                              <Flex justify="space-between">
+                                <span>{language?.title}</span>
+                                <Image
+                                  width={16}
+                                  height={12}
+                                  preview={false}
+                                  src={language?.imageUrl}
+                                />
+                              </Flex>
+                            ),
                             value: language.id,
                           }))}
                           prefixIcon={<Language width={14} height={14} />}

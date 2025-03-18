@@ -23,7 +23,6 @@ import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
-import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionals } from '~/store/thunk/functional';
 import { IFunctionalItem } from '~/types/Functional';
@@ -46,7 +45,6 @@ const {
 const FunctionalManagement = () => {
   const [form] = useForm<IForm>();
   const dispatch = useAppDispatch();
-  const queryParams = useQueryParams();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
@@ -58,11 +56,6 @@ const FunctionalManagement = () => {
   const [filters, setFilters] = useState<IGetAllFunctionalParams>();
 
   const { functionals, loading } = useAppSelector((state) => state.functional);
-
-  const paginationParams = {
-    page: Number(queryParams.get('page') || 1),
-    pageSize: Number(queryParams.get('pageSize') || 10),
-  };
 
   const { mutate: createFunctional, isPending: isCreateFunctionalPending } =
     useMutation({
@@ -108,15 +101,11 @@ const FunctionalManagement = () => {
       },
     });
 
-  const { currentPage, itemsPerPage, handlePageChange } = usePagination({
+  const { pageInfo, handlePageChange } = usePagination({
     extraParams: filters,
     items: functionals?.items,
     fetchAction: getAllFunctionals,
-    pageInfo: {
-      currentPage: paginationParams.page,
-      itemsPerPage: paginationParams.pageSize,
-      totalItems: functionals?.pageInfo?.totalItems || 0,
-    },
+    setFilterParams: setFilters,
   });
 
   useEffect(() => {
@@ -131,7 +120,7 @@ const FunctionalManagement = () => {
         title: 'STT',
         align: 'center',
         render: (_, __, index: number) =>
-          index + 1 + paginationParams.pageSize * (paginationParams.page - 1),
+          index + 1 + pageInfo.pageSize * (pageInfo.page - 1),
       },
       {
         width: 250,
@@ -196,12 +185,12 @@ const FunctionalManagement = () => {
         },
       },
     ] as ColumnsType<IFunctionalItem>;
-  }, [paginationParams]);
+  }, [pageInfo]);
 
   const refetchFunctionals = useCallback(() => {
-    const params: IGetAllFunctionalParams = { ...paginationParams, ...filters };
+    const params: IGetAllFunctionalParams = { ...pageInfo, ...filters };
     dispatch(getAllFunctionals(params));
-  }, [filters, paginationParams]);
+  }, [filters, pageInfo]);
 
   const handleCancelFilter = useCallback(() => {
     setIsOpenFilter(false);
@@ -278,8 +267,8 @@ const FunctionalManagement = () => {
           columns={columns}
           dataSource={functionals?.items}
           pagination={{
-            current: currentPage,
-            pageSize: itemsPerPage,
+            current: pageInfo.page,
+            pageSize: pageInfo.pageSize,
             total: functionals?.pageInfo?.totalItems,
             onChange: handlePageChange,
           }}

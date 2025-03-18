@@ -1,12 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { IGetAllUserAdmin, UserAdminApi } from '~/apis/userAdmin';
+
+import { StatusAPI } from '~/apis/status';
+import { IGetAllStatusParams } from '~/types/Status';
 import toast from '~/utils/functions/toast';
 
-export const getAllUserAdmin = createAsyncThunk(
-  'userAdmin',
-  async (params: IGetAllUserAdmin, { rejectWithValue }) => {
+export const getAllStatus = createAsyncThunk(
+  'status/getAllStatus',
+  async (params: IGetAllStatusParams, { rejectWithValue }) => {
     try {
-      const response = await UserAdminApi.getAllUserAdmin(params);
+      const response = await StatusAPI.getAllStatus(params);
 
       return response;
     } catch (error: any) {

@@ -3,16 +3,22 @@ import axiosApi from '~/services/axios';
 export interface IAdminUpdateUser {
   userId: number;
   roleId?: number;
-  status?: boolean | string;
+  statusId: number;
 }
 
-export interface IGetAllUserAdmin {
-  id?: string;
-}
+export type IGetAllUserAdmin = Partial<{
+  id: number;
+  page: number;
+  pageSize: number;
+  email: string;
+  role: number;
+  isActive: boolean;
+  jobField: number[];
+}>;
 
 export const UserAdminApi = {
   getAllUserAdmin: async (params?: IGetAllUserAdmin) => {
-    return await axiosApi.get('/admin/all', { params });
+    return await axiosApi.get('/admin/users/all', { params });
   },
   updateUser: async (params: IAdminUpdateUser) => {
     const { userId, ...rest } = params;

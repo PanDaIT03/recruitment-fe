@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { Flex, FormItemProps, Image, message, Space, Spin } from 'antd';
-import { CheckboxGroupProps } from 'antd/es/checkbox';
+import { CheckboxOptionType } from 'antd/es/checkbox';
 import { FormInstance, useForm } from 'antd/es/form/Form';
 import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,7 +16,8 @@ import { RadioGroup } from '~/components/Radio/Radio';
 import Select from '~/components/Select/Select';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getAllStatus } from '~/store/thunk/status';
 import { IUserAdminItem } from '~/types/User/userAdmin';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -35,8 +36,8 @@ interface IForm {
   avatarUrl?: string;
   companyName?: string;
   companyUrl?: string;
-  status: boolean;
   roleId: number;
+  statusId: number;
   jobFields: string;
   jobPosition: string;
 }
@@ -46,6 +47,7 @@ const { SaveOutlined, CloseOutlined } = icons;
 
 const UserDetail = () => {
   const location = useLocation();
+  const dispatch = useAppDispatch();
   const [form] = useForm<IForm>();
 
   const navigate = useNavigate();
@@ -53,6 +55,9 @@ const UserDetail = () => {
   const { setBreadcrumb } = useBreadcrumb();
 
   const { roles, loading } = useAppSelector((state) => state.role);
+  const { status, loading: statusLoading } = useAppSelector(
+    (state) => state.status
+  );
   const [userInfo, setuserInfo] = useState<IUserAdminItem>(initialUserInfo);
 
   const isEmployer = useMemo(
@@ -60,9 +65,18 @@ const UserDetail = () => {
     [userInfo]
   );
 
+  const statusRadOptions: CheckboxOptionType[] = useMemo(
+    () =>
+      status?.items?.map((item) => ({
+        label: item?.title,
+        value: item?.id,
+      })),
+    [status]
+  );
+
   const { mutate: getUserInformation, isPending: isGetUserInformationPending } =
     useMutation({
-      mutationFn: (id: string) => UserAdminApi.getAllUserAdmin({ id }),
+      mutationFn: (id: number) => UserAdminApi.getAllUserAdmin({ id }),
       onSuccess: (res) => setuserInfo(res?.items?.[0]),
       onError: (error: any) =>
         message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`),
@@ -74,21 +88,6 @@ const UserDetail = () => {
     onError: (error: any) =>
       message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`),
   });
-
-  const radioOptions = useMemo(
-    () =>
-      [
-        {
-          label: 'Đang hoạt động',
-          value: true,
-        },
-        {
-          label: 'Ngừng hoạt động',
-          value: false,
-        },
-      ] as CheckboxGroupProps<boolean>['options'],
-    []
-  );
 
   const formItems = useMemo(
     () =>
@@ -127,9 +126,9 @@ const UserDetail = () => {
               ...(isEmployer
                 ? [
                     {
-                      name: 'status',
+                      name: 'statusId',
                       label: 'Trạng thái',
-                      component: <RadioGroup options={radioOptions} />,
+                      component: <RadioGroup options={statusRadOptions} />,
                     },
                   ]
                 : []),
@@ -162,16 +161,16 @@ const UserDetail = () => {
                   ]
                 : [
                     {
-                      name: 'status',
+                      name: 'statusId',
                       label: 'Trạng thái',
-                      component: <RadioGroup options={radioOptions} />,
+                      component: <RadioGroup options={statusRadOptions} />,
                     },
                   ]),
             ],
           },
         ],
       }) as IFormItem,
-    [form, isEmployer, radioOptions, roles]
+    [roles, isEmployer, form, statusRadOptions]
   );
 
   useEffect(() => {
@@ -184,17 +183,22 @@ const UserDetail = () => {
   }, []);
 
   useEffect(() => {
+    if (!!status?.items.length) return;
+    dispatch(getAllStatus({ type: 'account' }));
+  }, [status]);
+
+  useEffect(() => {
     if (!Object.keys(userInfo).length) return;
 
     const fieldsValue: IForm = {
       fullName: userInfo?.fullName,
       email: userInfo?.email,
-      phoneNumber: userInfo?.phoneNumber,
+      phoneNumber: userInfo?.phoneNumber || '-',
       avatarUrl: userInfo?.avatarUrl,
       companyName: userInfo?.companyName,
       companyUrl: userInfo?.companyUrl,
-      status: userInfo?.isActive,
       roleId: userInfo?.role?.id,
+      statusId: userInfo?.status?.id,
       jobPosition: userInfo?.jobPosition?.title || '-',
       jobFields:
         userInfo?.usersJobFields
@@ -224,10 +228,10 @@ const UserDetail = () => {
 
   const handleFinish = useCallback(
     (values: IForm) => {
-      const { roleId, status } = values;
+      const { roleId, statusId } = values;
       const params: IAdminUpdateUser = {
         roleId,
-        status,
+        statusId,
         userId: userInfo.id,
       };
 
@@ -237,7 +241,7 @@ const UserDetail = () => {
   );
 
   return (
-    <Spin spinning={loading || isGetUserInformationPending}>
+    <Spin spinning={loading || isGetUserInformationPending || statusLoading}>
       <Content>
         <Space direction="vertical" size="middle" className="w-full">
           <Space direction="vertical" align="center" className="w-full">

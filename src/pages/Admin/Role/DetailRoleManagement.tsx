@@ -38,7 +38,7 @@ const { SaveOutlined } = icons;
 const DetailRoleManagement = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const queryParams = useQueryParams();
+  const { queryParams } = useQueryParams();
 
   const roleId = queryParams.get('id');
   const [functionalForm] = Form.useForm<IFunctionalForm>();
