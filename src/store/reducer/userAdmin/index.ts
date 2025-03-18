@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getAllUserAdmin } from '~/store/thunk/userAdmin';
+import { ACCOUNT_STATUS } from '~/types/Status';
 import { IUserAdmin, IUserAdminItem } from '~/types/User/userAdmin';
 
 interface IUserAdminState {
@@ -25,8 +26,17 @@ const userAdminSlice = createSlice({
         state.loading = true;
       })
       .addCase(getAllUserAdmin.fulfilled, (state, action) => {
+        const { items, ...rest } = action.payload;
+        const data: IUserAdmin = {
+          ...rest,
+          items: items?.map((item: any) => ({
+            ...item,
+            isActive: item?.status?.code === ACCOUNT_STATUS.ACTIVE,
+          })),
+        };
+
         state.loading = false;
-        state.userAdmin = action.payload;
+        state.userAdmin = data;
       })
       .addCase(getAllUserAdmin.rejected, (state) => {
         state.loading = false;

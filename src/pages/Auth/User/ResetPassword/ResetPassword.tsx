@@ -24,15 +24,15 @@ interface IForm {
 }
 
 const ResetPassword = () => {
+  const [form] = useForm<IForm>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const { messageApi } = useMessage();
+  const { queryParams } = useQueryParams();
 
-  const [form] = useForm<IForm>();
-
-  const params = useQueryParams();
-  const email = params.get('email');
-  const token = params.get('token');
+  const email = queryParams.get('email');
+  const token = queryParams.get('token');
 
   const { currentUser } = useAppSelector((state) => state.auth);
   const [isResetPasswordSuccess, setIsResetPasswordSuccess] = useState(false);
