@@ -12,7 +12,6 @@ import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
-import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
 import { getAllRoles } from '~/store/thunk/role';
 import icons from '~/utils/icons';
@@ -23,35 +22,23 @@ const { Text } = Typography;
 const { PlusOutlined, EditOutlined } = icons;
 
 const RoleManagement = () => {
-  const navigate = useNavigate();
-
   const [form] = Form.useForm();
-  const queryParams = useQueryParams();
+  const navigate = useNavigate();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
 
   const { roles, loading } = useAppSelector((state) => state.role);
 
-  const [filterParams, setFilterParams] = useState({} as any);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [filterParams, setFilterParams] = useState({} as any);
 
-  const paginationParams = {
-    page: Number(queryParams.get('page') || 1),
-    pageSize: Number(queryParams.get('pageSize') || 10),
-  };
-
-  const { currentPage, items, itemsPerPage, pageInfo, handlePageChange } =
-    usePagination({
-      items: roles.items,
-      fetchAction: getAllRoles,
-      extraParams: filterParams,
-      pageInfo: {
-        currentPage: paginationParams?.page,
-        itemsPerPage: paginationParams?.pageSize,
-        totalItems: roles?.pageInfo?.totalItems ?? 0,
-      },
-    });
+  const { items, pageInfo, handlePageChange } = usePagination({
+    items: roles.items,
+    fetchAction: getAllRoles,
+    extraParams: filterParams,
+    setFilterParams: setFilterParams,
+  });
 
   useEffect(() => {
     setTitle('Danh sách chức vụ');
@@ -64,7 +51,7 @@ const RoleManagement = () => {
         width: 50,
         title: 'STT',
         render: (_: any, __: any, index: number) =>
-          (currentPage - 1) * itemsPerPage + index + 1,
+          (pageInfo.page - 1) * pageInfo.pageSize + index + 1,
       },
       {
         width: 100,
@@ -132,7 +119,7 @@ const RoleManagement = () => {
         ),
       },
     ] as ColumnsType<any>;
-  }, [currentPage, itemsPerPage]);
+  }, [pageInfo]);
 
   const handleOnFilterButtonClick = useCallback(() => {
     setIsOpenFilter((prev) => !prev);
@@ -181,9 +168,9 @@ const RoleManagement = () => {
           loading={loading}
           scroll={{ x: 1000 }}
           pagination={{
-            current: pageInfo?.currentPage,
-            pageSize: pageInfo?.itemsPerPage,
-            total: pageInfo?.totalItems,
+            current: pageInfo.page,
+            pageSize: pageInfo.pageSize,
+            total: roles.pageInfo?.totalItems,
             onChange: handlePageChange,
           }}
         />

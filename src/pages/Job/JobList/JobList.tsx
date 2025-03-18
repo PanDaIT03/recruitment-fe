@@ -67,7 +67,6 @@ const salaryOptions: DefaultOptionType[] = [
 ];
 
 const defaultFilter: IFilter = {
-  // statusId: 5,
   type: 'more',
 };
 
@@ -95,18 +94,11 @@ const JobList = () => {
     JobsAPI.getAllJobFields
   );
 
-  const { currentPage, itemsPerPage, handlePageChange } = usePagination<
-    JobItem,
-    IJobList
-  >({
-    fetchAction: getAllJobs,
-    pageInfo: {
-      currentPage: 1,
-      itemsPerPage: 10,
-      totalItems: allJobs?.pageInfo?.totalItems || 0,
-    },
+  const { pageInfo, handlePageChange } = usePagination<JobItem, IJobList>({
     items: allJobs?.items,
     extraParams: filters,
+    fetchAction: getAllJobs,
+    setFilterParams: setFilters,
   });
 
   const jobCategoriesOptions = useMemo(
@@ -325,9 +317,9 @@ const JobList = () => {
             </List.Item>
           )}
           pagination={{
-            current: currentPage,
-            pageSize: itemsPerPage,
             showSizeChanger: false,
+            current: pageInfo.page,
+            pageSize: pageInfo.pageSize,
             total: allJobs?.pageInfo?.totalItems,
             onChange: handlePageChange,
           }}

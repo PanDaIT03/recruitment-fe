@@ -71,6 +71,7 @@ export interface ILanguageComboBox {
   createAt: string;
   updateBy: string;
   updateAt: string;
+  imageUrl: string;
   title: string;
 }
 

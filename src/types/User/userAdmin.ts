@@ -1,3 +1,5 @@
+import { IStatusItem } from '../Status';
+
 interface IActorType {
   id: number;
   fullName: string;
@@ -42,6 +44,7 @@ export interface IUserAdminItem {
   companyName: string;
   companyUrl: string;
   isActive: boolean;
+  status: IStatusItem;
   creator: IActorType;
   updater: IActorType;
   role: Role;

@@ -12,14 +12,8 @@ import {
   Spin,
   Typography,
 } from 'antd';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 import { AvatarPlaceHolder } from '~/assets/svg';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
@@ -42,8 +36,8 @@ const AdminLayout: React.FC = () => {
   const { title } = useTitle();
   const { breadcrumb } = useBreadcrumb();
 
-  const location = useLocation();
-  const firstRender = useRef(true);
+  // const location = useLocation();
+  // const firstRender = useRef(true);
 
   const [collapsed, setCollapsed] = useState(false);
   const { currentUser, loading } = useAppSelector((state) => state.auth);
@@ -71,14 +65,14 @@ const AdminLayout: React.FC = () => {
     } as MenuProps;
   }, []);
 
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      navigate(location.pathname, {
-        state: { ...location.state, key: location.pathname },
-      });
-    }
-  }, [firstRender]);
+  // useEffect(() => {
+  //   if (firstRender.current) {
+  //     firstRender.current = false;
+  //     navigate(location.pathname, {
+  //       state: { ...location.state, key: location.pathname },
+  //     });
+  //   }
+  // }, [firstRender]);
 
   return (
     <Spin spinning={loading}>
