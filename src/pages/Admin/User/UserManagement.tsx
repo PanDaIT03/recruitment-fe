@@ -1,21 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
-import {
-  CheckboxOptionType,
-  Col,
-  Flex,
-  message,
-  Row,
-  Space,
-  Spin,
-  Tag,
-} from 'antd';
+import { Col, Flex, message, Row, Space, Spin, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { IAdminUpdateUser, UserAdminApi } from '~/apis/userAdmin';
+import {
+  IAdminUpdateUser,
+  IGetAllUserAdmin,
+  UserAdminApi,
+} from '~/apis/userAdmin';
 import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -32,6 +27,7 @@ import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getAllStatus } from '~/store/thunk/status';
 import { getAllUserAdmin } from '~/store/thunk/userAdmin';
 import { IUserAdminItem } from '~/types/User/userAdmin';
 import icons from '~/utils/icons';
@@ -43,15 +39,17 @@ interface IUserAdminForm {
   fullName: string;
   email: string;
   role: number;
-  status: boolean;
+  statusId: number;
 }
 
-const { EyeOutlined, EditOutlined, CloseOutlined, SaveOutlined } = icons;
+export type IFormFilter = Partial<{
+  email: string;
+  roleId: number;
+  statusId: number;
+  jobFieldsId: number[];
+}>;
 
-const statusOptions: CheckboxOptionType[] = [
-  { label: 'Hoạt động', value: true },
-  { label: 'Ngừng hoạt động', value: false },
-];
+const { EyeOutlined, EditOutlined, CloseOutlined, SaveOutlined } = icons;
 
 const UserManagement: React.FC = () => {
   const navigate = useNavigate();
@@ -60,23 +58,27 @@ const UserManagement: React.FC = () => {
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
 
-  const [formFilter] = useForm();
+  const [formFilter] = useForm<IFormFilter>();
   const [formUserAdmin] = useForm<IUserAdminForm>();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
 
-  const [filterParams, setFilterParams] = useState();
+  const [filterParams, setFilterParams] = useState<IFormFilter>();
 
   const { userAdmin, loading } = useAppSelector((state) => state.userAdmin);
   const { roles, loading: roleLoading } = useAppSelector((state) => state.role);
+  const { status, loading: statusLoading } = useAppSelector(
+    (state) => state.status
+  );
 
-  const { pageInfo, handlePageChange } = usePagination({
-    items: userAdmin.items,
-    extraParams: filterParams,
-    fetchAction: getAllUserAdmin,
-    setFilterParams: setFilterParams,
-  });
+  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+    usePagination({
+      items: userAdmin.items,
+      extraParams: filterParams,
+      fetchAction: getAllUserAdmin,
+      setFilterParams: setFilterParams,
+    });
 
   const { mutate: updateUser, isPending: isUpdateUserPending } = useMutation({
     mutationFn: (params: IAdminUpdateUser) => UserAdminApi.updateUser(params),
@@ -91,6 +93,8 @@ const UserManagement: React.FC = () => {
   });
 
   useEffect(() => {
+    dispatch(getAllStatus({ type: 'account' }));
+
     setTitle('Danh sách người dùng');
     setBreadcrumb([{ title: 'Quản lý' }, { title: 'Danh sách người dùng' }]);
   }, []);
@@ -115,6 +119,12 @@ const UserManagement: React.FC = () => {
         dataIndex: 'email',
       },
       {
+        width: 250,
+        title: 'Lĩnh vực',
+        dataIndex: '',
+        render: () => '-',
+      },
+      {
         width: 100,
         title: 'Quyền',
         dataIndex: ['role', 'title'],
@@ -130,11 +140,6 @@ const UserManagement: React.FC = () => {
           ) : (
             <Tag color="red">Ngừng hoạt động</Tag>
           ),
-      },
-      {
-        width: 180,
-        title: 'Người tạo',
-        dataIndex: ['creator', 'fullName'],
       },
       {
         width: 200,
@@ -176,10 +181,14 @@ const UserManagement: React.FC = () => {
             />
             <SwitchButton
               checked={record?.isActive}
-              onChange={(e) => {
+              onChange={() => {
+                const newStatusId = status?.items?.filter(
+                  (status) => status?.code !== record?.status?.code
+                )?.[0]?.id;
+
                 updateUser({
                   userId: record.id,
-                  status: e,
+                  statusId: newStatusId,
                 });
               }}
             />
@@ -187,10 +196,11 @@ const UserManagement: React.FC = () => {
         ),
       },
     ] as ColumnsType<IUserAdminItem>;
-  }, [userAdmin, pageInfo]);
+  }, [userAdmin, status, pageInfo]);
 
-  const refetchUserAdmin = useCallback(() => {
-    dispatch(getAllUserAdmin());
+  const refetchUserAdmin = useCallback((params?: IGetAllUserAdmin) => {
+    const formattedParams = params || {};
+    dispatch(getAllUserAdmin(formattedParams));
   }, []);
 
   const handleEdit = useCallback((record: IUserAdminItem) => {
@@ -199,29 +209,43 @@ const UserManagement: React.FC = () => {
       email: record?.email,
       role: record?.role?.id,
       fullName: record?.fullName,
-      status: record?.isActive,
+      statusId: record?.status?.id,
     });
 
     setIsOpenModal(true);
   }, []);
 
   const handleFilter = useCallback((values: any) => {
-    console.log('filter', values);
+    const formattedValues: IFormFilter = Object.entries(values).reduce(
+      (prevVal, currentVal) => {
+        const [key, value] = currentVal;
+        if (value)
+          prevVal[key] = typeof value === 'string' ? value?.trim() : value;
+
+        return prevVal;
+      },
+      {} as Record<string, any>
+    );
+
+    setFilterParams(formattedValues);
   }, []);
 
   const handleCancelFilter = useCallback(() => {
-    console.log('cancel');
+    formFilter.resetFields();
+
+    setFilterParams({});
     setIsOpenFilter(false);
+    hanldeClearURLSearchParams();
   }, []);
 
   const handleFinishEditUser = useCallback(
     (values: IUserAdminForm) => {
-      const { role, status } = values;
+      const { role, statusId } = values;
       const userId = formUserAdmin.getFieldValue('userId');
 
       updateUser({
         userId,
-        status,
+        statusId,
         roleId: role,
       });
     },
@@ -234,7 +258,9 @@ const UserManagement: React.FC = () => {
   }, []);
 
   return (
-    <Spin spinning={loading || roleLoading || isUpdateUserPending}>
+    <Spin
+      spinning={loading || roleLoading || isUpdateUserPending || statusLoading}
+    >
       <Row align="middle" justify="end">
         <Col>
           <Button
@@ -265,7 +291,7 @@ const UserManagement: React.FC = () => {
       </Content>
       <Modal
         isOpen={isOpenModal}
-        title="Chỉnh sửa quyền cho người dùng"
+        title="Chỉnh sửa người dùng"
         footer={
           <Flex justify="end" gap={16}>
             <Button
@@ -308,10 +334,15 @@ const UserManagement: React.FC = () => {
           </FormItem>
           <FormItem
             label="Trạng thái"
-            name="status"
+            name="statusId"
             rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
           >
-            <RadioGroup options={statusOptions} />
+            <RadioGroup
+              options={status?.items?.map((item) => ({
+                label: item?.title,
+                value: item?.id,
+              }))}
+            />
           </FormItem>
         </FormWrapper>
       </Modal>
