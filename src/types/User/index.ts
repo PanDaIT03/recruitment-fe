@@ -61,3 +61,38 @@ export interface IGetCVResponse {
   items: IMyCV[];
   statusCode: number;
 }
+
+export interface IUser {
+  id: number;
+  email: string;
+  fullName: string;
+  phoneNumber: string;
+  avatarUrl: string;
+  companyName: string;
+  companyUrl: string;
+  isActive: boolean;
+  role: Role;
+  jobPosition: { id: number; title: string };
+  statusCode: number;
+  placement: Placement;
+  desiredJob: {
+    totalYearExperience: number;
+  };
+}
+
+interface Placement {
+  id: number;
+  title: string;
+  createBy: string;
+  createAt: string;
+  updateBy: string;
+  updateAt: string;
+}
+
+export interface IEmailStatus {
+  email: string;
+  hasPassword: boolean;
+  signInWith: string;
+  message: string;
+  statusCode: number;
+}

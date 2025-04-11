@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Divider } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import UserApi from '~/apis/user';
+import UserAPI from '~/apis/user';
 import { BriefCase, LanguageCenter, MagicHat, Summary } from '~/assets/img';
 import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
 import { useMessage } from '~/contexts/MessageProvider';
@@ -53,7 +53,7 @@ const Profile = () => {
 
   const { mutate: getAchievementByUser, isPending: isAchievementPending } =
     useMutation({
-      mutationFn: () => UserApi.getAchievementByUser(),
+      mutationFn: () => UserAPI.getAchievementByUser(),
       onSuccess: (res) => setAchievement(res?.result),
       onError: (error: any) => {
         messageApi.error(error?.response?.data?.message);
@@ -62,7 +62,7 @@ const Profile = () => {
 
   const { mutate: getLanguageByUserId, isPending: isLanguagePending } =
     useMutation({
-      mutationFn: (id: number) => UserApi.getLanguageByUserId(id),
+      mutationFn: (id: number) => UserAPI.getLanguageByUserId(id),
       onSuccess: (res) => setForeignLanguages(res.items),
       onError: (error: any) => {
         messageApi.error(error?.response?.data?.message);
@@ -71,7 +71,7 @@ const Profile = () => {
 
   const { mutate: getUserSkillByUserId, isPending: isUserSkillPending } =
     useMutation({
-      mutationFn: (id: number) => UserApi.getUserSkillByUserId(id),
+      mutationFn: (id: number) => UserAPI.getUserSkillByUserId(id),
       onSuccess: (res) => setUserSkills(res.items),
       onError: (error: any) => {
         messageApi.error(error?.response?.data?.message);
@@ -82,7 +82,7 @@ const Profile = () => {
     mutate: getWorkExperienceByUserId,
     isPending: isWorkExperiencePending,
   } = useMutation({
-    mutationFn: (id: number) => UserApi.getWorkExperienceByUserId(id),
+    mutationFn: (id: number) => UserAPI.getWorkExperienceByUserId(id),
     onSuccess: (res) => setWorkExperiences(res.items),
     onError: (error: any) => {
       messageApi.error(error?.response?.data?.message);

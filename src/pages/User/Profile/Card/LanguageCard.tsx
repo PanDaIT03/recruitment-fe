@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Divider, Flex } from 'antd';
 import { memo } from 'react';
 
-import UserApi from '~/apis/user';
+import UserAPI from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
 import { IForeignLanguage } from '~/types/User/profile';
 import { defaultImgUrl } from '~/utils/constant';
@@ -20,7 +20,7 @@ const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
   const { messageApi } = useMessage();
 
   const { mutate: deleteUserLanguage } = useMutation({
-    mutationFn: (id: number) => UserApi.deleteForeignLanguage(id),
+    mutationFn: (id: number) => UserAPI.deleteForeignLanguage(id),
     onSuccess: (res) => {
       messageApi.success(res?.message);
       refetch();

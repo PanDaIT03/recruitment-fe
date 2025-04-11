@@ -3,12 +3,12 @@ import { Divider } from 'antd';
 import dayjs from 'dayjs';
 import { memo } from 'react';
 
-import UserApi from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
 import { IWorkExperience } from '~/types/User/profile';
 import { defaultImgUrl } from '~/utils/constant';
 import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
+import UserAPI from '~/apis/user';
 
 interface IProps {
   data: IWorkExperience[];
@@ -20,7 +20,7 @@ const ExperienceCard = ({ data, refetch, onEdit }: IProps) => {
   const { messageApi } = useMessage();
 
   const { mutate: deleteWorkExperience } = useMutation({
-    mutationFn: (id: number) => UserApi.deleteWorkExperience(id),
+    mutationFn: (id: number) => UserAPI.deleteWorkExperience(id),
     onSuccess: (res) => {
       messageApi.success(res?.message);
       refetch();

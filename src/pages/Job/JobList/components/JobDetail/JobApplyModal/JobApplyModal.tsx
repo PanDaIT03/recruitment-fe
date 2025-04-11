@@ -2,7 +2,7 @@ import { Flex, message, Space, Upload, UploadFile, UploadProps } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { useMemo, useState } from 'react';
-import UserApi from '~/apis/user';
+import UserAPI from '~/apis/user';
 
 import { File, Fly } from '~/assets/svg';
 import Button from '~/components/Button/Button';
@@ -35,7 +35,7 @@ const JobApplyModal = ({
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
   const isUsingExistingCV = useMemo(() => value === 1, [value]);
-  const { data: myCVs } = useFetch(['getMyCV'], UserApi.getMyCv);
+  const { data: myCVs } = useFetch(['getMyCV'], UserAPI.getMyCv);
 
   const cvOptions: DefaultOptionType[] = useMemo(() => {
     return (

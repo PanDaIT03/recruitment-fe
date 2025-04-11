@@ -3,7 +3,7 @@ import { Divider, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { useEffect, useState } from 'react';
 
-import UserApi, { IUpdateAccountInfo } from '~/apis/user';
+import UserAPI, { IUpdateAccountInfo } from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -27,7 +27,7 @@ const Account = () => {
 
   const { mutate: updateAccountInfo, isPending } = useMutation({
     mutationFn: (params: IUpdateAccountInfo) =>
-      UserApi.updateAccountInfo(params),
+      UserAPI.updateAccountInfo(params),
     onSuccess: (res) => {
       messageApi.success(res?.message || 'Cập nhật thông tin thành công');
 

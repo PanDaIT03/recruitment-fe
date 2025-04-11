@@ -1,10 +1,6 @@
 import axiosApi from '~/services/axios';
-import {
-  IBaseUser,
-  IEmailStatus,
-  IUser,
-  IUserSignInWithGoogle,
-} from '~/types/Auth/index';
+import { IBaseUser, IUserSignInWithGoogle } from '~/types/Auth/index';
+import { IUser } from '~/types/User';
 
 type Response = IBaseResponse<{
   data: IUser;
@@ -20,21 +16,7 @@ export interface IVerifyOTP {
   otp: number;
 }
 
-export interface IResetPasswordParams {
-  email: string;
-  password: string;
-  token: string;
-}
-
 const AuthAPI = {
-  // GET
-  getMe: async (): Promise<IUser> => {
-    return await axiosApi.get('/users/me');
-  },
-  checkExistedEmail: async (email: string): Promise<IEmailStatus> => {
-    return await axiosApi.get(`/users/check-exist-email?email=${email}`);
-  },
-
   // POST
   signUp: async (payload: ISignUpParams): Promise<Response> => {
     return await axiosApi.post('/auth/register', payload);
@@ -58,16 +40,6 @@ const AuthAPI = {
   },
   sendResetPasswordUrl: async (email: string): Promise<IBaseResponse> => {
     return await axiosApi.post('/auth/send-reset-password-url', { email });
-  },
-
-  // PATCH
-  changePassword: async () => {
-    return await axiosApi.patch('/users/change-password');
-  },
-  resetPassword: async (
-    payload: IResetPasswordParams
-  ): Promise<IBaseResponse> => {
-    return await axiosApi.patch('/users/reset-password', payload);
   },
 };
 

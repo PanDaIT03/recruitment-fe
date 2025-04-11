@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Flex, Rate } from 'antd';
 import { memo } from 'react';
 
-import UserApi from '~/apis/user';
+import UserAPI from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
 import { IUserSkill } from '~/types/User/profile';
 import { ProfileSectionType } from '../ProfileSection';
@@ -18,7 +18,7 @@ const SkillCard = ({ data, refetch, onEdit }: IProps) => {
   const { messageApi } = useMessage();
 
   const { mutate: deleteUserSkill } = useMutation({
-    mutationFn: (id: number) => UserApi.deleteUserSkill(id),
+    mutationFn: (id: number) => UserAPI.deleteUserSkill(id),
     onSuccess: (res) => {
       messageApi.success(res?.message);
       refetch();

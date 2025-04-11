@@ -13,7 +13,7 @@ import {
   Work,
 } from '~/assets/svg';
 import useRole from '~/hooks/useRole';
-import { IUser } from '~/types/Auth';
+import { IUser } from '~/types/User';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 

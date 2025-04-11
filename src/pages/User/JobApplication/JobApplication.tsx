@@ -28,7 +28,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { JobsAPI } from '~/apis/job';
-import UserApi, { IDesiredJobParams } from '~/apis/user';
+import UserAPI, { IDesiredJobParams } from '~/apis/user';
 import {
   ArrowLeft,
   BackPack,
@@ -111,11 +111,11 @@ const JobApplication = () => {
 
   const { data: languages } = useFetch(
     ['foreignLanguage'],
-    UserApi.getAllForeignLanguage
+    UserAPI.getAllForeignLanguage
   );
 
   const { mutate: uploadCV, isPending: isUploadCVPending } = useMutation({
-    mutationFn: (params: FormData) => UserApi.uploadCV(params),
+    mutationFn: (params: FormData) => UserAPI.uploadCV(params),
     onSuccess: () => {
       const {
         cv,
@@ -142,7 +142,7 @@ const JobApplication = () => {
   const { mutate: createNewDesiredJob, isPending: isCreateDesiredJobPending } =
     useMutation({
       mutationFn: (params: IDesiredJobParams) =>
-        UserApi.createNewDesiredJob(params),
+        UserAPI.createNewDesiredJob(params),
       onSuccess: () => {
         dispatch(getMe());
         setIsOpenModal(true);

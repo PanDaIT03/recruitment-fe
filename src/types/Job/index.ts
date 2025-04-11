@@ -1,4 +1,4 @@
-import { IUser } from '../Auth';
+import { IUser } from "../User";
 
 type Nullable<T> = T | null;
 

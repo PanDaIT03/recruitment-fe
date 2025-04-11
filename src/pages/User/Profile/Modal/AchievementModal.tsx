@@ -3,7 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
 import { memo, useEffect, useState } from 'react';
 
-import UserApi, { IAchievementParams } from '~/apis/user';
+import UserAPI, { IAchievementParams } from '~/apis/user';
 import FormItem from '~/components/Form/FormItem';
 import { useMessage } from '~/contexts/MessageProvider';
 import { IAchievement } from '~/types/User/profile';
@@ -25,7 +25,7 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const { mutate: createAchievement, isPending: isCreateAchievementPending } =
     useMutation({
       mutationFn: (params: IAchievementParams) =>
-        UserApi.createAchievement(params),
+        UserAPI.createAchievement(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
         refetch();
@@ -38,7 +38,7 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
 
   const { mutate: updateAchievement, isPending: isUpdateAchievementPending } =
     useMutation({
-      mutationFn: (params: IAchievement) => UserApi.updateAchievement(params),
+      mutationFn: (params: IAchievement) => UserAPI.updateAchievement(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
         refetch();
@@ -51,7 +51,7 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
 
   const { mutate: deleteAchievement, isPending: isDelAchievementPending } =
     useMutation({
-      mutationFn: (id: number) => UserApi.deleteAchievement(id),
+      mutationFn: (id: number) => UserAPI.deleteAchievement(id),
       onSuccess: (res) => {
         messageApi.success(res?.message);
         refetch();
