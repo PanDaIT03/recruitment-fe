@@ -1,15 +1,17 @@
 import { Menu, ModalProps } from 'antd';
-import { Dispatch, memo, SetStateAction, useState } from 'react';
+import { Dispatch, memo, SetStateAction, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { BackPack, Blogs, Users } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppSelector } from '~/hooks/useStore';
 import useToken from '~/hooks/useToken';
 import icons from '~/utils/icons';
-import PATH from '~/utils/path';
-import { createBaseMenu, createUserMenu } from './menu/headerMenuItem';
+import {
+  commonMenuItems,
+  createBaseMenu,
+  createUserMenu,
+} from './menu/headerMenuItem';
 
 interface IProps extends ModalProps {
   isOpen: boolean;
@@ -51,49 +53,43 @@ const HeaderMenu = ({
     setNavigatePath(navigatePath);
   };
 
-  const userMenu = createUserMenu(handleNavigate);
+  const userMenu = createUserMenu();
   const baseMenu = createBaseMenu({ currentUser, token: refreshToken });
+  const commonMenu = useMemo(
+    () =>
+      commonMenuItems.map((menuItem) => ({
+        ...menuItem,
+        label: (
+          <span className="text-neutral-600 font-medium">{menuItem.label}</span>
+        ),
+        onClick: () => handleNavigate(menuItem.path),
+      })),
+    [commonMenuItems]
+  );
 
-  const menuItems = [
-    ...baseMenu,
-    {
-      key: 'job-seeker',
-      label: (
-        <span className="text-neutral-600 font-medium">Danh sách ứng viên</span>
-      ),
-      icon: <Users width={18} height={18} />,
-      onClick: () => handleNavigate(PATH.JOB_SEEKER),
-    },
-    {
-      key: 'job-list',
-      label: (
-        <span className="text-neutral-600 font-medium">Tin tuyển dụng</span>
-      ),
-      icon: <BackPack width={18} height={18} />,
-
-      onClick: () => handleNavigate(PATH.JOB_LIST),
-    },
-    {
-      key: 'blog',
-      label: <span className="text-neutral-600 font-medium">Blog</span>,
-      icon: <Blogs width={18} height={18} />,
-      onClick: () => handleNavigate('/'),
-    },
-    { type: 'divider' as const, dashed: true },
-    ...userMenu || [],
-    ...(isAuthenticated
-      ? [
-          { type: 'divider' as const, dashed: true },
-          {
-            key: 'logout',
-            className: 'hover:!bg-light-warning',
-            icon: <LogoutOutlined className="!text-warning" />,
-            label: <span className="text-warning font-medium">Đăng xuất</span>,
-            onClick: handleSignOut,
-          },
-        ]
-      : []),
-  ];
+  const menuItems = useMemo(
+    () => [
+      ...baseMenu,
+      ...commonMenu,
+      { type: 'divider' as const, dashed: true },
+      ...(userMenu || []),
+      ...(isAuthenticated
+        ? [
+            { type: 'divider' as const, dashed: true },
+            {
+              key: 'logout',
+              className: 'hover:!bg-light-warning',
+              icon: <LogoutOutlined className="!text-warning" />,
+              label: (
+                <span className="text-warning font-medium">Đăng xuất</span>
+              ),
+              onClick: handleSignOut,
+            },
+          ]
+        : []),
+    ],
+    [baseMenu, commonMenu, userMenu, isAuthenticated]
+  );
 
   return (
     <Modal

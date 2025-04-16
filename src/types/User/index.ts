@@ -1,3 +1,4 @@
+import { IFunctionalItem } from '../Functional';
 import { IMyCV } from './profile';
 
 interface PageInfo {
@@ -78,6 +79,8 @@ export interface IUser {
   desiredJob: {
     totalYearExperience: number;
   };
+  viewGroups: IViewGroup[];
+  standaloneViews: IMenuView[];
 }
 
 interface Placement {
@@ -95,4 +98,22 @@ export interface IEmailStatus {
   signInWith: string;
   message: string;
   statusCode: number;
+}
+
+export interface IViewGroup {
+  id: number;
+  title: string;
+  orderIndex: number;
+  menuViews: IMenuView[];
+}
+
+export interface IMenuView {
+  id: number;
+  title: string;
+  iconType: string;
+  icon: string;
+  path: string;
+  orderIndex: number;
+  menuViewGroupId: number;
+  functionals: Pick<IFunctionalItem, 'id' | 'title' | 'code'>[];
 }
