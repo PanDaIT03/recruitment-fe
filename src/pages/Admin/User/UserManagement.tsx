@@ -119,16 +119,16 @@ const UserManagement: React.FC = () => {
         dataIndex: 'email',
       },
       {
+        width: 100,
+        title: 'Vai trò',
+        dataIndex: ['role', 'title'],
+        className: 'capitalize',
+      },
+      {
         width: 250,
         title: 'Lĩnh vực',
         dataIndex: '',
         render: () => '-',
-      },
-      {
-        width: 100,
-        title: 'Quyền',
-        dataIndex: ['role', 'title'],
-        className: 'capitalize',
       },
       {
         width: 150,
@@ -319,13 +319,13 @@ const UserManagement: React.FC = () => {
             <Input disabled placeholder="Ví dụ: abc@gmail.com" />
           </FormItem>
           <FormItem
-            label="Quyền"
+            label="Vai trò"
             name="role"
-            rules={[{ required: true, message: 'Vui lòng chọn quyền' }]}
+            rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
           >
             <Select
               loading={roleLoading}
-              placeholder="Chọn quyền"
+              placeholder="Chọn vai trò"
               options={roles?.items?.map((item) => ({
                 label: item?.title,
                 value: item?.id,

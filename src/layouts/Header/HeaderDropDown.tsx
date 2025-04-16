@@ -26,7 +26,7 @@ const HeaderDropDown = ({ setIsOpen }: IProps) => {
   const menuItems: MenuProps['items'] = useMemo(() => {
     return [
       ...baseMenu,
-      ...userMenu,
+      ...userMenu || [],
       { type: 'divider' as const },
       {
         key: 'logout',

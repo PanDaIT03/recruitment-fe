@@ -80,7 +80,7 @@ const HeaderMenu = ({
       onClick: () => handleNavigate('/'),
     },
     { type: 'divider' as const, dashed: true },
-    ...userMenu,
+    ...userMenu || [],
     ...(isAuthenticated
       ? [
           { type: 'divider' as const, dashed: true },

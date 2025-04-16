@@ -63,6 +63,7 @@ instance.interceptors.response.use(
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
+
       try {
         const response: any = await instance.post<{
           accessToken: string;
@@ -76,10 +77,13 @@ instance.interceptors.response.use(
         return instance(originalRequest);
       } catch (refreshError) {
         console.log(refreshError);
+
         localStorage.removeItem('token1');
         localStorage.removeItem('token2');
+
         window.location.href = PATH.USER_SIGN_IN;
         toast.warning('Phiên đăng nhập đã hết hạn. Xin vui lòng đăng nhập lại');
+
         return Promise.reject(refreshError);
       }
     }

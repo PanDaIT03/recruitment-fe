@@ -1,4 +1,4 @@
-import { Avatar, Flex } from 'antd';
+import { Avatar, Flex, MenuProps } from 'antd';
 
 import {
   AddUser,
@@ -24,7 +24,9 @@ interface IBaseMenu {
   token: string | null;
 }
 
-export const createUserMenu = (navigate: (path: string) => void) => {
+export const createUserMenu = (
+  navigate: (path: string) => void
+): MenuProps['items'] => {
   const { isGuest, isAdmin, isEmployer, isUser } = useRole();
 
   return [
