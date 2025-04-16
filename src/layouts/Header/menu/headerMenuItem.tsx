@@ -27,7 +27,14 @@ export type MenuItem = {
   path: string;
 } & Required<MenuProps>['items'][number];
 
-const { LoginOutlined } = icons;
+interface IGuestMenuProps {
+  currentUser: IUser;
+  refreshToken: string | null;
+  onNavigate: (path: string) => void;
+  onSignOut: () => void;
+}
+
+const { LoginOutlined, LogoutOutlined } = icons;
 
 export const commonMenuItems: MenuItem[] = [
   {
@@ -50,55 +57,81 @@ export const commonMenuItems: MenuItem[] = [
   },
 ];
 
-export const createGuestMenu = (navigate: (path: string) => void) => [
-  {
-    key: 'user-group',
-    type: 'group' as const,
-    className: '[&>div]:!text-[#1c1917]',
-    label: <span className="font-semibold">Người tìm việc</span>,
-    children: [
-      {
-        key: 'user-sign-in',
-        label: <span className="text-neutral-600 font-medium">Đăng nhập</span>,
-        icon: <LoginOutlined />,
-        onClick: () => navigate(PATH.USER_SIGN_IN),
-      },
-      {
-        key: 'user-sign-up',
-        label: (
-          <span className="text-neutral-600 font-medium">Đăng ký tìm việc</span>
-        ),
-        icon: <AddUser width={18} height={18} />,
-        onClick: () => navigate(PATH.USER_SIGN_UP),
-      },
-    ],
-  },
-  { type: 'divider' as const, dashed: true },
-  {
-    key: 'employer-group',
-    type: 'group' as const,
-    className: '[&>div]:!text-[#1c1917]',
-    label: <span className="font-semibold">Nhà tuyển dụng</span>,
-    children: [
-      {
-        key: 'employer-sign-in',
-        label: <span className="text-neutral-600 font-medium">Đăng nhập</span>,
-        icon: <LoginOutlined />,
-        onClick: () => navigate(PATH.USER_SIGN_IN),
-      },
-      {
-        key: 'employer-sign-up',
-        label: (
-          <span className="text-neutral-600 font-medium">
-            Đăng ký tuyển dụng
-          </span>
-        ),
-        icon: <AddUser width={18} height={18} />,
-        onClick: () => navigate(PATH.EMPLOYER_SIGN_UP),
-      },
-    ],
-  },
-];
+export const createGuestMenu = ({
+  currentUser,
+  refreshToken,
+  onNavigate,
+  onSignOut,
+}: IGuestMenuProps) => {
+  const isAuthenticated = !!refreshToken && !!Object.keys(currentUser).length;
+
+  return isAuthenticated
+    ? [
+        { type: 'divider' as const, dashed: true },
+        {
+          key: 'logout',
+          className: 'hover:!bg-light-warning',
+          icon: <LogoutOutlined className="!text-warning" />,
+          label: <span className="text-warning font-medium">Đăng xuất</span>,
+          onClick: onSignOut,
+        },
+      ]
+    : [
+        {
+          key: 'user-group',
+          type: 'group' as const,
+          className: '[&>div]:!text-[#1c1917]',
+          label: <span className="font-semibold">Người tìm việc</span>,
+          children: [
+            {
+              key: 'user-sign-in',
+              label: (
+                <span className="text-neutral-600 font-medium">Đăng nhập</span>
+              ),
+              icon: <LoginOutlined />,
+              onClick: () => onNavigate(PATH.USER_SIGN_IN),
+            },
+            {
+              key: 'user-sign-up',
+              label: (
+                <span className="text-neutral-600 font-medium">
+                  Đăng ký tìm việc
+                </span>
+              ),
+              icon: <AddUser width={18} height={18} />,
+              onClick: () => onNavigate(PATH.USER_SIGN_UP),
+            },
+          ],
+        },
+        { type: 'divider' as const, dashed: true },
+        {
+          key: 'employer-group',
+          type: 'group' as const,
+          className: '[&>div]:!text-[#1c1917]',
+          label: <span className="font-semibold">Nhà tuyển dụng</span>,
+          children: [
+            {
+              key: 'employer-sign-in',
+              label: (
+                <span className="text-neutral-600 font-medium">Đăng nhập</span>
+              ),
+              icon: <LoginOutlined />,
+              onClick: () => onNavigate(PATH.USER_SIGN_IN),
+            },
+            {
+              key: 'employer-sign-up',
+              label: (
+                <span className="text-neutral-600 font-medium">
+                  Đăng ký tuyển dụng
+                </span>
+              ),
+              icon: <AddUser width={18} height={18} />,
+              onClick: () => onNavigate(PATH.EMPLOYER_SIGN_UP),
+            },
+          ],
+        },
+      ];
+};
 
 export const createBaseMenu = ({ currentUser, token }: IBaseMenu) =>
   !!token && !!Object.keys(currentUser).length
