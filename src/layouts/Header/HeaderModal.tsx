@@ -6,7 +6,6 @@ import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppSelector } from '~/hooks/useStore';
 import useToken from '~/hooks/useToken';
-import icons from '~/utils/icons';
 import {
   commonMenuItems,
   createBaseMenu,
@@ -20,9 +19,7 @@ interface IProps extends ModalProps {
   setIsOpenMenuModal: Dispatch<SetStateAction<boolean>>;
 }
 
-const { LogoutOutlined } = icons;
-
-const HeaderMenu = ({
+const HeaderModal = ({
   isOpen,
   onSingOut,
   setIsOpenMenuModal,
@@ -34,8 +31,6 @@ const HeaderMenu = ({
 
   const { currentUser } = useAppSelector((state) => state.auth);
   const [navigatePath, setNavigatePath] = useState(location.pathname);
-
-  const isAuthenticated = !!refreshToken && !!Object.keys(currentUser).length;
 
   const handleNavigate = (path: string) => {
     setNavigatePath(path);
@@ -55,8 +50,15 @@ const HeaderMenu = ({
   };
 
   const userMenu = createUserMenu();
-  const guestMenu = createGuestMenu(handleNavigate);
   const baseMenu = createBaseMenu({ currentUser, token: refreshToken });
+
+  const guestMenu = createGuestMenu({
+    currentUser,
+    refreshToken,
+    onNavigate: handleNavigate,
+    onSignOut: handleSignOut,
+  });
+
   const commonMenu = useMemo(
     () =>
       commonMenuItems.map((menuItem) => ({
@@ -75,22 +77,9 @@ const HeaderMenu = ({
       ...commonMenu,
       { type: 'divider' as const, dashed: true },
       ...(userMenu || []),
-      ...(isAuthenticated
-        ? [
-            { type: 'divider' as const, dashed: true },
-            {
-              key: 'logout',
-              className: 'hover:!bg-light-warning',
-              icon: <LogoutOutlined className="!text-warning" />,
-              label: (
-                <span className="text-warning font-medium">Đăng xuất</span>
-              ),
-              onClick: handleSignOut,
-            },
-          ]
-        : guestMenu),
+      ...guestMenu,
     ],
-    [baseMenu, commonMenu, userMenu, guestMenu, isAuthenticated]
+    [baseMenu, commonMenu, userMenu, guestMenu]
   );
 
   return (
@@ -116,4 +105,4 @@ const HeaderMenu = ({
   );
 };
 
-export default memo(HeaderMenu);
+export default memo(HeaderModal);

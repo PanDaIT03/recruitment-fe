@@ -20,7 +20,7 @@ import { signOut } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
-import HeaderMenu from './HeaderMenu';
+import HeaderModal from './HeaderModal';
 import { commonMenuItems, MenuItem } from './menu/headerMenuItem';
 
 interface IProps {
@@ -186,7 +186,7 @@ const Header = ({ items = commonMenuItems }: IProps) => {
             className="text-white cursor-pointer"
             onClick={() => setIsOpenMenuModal(true)}
           />
-          <HeaderMenu
+          <HeaderModal
             isOpen={isOpenMenuModal}
             onSingOut={handleOkModal}
             setIsOpenMenuModal={setIsOpenMenuModal}
