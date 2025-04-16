@@ -2,9 +2,16 @@ import { Avatar, Flex, MenuProps } from 'antd';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { AvatarPlaceHolder, BackPack, Blogs, Users } from '~/assets/svg';
+import {
+  AddUser,
+  AvatarPlaceHolder,
+  BackPack,
+  Blogs,
+  Users,
+} from '~/assets/svg';
 import { useAppSelector } from '~/hooks/useStore';
 import { IUser } from '~/types/User';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import HeaderMenuIcon from './HeaderMenuIcon';
 
@@ -19,6 +26,8 @@ export type MenuItem = {
   icon?: ReactNode;
   path: string;
 } & Required<MenuProps>['items'][number];
+
+const { LoginOutlined } = icons;
 
 export const commonMenuItems: MenuItem[] = [
   {
@@ -38,6 +47,56 @@ export const commonMenuItems: MenuItem[] = [
     label: 'Blog',
     icon: <Blogs width={18} height={18} />,
     path: '/',
+  },
+];
+
+export const createGuestMenu = (navigate: (path: string) => void) => [
+  {
+    key: 'user-group',
+    type: 'group' as const,
+    className: '[&>div]:!text-[#1c1917]',
+    label: <span className="font-semibold">Người tìm việc</span>,
+    children: [
+      {
+        key: 'user-sign-in',
+        label: <span className="text-neutral-600 font-medium">Đăng nhập</span>,
+        icon: <LoginOutlined />,
+        onClick: () => navigate(PATH.USER_SIGN_IN),
+      },
+      {
+        key: 'user-sign-up',
+        label: (
+          <span className="text-neutral-600 font-medium">Đăng ký tìm việc</span>
+        ),
+        icon: <AddUser width={18} height={18} />,
+        onClick: () => navigate(PATH.USER_SIGN_UP),
+      },
+    ],
+  },
+  { type: 'divider' as const, dashed: true },
+  {
+    key: 'employer-group',
+    type: 'group' as const,
+    className: '[&>div]:!text-[#1c1917]',
+    label: <span className="font-semibold">Nhà tuyển dụng</span>,
+    children: [
+      {
+        key: 'employer-sign-in',
+        label: <span className="text-neutral-600 font-medium">Đăng nhập</span>,
+        icon: <LoginOutlined />,
+        onClick: () => navigate(PATH.USER_SIGN_IN),
+      },
+      {
+        key: 'employer-sign-up',
+        label: (
+          <span className="text-neutral-600 font-medium">
+            Đăng ký tuyển dụng
+          </span>
+        ),
+        icon: <AddUser width={18} height={18} />,
+        onClick: () => navigate(PATH.EMPLOYER_SIGN_UP),
+      },
+    ],
   },
 ];
 

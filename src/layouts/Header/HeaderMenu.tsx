@@ -10,6 +10,7 @@ import icons from '~/utils/icons';
 import {
   commonMenuItems,
   createBaseMenu,
+  createGuestMenu,
   createUserMenu,
 } from './menu/headerMenuItem';
 
@@ -54,6 +55,7 @@ const HeaderMenu = ({
   };
 
   const userMenu = createUserMenu();
+  const guestMenu = createGuestMenu(handleNavigate);
   const baseMenu = createBaseMenu({ currentUser, token: refreshToken });
   const commonMenu = useMemo(
     () =>
@@ -86,9 +88,9 @@ const HeaderMenu = ({
               onClick: handleSignOut,
             },
           ]
-        : []),
+        : guestMenu),
     ],
-    [baseMenu, commonMenu, userMenu, isAuthenticated]
+    [baseMenu, commonMenu, userMenu, guestMenu, isAuthenticated]
   );
 
   return (
