@@ -1,9 +1,9 @@
 import { Form, FormItemProps } from 'antd';
 import classNames from 'classnames';
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 
 type IProps = {
-  children: ReactElement;
+  children: ReactElement | ReactNode;
   labelClassName?: string;
   childrenSelected?: boolean;
 } & FormItemProps;

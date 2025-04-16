@@ -174,7 +174,7 @@ const DetailRoleManagement = () => {
           onFinish={handleFinish}
         >
           <div className="grid grid-cols-10 gap-4">
-            <Content className="col-span-4">
+            <Content className="col-span-3">
               <h2 className="text-base font-semibold">1. Thông tin chức vụ</h2>
               <Space direction="vertical" className="w-full pt-2 pl-2">
                 <FormItem
@@ -199,7 +199,7 @@ const DetailRoleManagement = () => {
                 </FormItem>
               </Space>
             </Content>
-            <Content className="col-span-6">
+            <Content className="col-span-7">
               <Space direction="vertical" className="w-full">
                 <h2 className="text-base font-semibold">
                   2. Phân quyền chức năng

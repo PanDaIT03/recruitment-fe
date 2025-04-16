@@ -1,20 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import AuthAPI from '~/apis/auth';
-import { IBaseUser, IUser, IUserSignInWithGoogle } from '~/types/Auth/index';
+import UserAPI from '~/apis/user';
+import { TYPE_LOGIN } from '~/enums';
+import { IBaseUser, IUserSignInWithGoogle } from '~/types/Auth/index';
+import { IUser } from '~/types/User';
 import toast from '~/utils/functions/toast';
 import { getAllRoles } from '../role';
-
-enum TYPE_LOGIN {
-  TYPE_SYSTEM = 'system',
-  TYPE_GOOGLE = 'google',
-}
 
 export const checkExistedEmail = createAsyncThunk(
   'auth/checkExitedEmail',
   async (email: string, { rejectWithValue }) => {
     try {
-      const response = await AuthAPI.checkExistedEmail(email);
+      const response = await UserAPI.checkExistedEmail(email);
 
       return response;
     } catch (error: any) {
@@ -62,7 +60,7 @@ export const signIn = createAsyncThunk(
 
 export const getMe = createAsyncThunk<IUser>('auth/getMe', async () => {
   try {
-    const response = await AuthAPI.getMe();
+    const response = await UserAPI.getMe();
     if (!response) throw new Error('Có lỗi xảy ra');
 
     return response;

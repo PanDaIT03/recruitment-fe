@@ -36,9 +36,6 @@ const AdminLayout: React.FC = () => {
   const { title } = useTitle();
   const { breadcrumb } = useBreadcrumb();
 
-  // const location = useLocation();
-  // const firstRender = useRef(true);
-
   const [collapsed, setCollapsed] = useState(false);
   const { currentUser, loading } = useAppSelector((state) => state.auth);
 
@@ -64,15 +61,6 @@ const AdminLayout: React.FC = () => {
       ],
     } as MenuProps;
   }, []);
-
-  // useEffect(() => {
-  //   if (firstRender.current) {
-  //     firstRender.current = false;
-  //     navigate(location.pathname, {
-  //       state: { ...location.state, key: location.pathname },
-  //     });
-  //   }
-  // }, [firstRender]);
 
   return (
     <Spin spinning={loading}>

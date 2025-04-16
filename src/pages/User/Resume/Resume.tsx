@@ -14,7 +14,7 @@ import { UploadFile } from 'antd/lib';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 
-import UserApi from '~/apis/user';
+import UserAPI from '~/apis/user';
 import { PDF_Icon } from '~/assets/img';
 import { File } from '~/assets/svg';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -43,10 +43,10 @@ const Resume = () => {
     refetch,
     isPending,
     data: myCVs,
-  } = useFetch(['getMyCV'], UserApi.getMyCv);
+  } = useFetch(['getMyCV'], UserAPI.getMyCv);
 
   const { mutate: uploadCV, isPending: isUploadCVPending } = useMutation({
-    mutationFn: (params: FormData) => UserApi.uploadCV(params),
+    mutationFn: (params: FormData) => UserAPI.uploadCV(params),
     onSuccess: (res) => {
       refetch();
       handleCancel();
@@ -59,7 +59,7 @@ const Resume = () => {
   });
 
   const { mutate: deleteCV, isPending: isDelCVPending } = useMutation({
-    mutationFn: (id: number) => UserApi.deleteCV(id),
+    mutationFn: (id: number) => UserAPI.deleteCV(id),
     onSuccess: (res) => {
       refetch();
       message.success(res?.message || 'Xoá CV thành công');

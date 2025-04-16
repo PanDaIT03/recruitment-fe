@@ -12,12 +12,12 @@ import Input from '~/components/Input/Input';
 import InputPassword from '~/components/Input/InputPassword';
 import CustomSelect from '~/components/Select/CustomSelect';
 import { useMessage } from '~/contexts/MessageProvider';
+import { ROLE } from '~/enums';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore';
 import FormApplication from '~/pages/User/JobApplication/FormJobApplication';
 import { IJobApplicationForm } from '~/pages/User/JobApplication/JobApplication';
 import { PaginatedJobFields, PaginatedJobPositions } from '~/types/Job';
-import { ROLE } from '~/types/Role';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import ModalSignUpSuccess from '../../components/ModalSignUpSuccess/ModalSignUpSuccess';
@@ -238,7 +238,9 @@ const SignUp = () => {
 
   const handleFinish = async (values: SignUpFormValues) => {
     try {
-      const roleId = roles.items.find((role) => role.title === ROLE.EMPLOYER)?.id;
+      const roleId = roles.items.find(
+        (role) => role.title === ROLE.EMPLOYER
+      )?.id;
 
       if (!roleId) {
         toast.error('Lỗi không tìm thấy chức vụ');

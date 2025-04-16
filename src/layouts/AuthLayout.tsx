@@ -14,6 +14,7 @@ import {
   WelComeBackCat,
 } from '~/assets/svg';
 import Button from '~/components/Button/Button';
+import { LEFT_PANEL_TYPE } from '~/enums';
 import { useAppDispatch } from '~/hooks/useStore';
 import { getAllRoles } from '~/store/thunk/role';
 import icons from '~/utils/icons';
@@ -24,12 +25,6 @@ interface Item {
   icon: ReactNode;
   title?: string;
   content: string;
-}
-
-enum LEFT_PANEL_TYPE {
-  SIGN_IN = 'SIGN_IN',
-  USER_SIGN_UP = 'USER_SIGN_UP',
-  EMPLOYER_SIGN_UP = 'EMPLOYER_SIGN_UP',
 }
 
 const businessItems = [

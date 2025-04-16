@@ -1,4 +1,4 @@
-import { IUser } from '../Auth';
+import { IUser } from '../User';
 
 export type IFormAccount = Pick<IUser, 'fullName' | 'email'> & {
   password?: string;
