@@ -2,15 +2,11 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import AuthAPI from '~/apis/auth';
 import UserAPI from '~/apis/user';
+import { TYPE_LOGIN } from '~/enums';
 import { IBaseUser, IUserSignInWithGoogle } from '~/types/Auth/index';
 import { IUser } from '~/types/User';
 import toast from '~/utils/functions/toast';
 import { getAllRoles } from '../role';
-
-enum TYPE_LOGIN {
-  TYPE_SYSTEM = 'system',
-  TYPE_GOOGLE = 'google',
-}
 
 export const checkExistedEmail = createAsyncThunk(
   'auth/checkExitedEmail',

@@ -1,7 +1,7 @@
 import * as Icons from '@ant-design/icons';
 import { Image } from 'antd';
 import { memo } from 'react';
-import { ICON_TYPE } from '~/utils/enums';
+import { ICON_TYPE } from '~/enums';
 
 interface MenuIconProps {
   icon: string;

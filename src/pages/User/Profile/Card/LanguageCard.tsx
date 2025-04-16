@@ -4,16 +4,16 @@ import { memo } from 'react';
 
 import UserAPI from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
+import { PROFILE_SECTION_TYPE } from '~/enums';
 import { IForeignLanguage } from '~/types/User/profile';
 import { defaultImgUrl } from '~/utils/constant';
 import { advanceOptions } from '../Modal/LanguageModal';
-import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
   data: IForeignLanguage[];
   refetch: () => void;
-  onEdit: (index: number, sectionType: ProfileSectionType) => void;
+  onEdit: (index: number, sectionType: PROFILE_SECTION_TYPE) => void;
 }
 
 const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
@@ -37,7 +37,7 @@ const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
         <div key={index}>
           <ProfileCard
             imgUrl={defaultImgUrl}
-            onEdit={() => onEdit(index, ProfileSectionType.LANGUAGE)}
+            onEdit={() => onEdit(index, PROFILE_SECTION_TYPE.LANGUAGE)}
             onDelete={() => deleteUserLanguage(item.foreignLanguagesId)}
             content={
               <div className="space-y-1">

@@ -4,14 +4,14 @@ import { memo } from 'react';
 
 import UserAPI from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
+import { PROFILE_SECTION_TYPE } from '~/enums';
 import { IUserSkill } from '~/types/User/profile';
-import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
   data: IUserSkill[];
   refetch: () => void;
-  onEdit: (index: number, sectionType: ProfileSectionType) => void;
+  onEdit: (index: number, sectionType: PROFILE_SECTION_TYPE) => void;
 }
 
 const SkillCard = ({ data, refetch, onEdit }: IProps) => {
@@ -32,7 +32,7 @@ const SkillCard = ({ data, refetch, onEdit }: IProps) => {
       {data?.map((item, index) => (
         <ProfileCard
           onDelete={() => deleteUserSkill(item.skillsId)}
-          onEdit={() => onEdit(index, ProfileSectionType.SKILL)}
+          onEdit={() => onEdit(index, PROFILE_SECTION_TYPE.SKILL)}
           key={index}
           content={
             <div className="space-y-2">

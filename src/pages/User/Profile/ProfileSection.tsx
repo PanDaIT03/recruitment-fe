@@ -9,13 +9,6 @@ import icons from '~/utils/icons';
 
 type TitleType = { title: string; suffixIcon: ReactElement } | string;
 
-export enum ProfileSectionType {
-  ACHIEVEMENT = 'achievement',
-  EXPERIENCE = 'experience',
-  LANGUAGE = 'language',
-  SKILL = 'skill',
-}
-
 export interface IProfileSection {
   imgUrl: string;
   header: TitleType;

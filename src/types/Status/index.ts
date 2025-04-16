@@ -16,8 +16,3 @@ export interface IGetAllStatusParams {
 }
 
 export type IStatus = IPaginatedData<IStatusItem[]>;
-
-export enum ACCOUNT_STATUS {
-  ACTIVE = 'ACCOUNT_ACTIVE',
-  IN_ACTIVE = 'ACCOUNT_INACTIVE',
-}
