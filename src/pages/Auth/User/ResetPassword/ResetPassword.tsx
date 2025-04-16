@@ -3,7 +3,7 @@ import { useForm } from 'antd/es/form/Form';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import AuthAPI, { IResetPasswordParams } from '~/apis/auth';
+import UserAPI, { IResetPasswordParams } from '~/apis/user';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import InputPassword from '~/components/Input/InputPassword';
@@ -38,7 +38,7 @@ const ResetPassword = () => {
   const [isResetPasswordSuccess, setIsResetPasswordSuccess] = useState(false);
 
   const { mutate: resetPassword, isPending } = useMutation({
-    mutationFn: (params: IResetPasswordParams) => AuthAPI.resetPassword(params),
+    mutationFn: (params: IResetPasswordParams) => UserAPI.resetPassword(params),
     onSuccess: () => {
       setIsResetPasswordSuccess(true);
 

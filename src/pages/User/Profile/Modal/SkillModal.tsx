@@ -4,7 +4,7 @@ import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { memo, useEffect, useState } from 'react';
 
-import UserApi, { ISkillParams } from '~/apis/user';
+import UserAPI, { ISkillParams } from '~/apis/user';
 import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
 import { useMessage } from '~/contexts/MessageProvider';
@@ -31,10 +31,10 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const [skillOptions, setSkillOptions] = useState<DefaultOptionType[]>([]);
 
-  const { data: skillComboBox } = useFetch(['allSkills'], UserApi.getAllSkill);
+  const { data: skillComboBox } = useFetch(['allSkills'], UserAPI.getAllSkill);
 
   const { mutate: createUserSkill, isPending: isCreatePending } = useMutation({
-    mutationFn: (params: ISkillParams) => UserApi.createUserSkill(params),
+    mutationFn: (params: ISkillParams) => UserAPI.createUserSkill(params),
     onSuccess: (res) => {
       messageApi.success(res?.message);
       refetch();
@@ -46,7 +46,7 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   });
 
   const { mutate: updateUserSkill, isPending: isUpdatePending } = useMutation({
-    mutationFn: (params: ISkillParams) => UserApi.updateUserSkill(params),
+    mutationFn: (params: ISkillParams) => UserAPI.updateUserSkill(params),
     onSuccess: (res) => {
       messageApi.success(res?.message);
       refetch();

@@ -1,11 +1,7 @@
 import { Flex } from 'antd';
 import classNames from 'classnames';
 import { memo, useMemo } from 'react';
-
-export enum PING_STATUS {
-  PENDING = 'pending',
-  SUCCESS = 'success',
-}
+import { PING_STATUS } from '~/enums';
 
 interface IProps {
   status: 'pending' | 'success';

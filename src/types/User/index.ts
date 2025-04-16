@@ -1,3 +1,4 @@
+import { IFunctionalItem } from '../Functional';
 import { IMyCV } from './profile';
 
 interface PageInfo {
@@ -60,4 +61,59 @@ export interface UserListResponse {
 export interface IGetCVResponse {
   items: IMyCV[];
   statusCode: number;
+}
+
+export interface IUser {
+  id: number;
+  email: string;
+  fullName: string;
+  phoneNumber: string;
+  avatarUrl: string;
+  companyName: string;
+  companyUrl: string;
+  isActive: boolean;
+  role: Role;
+  jobPosition: { id: number; title: string };
+  statusCode: number;
+  placement: Placement;
+  desiredJob: {
+    totalYearExperience: number;
+  };
+  viewGroups: IViewGroup[];
+  standaloneViews: IMenuView[];
+}
+
+interface Placement {
+  id: number;
+  title: string;
+  createBy: string;
+  createAt: string;
+  updateBy: string;
+  updateAt: string;
+}
+
+export interface IEmailStatus {
+  email: string;
+  hasPassword: boolean;
+  signInWith: string;
+  message: string;
+  statusCode: number;
+}
+
+export interface IViewGroup {
+  id: number;
+  title: string;
+  orderIndex: number;
+  menuViews: IMenuView[];
+}
+
+export interface IMenuView {
+  id: number;
+  title: string;
+  iconType: string;
+  icon: string;
+  path: string;
+  orderIndex: number;
+  menuViewGroupId: number;
+  functionals: Pick<IFunctionalItem, 'id' | 'title' | 'code'>[];
 }

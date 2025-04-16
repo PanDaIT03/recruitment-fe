@@ -28,7 +28,7 @@ import {
 import { Link, Outlet } from 'react-router-dom';
 
 import { JobsAPI } from '~/apis/job';
-import UserApi, { IUpdatePersonalInfo } from '~/apis/user';
+import UserAPI, { IUpdatePersonalInfo } from '~/apis/user';
 import {
   AvatarPlaceHolder,
   DualLayerFile,
@@ -50,7 +50,7 @@ import { useFetch } from '~/hooks/useFetch';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { defaultCoverImage } from '~/mocks/data';
 import { getMe } from '~/store/thunk/auth';
-import { IUser } from '~/types/Auth';
+import { IUser } from '~/types/User';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import Header from './Header/Header';
@@ -241,7 +241,7 @@ const UserLayout = () => {
 
   const { mutate: updateAccountInfo, isPending: isUpdateAccountInfoPending } =
     useMutation({
-      mutationFn: (params: FormData) => UserApi.updateAccountInfo(params),
+      mutationFn: (params: FormData) => UserAPI.updateAccountInfo(params),
       onSuccess: (res) => {
         refetchUserProfile();
         setIsOpenAvatarModal(false);
@@ -257,7 +257,7 @@ const UserLayout = () => {
   const { mutate: updatePersonalInfo, isPending: isUpdatePersonalInfoPending } =
     useMutation({
       mutationFn: (params: IUpdatePersonalInfo) =>
-        UserApi.updatePersonalInfo(params),
+        UserAPI.updatePersonalInfo(params),
       onSuccess: (res) => {
         refetchUserProfile();
         setIsOpenInfoModal(false);

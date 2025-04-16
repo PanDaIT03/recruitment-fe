@@ -2,15 +2,15 @@ import { useMutation } from '@tanstack/react-query';
 import { Divider } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import UserApi from '~/apis/user';
+import UserAPI from '~/apis/user';
 import { BriefCase, LanguageCenter, MagicHat, Summary } from '~/assets/img';
 import { Achievement, Bag, Language, PencilSkill } from '~/assets/svg';
 import { useMessage } from '~/contexts/MessageProvider';
+import { PROFILE_SECTION_TYPE } from '~/enums';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useAppSelector } from '~/hooks/useStore';
 import ProfileSection, {
   IProfileSection,
-  ProfileSectionType,
 } from '~/pages/User/Profile/ProfileSection';
 import {
   IAchievement,
@@ -53,7 +53,7 @@ const Profile = () => {
 
   const { mutate: getAchievementByUser, isPending: isAchievementPending } =
     useMutation({
-      mutationFn: () => UserApi.getAchievementByUser(),
+      mutationFn: () => UserAPI.getAchievementByUser(),
       onSuccess: (res) => setAchievement(res?.result),
       onError: (error: any) => {
         messageApi.error(error?.response?.data?.message);
@@ -62,7 +62,7 @@ const Profile = () => {
 
   const { mutate: getLanguageByUserId, isPending: isLanguagePending } =
     useMutation({
-      mutationFn: (id: number) => UserApi.getLanguageByUserId(id),
+      mutationFn: (id: number) => UserAPI.getLanguageByUserId(id),
       onSuccess: (res) => setForeignLanguages(res.items),
       onError: (error: any) => {
         messageApi.error(error?.response?.data?.message);
@@ -71,7 +71,7 @@ const Profile = () => {
 
   const { mutate: getUserSkillByUserId, isPending: isUserSkillPending } =
     useMutation({
-      mutationFn: (id: number) => UserApi.getUserSkillByUserId(id),
+      mutationFn: (id: number) => UserAPI.getUserSkillByUserId(id),
       onSuccess: (res) => setUserSkills(res.items),
       onError: (error: any) => {
         messageApi.error(error?.response?.data?.message);
@@ -82,7 +82,7 @@ const Profile = () => {
     mutate: getWorkExperienceByUserId,
     isPending: isWorkExperiencePending,
   } = useMutation({
-    mutationFn: (id: number) => UserApi.getWorkExperienceByUserId(id),
+    mutationFn: (id: number) => UserAPI.getWorkExperienceByUserId(id),
     onSuccess: (res) => setWorkExperiences(res.items),
     onError: (error: any) => {
       messageApi.error(error?.response?.data?.message);
@@ -107,7 +107,7 @@ const Profile = () => {
   }, [currentUser]);
 
   const handleEditItem = useCallback(
-    (index: number, sectionType: ProfileSectionType) => {
+    (index: number, sectionType: PROFILE_SECTION_TYPE) => {
       setEditIndex(index);
       setSelectedItem(sectionType);
     },
@@ -172,7 +172,7 @@ const Profile = () => {
 
   const foreignLanguageSection = useMemo(
     () => ({
-      id: ProfileSectionType.LANGUAGE,
+      id: PROFILE_SECTION_TYPE.LANGUAGE,
       imgUrl: LanguageCenter,
       header: {
         title: 'Ngoại ngữ',
@@ -197,7 +197,7 @@ const Profile = () => {
 
   const userSkillSection = useMemo(
     () => ({
-      id: ProfileSectionType.SKILL,
+      id: PROFILE_SECTION_TYPE.SKILL,
       imgUrl: MagicHat,
       header: {
         title: 'Kỹ năng / Công cụ',
@@ -227,48 +227,48 @@ const Profile = () => {
       <ProfileSection
         {...achievementSection}
         loading={isAchievementPending}
-        onClick={() => setSelectedItem(ProfileSectionType.ACHIEVEMENT)}
+        onClick={() => setSelectedItem(PROFILE_SECTION_TYPE.ACHIEVEMENT)}
       />
       <Divider />
       <ProfileSection
         {...workExperienceSection}
         loading={isWorkExperiencePending}
-        onClick={() => setSelectedItem(ProfileSectionType.EXPERIENCE)}
+        onClick={() => setSelectedItem(PROFILE_SECTION_TYPE.EXPERIENCE)}
       />
       <Divider />
       <ProfileSection
         {...foreignLanguageSection}
         loading={isLanguagePending}
-        onClick={() => setSelectedItem(ProfileSectionType.LANGUAGE)}
+        onClick={() => setSelectedItem(PROFILE_SECTION_TYPE.LANGUAGE)}
       />
       <Divider />
       <ProfileSection
         {...userSkillSection}
         loading={isUserSkillPending}
-        onClick={() => setSelectedItem(ProfileSectionType.SKILL)}
+        onClick={() => setSelectedItem(PROFILE_SECTION_TYPE.SKILL)}
       />
 
       <AchievementModal
         data={achievement || initAchievement}
-        isOpen={selectedItem === ProfileSectionType.ACHIEVEMENT}
+        isOpen={selectedItem === PROFILE_SECTION_TYPE.ACHIEVEMENT}
         onCancel={() => setSelectedItem('')}
         refetch={getAchievementByUser}
       />
       <ExperienceModal
         data={workExperiences[editIndex]}
-        isOpen={selectedItem === ProfileSectionType.EXPERIENCE}
+        isOpen={selectedItem === PROFILE_SECTION_TYPE.EXPERIENCE}
         onCancel={handleCancelEdit}
         refetch={() => getWorkExperienceByUserId(currentUser.id)}
       />
       <LanguageModal
         data={foreignLanguages[editIndex]}
-        isOpen={selectedItem === ProfileSectionType.LANGUAGE}
+        isOpen={selectedItem === PROFILE_SECTION_TYPE.LANGUAGE}
         onCancel={handleCancelEdit}
         refetch={() => getLanguageByUserId(currentUser.id)}
       />
       <SkillModal
         data={userSkills[editIndex]}
-        isOpen={selectedItem === ProfileSectionType.SKILL}
+        isOpen={selectedItem === PROFILE_SECTION_TYPE.SKILL}
         onCancel={handleCancelEdit}
         refetch={() => getUserSkillByUserId(currentUser.id)}
       />

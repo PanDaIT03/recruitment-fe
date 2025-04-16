@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { checkExistedEmail, getMe, signIn, signOut } from '~/store/thunk/auth';
-import { IEmailStatus, IUser } from '~/types/Auth/index';
+import { IEmailStatus, IUser } from '~/types/User';
 
 export interface IAuthState {
   loading?: boolean;

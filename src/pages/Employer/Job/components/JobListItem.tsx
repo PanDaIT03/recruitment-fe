@@ -1,8 +1,9 @@
 import { Badge, Dropdown, Tag } from 'antd';
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { JobsAPI } from '~/apis/job';
-import { JOB_STATUS } from '~/utils/constant';
+import { JOB_STATUS } from '~/enums';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';

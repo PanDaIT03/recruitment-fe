@@ -1,6 +1,6 @@
 import { AxiosHeaders, InternalAxiosRequestConfig } from 'axios';
 import axiosApi from '~/services/axios';
-import { IGetCVResponse } from '~/types/User';
+import { IEmailStatus, IGetCVResponse, IUser } from '~/types/User';
 import {
   IAchievement,
   IForeignLanguage,
@@ -37,6 +37,12 @@ export type IGetForeignLanguage = IPaginatedData<IForeignLanguage[]>;
 export type IGetWorkExperience = IPaginatedData<IWorkExperience[]>;
 export type IGetUserSkill = IPaginatedData<IUserSkill[]>;
 
+export interface IResetPasswordParams {
+  email: string;
+  password: string;
+  token: string;
+}
+
 export type IUpdateAccountInfo = Partial<{
   file: any;
   fullName: string;
@@ -57,8 +63,14 @@ const headers: AxiosHeaders = new AxiosHeaders({
   'Content-Type': 'multipart/form-data',
 });
 
-const UserApi = {
+const UserAPI = {
   // GET
+  getMe: async (): Promise<IUser> => {
+    return await axiosApi.get('/users/me');
+  },
+  checkExistedEmail: async (email: string): Promise<IEmailStatus> => {
+    return await axiosApi.get(`/users/check-exist-email?email=${email}`);
+  },
   getMyCv: async (): Promise<IGetCVResponse> => {
     return await axiosApi.get('/curriculum-vitaes/my-CVs');
   },
@@ -114,6 +126,14 @@ const UserApi = {
   },
 
   // PATCH
+  changePassword: async () => {
+    return await axiosApi.patch('/users/change-password');
+  },
+  resetPassword: async (
+    payload: IResetPasswordParams
+  ): Promise<IBaseResponse> => {
+    return await axiosApi.patch('/users/reset-password', payload);
+  },
   updateAchievement: async (params: IAchievement): Promise<IBaseResponse> => {
     const { id, ...others } = params;
     return await axiosApi.patch(`/achivements/${id}`, others);
@@ -168,4 +188,4 @@ const UserApi = {
   },
 };
 
-export default UserApi;
+export default UserAPI;

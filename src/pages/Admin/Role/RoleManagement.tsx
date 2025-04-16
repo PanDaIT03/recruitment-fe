@@ -68,11 +68,14 @@ const RoleManagement = () => {
         width: 250,
         title: 'Chức năng',
         dataIndex: 'rolesFunctionals',
-        render: (value) => (
-          <p className="line-clamp-2">
-            {value?.map((item: any) => item?.functional?.title)?.join(', ')}
-          </p>
-        ),
+        render: (value) =>
+          value?.length ? (
+            <p className="line-clamp-2">
+              {value?.map((item: any) => item?.functional?.title)?.join(', ')}
+            </p>
+          ) : (
+            '-'
+          ),
       },
       {
         width: 180,

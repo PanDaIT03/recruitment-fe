@@ -1,6 +1,5 @@
 import { Avatar, Dropdown, MenuProps } from 'antd';
 import { Dispatch, memo, SetStateAction, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { AvatarPlaceHolder } from '~/assets/svg';
 import { useAppSelector } from '~/hooks/useStore';
@@ -15,18 +14,16 @@ interface IProps {
 }
 
 const HeaderDropDown = ({ setIsOpen }: IProps) => {
-  const navigate = useNavigate();
   const { refreshToken } = useToken();
-
   const { currentUser } = useAppSelector((state) => state.auth);
 
-  const userMenu = createUserMenu(navigate);
+  const userMenu = createUserMenu();
   const baseMenu = createBaseMenu({ currentUser, token: refreshToken });
 
   const menuItems: MenuProps['items'] = useMemo(() => {
     return [
       ...baseMenu,
-      ...userMenu,
+      ...(userMenu || []),
       { type: 'divider' as const },
       {
         key: 'logout',
