@@ -1,4 +1,4 @@
-import { Menu, ModalProps } from 'antd';
+import { ConfigProvider, Menu, ModalProps } from 'antd';
 import { Dispatch, memo, SetStateAction, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -32,8 +32,9 @@ const HeaderModal = ({
   const { currentUser } = useAppSelector((state) => state.auth);
   const [navigatePath, setNavigatePath] = useState(location.pathname);
 
-  const handleNavigate = (path: string) => {
+  const handleNavigate = async (path: string) => {
     setNavigatePath(path);
+    await new Promise((resolve) => setTimeout(resolve, 0));
     setIsOpenMenuModal(false);
   };
 
@@ -44,12 +45,11 @@ const HeaderModal = ({
 
   const handleModalClose = () => {
     if (navigatePath === location.pathname) return;
-
     navigate(navigatePath);
     setNavigatePath(navigatePath);
   };
 
-  const userMenu = createUserMenu();
+  const userMenu = createUserMenu(handleNavigate);
   const baseMenu = createBaseMenu({ currentUser, token: refreshToken });
 
   const guestMenu = createGuestMenu({
@@ -82,6 +82,18 @@ const HeaderModal = ({
     [baseMenu, commonMenu, userMenu, guestMenu]
   );
 
+  const selectedKeys = useMemo(() => {
+    const allMenuKeys = [
+      ...commonMenuItems.map((item) => item?.key),
+      ...(userMenu?.map((item: any) => item?.key) || []),
+      ...(userMenu?.flatMap((item: any) =>
+        item?.children?.map((child: any) => child?.key)
+      ) || []),
+    ].filter(Boolean);
+
+    return allMenuKeys.filter((key) => location.pathname.includes(key));
+  }, [location.pathname, commonMenuItems, userMenu]);
+
   return (
     <Modal
       centered
@@ -100,7 +112,21 @@ const HeaderModal = ({
       }
       {...props}
     >
-      <Menu items={menuItems} className="!border-none" />
+      <ConfigProvider
+        theme={{
+          components: {
+            Menu: {
+              itemSelectedColor: '',
+            },
+          },
+        }}
+      >
+        <Menu
+          items={menuItems}
+          className="!border-none"
+          selectedKeys={selectedKeys}
+        />
+      </ConfigProvider>
     </Modal>
   );
 };
