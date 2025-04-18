@@ -1,5 +1,6 @@
 import React, { ComponentType, lazy, ReactNode } from 'react';
 import { Outlet, RouteObject } from 'react-router-dom';
+import { PERMISSION } from '~/enums/permissions';
 
 import AdminLayout from '~/layouts/AdminLayout';
 import AuthLayout from '~/layouts/AuthLayout';
@@ -121,10 +122,16 @@ const createProtectedRoute = (
   path: string,
   allowedRoles: string[],
   element: React.ReactNode,
+  allowedPermissions?: string[],
   layout?: React.ComponentType<{ children: React.ReactNode }>
 ): CustomRouteObject => ({
   path,
-  element: <ProtectedRoute allowedRoles={allowedRoles} />,
+  element: (
+    <ProtectedRoute
+      allowedRoles={allowedRoles}
+      allowedPermissions={allowedPermissions}
+    />
+  ),
   ...(layout !== undefined && { layout }),
   children: [{ path: '', element }],
 });
@@ -227,11 +234,25 @@ const routesConfig: CustomRouteObject[] = [
   // User
   createRoute('/user', undefined, UserLayout, [
     createProtectedRoute('', ['user'], <UserProfile />),
-    createProtectedRoute(PATH.USER_PROFILE, ['user'], <UserProfile />),
-    createProtectedRoute(PATH.USER_RESUME, ['user'], <UserResume />),
-    createProtectedRoute(PATH.USER_ACCOUNT, ['user'], <UserAccount />),
-    createProtectedRoute(PATH.USER_APPLIED_JOB, ['user'], <UserAppliedJob />),
-    createProtectedRoute(PATH.USER_DESIRED_JOB, ['user'], <UserDesiredJob />),
+    createProtectedRoute(PATH.USER_PROFILE, ['user'], <UserProfile />, [
+      PERMISSION.VIEW_PROFILE,
+      PERMISSION.EDIT_PROFILE,
+    ]),
+    createProtectedRoute(PATH.USER_RESUME, ['user'], <UserResume />, [
+      PERMISSION.VIEW_RESUME,
+      PERMISSION.DELETE_RESUME,
+    ]),
+    createProtectedRoute(PATH.USER_ACCOUNT, ['user'], <UserAccount />, [
+      PERMISSION.USER_VIEW_ACCOUNT,
+      PERMISSION.USER_UPDATE_ACCOUNT,
+    ]),
+    createProtectedRoute(PATH.USER_APPLIED_JOB, ['user'], <UserAppliedJob />, [
+      PERMISSION.VIEW_APPLIED_JOB,
+    ]),
+    createProtectedRoute(PATH.USER_DESIRED_JOB, ['user'], <UserDesiredJob />, [
+      PERMISSION.VIEW_DESIRED_JOB,
+      PERMISSION.EDIT_DESIRED_JOB,
+    ]),
   ]),
 
   //Job Application
