@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Flex, FormItemProps, Image, message, Space, Spin } from 'antd';
+import { Flex, FormItemProps, Image, message, Space } from 'antd';
 import { CheckboxOptionType } from 'antd/es/checkbox';
 import { FormInstance, useForm } from 'antd/es/form/Form';
 import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
@@ -12,6 +12,7 @@ import Content from '~/components/Content/Content';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
+import Spin from '~/components/Loading/Spin';
 import { RadioGroup } from '~/components/Radio/Radio';
 import Select from '~/components/Select/Select';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';

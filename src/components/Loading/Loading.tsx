@@ -1,8 +1,6 @@
-import { Flex, Spin } from 'antd';
+import { Flex } from 'antd';
 import { HeaderLogoFillColor } from '~/assets/svg';
-import icons from '~/utils/icons';
-
-const { LoadingOutlined } = icons;
+import Spin from './Spin';
 
 const Loading = () => {
   return (
@@ -19,10 +17,7 @@ const Loading = () => {
           Đang xử lý... Vui lòng đợi trong giây lát
         </p>
       </Flex>
-      <Spin
-        size="large"
-        indicator={<LoadingOutlined className="[&>svg]:fill-[#FF5800]" />}
-      />
+      <Spin fullHeight={false} />
     </Flex>
   );
 };

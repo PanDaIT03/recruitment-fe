@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Col, Flex, message, Popconfirm, Row, Spin } from 'antd';
+import { Col, Flex, message, Popconfirm, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -15,6 +15,7 @@ import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import Content from '~/components/Content/Content';
+import Spin from '~/components/Loading/Spin';
 import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
