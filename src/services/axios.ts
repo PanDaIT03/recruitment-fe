@@ -86,7 +86,9 @@ instance.interceptors.response.use(
 
         return Promise.reject(refreshError);
       }
-    }
+    } else if (error?.code?.includes('ERR_NETWORK'))
+      toast.error(error?.message || 'Có lỗi xảy ra');
+
     return Promise.reject(error);
   }
 );
