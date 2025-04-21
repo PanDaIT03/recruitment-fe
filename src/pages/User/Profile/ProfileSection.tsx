@@ -5,6 +5,8 @@ import { memo, ReactElement, ReactNode } from 'react';
 
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
+import { PERMISSION } from '~/enums/permissions';
+import { usePermission } from '~/hooks/usePermission';
 import icons from '~/utils/icons';
 
 type TitleType = { title: string; suffixIcon: ReactElement } | string;
@@ -34,6 +36,10 @@ const ProfileSection = ({
   buttonActionTitle,
   onClick,
 }: IProfileSection) => {
+  const { hasPermissions } = usePermission({
+    permissions: PERMISSION.EDIT_PROFILE,
+  });
+
   return (
     <>
       <div className="flex mb-8 justify-between items-center">
@@ -51,7 +57,7 @@ const ProfileSection = ({
             </>
           )}
         </div>
-        {buttonActionTitle && (
+        {buttonActionTitle && hasPermissions && (
           <ButtonAction
             tooltipTitle={tooltipTitle}
             title={buttonActionTitle}
@@ -85,12 +91,14 @@ const ProfileSection = ({
           <Paragraph className="text-center text-sm text-sub italic max-w-md">
             {hint}
           </Paragraph>
-          <Button
-            borderType="dashed"
-            title={buttonTitle}
-            iconBefore={<PlusOutlined />}
-            onClick={onClick}
-          />
+          {hasPermissions && (
+            <Button
+              borderType="dashed"
+              title={buttonTitle}
+              iconBefore={<PlusOutlined />}
+              onClick={onClick}
+            />
+          )}
         </div>
       )}
     </>

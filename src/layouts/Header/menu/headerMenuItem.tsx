@@ -10,7 +10,7 @@ import {
   Users,
 } from '~/assets/svg';
 import { useAppSelector } from '~/hooks/useStore';
-import { IUser } from '~/types/User';
+import { IMenuView, IUser } from '~/types/User';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import HeaderMenuIcon from './HeaderMenuIcon';
@@ -160,22 +160,24 @@ export const createBaseMenu = ({ currentUser, token }: IBaseMenu) =>
       ]
     : [];
 
-export const createUserMenu = (): MenuProps['items'] => {
+export const createUserMenu = (
+  onNavigate?: (path: string) => void
+): MenuProps['items'] => {
   const navigate = useNavigate();
   const { currentUser } = useAppSelector((state) => state.auth);
-
   const { viewGroups, standaloneViews } = currentUser;
 
   const childrenRender = useCallback(
-    (menuView: any) => ({
-      key: menuView.id,
+    (menuView: IMenuView) => ({
+      key: menuView.path,
       icon: (
         <HeaderMenuIcon iconType={menuView.iconType} icon={menuView.icon} />
       ),
       label: (
         <span className="text-neutral-600 font-medium">{menuView.title}</span>
       ),
-      onClick: () => navigate(menuView.path),
+      onClick: () =>
+        onNavigate ? onNavigate(menuView.path) : navigate(menuView.path),
     }),
     []
   );

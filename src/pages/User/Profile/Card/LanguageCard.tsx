@@ -36,7 +36,7 @@ const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
       {data?.map((item, index) => (
         <div key={index}>
           <ProfileCard
-            imgUrl={defaultImgUrl}
+            imgUrl={item.foreignLanguage.imageUrl || defaultImgUrl}
             onEdit={() => onEdit(index, PROFILE_SECTION_TYPE.LANGUAGE)}
             onDelete={() => deleteUserLanguage(item.foreignLanguagesId)}
             content={
