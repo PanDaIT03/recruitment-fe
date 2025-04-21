@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Col, Flex, message, Popconfirm, Row, Spin } from 'antd';
+import { Col, Flex, message, Popconfirm, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -15,10 +15,7 @@ import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import Content from '~/components/Content/Content';
-import FormItem from '~/components/Form/FormItem';
-import FormWrapper from '~/components/Form/FormWrapper';
-import Input from '~/components/Input/Input';
-import Modal from '~/components/Modal/Modal';
+import Spin from '~/components/Loading/Spin';
 import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
@@ -28,10 +25,15 @@ import { getAllFunctionals } from '~/store/thunk/functional';
 import { IFunctionalItem } from '~/types/Functional';
 import icons from '~/utils/icons';
 import FilterFunctional from './FilterFunctional';
+import ModalFunctional from './ModalFunctional';
 
-interface IForm {
+export interface IFunctionalForm {
   code: string;
   title: string;
+  iconType: string;
+  icon: string;
+  path: string;
+  orderIndex: number;
 }
 
 const {
@@ -43,8 +45,8 @@ const {
 } = icons;
 
 const FunctionalManagement = () => {
-  const [form] = useForm<IForm>();
   const dispatch = useAppDispatch();
+  const [form] = useForm<IFunctionalForm>();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
@@ -274,7 +276,15 @@ const FunctionalManagement = () => {
           }}
         />
       </Content>
-      <Modal
+      <ModalFunctional
+        form={form}
+        isOpen={isOpenModal}
+        editIndex={editIndex}
+        loading={isCreateFunctionalPending || isUpdateFunctionalPending}
+        onFinish={handleFinish}
+        onCancel={handleModalCancel}
+      />
+      {/* <Modal
         isOpen={isOpenModal}
         title={editIndex ? 'Chỉnh sửa chức năng' : 'Thêm chức năng'}
         footer={
@@ -312,7 +322,7 @@ const FunctionalManagement = () => {
             <Input placeholder="Ví dụ: create_new_job	" />
           </FormItem>
         </FormWrapper>
-      </Modal>
+      </Modal> */}
     </Spin>
   );
 };

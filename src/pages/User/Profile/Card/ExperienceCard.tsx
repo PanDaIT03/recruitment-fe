@@ -3,24 +3,24 @@ import { Divider } from 'antd';
 import dayjs from 'dayjs';
 import { memo } from 'react';
 
-import UserApi from '~/apis/user';
+import UserAPI from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
+import { PROFILE_SECTION_TYPE } from '~/enums';
 import { IWorkExperience } from '~/types/User/profile';
 import { defaultImgUrl } from '~/utils/constant';
-import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
   data: IWorkExperience[];
   refetch: () => void;
-  onEdit: (index: number, sectionType: ProfileSectionType) => void;
+  onEdit: (index: number, sectionType: PROFILE_SECTION_TYPE) => void;
 }
 
 const ExperienceCard = ({ data, refetch, onEdit }: IProps) => {
   const { messageApi } = useMessage();
 
   const { mutate: deleteWorkExperience } = useMutation({
-    mutationFn: (id: number) => UserApi.deleteWorkExperience(id),
+    mutationFn: (id: number) => UserAPI.deleteWorkExperience(id),
     onSuccess: (res) => {
       messageApi.success(res?.message);
       refetch();
@@ -38,7 +38,7 @@ const ExperienceCard = ({ data, refetch, onEdit }: IProps) => {
           <ProfileCard
             imgUrl={defaultImgUrl}
             onDelete={() => deleteWorkExperience(item.id)}
-            onEdit={() => onEdit(index, ProfileSectionType.EXPERIENCE)}
+            onEdit={() => onEdit(index, PROFILE_SECTION_TYPE.EXPERIENCE)}
             content={
               <div className="space-y-1">
                 <p className="text-base font-semibold">

@@ -9,13 +9,13 @@ import {
   Dropdown,
   Layout,
   MenuProps,
-  Spin,
   Typography,
 } from 'antd';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 import { AvatarPlaceHolder } from '~/assets/svg';
+import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -35,9 +35,6 @@ const AdminLayout: React.FC = () => {
 
   const { title } = useTitle();
   const { breadcrumb } = useBreadcrumb();
-
-  // const location = useLocation();
-  // const firstRender = useRef(true);
 
   const [collapsed, setCollapsed] = useState(false);
   const { currentUser, loading } = useAppSelector((state) => state.auth);
@@ -64,15 +61,6 @@ const AdminLayout: React.FC = () => {
       ],
     } as MenuProps;
   }, []);
-
-  // useEffect(() => {
-  //   if (firstRender.current) {
-  //     firstRender.current = false;
-  //     navigate(location.pathname, {
-  //       state: { ...location.state, key: location.pathname },
-  //     });
-  //   }
-  // }, [firstRender]);
 
   return (
     <Spin spinning={loading}>

@@ -10,7 +10,7 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { JobsAPI } from '~/apis/job';
-import UserApi from '~/apis/user';
+import UserAPI from '~/apis/user';
 import Button from '~/components/Button/Button';
 import { useFetch } from '~/hooks/useFetch';
 import { useAppSelector } from '~/hooks/useStore';
@@ -94,7 +94,7 @@ const EmployerAccountForm: React.FC = () => {
 
     try {
       setLoading(true);
-      const response = await UserApi.updateInfoEmployer(formData);
+      const response = await UserAPI.updateInfoEmployer(formData);
       if (response.statusCode === 200) {
         message.success(response.message);
         setLoading(false);

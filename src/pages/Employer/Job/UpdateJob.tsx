@@ -1,38 +1,33 @@
 import { Card, Spin, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 import { JobsAPI } from '~/apis/job';
+import { SELECT_MODAL } from '~/enums';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getJobById } from '~/store/thunk/job';
 import { JobItem } from '~/types/Job';
+import { formatCurrencyVN } from '~/utils/functions';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
-import { formatCurrencyVN } from '~/utils/functions';
 import ModalBen from './ModalUpdate/ModalBen';
 import ModalDesc from './ModalUpdate/ModalDesc';
-import ModalReq from './ModalUpdate/ModalReq';
 import ModalInfo from './ModalUpdate/ModalInfo';
-
-const { EditOutlined, ArrowLeftOutlined } = icons;
+import ModalReq from './ModalUpdate/ModalReq';
 
 const { Title, Text } = Typography;
-
-enum SelectModal {
-  DESCRIPTION = 'DESC',
-  REQUIREMENT = 'REQ',
-  BENEFIT = 'BEN',
-  INFOMATION = 'INFO',
-}
+const { EditOutlined, ArrowLeftOutlined } = icons;
 
 const UpdateJob = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
   const dataJob: JobItem = location.state;
   const { currentJob } = useAppSelector((state) => state.jobs);
-  const [jobData, setJobData] = useState<JobItem>(dataJob);
 
-  const [openModal, setOpenModal] = useState<SelectModal | null>(null);
+  const [jobData, setJobData] = useState<JobItem>(dataJob);
+  const [openModal, setOpenModal] = useState<SELECT_MODAL | null>(null);
 
   const priceRange =
     currentJob?.salaryMin && currentJob?.salaryMax
@@ -43,7 +38,7 @@ const UpdateJob = () => {
           ? ` ${formatCurrencyVN(Number(currentJob?.salaryMax))}`
           : 'Thương lượng';
 
-  const handleOpenModal = (modalType: SelectModal) => {
+  const handleOpenModal = (modalType: SELECT_MODAL) => {
     setOpenModal(modalType);
   };
 
@@ -123,7 +118,7 @@ const UpdateJob = () => {
               extra={
                 <EditOutlined
                   className="cursor-pointer"
-                  onClick={() => handleOpenModal(SelectModal.INFOMATION)}
+                  onClick={() => handleOpenModal(SELECT_MODAL.INFOMATION)}
                 />
               }
             >
@@ -181,7 +176,7 @@ const UpdateJob = () => {
             extra={
               <EditOutlined
                 className="cursor-pointer"
-                onClick={() => handleOpenModal(SelectModal.DESCRIPTION)}
+                onClick={() => handleOpenModal(SELECT_MODAL.DESCRIPTION)}
               />
             }
           >
@@ -198,7 +193,7 @@ const UpdateJob = () => {
             extra={
               <EditOutlined
                 className="cursor-pointer"
-                onClick={() => handleOpenModal(SelectModal.REQUIREMENT)}
+                onClick={() => handleOpenModal(SELECT_MODAL.REQUIREMENT)}
               />
             }
           >
@@ -215,7 +210,7 @@ const UpdateJob = () => {
             extra={
               <EditOutlined
                 className="cursor-pointer"
-                onClick={() => handleOpenModal(SelectModal.BENEFIT)}
+                onClick={() => handleOpenModal(SELECT_MODAL.BENEFIT)}
               />
             }
           >
@@ -230,28 +225,28 @@ const UpdateJob = () => {
       </div>
 
       <ModalBen
-        open={openModal === SelectModal.BENEFIT}
+        open={openModal === SELECT_MODAL.BENEFIT}
         onClose={handleCloseModal}
         initContent={currentJob?.benefits}
         onUpdate={(value) => handleModalUpdate('benefits', value)}
       />
 
       <ModalDesc
-        open={openModal === SelectModal.DESCRIPTION}
+        open={openModal === SELECT_MODAL.DESCRIPTION}
         onClose={handleCloseModal}
         initContent={currentJob?.description}
         onUpdate={(value) => handleModalUpdate('description', value)}
       />
 
       <ModalReq
-        open={openModal === SelectModal.REQUIREMENT}
+        open={openModal === SELECT_MODAL.REQUIREMENT}
         onClose={handleCloseModal}
         initContent={currentJob?.requirements}
         onUpdate={(value) => handleModalUpdate('requirements', value)}
       />
 
       <ModalInfo
-        open={openModal === SelectModal.INFOMATION}
+        open={openModal === SELECT_MODAL.INFOMATION}
         onClose={handleCloseModal}
         initData={currentJob}
         onUpdate={(updatedData) => handleModalUpdate('modalInfo', updatedData)}

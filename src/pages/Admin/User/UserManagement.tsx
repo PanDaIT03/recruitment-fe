@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Col, Flex, message, Row, Space, Spin, Tag } from 'antd';
+import { Col, Flex, message, Row, Space, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -19,6 +19,7 @@ import Content from '~/components/Content/Content';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
+import Spin from '~/components/Loading/Spin';
 import Modal from '~/components/Modal/Modal';
 import { RadioGroup } from '~/components/Radio/Radio';
 import Select from '~/components/Select/Select';
@@ -119,16 +120,16 @@ const UserManagement: React.FC = () => {
         dataIndex: 'email',
       },
       {
+        width: 100,
+        title: 'Vai trò',
+        dataIndex: ['role', 'title'],
+        className: 'capitalize',
+      },
+      {
         width: 250,
         title: 'Lĩnh vực',
         dataIndex: '',
         render: () => '-',
-      },
-      {
-        width: 100,
-        title: 'Quyền',
-        dataIndex: ['role', 'title'],
-        className: 'capitalize',
       },
       {
         width: 150,
@@ -280,6 +281,7 @@ const UserManagement: React.FC = () => {
       <Content>
         <Table<IUserAdminItem>
           columns={columns}
+          loading={loading}
           dataSource={userAdmin.items}
           pagination={{
             current: pageInfo.page,
@@ -319,13 +321,13 @@ const UserManagement: React.FC = () => {
             <Input disabled placeholder="Ví dụ: abc@gmail.com" />
           </FormItem>
           <FormItem
-            label="Quyền"
+            label="Vai trò"
             name="role"
-            rules={[{ required: true, message: 'Vui lòng chọn quyền' }]}
+            rules={[{ required: true, message: 'Vui lòng chọn vai trò' }]}
           >
             <Select
               loading={roleLoading}
-              placeholder="Chọn quyền"
+              placeholder="Chọn vai trò"
               options={roles?.items?.map((item) => ({
                 label: item?.title,
                 value: item?.id,

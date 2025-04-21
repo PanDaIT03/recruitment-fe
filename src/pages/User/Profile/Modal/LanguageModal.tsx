@@ -4,7 +4,7 @@ import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { useEffect, useState } from 'react';
 
-import UserApi, { ILanguageParams } from '~/apis/user';
+import UserAPI, { ILanguageParams } from '~/apis/user';
 import FormItem from '~/components/Form/FormItem';
 import Select from '~/components/Select/Select';
 import { useMessage } from '~/contexts/MessageProvider';
@@ -37,13 +37,13 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
 
   const { data: languages } = useFetch(
     ['foreignLanguage'],
-    UserApi.getAllForeignLanguage
+    UserAPI.getAllForeignLanguage
   );
 
   const { mutate: createUserLanguage, isPending: isCreatePending } =
     useMutation({
       mutationFn: (params: ILanguageParams) =>
-        UserApi.createForeignLanguage(params),
+        UserAPI.createForeignLanguage(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
         refetch();
@@ -57,7 +57,7 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
   const { mutate: updateUserLanguage, isPending: isUpdatePending } =
     useMutation({
       mutationFn: (params: ILanguageParams) =>
-        UserApi.updateForeignLanguage(params),
+        UserAPI.updateForeignLanguage(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
         refetch();
@@ -108,14 +108,14 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
 
     const options: DefaultOptionType[] = languages?.items.map((language) => ({
       label: (
-        <Flex justify="space-between">
-          <span>{language?.title}</span>
+        <Flex align="center" gap={16}>
           <Image
             width={16}
-            height={12}
+            height={16}
             preview={false}
             src={language?.imageUrl}
           />
+          <span>{language?.title}</span>
         </Flex>
       ),
       value: language.id,
@@ -129,7 +129,7 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
       form={form}
       isOpen={isOpen}
       loading={isCreatePending || isUpdatePending}
-      title="Cập nhật tóm tắt"
+      title={isEdit ? 'Cập nhật ngoại ngữ' : 'Thêm ngoại ngữ'}
       onCancel={handleCancel}
       onFinish={handleFinish}
     >

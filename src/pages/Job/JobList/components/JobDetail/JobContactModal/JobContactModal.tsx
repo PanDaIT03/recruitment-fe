@@ -5,7 +5,7 @@ import { memo } from 'react';
 import Button from '~/components/Button/Button';
 import CopyButton from '~/components/Button/CopyButton';
 import Modal, { IModalProps } from '~/components/Modal/Modal';
-import { IUser } from '~/types/Auth';
+import { IUser } from '~/types/User';
 import icons from '~/utils/icons';
 
 interface IProps extends IModalProps {

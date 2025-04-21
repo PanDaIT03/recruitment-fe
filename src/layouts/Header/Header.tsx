@@ -8,17 +8,10 @@ import {
   MenuProps,
   Row,
 } from 'antd';
-import { memo, ReactNode, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import {
-  BackPack,
-  Blogs,
-  Disconnect,
-  HeaderLogo,
-  MenuIcon,
-  Users,
-} from '~/assets/svg';
+import { Disconnect, HeaderLogo, MenuIcon } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import Modal from '~/components/Modal/Modal';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -27,39 +20,16 @@ import { signOut } from '~/store/thunk/auth';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import HeaderDropDown from './HeaderDropDown';
-import HeaderMenu from './HeaderMenu';
-
-export type MenuItem = { key: string } & Required<MenuProps>['items'][number];
-
-export type IMenuItem = {
-  icon?: ReactNode;
-} & MenuItem;
+import HeaderModal from './HeaderModal';
+import { commonMenuItems, MenuItem } from './menu/headerMenuItem';
 
 interface IProps {
-  items?: IMenuItem[];
+  items?: MenuItem[];
 }
-
-const defaultItems: IMenuItem[] = [
-  {
-    key: PATH.JOB_SEEKER,
-    label: 'Danh sách ứng viên',
-    icon: <Users width={18} height={18} />,
-  },
-  {
-    key: PATH.JOB_LIST,
-    label: 'Tin tuyển dụng',
-    icon: <BackPack width={18} height={18} />,
-  },
-  {
-    key: 'blog',
-    label: 'Blog',
-    icon: <Blogs width={18} height={18} />,
-  },
-];
 
 const { LoginOutlined, UserAddOutlined, CloseOutlined, LogoutOutlined } = icons;
 
-const Header = ({ items = defaultItems }: IProps) => {
+const Header = ({ items = commonMenuItems }: IProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -76,7 +46,7 @@ const Header = ({ items = defaultItems }: IProps) => {
     [refreshToken, currentUser]
   );
 
-  const menuItems: IMenuItem[] = useMemo(
+  const menuItems: MenuItem[] = useMemo(
     () =>
       items.map((item) => {
         const { icon, ...others } = item;
@@ -216,7 +186,7 @@ const Header = ({ items = defaultItems }: IProps) => {
             className="text-white cursor-pointer"
             onClick={() => setIsOpenMenuModal(true)}
           />
-          <HeaderMenu
+          <HeaderModal
             isOpen={isOpenMenuModal}
             onSingOut={handleOkModal}
             setIsOpenMenuModal={setIsOpenMenuModal}

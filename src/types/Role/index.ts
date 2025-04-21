@@ -1,9 +1,3 @@
-export enum ROLE {
-  USER = 'user',
-  ADMIN = 'admin',
-  EMPLOYER = 'employer',
-}
-
 export interface IRole {
   id: number;
   title: string;

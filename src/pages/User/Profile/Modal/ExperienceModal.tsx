@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { memo, useEffect, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
-import UserApi, { IUpdateWorkExperience } from '~/apis/user';
+import UserAPI, { IUpdateWorkExperience } from '~/apis/user';
 import { DatePicker, RangePicker } from '~/components/DatePicker/DatePicker';
 import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
@@ -55,7 +55,7 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const { mutate: createWorkExperience, isPending: isCreateWorkPending } =
     useMutation({
       mutationFn: (params: IUserProfileData) =>
-        UserApi.createWorkExperience(params),
+        UserAPI.createWorkExperience(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
         refetch();
@@ -69,7 +69,7 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
   const { mutate: updateWorkExperience, isPending: isUpdateWorkPending } =
     useMutation({
       mutationFn: (params: IUpdateWorkExperience) =>
-        UserApi.updateWorkExperience(params),
+        UserAPI.updateWorkExperience(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
         refetch();

@@ -1,14 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import {
-  Checkbox,
-  Divider,
-  Flex,
-  Form,
-  Input,
-  message,
-  Space,
-  Spin,
-} from 'antd';
+import { Checkbox, Divider, Flex, Form, Input, message, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +10,7 @@ import Content from '~/components/Content/Content';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import List from '~/components/List/List';
+import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import useQueryParams from '~/hooks/useQueryParams';
@@ -174,7 +166,7 @@ const DetailRoleManagement = () => {
           onFinish={handleFinish}
         >
           <div className="grid grid-cols-10 gap-4">
-            <Content className="col-span-4">
+            <Content className="col-span-3">
               <h2 className="text-base font-semibold">1. Thông tin chức vụ</h2>
               <Space direction="vertical" className="w-full pt-2 pl-2">
                 <FormItem
@@ -199,7 +191,7 @@ const DetailRoleManagement = () => {
                 </FormItem>
               </Space>
             </Content>
-            <Content className="col-span-6">
+            <Content className="col-span-7">
               <Space direction="vertical" className="w-full">
                 <h2 className="text-base font-semibold">
                   2. Phân quyền chức năng

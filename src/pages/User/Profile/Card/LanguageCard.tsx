@@ -2,25 +2,25 @@ import { useMutation } from '@tanstack/react-query';
 import { Divider, Flex } from 'antd';
 import { memo } from 'react';
 
-import UserApi from '~/apis/user';
+import UserAPI from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
+import { PROFILE_SECTION_TYPE } from '~/enums';
 import { IForeignLanguage } from '~/types/User/profile';
 import { defaultImgUrl } from '~/utils/constant';
 import { advanceOptions } from '../Modal/LanguageModal';
-import { ProfileSectionType } from '../ProfileSection';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
   data: IForeignLanguage[];
   refetch: () => void;
-  onEdit: (index: number, sectionType: ProfileSectionType) => void;
+  onEdit: (index: number, sectionType: PROFILE_SECTION_TYPE) => void;
 }
 
 const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
   const { messageApi } = useMessage();
 
   const { mutate: deleteUserLanguage } = useMutation({
-    mutationFn: (id: number) => UserApi.deleteForeignLanguage(id),
+    mutationFn: (id: number) => UserAPI.deleteForeignLanguage(id),
     onSuccess: (res) => {
       messageApi.success(res?.message);
       refetch();
@@ -36,8 +36,8 @@ const LanguageCard = ({ data, refetch, onEdit }: IProps) => {
       {data?.map((item, index) => (
         <div key={index}>
           <ProfileCard
-            imgUrl={defaultImgUrl}
-            onEdit={() => onEdit(index, ProfileSectionType.LANGUAGE)}
+            imgUrl={item.foreignLanguage.imageUrl || defaultImgUrl}
+            onEdit={() => onEdit(index, PROFILE_SECTION_TYPE.LANGUAGE)}
             onDelete={() => deleteUserLanguage(item.foreignLanguagesId)}
             content={
               <div className="space-y-1">

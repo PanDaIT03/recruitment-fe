@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { ACCOUNT_STATUS } from '~/enums';
 import { getAllUserAdmin } from '~/store/thunk/userAdmin';
-import { ACCOUNT_STATUS } from '~/types/Status';
 import { IUserAdmin, IUserAdminItem } from '~/types/User/userAdmin';
 
 interface IUserAdminState {

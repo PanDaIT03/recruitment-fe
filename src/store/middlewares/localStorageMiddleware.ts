@@ -15,6 +15,7 @@ export const localStorageMiddleware: Middleware =
         currentUser: state.auth.currentUser,
       },
     };
+
     localStorage.setItem('persistedState', JSON.stringify(persistedState));
     return result;
   };
@@ -23,6 +24,7 @@ export const loadState = (): Partial<RootState> | undefined => {
   try {
     const serializedState = localStorage.getItem('persistedState');
     if (serializedState === null) return undefined;
+    
     const parsedState = JSON.parse(serializedState) as PersistedState;
     return {
       auth: {

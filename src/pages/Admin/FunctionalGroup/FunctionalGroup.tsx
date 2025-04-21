@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Col, Flex, message, Popconfirm, Row, Spin } from 'antd';
+import { Col, Flex, message, Popconfirm, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
 import { ColumnsType } from 'antd/es/table';
@@ -19,6 +19,7 @@ import Content from '~/components/Content/Content';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
+import Spin from '~/components/Loading/Spin';
 import Modal from '~/components/Modal/Modal';
 import Select from '~/components/Select/Select';
 import Table from '~/components/Table/Table';

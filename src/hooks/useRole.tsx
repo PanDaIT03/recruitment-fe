@@ -1,4 +1,4 @@
-import { ROLE } from '~/types/Role';
+import { ROLE } from '~/enums';
 import { useAppSelector } from './useStore';
 
 const useRole = () => {
