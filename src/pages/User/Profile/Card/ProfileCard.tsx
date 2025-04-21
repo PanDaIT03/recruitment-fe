@@ -2,6 +2,8 @@ import { Flex, Image, Popconfirm } from 'antd';
 import { memo, ReactElement } from 'react';
 
 import ButtonAction from '~/components/Button/ButtonAction';
+import { PERMISSION } from '~/enums/permissions';
+import { usePermission } from '~/hooks/usePermission';
 import icons from '~/utils/icons';
 
 interface IProps {
@@ -14,6 +16,10 @@ interface IProps {
 const { EditOutlined, CloseOutlined, QuestionCircleOutlined } = icons;
 
 const ProfileCard = ({ imgUrl, content, onEdit, onDelete }: IProps) => {
+  const { hasPermissions } = usePermission({
+    permissions: PERMISSION.EDIT_PROFILE,
+  });
+
   return (
     <Flex className="gap-x-4 gap-y-2 max-md:flex-col">
       {imgUrl && (
@@ -28,10 +34,12 @@ const ProfileCard = ({ imgUrl, content, onEdit, onDelete }: IProps) => {
       <Flex justify="space-between" className="flex-1">
         {content}
         <Flex gap={4}>
-          <ButtonAction
-            title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
-            onClick={onEdit}
-          />
+          {hasPermissions && (
+            <ButtonAction
+              title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
+              onClick={onEdit}
+            />
+          )}
           <Popconfirm
             okText="Có"
             cancelText="Không"
@@ -40,10 +48,14 @@ const ProfileCard = ({ imgUrl, content, onEdit, onDelete }: IProps) => {
             icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
             onConfirm={onDelete}
           >
-            <ButtonAction
-              title={<CloseOutlined className="text-warning cursor-pointer" />}
-              className="hover:bg-light-warning"
-            />
+            {hasPermissions && (
+              <ButtonAction
+                title={
+                  <CloseOutlined className="text-warning cursor-pointer" />
+                }
+                className="hover:bg-light-warning"
+              />
+            )}
           </Popconfirm>
         </Flex>
       </Flex>

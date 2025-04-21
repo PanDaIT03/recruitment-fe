@@ -108,14 +108,14 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
 
     const options: DefaultOptionType[] = languages?.items.map((language) => ({
       label: (
-        <Flex justify="space-between">
-          <span>{language?.title}</span>
+        <Flex align="center" gap={16}>
           <Image
             width={16}
-            height={12}
+            height={16}
             preview={false}
             src={language?.imageUrl}
           />
+          <span>{language?.title}</span>
         </Flex>
       ),
       value: language.id,
@@ -129,7 +129,7 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
       form={form}
       isOpen={isOpen}
       loading={isCreatePending || isUpdatePending}
-      title="Cập nhật tóm tắt"
+      title={isEdit ? 'Cập nhật ngoại ngữ' : 'Thêm ngoại ngữ'}
       onCancel={handleCancel}
       onFinish={handleFinish}
     >

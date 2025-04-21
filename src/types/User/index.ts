@@ -76,7 +76,7 @@ export interface IUser {
   jobPosition: { id: number; title: string };
   statusCode: number;
   placement: Placement;
-  functionals: Functionals[];
+  functionals: string[];
   desiredJob: {
     totalYearExperience: number;
   };
@@ -91,12 +91,6 @@ interface Placement {
   createAt: string;
   updateBy: string;
   updateAt: string;
-}
-
-interface Functionals {
-  id: number;
-  code: string;
-  menuViewId: number;
 }
 
 export interface IEmailStatus {

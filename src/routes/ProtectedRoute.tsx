@@ -1,4 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { usePermission } from '~/hooks/usePermission';
 import { useAppSelector } from '~/hooks/useStore';
 import useToken from '~/hooks/useToken';
 
@@ -13,21 +14,16 @@ const ProtectedRoute = ({
 }: ProtectedRouteProps) => {
   const { refreshToken } = useToken();
   const { currentUser } = useAppSelector((state) => state.auth);
+  const { hasPermissions } = usePermission({
+    permissions: allowedPermissions || [],
+  });
 
-  const { functionals, role } = currentUser;
-  const userRole = role?.title;
+  const userRole = currentUser?.role?.title;
 
   if (refreshToken && !userRole) return <Outlet />;
 
-  const userPermissions = functionals?.map((functional) => functional.code);
-
   const hasRole = userRole && allowedRoles.includes(userRole);
-  const hasPermission = allowedPermissions?.length
-    ? !!userPermissions.filter((perm) => allowedPermissions.includes(perm))
-        .length
-    : true;
-
-  return hasRole && hasPermission ? <Outlet /> : <Navigate to="/" replace />;
+  return hasRole && hasPermissions ? <Outlet /> : <Navigate to="/" replace />;
 };
 
 export default ProtectedRoute;

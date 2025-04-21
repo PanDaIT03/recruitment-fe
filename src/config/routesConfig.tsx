@@ -236,22 +236,18 @@ const routesConfig: CustomRouteObject[] = [
     createProtectedRoute('', ['user'], <UserProfile />),
     createProtectedRoute(PATH.USER_PROFILE, ['user'], <UserProfile />, [
       PERMISSION.VIEW_PROFILE,
-      PERMISSION.EDIT_PROFILE,
     ]),
     createProtectedRoute(PATH.USER_RESUME, ['user'], <UserResume />, [
       PERMISSION.VIEW_RESUME,
-      PERMISSION.DELETE_RESUME,
     ]),
     createProtectedRoute(PATH.USER_ACCOUNT, ['user'], <UserAccount />, [
       PERMISSION.USER_VIEW_ACCOUNT,
-      PERMISSION.USER_UPDATE_ACCOUNT,
     ]),
     createProtectedRoute(PATH.USER_APPLIED_JOB, ['user'], <UserAppliedJob />, [
       PERMISSION.VIEW_APPLIED_JOB,
     ]),
     createProtectedRoute(PATH.USER_DESIRED_JOB, ['user'], <UserDesiredJob />, [
       PERMISSION.VIEW_DESIRED_JOB,
-      PERMISSION.EDIT_DESIRED_JOB,
     ]),
   ]),
 
