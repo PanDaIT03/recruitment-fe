@@ -1,24 +1,14 @@
-import {
-  CheckboxOptionType,
-  Col,
-  Flex,
-  FormInstance,
-  Row,
-  Tabs,
-  TabsProps,
-} from 'antd';
-import { memo, ReactElement, useEffect, useMemo, useState } from 'react';
+import { Col, Flex, FormInstance, Row, Tabs, TabsProps } from 'antd';
+import { memo, useMemo } from 'react';
 
-import { DefaultOptionType } from 'antd/es/select';
 import Button from '~/components/Button/Button';
+import Dragger from '~/components/Dragger/Dragger';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal, { IModalProps } from '~/components/Modal/Modal';
-import { RadioGroup } from '~/components/Radio/Radio';
 import icons from '~/utils/icons';
 import { IFunctionalForm } from './FunctionalManagement';
-import Dragger from '~/components/Dragger/Dragger';
 
 interface IProps extends IModalProps {
   editIndex: number;
@@ -26,10 +16,10 @@ interface IProps extends IModalProps {
   onFinish(values: any): void;
 }
 
-type CustomTabItem = Omit<Required<TabsProps>['items'][number], 'children'> & {
-  name: string;
-  children: ReactElement;
-};
+// type CustomTabItem = Omit<Required<TabsProps>['items'][number], 'children'> & {
+//   name: string;
+//   children: ReactElement;
+// };
 
 const { CloseOutlined, SaveOutlined } = icons;
 

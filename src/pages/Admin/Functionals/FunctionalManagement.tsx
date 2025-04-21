@@ -36,13 +36,8 @@ export interface IFunctionalForm {
   orderIndex: number;
 }
 
-const {
-  EditOutlined,
-  PlusOutlined,
-  CloseOutlined,
-  SaveOutlined,
-  QuestionCircleOutlined,
-} = icons;
+const { EditOutlined, PlusOutlined, CloseOutlined, QuestionCircleOutlined } =
+  icons;
 
 const FunctionalManagement = () => {
   const dispatch = useAppDispatch();
