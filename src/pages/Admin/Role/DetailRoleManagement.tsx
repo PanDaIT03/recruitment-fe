@@ -1,14 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import {
-  Checkbox,
-  Divider,
-  Flex,
-  Form,
-  Input,
-  message,
-  Space,
-  Spin,
-} from 'antd';
+import { Checkbox, Divider, Flex, Form, Input, message, Space } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +10,7 @@ import Content from '~/components/Content/Content';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import List from '~/components/List/List';
+import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import useQueryParams from '~/hooks/useQueryParams';

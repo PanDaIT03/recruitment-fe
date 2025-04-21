@@ -76,6 +76,7 @@ export interface IUser {
   jobPosition: { id: number; title: string };
   statusCode: number;
   placement: Placement;
+  functionals: string[];
   desiredJob: {
     totalYearExperience: number;
   };

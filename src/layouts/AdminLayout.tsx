@@ -9,13 +9,13 @@ import {
   Dropdown,
   Layout,
   MenuProps,
-  Spin,
   Typography,
 } from 'antd';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 
 import { AvatarPlaceHolder } from '~/assets/svg';
+import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
