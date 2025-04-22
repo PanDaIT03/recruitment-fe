@@ -14,9 +14,7 @@ const ProtectedRoute = ({
 }: ProtectedRouteProps) => {
   const { refreshToken } = useToken();
   const { currentUser } = useAppSelector((state) => state.auth);
-  const { hasPermissions } = usePermission({
-    permissions: allowedPermissions || [],
-  });
+  const { hasPermissions } = usePermission(allowedPermissions);
 
   const userRole = currentUser?.role?.title;
 
