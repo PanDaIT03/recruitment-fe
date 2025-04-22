@@ -22,8 +22,10 @@ import DownloadButton from '~/components/Button/DownloadButton';
 import Dragger from '~/components/Dragger/Dragger';
 import List from '~/components/List/List';
 import Modal from '~/components/Modal/Modal';
+import { PERMISSION } from '~/enums/permissions';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useFetch } from '~/hooks/useFetch';
+import { usePermission } from '~/hooks/usePermission';
 import icons from '~/utils/icons';
 
 const {
@@ -35,9 +37,18 @@ const {
 
 const Resume = () => {
   const { setDocTitle } = useDocumentTitle();
+  const { checkPermissions } = usePermission();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
+
+  const hasPermissions = useMemo(
+    () => ({
+      canDeleteResume: checkPermissions(PERMISSION.DELETE_RESUME),
+      canUploadResume: checkPermissions(PERMISSION.UPLOAD_RESUME),
+    }),
+    []
+  );
 
   const {
     refetch,
@@ -134,11 +145,13 @@ const Resume = () => {
           <File />
           <h2 className="text-base font-bold">Hồ sơ / CV</h2>
         </Flex>
-        <ButtonAction
-          tooltipTitle="Tải lên CV"
-          title={<UploadOutlined className="text-[#691f74]" />}
-          onClick={() => setIsOpenModal(true)}
-        />
+        {hasPermissions.canUploadResume && (
+          <ButtonAction
+            tooltipTitle="Tải lên CV"
+            title={<UploadOutlined className="text-[#691f74]" />}
+            onClick={() => setIsOpenModal(true)}
+          />
+        )}
       </Flex>
       <Divider className="!my-3" />
       <List
@@ -161,19 +174,21 @@ const Resume = () => {
                   fileName={item.fileName}
                   title={<DownloadOutlined className="text-[#691f74]" />}
                 />
-                <Popconfirm
-                  okText="Có"
-                  cancelText="Không"
-                  title="Xoá CV này"
-                  description="Bạn có chắc chắn muốn xoá CV này?"
-                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                  onConfirm={() => handleDeleteCV(item.id)}
-                >
-                  <ButtonAction
-                    title={<CloseOutlined className="text-warning" />}
-                    className="hover:bg-light-warning"
-                  />
-                </Popconfirm>
+                {hasPermissions.canDeleteResume && (
+                  <Popconfirm
+                    okText="Có"
+                    cancelText="Không"
+                    title="Xoá CV này"
+                    description="Bạn có chắc chắn muốn xoá CV này?"
+                    icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                    onConfirm={() => handleDeleteCV(item.id)}
+                  >
+                    <ButtonAction
+                      title={<CloseOutlined className="text-warning" />}
+                      className="hover:bg-light-warning"
+                    />
+                  </Popconfirm>
+                )}
               </Space>,
             ]}
           >

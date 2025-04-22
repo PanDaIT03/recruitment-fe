@@ -8,7 +8,9 @@ import {
   Layout,
   Menu,
   message,
+  Skeleton,
   Space,
+  Upload,
   UploadFile,
   UploadProps,
 } from 'antd';
@@ -23,13 +25,19 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useState
+  useRef,
+  useState,
 } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { JobsAPI } from '~/apis/job';
 import UserAPI, { IUpdatePersonalInfo } from '~/apis/user';
-import { AvatarPlaceHolder } from '~/assets/svg';
+import {
+  AvatarPlaceHolder,
+  CreditCard,
+  PersonCard,
+  SunRise,
+} from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import Dragger from '~/components/Dragger/Dragger';
@@ -37,7 +45,7 @@ import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal from '~/components/Modal/Modal';
-import Select from '~/components/Select/Select';
+import CustomSelect from '~/components/Select/CustomSelect';
 import { useMessage } from '~/contexts/MessageProvider';
 import { PERMISSION } from '~/enums/permissions';
 import { useFetch } from '~/hooks/useFetch';
@@ -65,17 +73,21 @@ interface IUserInfoForm {
 
 interface ISiderProps {
   data: IUser;
+  loading?: boolean;
   onEditUserInfo: (data: IUser) => void;
   setIsOpenAvatarModal: Dispatch<SetStateAction<boolean>>;
 }
 
 const { EditOutlined, EnvironmentOutlined } = icons;
 
-const Sider = ({ data, onEditUserInfo, setIsOpenAvatarModal }: ISiderProps) => {
+const Sider = ({
+  data,
+  loading,
+  onEditUserInfo,
+  setIsOpenAvatarModal,
+}: ISiderProps) => {
   const menuItems = createUserMenu();
-  const { hasPermissions } = usePermission({
-    permissions: PERMISSION.EDIT_PROFILE,
-  });
+  const { hasPermissions } = usePermission(PERMISSION.EDIT_PROFILE);
 
   return (
     <div className="w-full h-max overflow-hidden rounded-xl bg-white shadow-card p-0 shadow lg:col-span-3">
@@ -101,6 +113,7 @@ const Sider = ({ data, onEditUserInfo, setIsOpenAvatarModal }: ISiderProps) => {
               {hasPermissions && (
                 <ButtonAction
                   tooltipTitle="Sửa"
+                  loading={loading}
                   title={<EditOutlined className="text-white cursor-pointer" />}
                   className="bg-[#691f74] py-[2px] px-[6px] absolute bottom-0 right-0 hover:!bg-[#461a53]"
                   onClick={() => setIsOpenAvatarModal(true)}
@@ -110,6 +123,7 @@ const Sider = ({ data, onEditUserInfo, setIsOpenAvatarModal }: ISiderProps) => {
             {hasPermissions && (
               <Button
                 title="Sửa"
+                loading={loading}
                 borderType="dashed"
                 iconBefore={<EditOutlined />}
                 onClick={() => onEditUserInfo(data)}
@@ -117,8 +131,14 @@ const Sider = ({ data, onEditUserInfo, setIsOpenAvatarModal }: ISiderProps) => {
             )}
           </Flex>
           <div>
-            <p className="text-lg font-semibold">{data.fullName}</p>
-            <p className="text-sm text-sub">{data.email}</p>
+            {loading ? (
+              <Skeleton active title={false} paragraph={{ rows: 2 }} />
+            ) : (
+              <>
+                <p className="text-lg font-semibold">{data.fullName}</p>
+                <p className="text-sm text-sub">{data.email}</p>
+              </>
+            )}
           </div>
           {(data.jobPosition?.title || data.placement?.title) && (
             <div className="text-sm font-medium">
@@ -146,7 +166,11 @@ const Sider = ({ data, onEditUserInfo, setIsOpenAvatarModal }: ISiderProps) => {
         </Space>
         <div className="hidden lg:block">
           <Divider dashed className="!m-0" />
-          <Menu items={menuItems} />
+          {loading ? (
+            <Skeleton active paragraph={{ rows: 6 }} className="p-6" />
+          ) : (
+            <Menu items={menuItems} />
+          )}
         </div>
       </div>
     </div>
@@ -158,11 +182,13 @@ const UserLayout = () => {
   const { messageApi } = useMessage();
   const [form] = useForm<IUserInfoForm>();
 
+  const firstRender = useRef<boolean>(true);
+
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const [isOpenAvatarModal, setIsOpenAvatarModal] = useState(false);
 
-  const { currentUser } = useAppSelector((state) => state.auth);
+  const { currentUser, loading } = useAppSelector((state) => state.auth);
 
   const { data: placements } = useFetch(
     ['placements'],
@@ -241,7 +267,7 @@ const UserLayout = () => {
 
         if (!isValidFormat) {
           message.error('Tệp tin không hợp lệ! Chỉ hỗ trợ PNG, JPG, JPEG.');
-          return false;
+          return Upload.LIST_IGNORE;
         }
 
         setFileList([{ ...file, name: file.name, originFileObj: file }]);
@@ -250,6 +276,11 @@ const UserLayout = () => {
     }),
     [fileList]
   );
+
+  useEffect(() => {
+    if (!firstRender.current) return;
+    firstRender.current = false;
+  }, [firstRender]);
 
   useEffect(() => {
     if (!Object.keys(currentUser).length) return;
@@ -334,16 +365,22 @@ const UserLayout = () => {
         name: 'fullName',
         label: 'Họ và tên',
         rules: [{ required: true, message: 'Vui lòng nhập Họ và tên' }],
-        item: <Input placeholder="Nhập họ và tên" />,
+        item: (
+          <Input
+            placeholder="Nhập họ và tên"
+            prefix={<PersonCard width={16} height={16} />}
+          />
+        ),
       },
       {
         name: 'positionId',
         label: 'Chức vụ hiện tại',
         rules: [{ required: true, message: 'Vui lòng chọn Chức vụ' }],
         item: (
-          <Select
+          <CustomSelect
             allowClear
             placeholder="Chọn chức vụ"
+            prefixIcon={<CreditCard />}
             options={jobPositions?.items?.map((jobPosition) => ({
               label: jobPosition.title,
               value: jobPosition.id,
@@ -363,6 +400,7 @@ const UserLayout = () => {
                 <Input
                   inputMode="numeric"
                   placeholder="Ví dụ: 7"
+                  prefix={<SunRise />}
                   onChange={handleTotalYearChange}
                   onBlur={(e) => handleBlurTotalYear(e)}
                 />
@@ -378,9 +416,10 @@ const UserLayout = () => {
           { required: true, message: 'Vui lòng nhập số năm kinh nghiệm' },
         ],
         item: (
-          <Select
+          <CustomSelect
             allowClear
             placeholder="Chọn thành phố"
+            prefixIcon={<EnvironmentOutlined />}
             options={placements?.items?.map((place) => ({
               value: place?.id,
               label: place?.title,
@@ -397,6 +436,7 @@ const UserLayout = () => {
       <div className="w-full py-4 px-8 mx-auto max-w-7xl grid grid-cols-1 gap-4 lg:grid-cols-10 max-lg:px-4">
         <Sider
           data={currentUser}
+          loading={loading && firstRender.current}
           onEditUserInfo={handleEditUserInfo}
           setIsOpenAvatarModal={setIsOpenAvatarModal}
         />

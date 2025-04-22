@@ -46,6 +46,7 @@ export interface IResetPasswordParams {
 export type IUpdateAccountInfo = Partial<{
   file: any;
   fullName: string;
+  oldPassword: string;
   newPassword: string;
   isChangePassword: boolean;
 }>;

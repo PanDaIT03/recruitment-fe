@@ -151,7 +151,7 @@ const SignUp = () => {
               label: 'Họ và tên',
               item: (
                 <Input
-                  placeholder="Ví dụ: Trần Tuấn Kiệt"
+                  placeholder="Ví dụ: Nguyễn Văn A"
                   prefix={<IdcardOutlined />}
                 />
               ),
@@ -162,7 +162,7 @@ const SignUp = () => {
               label: 'Chức vụ',
               item: (
                 <CustomSelect
-                  placeholder="Chức vụ"
+                  placeholder="Ví dụ: Thực tập sinh"
                   options={
                     jobPositions?.items.map((el) => ({
                       value: el.id,
@@ -252,7 +252,19 @@ const SignUp = () => {
         roleId: roleId,
         jobFieldsIds: [values.jobFieldsIds],
       };
-      signUp(payload);
+
+      const formattedPayload = Object.entries(payload).reduce(
+        (prevVal, currentVal) => {
+          const [key, value] = currentVal;
+          typeof value === 'string'
+            ? (prevVal[key] = value?.trim())
+            : (prevVal[key] = value);
+
+          return prevVal;
+        },
+        {} as Record<string, any>
+      );
+      signUp(formattedPayload as ISignUpParams);
     } catch (error: any) {
       console.log('Unexpected error', error);
     }

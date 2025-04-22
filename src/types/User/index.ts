@@ -73,6 +73,7 @@ export interface IUser {
   companyUrl: string;
   isActive: boolean;
   role: Role;
+  hasPassword: boolean;
   jobPosition: { id: number; title: string };
   statusCode: number;
   placement: Placement;
