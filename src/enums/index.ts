@@ -49,3 +49,8 @@ export enum JOB_STATUS {
   INACTIVE = 7,
   DELETED = 8,
 }
+
+export enum TAB_ITEM_KEY {
+  USER = 'user',
+  ROLE = 'role',
+}

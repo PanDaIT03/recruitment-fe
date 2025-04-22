@@ -14,7 +14,6 @@ import PATH from '~/utils/path';
 
 const Home = lazy(() => import('~/pages/Home/Home'));
 const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
-const UserManagement = lazy(() => import('~/pages/Admin/User/UserManagement'));
 const Blog = lazy(() => import('~/pages/Blog/Blogs'));
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
 const JobDetail = lazy(() => import('~/pages/Job/JobList/JobDetail'));
@@ -24,9 +23,15 @@ const UserResume = lazy(() => import('~/pages/User/Resume/Resume'));
 const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
 const UserAppliedJob = lazy(() => import('~/pages/User/AppliedJob/AppliedJob'));
-const UserDetail = lazy(() => import('~/pages/Admin/User/UserDetail'));
+const UserDetail = lazy(
+  () => import('~/pages/Admin/Setting/Permission/UserList/UserDetail')
+);
 
-const AdminDashboard = lazy(() => import('~/pages/Admin/AdminDashboard'));
+const AdminDashboard = lazy(() => import('~/pages/Admin/Dashboard/Dashboard'));
+const AdminPermission = lazy(
+  () => import('~/pages/Admin/Setting/Permission/Permission')
+);
+
 const FunctionalGroupManagement = lazy(
   () => import('~/pages/Admin/FunctionalGroup/FunctionalGroup')
 );
@@ -150,17 +155,17 @@ const routesConfig: CustomRouteObject[] = [
   createRoute('/admin', undefined, AdminLayout, [
     createProtectedRoute('', ['admin'], <AdminDashboard />),
     createProtectedRoute(PATH.ADMIN_DASHBOARD, ['admin'], <AdminDashboard />),
+    createProtectedRoute(PATH.ADMIN_PERMISSION, ['admin'], <AdminPermission />),
     createProtectedRoute(
       PATH.ADMIN_JOB_MANAGEMENT,
       ['admin'],
       <JobManagement />
     ),
     createProtectedRoute(
-      PATH.ADMIN_USER_MANAGEMENT,
+      PATH.ADMIN_PERMISSION_USER_DETAIL,
       ['admin'],
-      <UserManagement />
+      <UserDetail />
     ),
-    createProtectedRoute(PATH.ADMIN_USER_DETAIL, ['admin'], <UserDetail />),
     createProtectedRoute(
       PATH.ADMIN_ROLE_MANAGEMENT,
       ['admin'],

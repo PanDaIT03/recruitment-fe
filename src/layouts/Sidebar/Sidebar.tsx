@@ -4,6 +4,7 @@ import { Dispatch, memo, SetStateAction } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Dashboard, HeaderLogoPrimary, List } from '~/assets/svg';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import './index.scss';
 
@@ -13,6 +14,7 @@ interface IProps {
 }
 
 const { Sider } = Layout;
+const { SettingOutlined } = icons;
 
 const MENU_ITEMS = [
   {
@@ -27,6 +29,21 @@ const MENU_ITEMS = [
     ],
   },
   {
+    key: 'setting',
+    label: 'Cài đặt',
+    icon: <SettingOutlined />,
+    children: [
+      {
+        key: '/',
+        label: 'Danh sách chức năng',
+      },
+      {
+        key: PATH.ADMIN_PERMISSION,
+        label: 'Phân quyền',
+      },
+    ],
+  },
+  {
     key: 'management',
     label: 'Quản lý',
     icon: <List />,
@@ -35,10 +52,10 @@ const MENU_ITEMS = [
         key: PATH.ADMIN_JOB_MANAGEMENT,
         label: 'Danh sách công việc',
       },
-      {
-        key: PATH.ADMIN_USER_MANAGEMENT,
-        label: 'Danh sách người dùng',
-      },
+      // {
+      //   key: PATH.ADMIN_USER_MANAGEMENT,
+      //   label: 'Danh sách người dùng',
+      // },
       {
         key: PATH.ADMIN_ROLE_MANAGEMENT,
         label: 'Danh sách chức vụ',
@@ -60,7 +77,11 @@ const selectedKeys = [
   [PATH.ADMIN_JOB_MANAGEMENT],
   [PATH.ADMIN_FUNCTIONAL_MANAGEMENT],
   [PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT],
-  [PATH.ADMIN_USER_MANAGEMENT, PATH.ADMIN_USER_DETAIL],
+  [
+    PATH.ADMIN_PERMISSION,
+    // PATH.ADMIN_USER_MANAGEMENT,
+    PATH.ADMIN_PERMISSION_USER_DETAIL,
+  ],
   [PATH.ADMIN_ROLE_MANAGEMENT, PATH.ADMIN_DETAIL_ROLE_MANAGEMENT],
 ];
 

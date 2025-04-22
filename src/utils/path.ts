@@ -15,13 +15,14 @@ const PATH = {
   EMPLOYER_PERSONAL: '/employer/employer-personal',
   // Admin
   ADMIN_DASHBOARD: '/admin/dashboard',
-  ADMIN_USER_MANAGEMENT: '/admin/user-management',
-  ADMIN_USER_DETAIL: '/admin/user-detail',
   ADMIN_JOB_MANAGEMENT: '/admin/job-management',
   ADMIN_ROLE_MANAGEMENT: '/admin/role-management',
   ADMIN_DETAIL_ROLE_MANAGEMENT: '/admin/detail-role-management',
   ADMIN_FUNCTIONAL_MANAGEMENT: '/admin/functional-management',
   ADMIN_FUNCTIONAL_GROUP_MANAGEMENT: '/admin/functional-group-management',
+  
+  ADMIN_PERMISSION: '/admin/permission',
+  ADMIN_PERMISSION_USER_DETAIL: '/admin/permission/user-detail',
   // Employer
   EMPLOYER_DASHBOARD: '/employer/dashboard',
   EMPLOYER_POSTING: '/employer/posting-job',
