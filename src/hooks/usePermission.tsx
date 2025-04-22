@@ -1,22 +1,32 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useAppSelector } from './useStore';
 
-interface IProps {
-  permissions: string | string[];
-}
+const isPermitted = (
+  functionals: string[],
+  permissions?: string | string[]
+): boolean => {
+  if (!permissions || (Array.isArray(permissions) && !permissions.length))
+    return true;
 
-export const usePermission = ({ permissions }: IProps) => {
+  if (typeof permissions === 'string')
+    return functionals?.includes(permissions);
+
+  return permissions?.every((perm) => functionals?.includes(perm));
+};
+
+export const usePermission = (permissions?: string | string[]) => {
   const { currentUser } = useAppSelector((state) => state.auth);
   const { functionals } = currentUser;
 
-  const hasPermissions = useMemo((): boolean => {
-    if (Array.isArray(permissions) && !permissions.length) return true;
+  const hasPermissions = useMemo(
+    () => isPermitted(functionals, permissions),
+    [permissions, functionals]
+  );
 
-    if (typeof permissions === 'string')
-      return functionals?.includes(permissions);
+  const checkPermissions = useCallback(
+    (perms?: string | string[]): boolean => isPermitted(functionals, perms),
+    [permissions, functionals]
+  );
 
-    return permissions?.every((perm) => functionals?.includes(perm));
-  }, [permissions, functionals]);
-
-  return { hasPermissions };
+  return { hasPermissions, checkPermissions };
 };
