@@ -16,9 +16,7 @@ interface IProps {
 const { EditOutlined, CloseOutlined, QuestionCircleOutlined } = icons;
 
 const ProfileCard = ({ imgUrl, content, onEdit, onDelete }: IProps) => {
-  const { hasPermissions } = usePermission({
-    permissions: PERMISSION.EDIT_PROFILE,
-  });
+  const { hasPermissions } = usePermission(PERMISSION.EDIT_PROFILE);
 
   return (
     <Flex className="gap-x-4 gap-y-2 max-md:flex-col">

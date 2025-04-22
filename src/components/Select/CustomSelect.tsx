@@ -1,10 +1,9 @@
-import { ConfigProvider, Empty, MappingAlgorithm, SelectProps } from 'antd';
+import { ConfigProvider, MappingAlgorithm, SelectProps } from 'antd';
 import { AliasToken } from 'antd/es/theme/internal';
 import { ComponentToken } from 'antd/lib/select/style';
 import classNames from 'classnames';
 import { memo, ReactNode, useEffect, useRef, useState } from 'react';
 
-import { NoData } from '~/assets/svg';
 import { applyTailwindClass } from '~/utils/functions';
 import Icon from '../Icon/Icon';
 import './CustomSelect.scss';
@@ -25,15 +24,15 @@ type TProps = {
   configTokenProvider?: Partial<AliasToken>;
 } & SelectProps;
 
-const CustomerEmptyData = () => {
-  return (
-    <Empty
-      description={<span className="text-admin-primary">Không có dữ liệu</span>}
-      image={<NoData />}
-      imageStyle={{ height: '70px' }}
-    />
-  );
-};
+// const CustomerEmptyData = () => {
+//   return (
+//     <Empty
+//       description={<span className="text-admin-primary">Không có dữ liệu</span>}
+//       image={<NoData />}
+//       imageStyle={{ height: '70px' }}
+//     />
+//   );
+// };
 
 const CustomSelect = ({
   className,
@@ -91,7 +90,7 @@ const CustomSelect = ({
           },
           token: configTokenProvider,
         }}
-        renderEmpty={CustomerEmptyData}
+        // renderEmpty={CustomerEmptyData}
       >
         <Select
           popupMatchSelectWidth={false}
