@@ -1,6 +1,7 @@
 import { IUser } from '../User';
 
 export type IFormAccount = Pick<IUser, 'fullName' | 'email'> & {
-  password?: string;
-  reEnterPassword?: string;
+  newPassword?: string;
+  currentPassword?: string;
+  reEnterNewPassword?: string;
 };

@@ -14,6 +14,7 @@ export { ReactComponent as Calendar } from './calendar.svg';
 export { ReactComponent as Card } from './card.svg';
 export { ReactComponent as Community } from './community.svg';
 export { ReactComponent as Copy } from './copy.svg';
+export { ReactComponent as CreditCard } from './credit-card.svg';
 export { ReactComponent as Dashboard } from './dashboard.svg';
 export { ReactComponent as Database } from './database.svg';
 export { ReactComponent as Disconnect } from './disconnect.svg';
