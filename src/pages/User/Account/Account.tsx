@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { Divider, Typography } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import UserAPI, { IUpdateAccountInfo } from '~/apis/user';
 import { useMessage } from '~/contexts/MessageProvider';
@@ -16,6 +16,7 @@ const { Title } = Typography;
 const Account = () => {
   const dispatch = useAppDispatch();
   const [form] = useForm<IFormAccount>();
+  const firstRender = useRef<boolean>(true);
 
   const { messageApi } = useMessage();
   const { setDocTitle } = useDocumentTitle();
@@ -43,12 +44,14 @@ const Account = () => {
 
   useEffect(() => {
     setDocTitle('Trang tài khoản | Đúng người đúng việc');
+
+    if (!firstRender.current) return;
+    firstRender.current = false;
   }, []);
 
   const handleSetFormDefault = () => {
+    form.resetFields();
     const formValues: IFormAccount = {
-      password: undefined,
-      reEnterPassword: undefined,
       email: currentUser.email,
       fullName: currentUser.fullName,
     };
@@ -67,8 +70,9 @@ const Account = () => {
   const handleFinish = (values: IFormAccount) => {
     const params: IUpdateAccountInfo = {
       fullName: values?.fullName?.trim(),
-      newPassword: values?.password?.trim(),
-      isChangePassword: isChangePassword,
+      oldPassword: values.currentPassword?.trim(),
+      newPassword: values?.newPassword?.trim(),
+      isChangePassword,
     };
 
     updateAccountInfo(params);
@@ -87,6 +91,7 @@ const Account = () => {
         loading={isPending}
         isChangeName={isChangeName}
         isChangePassword={isChangePassword}
+        hasPassword={currentUser.hasPassword}
         setIsChangeName={setIsChangeName}
         setIsChangePassword={setIsChangePassword}
         onFinish={handleFinish}
