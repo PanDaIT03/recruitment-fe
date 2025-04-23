@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
 import { Col, FormInstance, message, Row } from 'antd';
-import FormItem from 'antd/es/form/FormItem';
-import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import FilterBox from '~/components/FilterBox/FilterBox';
+import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
 import { useAppSelector } from '~/hooks/useStore';
-import { IFormFilter } from './UserManagement';
+import { IFormFilter } from './UserList';
 
 interface IProps {
   open: boolean;
@@ -118,4 +118,4 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
   );
 };
 
-export default memo(UserFilter);
+export default UserFilter;
