@@ -4,7 +4,7 @@ import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { FunctionalAPI, IGetAllFunctionalParams } from '~/apis/functional';
 import {
@@ -24,19 +24,23 @@ import Select from '~/components/Select/Select';
 import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
+import { FUNCTIONAL_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionalGroups } from '~/store/thunk/functionalGroup';
 import { IFunctionalItem } from '~/types/Functional';
 import { IFunctionalGroupItem } from '~/types/FunctionalGroup';
 import icons from '~/utils/icons';
-import FilterFunctionalGroup, {
-  IFilterFunctionalGroupForm,
-} from './FilterFunctionalGroup';
+import FilterFunctionalGroup from './FilterFunctionalGroup';
 
 interface IFunctionalGroupForm {
   title: string;
   description: string;
+  functionalIds: number[];
+}
+
+export interface IFilterFunctionalGroupForm {
+  title: string;
   functionalIds: number[];
 }
 
@@ -50,7 +54,9 @@ const {
 
 const FunctionalGroup = () => {
   const dispatch = useAppDispatch();
+
   const [functionalForm] = useForm<IFunctionalGroupForm>();
+  const [filterForm] = useForm<IFilterFunctionalGroupForm>();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
@@ -65,12 +71,13 @@ const FunctionalGroup = () => {
     (state) => state.functionalGroup
   );
 
-  const { pageInfo, handlePageChange } = usePagination({
-    extraParams: filter,
-    items: functionalGroups?.items,
-    fetchAction: getAllFunctionalGroups,
-    setFilterParams: setFilter,
-  });
+  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+    usePagination({
+      extraParams: filter,
+      items: functionalGroups?.items,
+      fetchAction: getAllFunctionalGroups,
+      setFilterParams: setFilter,
+    });
 
   const {
     data: functionals,
@@ -253,6 +260,9 @@ const FunctionalGroup = () => {
   const handleCancelFilter = useCallback(() => {
     setFilter({});
     setIsOpenFilter(false);
+    hanldeClearURLSearchParams({
+      tab: FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP,
+    });
   }, []);
 
   const handleFinishFilter = useCallback(
@@ -305,6 +315,7 @@ const FunctionalGroup = () => {
         </Col>
       </Row>
       <FilterFunctionalGroup
+        form={filterForm}
         isOpen={isOpenFilter}
         onCancel={handleCancelFilter}
         onFinish={handleFinishFilter}
@@ -390,4 +401,4 @@ const FunctionalGroup = () => {
   );
 };
 
-export default FunctionalGroup;
+export default memo(FunctionalGroup);

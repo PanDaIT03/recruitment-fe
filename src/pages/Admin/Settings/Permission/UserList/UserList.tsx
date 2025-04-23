@@ -138,8 +138,6 @@ const UserList = () => {
   }, []);
 
   const handleCancelFilter = useCallback(() => {
-    formFilter.resetFields();
-
     setFilterParams({});
     setIsOpenFilter(false);
     hanldeClearURLSearchParams({

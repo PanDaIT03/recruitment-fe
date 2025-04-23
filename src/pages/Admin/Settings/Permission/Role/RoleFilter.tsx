@@ -2,8 +2,7 @@ import { Col, FormInstance, Row } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import { memo, useCallback, useEffect } from 'react';
 
-import Content from '~/components/Content/Content';
-import FormWrapper from '~/components/Form/FormWrapper';
+import FilterBox from '~/components/FilterBox/FilterBox';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -36,37 +35,34 @@ const RoleFilter = ({
   }, []);
 
   return (
-    <Content isOpen={open}>
-      <FormWrapper
-        form={form}
-        cancelTitle="Hủy"
-        submitTitle="Tìm kiếm"
-        onFinish={onFinish}
-        onCancel={handleCancel}
-      >
-        <Row gutter={{ xs: 8, sm: 14 }}>
-          <Col span={12}>
-            <FormItem label="Tên chức vụ" name="title">
-              <Input allowClear placeholder="Ví dụ: admin" />
-            </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem label="Chức năng" name="functionalIds">
-              <Select
-                allowClear
-                mode="multiple"
-                loading={loading}
-                placeholder="Chọn chức năng"
-                options={functionals?.items?.map((item) => ({
-                  label: item?.title,
-                  value: item?.id,
-                }))}
-              />
-            </FormItem>
-          </Col>
-        </Row>
-      </FormWrapper>
-    </Content>
+    <FilterBox
+      open={open}
+      form={form}
+      onFinish={onFinish}
+      onCancel={handleCancel}
+    >
+      <Row gutter={{ xs: 8, sm: 14 }}>
+        <Col span={12}>
+          <FormItem label="Tên chức vụ" name="title">
+            <Input allowClear placeholder="Ví dụ: admin" />
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="Chức năng" name="functionalIds">
+            <Select
+              allowClear
+              mode="multiple"
+              loading={loading}
+              placeholder="Chọn chức năng"
+              options={functionals?.items?.map((item) => ({
+                label: item?.title,
+                value: item?.id,
+              }))}
+            />
+          </FormItem>
+        </Col>
+      </Row>
+    </FilterBox>
   );
 };
 

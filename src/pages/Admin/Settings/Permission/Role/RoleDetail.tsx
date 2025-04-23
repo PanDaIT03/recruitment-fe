@@ -154,7 +154,7 @@ const RoleDetail = () => {
 
   return (
     <>
-      <Spin spinning={isSpinning}>
+      <Spin fullHeight={false} spinning={isSpinning}>
         <FormWrapper
           form={functionalForm}
           footer={

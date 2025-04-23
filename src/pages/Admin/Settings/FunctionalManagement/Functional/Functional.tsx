@@ -15,17 +15,20 @@ import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import Content from '~/components/Content/Content';
-import Spin from '~/components/Loading/Spin';
+import FormItem from '~/components/Form/FormItem';
+import FormWrapper from '~/components/Form/FormWrapper';
+import Input from '~/components/Input/Input';
+import Modal from '~/components/Modal/Modal';
 import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
+import { FUNCTIONAL_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionals } from '~/store/thunk/functional';
 import { IFunctionalItem } from '~/types/Functional';
 import icons from '~/utils/icons';
 import FilterFunctional from './FilterFunctional';
-import ModalFunctional from './ModalFunctional';
 
 export interface IFunctionalForm {
   code: string;
@@ -36,12 +39,24 @@ export interface IFunctionalForm {
   orderIndex: number;
 }
 
-const { EditOutlined, PlusOutlined, CloseOutlined, QuestionCircleOutlined } =
-  icons;
+export interface IFilterFunctionalForm {
+  code: string;
+  title: string;
+}
+
+const {
+  EditOutlined,
+  PlusOutlined,
+  CloseOutlined,
+  SaveOutlined,
+  QuestionCircleOutlined,
+} = icons;
 
 const Functional = () => {
   const dispatch = useAppDispatch();
+
   const [form] = useForm<IFunctionalForm>();
+  const [filterForm] = useForm<IFilterFunctionalForm>();
 
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
@@ -53,6 +68,14 @@ const Functional = () => {
   const [filters, setFilters] = useState<IGetAllFunctionalParams>();
 
   const { functionals, loading } = useAppSelector((state) => state.functional);
+
+  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+    usePagination({
+      extraParams: filters,
+      items: functionals?.items,
+      fetchAction: getAllFunctionals,
+      setFilterParams: setFilters,
+    });
 
   const { mutate: createFunctional, isPending: isCreateFunctionalPending } =
     useMutation({
@@ -97,13 +120,6 @@ const Functional = () => {
         message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`);
       },
     });
-
-  const { pageInfo, handlePageChange } = usePagination({
-    extraParams: filters,
-    items: functionals?.items,
-    fetchAction: getAllFunctionals,
-    setFilterParams: setFilters,
-  });
 
   useEffect(() => {
     setTitle('Danh sách chức năng');
@@ -190,8 +206,11 @@ const Functional = () => {
   }, [filters, pageInfo]);
 
   const handleCancelFilter = useCallback(() => {
-    setIsOpenFilter(false);
     setFilters({});
+    setIsOpenFilter(false);
+    hanldeClearURLSearchParams({
+      tab: FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL,
+    });
   }, []);
 
   const handleEdit = useCallback(
@@ -235,7 +254,7 @@ const Functional = () => {
   }, [editIndex]);
 
   return (
-    <Spin spinning={isDeleteFunctionalPending}>
+    <>
       <Row gutter={[8, 16]} align={'middle'} justify={'end'}>
         <Col>
           <Button
@@ -254,14 +273,15 @@ const Functional = () => {
         </Col>
       </Row>
       <FilterFunctional
+        form={filterForm}
         isOpen={isOpenFilter}
         onCancel={handleCancelFilter}
         onFinish={(values) => setFilters({ ...values })}
       />
       <Content>
         <Table<IFunctionalItem>
-          loading={loading}
           columns={columns}
+          loading={loading || isDeleteFunctionalPending}
           dataSource={functionals?.items}
           pagination={{
             current: pageInfo.page,
@@ -271,15 +291,7 @@ const Functional = () => {
           }}
         />
       </Content>
-      <ModalFunctional
-        form={form}
-        isOpen={isOpenModal}
-        editIndex={editIndex}
-        loading={isCreateFunctionalPending || isUpdateFunctionalPending}
-        onFinish={handleFinish}
-        onCancel={handleModalCancel}
-      />
-      {/* <Modal
+      <Modal
         isOpen={isOpenModal}
         title={editIndex ? 'Chỉnh sửa chức năng' : 'Thêm chức năng'}
         footer={
@@ -310,15 +322,15 @@ const Functional = () => {
             <Input placeholder="Ví dụ: Tạo công việc ứng tuyển" />
           </FormItem>
           <FormItem
-            label="Chức năng"
+            label="Tên chức năng"
             name="title"
             rules={[{ required: true, message: 'Vui lòng nhập chức năng' }]}
           >
             <Input placeholder="Ví dụ: create_new_job	" />
           </FormItem>
         </FormWrapper>
-      </Modal> */}
-    </Spin>
+      </Modal>
+    </>
   );
 };
 

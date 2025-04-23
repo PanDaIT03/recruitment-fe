@@ -3,7 +3,12 @@ import classNames from 'classnames';
 import { Dispatch, memo, SetStateAction } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Dashboard, HeaderLogoPrimary, List } from '~/assets/svg';
+import {
+  Dashboard,
+  EditStreamline,
+  HeaderLogoPrimary,
+  List
+} from '~/assets/svg';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import './index.scss';
@@ -35,7 +40,18 @@ const MENU_ITEMS = [
     children: [
       {
         key: PATH.ADMIN_JOB_MANAGEMENT,
-        label: 'Danh sách công việc',
+        label: 'Công việc',
+      },
+    ],
+  },
+  {
+    key: 'approve',
+    label: 'Phê duyệt',
+    icon: <EditStreamline />,
+    children: [
+      {
+        key: '',
+        label: 'Phê duyệt hồ sơ',
       },
     ],
   },

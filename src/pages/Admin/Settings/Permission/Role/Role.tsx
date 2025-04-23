@@ -11,6 +11,7 @@ import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
+import { PERMISSION_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
 import { getAllRoles } from '~/store/thunk/role';
@@ -33,12 +34,13 @@ const Role = () => {
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [filterParams, setFilterParams] = useState({} as any);
 
-  const { items, pageInfo, handlePageChange } = usePagination({
-    items: roles.items,
-    fetchAction: getAllRoles,
-    extraParams: filterParams,
-    setFilterParams: setFilterParams,
-  });
+  const { items, pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+    usePagination({
+      items: roles.items,
+      fetchAction: getAllRoles,
+      extraParams: filterParams,
+      setFilterParams: setFilterParams,
+    });
 
   useEffect(() => {
     setTitle('Danh sách chức vụ');
@@ -130,6 +132,10 @@ const Role = () => {
 
   const handleCancelFilter = useCallback(() => {
     setFilterParams({});
+    setIsOpenFilter(false);
+    hanldeClearURLSearchParams({
+      tab: PERMISSION_TAB_ITEM_KEY.ROLE,
+    });
   }, []);
 
   const handleFinishFilter = useCallback((params: any) => {
