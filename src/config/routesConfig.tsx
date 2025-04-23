@@ -77,17 +77,17 @@ const RecruitmentDetail = lazy(
 const AdminDashboard = lazy(() => import('~/pages/Admin/Dashboard/Dashboard'));
 const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
 const AdminPermission = lazy(
-  () => import('~/pages/Admin/Setting/Permission/Permission')
+  () => import('~/pages/Admin/Settings/Permission/Permission')
 );
 const RoleDetailManagement = lazy(
-  () => import('~/pages/Admin/Setting/Permission/Role/RoleDetail')
+  () => import('~/pages/Admin/Settings/Permission/Role/RoleDetail')
 );
 const UserDetail = lazy(
-  () => import('~/pages/Admin/Setting/Permission/UserList/UserDetail')
+  () => import('~/pages/Admin/Settings/Permission/UserList/UserDetail')
 );
 const AdminFunctionalManagement = lazy(
   () =>
-    import('~/pages/Admin/Setting/FunctionalManagement/FunctionalManagement')
+    import('~/pages/Admin/Settings/FunctionalManagement/FunctionalManagement')
 );
 
 type CustomRouteObject = RouteObject & {
