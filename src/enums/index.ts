@@ -49,3 +49,13 @@ export enum JOB_STATUS {
   INACTIVE = 7,
   DELETED = 8,
 }
+
+export enum PERMISSION_TAB_ITEM_KEY {
+  USER = 'user',
+  ROLE = 'role',
+}
+
+export enum FUNCTIONAL_TAB_ITEM_KEY {
+  FUNCTIONAL = 'functional',
+  FUNCTIONAL_GROUP = 'functional-group',
+}

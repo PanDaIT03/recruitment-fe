@@ -20,6 +20,7 @@ export { ReactComponent as Database } from './database.svg';
 export { ReactComponent as Disconnect } from './disconnect.svg';
 export { ReactComponent as Document } from './document.svg';
 export { ReactComponent as DualLayerFile } from './dual-layer-file.svg';
+export { ReactComponent as EditStreamline } from './edit-streamline.svg';
 export { ReactComponent as Edit } from './edit.svg';
 export { ReactComponent as Email } from './email.svg';
 export { ReactComponent as Export } from './export.svg';
