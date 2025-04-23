@@ -13,6 +13,7 @@ import List from '~/components/List/List';
 import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
+import { TAB_ITEM_KEY } from '~/enums';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionalGroups } from '~/store/thunk/functionalGroup';
@@ -27,7 +28,7 @@ interface IFunctionalForm {
 
 const { SaveOutlined } = icons;
 
-const DetailRoleManagement = () => {
+const RoleDetail = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { queryParams } = useQueryParams();
@@ -46,7 +47,7 @@ const DetailRoleManagement = () => {
     mutationFn: (params: ICreateRoleParam) => RoleApi.createRole(params),
     onSuccess: (res) => {
       message.success(res?.message);
-      navigate(PATH.ADMIN_ROLE_MANAGEMENT);
+      handleNavigate();
     },
     onError: (error: any) => {
       message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
@@ -75,7 +76,7 @@ const DetailRoleManagement = () => {
     mutationFn: (params: IUpdateRoleParam) => RoleApi.updateRole(params),
     onSuccess: (res) => {
       message.success(res?.message);
-      navigate(PATH.ADMIN_ROLE_MANAGEMENT);
+      handleNavigate();
     },
     onError: (error: any) => {
       message.error(`Cập nhật thất bại: ${error?.response?.data?.message}`);
@@ -95,6 +96,10 @@ const DetailRoleManagement = () => {
     dispatch(getAllFunctionalGroups({}));
   }, []);
 
+  const handleNavigate = useCallback(() => {
+    navigate(`${PATH.ADMIN_PERMISSION}?tab=${TAB_ITEM_KEY.ROLE}`);
+  }, []);
+
   useEffect(() => {
     let title = '';
     if (roleId === null || roleId === undefined) title = 'Thêm mới chức vụ';
@@ -102,8 +107,8 @@ const DetailRoleManagement = () => {
 
     setTitle(title);
     setBreadcrumb([
-      { title: 'Quản lý' },
-      { title: 'Danh sách chức vụ', href: PATH.ADMIN_ROLE_MANAGEMENT },
+      { title: 'Cài đặt' },
+      { title: 'Phân quyền', href: PATH.ADMIN_PERMISSION },
       { title: title },
     ]);
   }, [roleId]);
@@ -119,7 +124,7 @@ const DetailRoleManagement = () => {
 
   const handleCancel = useCallback(() => {
     functionalForm.resetFields();
-    navigate(PATH.ADMIN_ROLE_MANAGEMENT);
+    handleNavigate();
   }, []);
 
   const handleFinish = useCallback(
@@ -271,4 +276,4 @@ const DetailRoleManagement = () => {
   );
 };
 
-export default memo(DetailRoleManagement);
+export default memo(RoleDetail);

@@ -52,14 +52,6 @@ const MENU_ITEMS = [
         key: PATH.ADMIN_JOB_MANAGEMENT,
         label: 'Danh sách công việc',
       },
-      // {
-      //   key: PATH.ADMIN_USER_MANAGEMENT,
-      //   label: 'Danh sách người dùng',
-      // },
-      {
-        key: PATH.ADMIN_ROLE_MANAGEMENT,
-        label: 'Danh sách chức vụ',
-      },
       {
         key: PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
         label: 'Danh sách chức năng',
@@ -79,10 +71,9 @@ const selectedKeys = [
   [PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT],
   [
     PATH.ADMIN_PERMISSION,
-    // PATH.ADMIN_USER_MANAGEMENT,
     PATH.ADMIN_PERMISSION_USER_DETAIL,
+    PATH.ADMIN_PERMISSION_ROLE_DETAIL,
   ],
-  [PATH.ADMIN_ROLE_MANAGEMENT, PATH.ADMIN_DETAIL_ROLE_MANAGEMENT],
 ];
 
 const Sidebar = ({ collapsed, setCollapsed }: IProps) => {

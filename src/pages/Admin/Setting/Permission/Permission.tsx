@@ -1,15 +1,16 @@
 import { Flex } from 'antd';
 import classNames from 'classnames';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
+import { TAB_ITEM_KEY } from '~/enums';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
+import Role from './Role/Role';
 import UserList from './UserList/UserList';
-import UserRole from './UserRole/UserRole';
-import { TAB_ITEM_KEY } from '~/enums';
 
 interface ITabItems {
   key: string;
@@ -34,12 +35,12 @@ const UserPermission = () => {
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
 
+  const firstRender = useRef<boolean>(true);
+
   const { loading } = useAppSelector((state) => state.auth);
   const activedTab = useMemo(() => searchParams?.tab, [searchParams]);
 
   useEffect(() => {
-    navigate('?tab=user');
-
     setTitle('Danh sách người dùng');
     setBreadcrumb([{ title: 'Cài đặt' }, { title: 'Phân quyền' }]);
   }, []);
@@ -50,6 +51,11 @@ const UserPermission = () => {
         ? 'Danh sách người dùng'
         : 'Danh sách chức vụ'
     );
+
+    if (!firstRender.current) return;
+
+    navigate(`?tab=${activedTab || TAB_ITEM_KEY.USER}`);
+    firstRender.current = false;
   }, [activedTab]);
 
   const handleTabClick = useCallback((key: string) => {
@@ -72,7 +78,7 @@ const UserPermission = () => {
           </p>
         ))}
       </Flex>
-      {activedTab === TAB_ITEM_KEY.USER ? <UserList /> : <UserRole />}
+      {activedTab === TAB_ITEM_KEY.USER ? <UserList /> : <Role />}
     </Spin>
   );
 };

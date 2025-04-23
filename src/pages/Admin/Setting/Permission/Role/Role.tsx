@@ -21,7 +21,7 @@ import RoleFilter from './RoleFilter';
 const { Text } = Typography;
 const { PlusOutlined, EditOutlined } = icons;
 
-const RoleManagement = () => {
+const Role = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
@@ -114,7 +114,7 @@ const RoleManagement = () => {
               title={<EditOutlined />}
               onClick={() =>
                 navigate(
-                  `${PATH.ADMIN_DETAIL_ROLE_MANAGEMENT}?id=${record?.id}`
+                  `${PATH.ADMIN_PERMISSION_ROLE_DETAIL}?id=${record?.id}`
                 )
               }
             />
@@ -154,7 +154,7 @@ const RoleManagement = () => {
             fill
             title="Tạo"
             iconBefore={<PlusOutlined />}
-            onClick={() => navigate(PATH.ADMIN_DETAIL_ROLE_MANAGEMENT)}
+            onClick={() => navigate(PATH.ADMIN_PERMISSION_ROLE_DETAIL)}
           />
         </Col>
       </Row>
@@ -182,4 +182,4 @@ const RoleManagement = () => {
   );
 };
 
-export default memo(RoleManagement);
+export default memo(Role);

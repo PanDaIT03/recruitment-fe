@@ -12,39 +12,45 @@ import EmployerLayout from '~/pages/Employer/EmployerLayout';
 import ProtectedRoute from '~/routes/ProtectedRoute';
 import PATH from '~/utils/path';
 
-const Home = lazy(() => import('~/pages/Home/Home'));
-const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
-const Blog = lazy(() => import('~/pages/Blog/Blogs'));
+// NOTFOUNT ROUTE
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
-const JobDetail = lazy(() => import('~/pages/Job/JobList/JobDetail'));
+
+// COMMON ROUTES
+const Home = lazy(() => import('~/pages/Home/Home'));
+const Blog = lazy(() => import('~/pages/Blog/Blogs'));
 const JobList = lazy(() => import('~/pages/Job/JobList/JobList'));
+const JobDetail = lazy(() => import('~/pages/Job/JobList/JobDetail'));
 const JobSeeker = lazy(() => import('~/pages/Job/JobSeeker/JobSeeker'));
+
+const UserSignIn = lazy(() => import('~/pages/Auth/User/SignIn/SignIn'));
+const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
+const EmployerSignIn = lazy(
+  () => import('~/pages/Auth/Employer/SignIn/SignIn')
+);
+const EmployerSignUp = lazy(
+  () => import('~/pages/Auth/Employer/SignUp/SignUp')
+);
+const UserForgotPassword = lazy(
+  () => import('~/pages/Auth/User/ForgotPassword/ForgotPassword')
+);
+const UserResetPassword = lazy(
+  () => import('~/pages/Auth/User/ResetPassword/ResetPassword')
+);
+
+// USER ROUTES
 const UserResume = lazy(() => import('~/pages/User/Resume/Resume'));
-const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserAccount = lazy(() => import('~/pages/User/Account/Account'));
-const UserAppliedJob = lazy(() => import('~/pages/User/AppliedJob/AppliedJob'));
-const UserDetail = lazy(
-  () => import('~/pages/Admin/Setting/Permission/UserList/UserDetail')
-);
-
-const AdminDashboard = lazy(() => import('~/pages/Admin/Dashboard/Dashboard'));
-const AdminPermission = lazy(
-  () => import('~/pages/Admin/Setting/Permission/Permission')
-);
-
-const FunctionalGroupManagement = lazy(
-  () => import('~/pages/Admin/FunctionalGroup/FunctionalGroup')
-);
-const RoleManagement = lazy(() => import('~/pages/Admin/Role/RoleManagement'));
-const RoleDetailManagement = lazy(
-  () => import('~/pages/Admin/Role/DetailRoleManagement')
-);
-const FunctionalManagement = lazy(
-  () => import('~/pages/Admin/Functionals/FunctionalManagement')
-);
-
-const PostingJob = lazy(() => import('~/pages/Employer/Job/PostingJob'));
+const UserProfile = lazy(() => import('~/pages/User/Profile/Profile'));
 const UserDesiredJob = lazy(() => import('~/pages/User/DesiredJob/DesiredJob'));
+const UserAppliedJob = lazy(() => import('~/pages/User/AppliedJob/AppliedJob'));
+const UserJobApplication = lazy(
+  () => import('~/pages/User/JobApplication/JobApplication')
+);
+
+// EMPLOYER ROUTES
+const PostingJob = lazy(() => import('~/pages/Employer/Job/PostingJob'));
+const RecruitmentList = lazy(() => import('~/pages/Employer/Job/ManageJob'));
+const UpdateJob = lazy(() => import('~/pages/Employer/Job/UpdateJob'));
 const EmployerAccountPage = lazy(
   () => import('~/pages/Employer/Personal/EmployerAccountPage')
 );
@@ -57,27 +63,6 @@ const CandicateDashboard = lazy(
 const ManagementCandicates = lazy(
   () => import('~/pages/Employer/Candicates/ManagementCandicates')
 );
-const RecruitmentList = lazy(() => import('~/pages/Employer/Job/ManageJob'));
-const UpdateJob = lazy(() => import('~/pages/Employer/Job/UpdateJob'));
-
-const UserSignIn = lazy(() => import('~/pages/Auth/User/SignIn/SignIn'));
-const UserSignUp = lazy(() => import('~/pages/Auth/User/SignUp/SignUp'));
-const UserForgotPassword = lazy(
-  () => import('~/pages/Auth/User/ForgotPassword/ForgotPassword')
-);
-const UserResetPassword = lazy(
-  () => import('~/pages/Auth/User/ResetPassword/ResetPassword')
-);
-const EmployerSignIn = lazy(
-  () => import('~/pages/Auth/Employer/SignIn/SignIn')
-);
-const EmployerSignUp = lazy(
-  () => import('~/pages/Auth/Employer/SignUp/SignUp')
-);
-const UserJobApplication = lazy(
-  () => import('~/pages/User/JobApplication/JobApplication')
-);
-
 const AddNewCandicate = lazy(
   () => import('~/pages/Employer/Candicates/AddNewCandicate')
 );
@@ -86,6 +71,25 @@ const Recruitment = lazy(
 );
 const RecruitmentDetail = lazy(
   () => import('~/pages/Employer/RecruitmentList/RecruimentDetail')
+);
+
+// ADMIN ROUTES
+const AdminDashboard = lazy(() => import('~/pages/Admin/Dashboard/Dashboard'));
+const JobManagement = lazy(() => import('~/pages/Admin/Job/JobManagement'));
+const AdminPermission = lazy(
+  () => import('~/pages/Admin/Setting/Permission/Permission')
+);
+const RoleDetailManagement = lazy(
+  () => import('~/pages/Admin/Setting/Permission/Role/RoleDetail')
+);
+const UserDetail = lazy(
+  () => import('~/pages/Admin/Setting/Permission/UserList/UserDetail')
+);
+const FunctionalGroupManagement = lazy(
+  () => import('~/pages/Admin/FunctionalGroup/FunctionalGroup')
+);
+const FunctionalManagement = lazy(
+  () => import('~/pages/Admin/Functionals/FunctionalManagement')
 );
 
 type CustomRouteObject = RouteObject & {
@@ -167,12 +171,7 @@ const routesConfig: CustomRouteObject[] = [
       <UserDetail />
     ),
     createProtectedRoute(
-      PATH.ADMIN_ROLE_MANAGEMENT,
-      ['admin'],
-      <RoleManagement />
-    ),
-    createProtectedRoute(
-      PATH.ADMIN_DETAIL_ROLE_MANAGEMENT,
+      PATH.ADMIN_PERMISSION_ROLE_DETAIL,
       ['admin'],
       <RoleDetailManagement />
     ),
