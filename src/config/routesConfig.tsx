@@ -85,11 +85,9 @@ const RoleDetailManagement = lazy(
 const UserDetail = lazy(
   () => import('~/pages/Admin/Setting/Permission/UserList/UserDetail')
 );
-const FunctionalGroupManagement = lazy(
-  () => import('~/pages/Admin/FunctionalGroup/FunctionalGroup')
-);
-const FunctionalManagement = lazy(
-  () => import('~/pages/Admin/Functionals/FunctionalManagement')
+const AdminFunctionalManagement = lazy(
+  () =>
+    import('~/pages/Admin/Setting/FunctionalManagement/FunctionalManagement')
 );
 
 type CustomRouteObject = RouteObject & {
@@ -161,11 +159,6 @@ const routesConfig: CustomRouteObject[] = [
     createProtectedRoute(PATH.ADMIN_DASHBOARD, ['admin'], <AdminDashboard />),
     createProtectedRoute(PATH.ADMIN_PERMISSION, ['admin'], <AdminPermission />),
     createProtectedRoute(
-      PATH.ADMIN_JOB_MANAGEMENT,
-      ['admin'],
-      <JobManagement />
-    ),
-    createProtectedRoute(
       PATH.ADMIN_PERMISSION_USER_DETAIL,
       ['admin'],
       <UserDetail />
@@ -178,12 +171,12 @@ const routesConfig: CustomRouteObject[] = [
     createProtectedRoute(
       PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
       ['admin'],
-      <FunctionalManagement />
+      <AdminFunctionalManagement />
     ),
     createProtectedRoute(
-      PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT,
+      PATH.ADMIN_JOB_MANAGEMENT,
       ['admin'],
-      <FunctionalGroupManagement />
+      <JobManagement />
     ),
   ]),
 

@@ -29,21 +29,6 @@ const MENU_ITEMS = [
     ],
   },
   {
-    key: 'setting',
-    label: 'Cài đặt',
-    icon: <SettingOutlined />,
-    children: [
-      {
-        key: '/',
-        label: 'Danh sách chức năng',
-      },
-      {
-        key: PATH.ADMIN_PERMISSION,
-        label: 'Phân quyền',
-      },
-    ],
-  },
-  {
     key: 'management',
     label: 'Quản lý',
     icon: <List />,
@@ -52,13 +37,20 @@ const MENU_ITEMS = [
         key: PATH.ADMIN_JOB_MANAGEMENT,
         label: 'Danh sách công việc',
       },
+    ],
+  },
+  {
+    key: 'setting',
+    label: 'Cài đặt',
+    icon: <SettingOutlined />,
+    children: [
+      {
+        key: PATH.ADMIN_PERMISSION,
+        label: 'Phân quyền',
+      },
       {
         key: PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
         label: 'Danh sách chức năng',
-      },
-      {
-        key: PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT,
-        label: 'Danh sách nhóm chức năng',
       },
     ],
   },
@@ -68,7 +60,6 @@ const selectedKeys = [
   [PATH.ADMIN_DASHBOARD],
   [PATH.ADMIN_JOB_MANAGEMENT],
   [PATH.ADMIN_FUNCTIONAL_MANAGEMENT],
-  [PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT],
   [
     PATH.ADMIN_PERMISSION,
     PATH.ADMIN_PERMISSION_USER_DETAIL,

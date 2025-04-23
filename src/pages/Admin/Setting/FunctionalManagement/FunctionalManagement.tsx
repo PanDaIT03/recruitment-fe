@@ -6,29 +6,25 @@ import { useNavigate } from 'react-router-dom';
 import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
-import { PERMISSION_TAB_ITEM_KEY } from '~/enums';
+import { FUNCTIONAL_TAB_ITEM_KEY } from '~/enums';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
-import Role from './Role/Role';
-import UserList from './UserList/UserList';
-
-export interface ITabItems {
-  key: string;
-  label: string;
-}
+import { ITabItems } from '../Permission/Permission';
+import Functional from './Functional/Functional';
+import FunctionalGroup from './FunctionalGroup/FunctionalGroup';
 
 const tabItems: ITabItems[] = [
   {
-    key: PERMISSION_TAB_ITEM_KEY.USER,
-    label: 'Danh sách người dùng',
+    key: FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP,
+    label: 'Danh sách nhóm chức năng',
   },
   {
-    key: PERMISSION_TAB_ITEM_KEY.ROLE,
-    label: 'Vai trò người dùng',
+    key: FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL,
+    label: 'Danh sách chức năng',
   },
 ];
 
-const UserPermission = () => {
+const FunctionalManagement = () => {
   const navigate = useNavigate();
   const { searchParams } = useQueryParams();
 
@@ -41,20 +37,20 @@ const UserPermission = () => {
   const activedTab = useMemo(() => searchParams?.tab, [searchParams]);
 
   useEffect(() => {
-    setTitle('Danh sách người dùng');
-    setBreadcrumb([{ title: 'Cài đặt' }, { title: 'Phân quyền' }]);
+    setTitle('Danh sách chức năng');
+    setBreadcrumb([{ title: 'Cài đặt' }, { title: 'Danh sách chức năng' }]);
   }, []);
 
   useEffect(() => {
     setTitle(
-      activedTab === PERMISSION_TAB_ITEM_KEY.USER
-        ? 'Danh sách người dùng'
-        : 'Danh sách chức vụ'
+      activedTab === FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP
+        ? 'Danh sách nhóm chức năng'
+        : 'Danh sách chức năng'
     );
 
     if (!firstRender.current) return;
 
-    navigate(`?tab=${activedTab || PERMISSION_TAB_ITEM_KEY.USER}`);
+    navigate(`?tab=${activedTab || FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP}`);
     firstRender.current = false;
   }, [activedTab]);
 
@@ -78,9 +74,13 @@ const UserPermission = () => {
           </p>
         ))}
       </Flex>
-      {activedTab === PERMISSION_TAB_ITEM_KEY.USER ? <UserList /> : <Role />}
+      {activedTab === FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP ? (
+        <FunctionalGroup />
+      ) : (
+        <Functional />
+      )}
     </Spin>
   );
 };
 
-export default UserPermission;
+export default FunctionalManagement;

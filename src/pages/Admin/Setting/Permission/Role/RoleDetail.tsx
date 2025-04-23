@@ -13,7 +13,7 @@ import List from '~/components/List/List';
 import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
-import { TAB_ITEM_KEY } from '~/enums';
+import { PERMISSION_TAB_ITEM_KEY } from '~/enums';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionalGroups } from '~/store/thunk/functionalGroup';
@@ -97,7 +97,7 @@ const RoleDetail = () => {
   }, []);
 
   const handleNavigate = useCallback(() => {
-    navigate(`${PATH.ADMIN_PERMISSION}?tab=${TAB_ITEM_KEY.ROLE}`);
+    navigate(`${PATH.ADMIN_PERMISSION}?tab=${PERMISSION_TAB_ITEM_KEY.ROLE}`);
   }, []);
 
   useEffect(() => {

@@ -39,7 +39,7 @@ export interface IFunctionalForm {
 const { EditOutlined, PlusOutlined, CloseOutlined, QuestionCircleOutlined } =
   icons;
 
-const FunctionalManagement = () => {
+const Functional = () => {
   const dispatch = useAppDispatch();
   const [form] = useForm<IFunctionalForm>();
 
@@ -107,7 +107,7 @@ const FunctionalManagement = () => {
 
   useEffect(() => {
     setTitle('Danh sách chức năng');
-    setBreadcrumb([{ title: 'Quản lý' }, { title: 'Danh sách chức năng' }]);
+    setBreadcrumb([{ title: 'Cài đặt' }, { title: 'Danh sách chức năng' }]);
   }, []);
 
   const columns = useMemo(() => {
@@ -322,4 +322,4 @@ const FunctionalManagement = () => {
   );
 };
 
-export default memo(FunctionalManagement);
+export default memo(Functional);

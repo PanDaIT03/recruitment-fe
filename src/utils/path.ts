@@ -16,11 +16,10 @@ const PATH = {
   // Admin
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_JOB_MANAGEMENT: '/admin/job-management',
-  ADMIN_FUNCTIONAL_MANAGEMENT: '/admin/functional-management',
-  ADMIN_FUNCTIONAL_GROUP_MANAGEMENT: '/admin/functional-group-management',
-  ADMIN_PERMISSION: '/admin/permission',
-  ADMIN_PERMISSION_USER_DETAIL: '/admin/permission/user-detail',
-  ADMIN_PERMISSION_ROLE_DETAIL: '/admin/permission/role-detail',
+  ADMIN_PERMISSION: '/admin/setting/permission',
+  ADMIN_PERMISSION_USER_DETAIL: '/admin/setting/permission/user-detail',
+  ADMIN_PERMISSION_ROLE_DETAIL: '/admin/setting/permission/role-detail',
+  ADMIN_FUNCTIONAL_MANAGEMENT: '/admin/setting/functional-management',
   // Employer
   EMPLOYER_DASHBOARD: '/employer/dashboard',
   EMPLOYER_POSTING: '/employer/posting-job',

@@ -8,7 +8,7 @@ import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal, { IModalProps } from '~/components/Modal/Modal';
 import icons from '~/utils/icons';
-import { IFunctionalForm } from './FunctionalManagement';
+import { IFunctionalForm } from './Functional';
 
 interface IProps extends IModalProps {
   editIndex: number;

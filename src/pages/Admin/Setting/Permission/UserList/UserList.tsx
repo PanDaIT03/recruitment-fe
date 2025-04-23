@@ -23,7 +23,7 @@ import Modal from '~/components/Modal/Modal';
 import { RadioGroup } from '~/components/Radio/Radio';
 import Select from '~/components/Select/Select';
 import Table from '~/components/Table/Table';
-import { TAB_ITEM_KEY } from '~/enums';
+import { PERMISSION_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllStatus } from '~/store/thunk/status';
@@ -143,7 +143,7 @@ const UserList = () => {
     setFilterParams({});
     setIsOpenFilter(false);
     hanldeClearURLSearchParams({
-      tab: TAB_ITEM_KEY.USER,
+      tab: PERMISSION_TAB_ITEM_KEY.USER,
     });
   }, []);
 

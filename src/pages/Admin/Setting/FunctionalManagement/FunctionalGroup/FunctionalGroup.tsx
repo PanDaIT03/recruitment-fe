@@ -19,7 +19,6 @@ import Content from '~/components/Content/Content';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
-import Spin from '~/components/Loading/Spin';
 import Modal from '~/components/Modal/Modal';
 import Select from '~/components/Select/Select';
 import Table from '~/components/Table/Table';
@@ -139,7 +138,7 @@ const FunctionalGroup = () => {
   useEffect(() => {
     setTitle('Danh sách nhóm chức năng');
     setBreadcrumb([
-      { title: 'Quản lý' },
+      { title: 'Cài đặt' },
       { title: 'Danh sách nhóm chức năng' },
     ]);
   }, []);
@@ -287,7 +286,7 @@ const FunctionalGroup = () => {
   );
 
   return (
-    <Spin spinning={isDeleteFunctionalGroupPending}>
+    <>
       <Row gutter={[8, 16]} align={'middle'} justify={'end'}>
         <Col>
           <Button
@@ -312,8 +311,8 @@ const FunctionalGroup = () => {
       />
       <Content>
         <Table
-          loading={loading}
           columns={columns}
+          loading={loading || isDeleteFunctionalGroupPending}
           dataSource={functionalGroups.items}
           pagination={{
             current: pageInfo.page,
@@ -387,7 +386,7 @@ const FunctionalGroup = () => {
           </FormItem>
         </FormWrapper>
       </Modal>
-    </Spin>
+    </>
   );
 };
 
