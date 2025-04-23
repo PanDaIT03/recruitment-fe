@@ -11,6 +11,7 @@ import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
+import { PERMISSION_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
 import { getAllRoles } from '~/store/thunk/role';
@@ -21,7 +22,7 @@ import RoleFilter from './RoleFilter';
 const { Text } = Typography;
 const { PlusOutlined, EditOutlined } = icons;
 
-const RoleManagement = () => {
+const Role = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
@@ -33,12 +34,13 @@ const RoleManagement = () => {
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [filterParams, setFilterParams] = useState({} as any);
 
-  const { items, pageInfo, handlePageChange } = usePagination({
-    items: roles.items,
-    fetchAction: getAllRoles,
-    extraParams: filterParams,
-    setFilterParams: setFilterParams,
-  });
+  const { items, pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+    usePagination({
+      items: roles.items,
+      fetchAction: getAllRoles,
+      extraParams: filterParams,
+      setFilterParams: setFilterParams,
+    });
 
   useEffect(() => {
     setTitle('Danh sách chức vụ');
@@ -114,7 +116,7 @@ const RoleManagement = () => {
               title={<EditOutlined />}
               onClick={() =>
                 navigate(
-                  `${PATH.ADMIN_DETAIL_ROLE_MANAGEMENT}?id=${record?.id}`
+                  `${PATH.ADMIN_PERMISSION_ROLE_DETAIL}?id=${record?.id}`
                 )
               }
             />
@@ -130,6 +132,10 @@ const RoleManagement = () => {
 
   const handleCancelFilter = useCallback(() => {
     setFilterParams({});
+    setIsOpenFilter(false);
+    hanldeClearURLSearchParams({
+      tab: PERMISSION_TAB_ITEM_KEY.ROLE,
+    });
   }, []);
 
   const handleFinishFilter = useCallback((params: any) => {
@@ -154,7 +160,7 @@ const RoleManagement = () => {
             fill
             title="Tạo"
             iconBefore={<PlusOutlined />}
-            onClick={() => navigate(PATH.ADMIN_DETAIL_ROLE_MANAGEMENT)}
+            onClick={() => navigate(PATH.ADMIN_PERMISSION_ROLE_DETAIL)}
           />
         </Col>
       </Row>
@@ -182,4 +188,4 @@ const RoleManagement = () => {
   );
 };
 
-export default memo(RoleManagement);
+export default memo(Role);

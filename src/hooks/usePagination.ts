@@ -76,7 +76,10 @@ function usePagination<T, P extends { page: number; pageSize: number }>({
     const queryParams = Object.entries(params).reduce(
       (prevVal, currentVal) => {
         const [key, value] = currentVal;
-        if (value) prevVal[key] = value;
+
+        if (value)
+          prevVal[key] =
+            typeof value === 'string' ? (value as string)?.trim() : value;
 
         return prevVal;
       },
@@ -99,7 +102,7 @@ function usePagination<T, P extends { page: number; pageSize: number }>({
       },
       { replace: true }
     );
-    dispatch(fetchAction(params));
+    dispatch(fetchAction(queryParams as P));
   }, [currentPage, itemsPerPage, extraParams]);
 
   useEffect(() => {

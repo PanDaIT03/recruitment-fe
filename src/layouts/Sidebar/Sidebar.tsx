@@ -3,7 +3,13 @@ import classNames from 'classnames';
 import { Dispatch, memo, SetStateAction } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Dashboard, HeaderLogoPrimary, List } from '~/assets/svg';
+import {
+  Dashboard,
+  EditStreamline,
+  HeaderLogoPrimary,
+  List
+} from '~/assets/svg';
+import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import './index.scss';
 
@@ -13,6 +19,7 @@ interface IProps {
 }
 
 const { Sider } = Layout;
+const { SettingOutlined } = icons;
 
 const MENU_ITEMS = [
   {
@@ -33,23 +40,33 @@ const MENU_ITEMS = [
     children: [
       {
         key: PATH.ADMIN_JOB_MANAGEMENT,
-        label: 'Danh sách công việc',
+        label: 'Công việc',
       },
+    ],
+  },
+  {
+    key: 'approve',
+    label: 'Phê duyệt',
+    icon: <EditStreamline />,
+    children: [
       {
-        key: PATH.ADMIN_USER_MANAGEMENT,
-        label: 'Danh sách người dùng',
+        key: '',
+        label: 'Phê duyệt hồ sơ',
       },
+    ],
+  },
+  {
+    key: 'setting',
+    label: 'Cài đặt',
+    icon: <SettingOutlined />,
+    children: [
       {
-        key: PATH.ADMIN_ROLE_MANAGEMENT,
-        label: 'Danh sách chức vụ',
+        key: PATH.ADMIN_PERMISSION,
+        label: 'Phân quyền',
       },
       {
         key: PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
         label: 'Danh sách chức năng',
-      },
-      {
-        key: PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT,
-        label: 'Danh sách nhóm chức năng',
       },
     ],
   },
@@ -59,9 +76,11 @@ const selectedKeys = [
   [PATH.ADMIN_DASHBOARD],
   [PATH.ADMIN_JOB_MANAGEMENT],
   [PATH.ADMIN_FUNCTIONAL_MANAGEMENT],
-  [PATH.ADMIN_FUNCTIONAL_GROUP_MANAGEMENT],
-  [PATH.ADMIN_USER_MANAGEMENT, PATH.ADMIN_USER_DETAIL],
-  [PATH.ADMIN_ROLE_MANAGEMENT, PATH.ADMIN_DETAIL_ROLE_MANAGEMENT],
+  [
+    PATH.ADMIN_PERMISSION,
+    PATH.ADMIN_PERMISSION_USER_DETAIL,
+    PATH.ADMIN_PERMISSION_ROLE_DETAIL,
+  ],
 ];
 
 const Sidebar = ({ collapsed, setCollapsed }: IProps) => {

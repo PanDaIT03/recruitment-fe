@@ -3,7 +3,7 @@ import { Col, Flex, message, Row, Space, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -19,13 +19,11 @@ import Content from '~/components/Content/Content';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
-import Spin from '~/components/Loading/Spin';
 import Modal from '~/components/Modal/Modal';
 import { RadioGroup } from '~/components/Radio/Radio';
 import Select from '~/components/Select/Select';
 import Table from '~/components/Table/Table';
-import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
-import { useTitle } from '~/contexts/TitleProvider';
+import { PERMISSION_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllStatus } from '~/store/thunk/status';
@@ -50,14 +48,11 @@ export type IFormFilter = Partial<{
   jobFieldsId: number[];
 }>;
 
-const { EyeOutlined, EditOutlined, CloseOutlined, SaveOutlined } = icons;
+const { EditOutlined, EyeOutlined, CloseOutlined, SaveOutlined } = icons;
 
-const UserManagement: React.FC = () => {
+const UserList = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const { setTitle } = useTitle();
-  const { setBreadcrumb } = useBreadcrumb();
 
   const [formFilter] = useForm<IFormFilter>();
   const [formUserAdmin] = useForm<IUserAdminForm>();
@@ -71,6 +66,11 @@ const UserManagement: React.FC = () => {
   const { roles, loading: roleLoading } = useAppSelector((state) => state.role);
   const { status, loading: statusLoading } = useAppSelector(
     (state) => state.status
+  );
+
+  const isTableLoading = useMemo(
+    () => loading || statusLoading || roleLoading,
+    [loading, statusLoading, roleLoading]
   );
 
   const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
@@ -95,9 +95,54 @@ const UserManagement: React.FC = () => {
 
   useEffect(() => {
     dispatch(getAllStatus({ type: 'account' }));
+  }, []);
 
-    setTitle('Danh sách người dùng');
-    setBreadcrumb([{ title: 'Quản lý' }, { title: 'Danh sách người dùng' }]);
+  const refetchUserAdmin = useCallback((params?: IGetAllUserAdmin) => {
+    const formattedParams = params || {};
+    dispatch(getAllUserAdmin(formattedParams));
+  }, []);
+
+  const handleEdit = useCallback((record: IUserAdminItem) => {
+    formUserAdmin.setFieldsValue({
+      userId: record.id,
+      email: record?.email,
+      role: record?.role?.id,
+      fullName: record?.fullName,
+      statusId: record?.status?.id,
+    });
+
+    setIsOpenModal(true);
+  }, []);
+
+  const handleCancelModal = useCallback(() => {
+    formUserAdmin.resetFields();
+    setIsOpenModal(false);
+  }, []);
+
+  const handleFinishEditUser = useCallback(
+    (values: IUserAdminForm) => {
+      const { role, statusId } = values;
+      const userId = formUserAdmin.getFieldValue('userId');
+
+      updateUser({
+        userId,
+        statusId,
+        roleId: role,
+      });
+    },
+    [formUserAdmin]
+  );
+
+  const handleFilter = useCallback((values: any) => {
+    setFilterParams(values);
+  }, []);
+
+  const handleCancelFilter = useCallback(() => {
+    setFilterParams({});
+    setIsOpenFilter(false);
+    hanldeClearURLSearchParams({
+      tab: PERMISSION_TAB_ITEM_KEY.USER,
+    });
   }, []);
 
   const columns = useMemo(() => {
@@ -177,7 +222,7 @@ const UserManagement: React.FC = () => {
               title={<EyeOutlined />}
               tooltipTitle="Xem chi tiết"
               onClick={() =>
-                navigate(PATH.ADMIN_USER_DETAIL, { state: record })
+                navigate(PATH.ADMIN_PERMISSION_USER_DETAIL, { state: record })
               }
             />
             <SwitchButton
@@ -199,69 +244,8 @@ const UserManagement: React.FC = () => {
     ] as ColumnsType<IUserAdminItem>;
   }, [userAdmin, status, pageInfo]);
 
-  const refetchUserAdmin = useCallback((params?: IGetAllUserAdmin) => {
-    const formattedParams = params || {};
-    dispatch(getAllUserAdmin(formattedParams));
-  }, []);
-
-  const handleEdit = useCallback((record: IUserAdminItem) => {
-    formUserAdmin.setFieldsValue({
-      userId: record.id,
-      email: record?.email,
-      role: record?.role?.id,
-      fullName: record?.fullName,
-      statusId: record?.status?.id,
-    });
-
-    setIsOpenModal(true);
-  }, []);
-
-  const handleFilter = useCallback((values: any) => {
-    const formattedValues: IFormFilter = Object.entries(values).reduce(
-      (prevVal, currentVal) => {
-        const [key, value] = currentVal;
-        if (value)
-          prevVal[key] = typeof value === 'string' ? value?.trim() : value;
-
-        return prevVal;
-      },
-      {} as Record<string, any>
-    );
-
-    setFilterParams(formattedValues);
-  }, []);
-
-  const handleCancelFilter = useCallback(() => {
-    formFilter.resetFields();
-
-    setFilterParams({});
-    setIsOpenFilter(false);
-    hanldeClearURLSearchParams();
-  }, []);
-
-  const handleFinishEditUser = useCallback(
-    (values: IUserAdminForm) => {
-      const { role, statusId } = values;
-      const userId = formUserAdmin.getFieldValue('userId');
-
-      updateUser({
-        userId,
-        statusId,
-        roleId: role,
-      });
-    },
-    [formUserAdmin]
-  );
-
-  const handleCancelModal = useCallback(() => {
-    formUserAdmin.resetFields();
-    setIsOpenModal(false);
-  }, []);
-
   return (
-    <Spin
-      spinning={loading || roleLoading || isUpdateUserPending || statusLoading}
-    >
+    <>
       <Row align="middle" justify="end">
         <Col>
           <Button
@@ -281,7 +265,7 @@ const UserManagement: React.FC = () => {
       <Content>
         <Table<IUserAdminItem>
           columns={columns}
-          loading={loading}
+          loading={isTableLoading}
           dataSource={userAdmin.items}
           pagination={{
             current: pageInfo.page,
@@ -348,8 +332,8 @@ const UserManagement: React.FC = () => {
           </FormItem>
         </FormWrapper>
       </Modal>
-    </Spin>
+    </>
   );
 };
 
-export default UserManagement;
+export default memo(UserList);

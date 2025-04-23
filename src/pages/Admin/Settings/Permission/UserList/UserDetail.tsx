@@ -85,7 +85,10 @@ const UserDetail = () => {
 
   const { mutate: updateUser, isPending: isUpdateUserPending } = useMutation({
     mutationFn: (params: IAdminUpdateUser) => UserAdminApi.updateUser(params),
-    onSuccess: (res) => message.success(res?.message || 'Cập nhật thành công'),
+    onSuccess: (res) => {
+      message.success(res?.message || 'Cập nhật thành công');
+      navigate(PATH.ADMIN_PERMISSION);
+    },
     onError: (error: any) =>
       message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`),
   });
@@ -177,8 +180,8 @@ const UserDetail = () => {
   useEffect(() => {
     setTitle('Thông tin chi tiết người dùng');
     setBreadcrumb([
-      { title: 'Quản lý', href: PATH.ADMIN_USER_MANAGEMENT },
-      { title: 'Danh sách người dùng', href: PATH.ADMIN_USER_MANAGEMENT },
+      { title: 'Cài đặt' },
+      { title: 'Phân quyền', href: PATH.ADMIN_PERMISSION },
       { title: 'Thông tin chi tiết người dùng' },
     ]);
   }, []);
@@ -286,7 +289,7 @@ const UserDetail = () => {
               title="Hủy"
               iconBefore={<CloseOutlined />}
               loading={isUpdateUserPending}
-              onClick={() => navigate(PATH.ADMIN_USER_MANAGEMENT)}
+              onClick={() => navigate(PATH.ADMIN_PERMISSION)}
             />
             <Button
               fill
