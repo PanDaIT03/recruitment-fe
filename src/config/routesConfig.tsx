@@ -89,6 +89,9 @@ const AdminFunctionalManagement = lazy(
   () =>
     import('~/pages/Admin/Settings/FunctionalManagement/FunctionalManagement')
 );
+const AdminMenuManagement = lazy(
+  () => import('~/pages/Admin/Settings/MenuManagement/MenuManagement')
+);
 
 type CustomRouteObject = RouteObject & {
   layout?: React.ComponentType<{ children: React.ReactNode }>;
@@ -172,6 +175,11 @@ const routesConfig: CustomRouteObject[] = [
       PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
       ['admin'],
       <AdminFunctionalManagement />
+    ),
+    createProtectedRoute(
+      PATH.ADMIN_MENU_MANAGEMENT,
+      ['admin'],
+      <AdminMenuManagement />
     ),
     createProtectedRoute(
       PATH.ADMIN_JOB_MANAGEMENT,

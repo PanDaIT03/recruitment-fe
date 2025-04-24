@@ -1,4 +1,5 @@
 import { TokenResponse } from '@react-oauth/google';
+import dayjs from 'dayjs';
 import { IGoogleUserInfo } from '~/types/Auth';
 
 interface IGoogleUserInfoResponse {
@@ -56,4 +57,11 @@ export const formatSalary = (
   if (max) return `${max}k VND`;
 
   return 'Thương lượng';
+};
+
+export const formatDateToBE = (date: string) => {
+  if (!date) return '';
+
+  const dayjsDate = dayjs(date);
+  return dayjsDate.format('YYYY-MM-DD HH:mm:ss.SSS') + '000';
 };

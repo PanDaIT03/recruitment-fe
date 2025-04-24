@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { Col, FormInstance, message, Row } from 'antd';
-import { Dispatch, SetStateAction, useCallback, useEffect } from 'react';
+import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import FilterBox from '~/components/FilterBox/FilterBox';
@@ -118,4 +118,4 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
   );
 };
 
-export default UserFilter;
+export default memo(UserFilter);

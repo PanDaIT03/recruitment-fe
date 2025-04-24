@@ -412,14 +412,14 @@ const JobApplication = () => {
                           placeholder="Chọn ngoại ngữ"
                           options={languages?.items.map((language) => ({
                             label: (
-                              <Flex justify="space-between">
-                                <span>{language?.title}</span>
+                              <Flex align="center" gap={16}>
                                 <Image
                                   width={16}
-                                  height={12}
+                                  height={16}
                                   preview={false}
                                   src={language?.imageUrl}
                                 />
+                                <span>{language?.title}</span>
                               </Flex>
                             ),
                             value: language.id,
