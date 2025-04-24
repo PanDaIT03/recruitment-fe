@@ -12,7 +12,7 @@ import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
 import { ICON_TYPE, MENU_MANAGEMENT_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { useAppSelector } from '~/hooks/useStore';
 import HeaderMenuIcon from '~/layouts/Header/menu/HeaderMenuIcon';
 import { getAllMenuViews } from '~/store/thunk/menuView';
 import { IMenuViewItem } from '~/types/MenuVIews';
@@ -27,6 +27,14 @@ export interface IFilterMenuView {
   orderIndex?: number;
   iconType?: string;
   createdDate?: any;
+}
+
+export interface IMenuForm {
+  orderIndex: number;
+  title: string;
+  path: string;
+  iconPath: string;
+  iconFile?: string;
 }
 
 export const iconTypeOptions: DefaultOptionType[] = [
@@ -44,9 +52,9 @@ const { PlusOutlined, EditOutlined, QuestionCircleOutlined, CloseOutlined } =
   icons;
 
 const Menu = () => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
-  const [modalForm] = useForm();
+  const [menuForm] = useForm<IMenuForm>();
   const [filterForm] = useForm<IFilterMenuView>();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -64,8 +72,16 @@ const Menu = () => {
     });
 
   const handleEdit = useCallback((record: IMenuViewItem) => {
-    console.log(record);
+    const { orderIndex, title, path, icon } = record;
+    const fieldsValue: IMenuForm = {
+      orderIndex: orderIndex,
+      title: title,
+      path: path,
+      iconPath: icon,
+    };
+
     setIsOpenModal(true);
+    menuForm.setFieldsValue(fieldsValue);
   }, []);
 
   const handleDelete = useCallback((id: number) => {
@@ -94,7 +110,7 @@ const Menu = () => {
     setIsOpenModal(false);
   }, []);
 
-  const handleFinishModal = useCallback((values: any) => {
+  const handleFinishModal = useCallback((values: IMenuForm) => {
     console.log(values);
   }, []);
 
@@ -227,7 +243,7 @@ const Menu = () => {
         />
       </Content>
       <ModalMenu
-        form={modalForm}
+        form={menuForm}
         isOpen={isOpenModal}
         title="Chỉnh sửa menu"
         onFinish={handleFinishModal}
