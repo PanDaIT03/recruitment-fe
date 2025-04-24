@@ -1,7 +1,7 @@
 import { Col, Form, Row, Space, Typography } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { FilterAdmin } from '~/assets/svg';
@@ -9,8 +9,6 @@ import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
-import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
-import { useTitle } from '~/contexts/TitleProvider';
 import { PERMISSION_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
@@ -26,9 +24,6 @@ const Role = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const { setTitle } = useTitle();
-  const { setBreadcrumb } = useBreadcrumb();
-
   const { roles, loading } = useAppSelector((state) => state.role);
 
   const [isOpenFilter, setIsOpenFilter] = useState(false);
@@ -41,11 +36,6 @@ const Role = () => {
       extraParams: filterParams,
       setFilterParams: setFilterParams,
     });
-
-  useEffect(() => {
-    setTitle('Danh sách chức vụ');
-    setBreadcrumb([{ title: 'Quản lý' }, { title: 'Danh sách chức vụ' }]);
-  }, []);
 
   const columns = useMemo(() => {
     return [

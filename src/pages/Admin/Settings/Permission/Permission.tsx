@@ -41,17 +41,11 @@ const UserPermission = () => {
   const activedTab = useMemo(() => searchParams?.tab, [searchParams]);
 
   useEffect(() => {
-    setTitle('Danh sách người dùng');
+    setTitle('Phân quyền');
     setBreadcrumb([{ title: 'Cài đặt' }, { title: 'Phân quyền' }]);
   }, []);
 
   useEffect(() => {
-    setTitle(
-      activedTab === PERMISSION_TAB_ITEM_KEY.USER
-        ? 'Danh sách người dùng'
-        : 'Danh sách chức vụ'
-    );
-
     if (!firstRender.current) return;
 
     navigate(`?tab=${activedTab || PERMISSION_TAB_ITEM_KEY.USER}`);
