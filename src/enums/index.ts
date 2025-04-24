@@ -59,3 +59,8 @@ export enum FUNCTIONAL_TAB_ITEM_KEY {
   FUNCTIONAL = 'functional',
   FUNCTIONAL_GROUP = 'functional-group',
 }
+
+export enum MENU_MANAGEMENT_TAB_ITEM_KEY {
+  MENU = 'menu',
+  MENU_GROUP = 'menu-group',
+}

@@ -42,12 +42,6 @@ const FunctionalManagement = () => {
   }, []);
 
   useEffect(() => {
-    setTitle(
-      activedTab === FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP
-        ? 'Danh sách nhóm chức năng'
-        : 'Danh sách chức năng'
-    );
-
     if (!firstRender.current) return;
 
     navigate(`?tab=${activedTab || FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP}`);

@@ -22,8 +22,6 @@ import Input from '~/components/Input/Input';
 import Modal from '~/components/Modal/Modal';
 import Select from '~/components/Select/Select';
 import Table from '~/components/Table/Table';
-import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
-import { useTitle } from '~/contexts/TitleProvider';
 import { FUNCTIONAL_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -57,9 +55,6 @@ const FunctionalGroup = () => {
 
   const [functionalForm] = useForm<IFunctionalGroupForm>();
   const [filterForm] = useForm<IFilterFunctionalGroupForm>();
-
-  const { setTitle } = useTitle();
-  const { setBreadcrumb } = useBreadcrumb();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
@@ -143,18 +138,8 @@ const FunctionalGroup = () => {
   });
 
   useEffect(() => {
-    setTitle('Danh sách nhóm chức năng');
-    setBreadcrumb([
-      { title: 'Cài đặt' },
-      { title: 'Danh sách nhóm chức năng' },
-    ]);
+    getAllFunctionals({ type: 'combobox' });
   }, []);
-
-  useEffect(() => {
-    if (!isOpenModal) return;
-
-    getAllFunctionals({});
-  }, [isOpenModal]);
 
   const columns = useMemo(() => {
     return [

@@ -32,7 +32,19 @@ const FilterBox = ({
   const { searchParams } = useQueryParams();
 
   const handleFinish = useCallback(() => {
-    onFinish(form.getFieldsValue());
+    const formValues = form.getFieldsValue();
+    const formattedParams = Object.entries(formValues).reduce(
+      (prevVal, currentVal) => {
+        const [key, value] = currentVal;
+        if (value)
+          prevVal[key] = typeof value === 'string' ? value?.trim() : value;
+
+        return prevVal;
+      },
+      {} as Record<string, any>
+    );
+
+    onFinish(formattedParams);
   }, [onFinish]);
 
   const handleCancel = useCallback(() => {
