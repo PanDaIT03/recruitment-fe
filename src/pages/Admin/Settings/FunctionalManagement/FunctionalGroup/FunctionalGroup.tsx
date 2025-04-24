@@ -148,13 +148,9 @@ const FunctionalGroup = () => {
       { title: 'Cài đặt' },
       { title: 'Danh sách nhóm chức năng' },
     ]);
+
+    getAllFunctionals({ type: 'combobox' });
   }, []);
-
-  useEffect(() => {
-    if (!isOpenModal) return;
-
-    getAllFunctionals({});
-  }, [isOpenModal]);
 
   const columns = useMemo(() => {
     return [

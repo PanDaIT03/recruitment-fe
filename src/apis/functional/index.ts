@@ -5,6 +5,7 @@ export interface IGetAllFunctionalParams {
   pageSize?: number;
   title?: string;
   code?: string;
+  type?: string;
 }
 
 export interface ICreateFunctionalParams {
