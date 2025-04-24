@@ -20,6 +20,7 @@ const PATH = {
   ADMIN_PERMISSION_USER_DETAIL: '/admin/settings/permission/user-detail',
   ADMIN_PERMISSION_ROLE_DETAIL: '/admin/settings/permission/role-detail',
   ADMIN_FUNCTIONAL_MANAGEMENT: '/admin/settings/functional-management',
+  ADMIN_MENU_MANAGEMENT: '/admin/settings/menu-management',
   // Employer
   EMPLOYER_DASHBOARD: '/employer/dashboard',
   EMPLOYER_POSTING: '/employer/posting-job',
