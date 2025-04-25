@@ -8,13 +8,16 @@ import {
   Upload,
   UploadFile,
 } from 'antd';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import Dragger, { IUploadProps } from '~/components/Dragger/Dragger';
 
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal, { IModalProps } from '~/components/Modal/Modal';
+import Select from '~/components/Select/Select';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getAllFunctionals } from '~/store/thunk/functional';
 import { IMenuForm } from './Menu';
 
 interface IProps extends IModalProps {
@@ -27,9 +30,20 @@ enum TAB_KEY {
   FILE = 'file',
 }
 
-const ModalMenu = ({ form, onFinish, ...props }: IProps) => {
-  const [activeKey, setActiveKey] = useState('');
+const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
+  const dispatch = useAppDispatch();
+
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
+  const { functionals } = useAppSelector((state) => state.functional);
+
+  useEffect(() => {
+    if (!!functionals?.items?.length) return;
+    dispatch(getAllFunctionals({ type: 'combobox' }));
+  }, [functionals]);
+
+  useEffect(() => {
+    if (isOpen && uploadFile?.length) setUploadFile([]);
+  }, [isOpen]);
 
   const draggerProps: IUploadProps = useMemo(
     () => ({
@@ -53,7 +67,6 @@ const ModalMenu = ({ form, onFinish, ...props }: IProps) => {
         }
 
         const newFile: UploadFile[] = [
-          ...uploadFile,
           { uid: file.uid, name: file.name, originFileObj: file },
         ];
 
@@ -73,12 +86,6 @@ const ModalMenu = ({ form, onFinish, ...props }: IProps) => {
           <FormItem
             label="Icon path"
             name="iconPath"
-            rules={[
-              {
-                required: activeKey === TAB_KEY.TEXT,
-                message: 'Vui lòng nhập đường dẫn cho icon',
-              },
-            ]}
             extra="Nhập tên icon builtin (home, user, settings, chart) hoặc URL đến icon (https://example.com/icon.svg)"
           >
             <Input allowClear placeholder="Nhập tên icon hoặc URL hình ảnh" />
@@ -89,31 +96,17 @@ const ModalMenu = ({ form, onFinish, ...props }: IProps) => {
         key: TAB_KEY.FILE,
         label: 'File',
         children: (
-          <FormItem
-            label="Icon path"
-            name="iconFile"
-            rules={[
-              {
-                required: activeKey === TAB_KEY.FILE,
-                message: 'Vui lòng tải lên tệp icon',
-              },
-            ]}
-          >
+          <FormItem label="Icon path" name="iconFile">
             <Dragger {...draggerProps} />
           </FormItem>
         ),
       },
     ],
-    [activeKey, draggerProps]
+    [draggerProps]
   );
 
-  const handleTabChange = useCallback((activeKey: string) => {
-    console.log(activeKey);
-    setActiveKey(activeKey);
-  }, []);
-
   return (
-    <Modal {...props} onOk={() => form.submit()}>
+    <Modal {...props} isOpen={isOpen} onOk={() => form.submit()}>
       <FormWrapper form={form} onFinish={onFinish}>
         <Row gutter={[8, 16]}>
           <Col span={9}>
@@ -136,13 +129,26 @@ const ModalMenu = ({ form, onFinish, ...props }: IProps) => {
           </Col>
         </Row>
         <FormItem
+          label="Chức năng"
+          name="functionalIds"
+          rules={[{ required: true, message: 'Vui lòng chọn chức năng' }]}
+        >
+          <Select
+            mode="multiple"
+            options={functionals?.items?.map((functional) => ({
+              label: functional?.title,
+              value: functional?.id,
+            }))}
+          />
+        </FormItem>
+        <FormItem
           label="Path"
           name="path"
           rules={[{ required: true, message: 'Vui lòng nhập đường dẫn' }]}
         >
           <Input />
         </FormItem>
-        <Tabs items={tabItems} onChange={handleTabChange} />
+        <Tabs defaultActiveKey={TAB_KEY.TEXT} items={tabItems} />
       </FormWrapper>
     </Modal>
   );
