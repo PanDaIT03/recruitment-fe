@@ -6,29 +6,25 @@ import { useNavigate } from 'react-router-dom';
 import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
-import { PERMISSION_TAB_ITEM_KEY } from '~/enums';
+import { MENU_MANAGEMENT_TAB_ITEM_KEY } from '~/enums';
 import useQueryParams from '~/hooks/useQueryParams';
 import { useAppSelector } from '~/hooks/useStore';
-import Role from './Role/Role';
-import UserList from './UserList/UserList';
-
-export interface ITabItems {
-  key: string;
-  label: string;
-}
+import { ITabItems } from '../Permission/Permission';
+import Menu from './Menu/Menu';
+import MenuGroup from './MenuGroup/MenuGroup';
 
 const tabItems: ITabItems[] = [
   {
-    key: PERMISSION_TAB_ITEM_KEY.USER,
-    label: 'Danh sách người dùng',
+    key: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU_GROUP,
+    label: 'Danh sách menu group',
   },
   {
-    key: PERMISSION_TAB_ITEM_KEY.ROLE,
-    label: 'Vai trò người dùng',
+    key: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU,
+    label: 'Danh sách menu',
   },
 ];
 
-const UserPermission = () => {
+const MenuManagement = () => {
   const navigate = useNavigate();
   const { searchParams } = useQueryParams();
 
@@ -41,14 +37,14 @@ const UserPermission = () => {
   const activedTab = useMemo(() => searchParams?.tab, [searchParams]);
 
   useEffect(() => {
-    setTitle('Phân quyền');
-    setBreadcrumb([{ title: 'Cài đặt' }, { title: 'Phân quyền' }]);
+    setTitle('Quản lý Menu/Menu group');
+    setBreadcrumb([{ title: 'Cài đặt' }, { title: 'Quản lý Menu/Menu group' }]);
   }, []);
 
   useEffect(() => {
     if (!firstRender.current) return;
 
-    navigate(`?tab=${activedTab || PERMISSION_TAB_ITEM_KEY.USER}`);
+    navigate(`?tab=${activedTab || MENU_MANAGEMENT_TAB_ITEM_KEY.MENU}`);
     firstRender.current = false;
   }, [activedTab]);
 
@@ -72,9 +68,13 @@ const UserPermission = () => {
           </p>
         ))}
       </Flex>
-      {activedTab === PERMISSION_TAB_ITEM_KEY.USER ? <UserList /> : <Role />}
+      {activedTab === MENU_MANAGEMENT_TAB_ITEM_KEY.MENU ? (
+        <Menu />
+      ) : (
+        <MenuGroup />
+      )}
     </Spin>
   );
 };
 
-export default UserPermission;
+export default MenuManagement;

@@ -3,7 +3,7 @@ import { Col, Flex, message, Popconfirm, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 
 import {
   FunctionalAPI,
@@ -20,8 +20,6 @@ import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal from '~/components/Modal/Modal';
 import Table from '~/components/Table/Table';
-import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
-import { useTitle } from '~/contexts/TitleProvider';
 import { FUNCTIONAL_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -57,9 +55,6 @@ const Functional = () => {
 
   const [form] = useForm<IFunctionalForm>();
   const [filterForm] = useForm<IFilterFunctionalForm>();
-
-  const { setTitle } = useTitle();
-  const { setBreadcrumb } = useBreadcrumb();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
@@ -120,11 +115,6 @@ const Functional = () => {
         message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`);
       },
     });
-
-  useEffect(() => {
-    setTitle('Danh sách chức năng');
-    setBreadcrumb([{ title: 'Cài đặt' }, { title: 'Danh sách chức năng' }]);
-  }, []);
 
   const columns = useMemo(() => {
     return [

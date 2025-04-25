@@ -7,7 +7,7 @@ import {
   Dashboard,
   EditStreamline,
   HeaderLogoPrimary,
-  List
+  List,
 } from '~/assets/svg';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -67,6 +67,10 @@ const MENU_ITEMS = [
       {
         key: PATH.ADMIN_FUNCTIONAL_MANAGEMENT,
         label: 'Danh sách chức năng',
+      },
+      {
+        key: PATH.ADMIN_MENU_MANAGEMENT,
+        label: 'Quản lý Menu/Menu group',
       },
     ],
   },

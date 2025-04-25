@@ -33,6 +33,8 @@ const Modal = ({
   loading,
   classNames,
   destroyOnClose,
+  okText,
+  cancelText,
   animationType = 'default',
   onOk,
   onCancel,
@@ -62,18 +64,18 @@ const Modal = ({
         props.footer || (
           <Flex gap={16}>
             <Button
-              title="Để sau"
               disabled={loading}
               className="basis-1/2"
+              title={cancelText || 'Để sau'}
               iconBefore={<CloseOutlined />}
               onClick={onCancel}
             />
             <Button
               fill
-              title="Lưu"
               loading={loading}
               disabled={loading}
               className="basis-1/2"
+              title={okText || 'Lưu'}
               iconBefore={<SaveOutlined />}
               onClick={onOk}
             />
