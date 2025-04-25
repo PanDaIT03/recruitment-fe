@@ -18,7 +18,7 @@
     "@tanstack/react-query": "^5.59.20",
     "@tinymce/tinymce-react": "^5.1.1",
     "@types/recharts": "^1.8.29",
-    "antd": "^5.21.1",
+    "antd": "^5.24.8",
     "antd-img-crop": "^4.23.0",
     "antd-input-otp": "^2.1.0",
     "axios": "^1.7.5",

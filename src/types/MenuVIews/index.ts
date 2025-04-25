@@ -1,3 +1,5 @@
+import { IFunctionalItem } from '../Functional';
+
 export type IPaginationMenuView = IPaginatedData<IMenuViewItem[]>;
 
 export interface IMenuViewItem {
@@ -7,6 +9,7 @@ export interface IMenuViewItem {
   icon: string;
   path: string;
   orderIndex: number;
+  functionals: Functionals[];
   createAt: string;
   updateAt: string;
   creator: {
@@ -15,3 +18,5 @@ export interface IMenuViewItem {
   };
   updater: string;
 }
+
+type Functionals = Pick<IFunctionalItem, 'id' | 'title' | 'code'>;
