@@ -1,7 +1,9 @@
 import { FormInstance } from 'antd';
+import dayjs, { Dayjs } from 'dayjs';
 import { memo, ReactNode, useCallback, useEffect, useRef } from 'react';
 
 import useQueryParams from '~/hooks/useQueryParams';
+import { formatDateToBE } from '~/utils/functions';
 import Content from '../Content/Content';
 import FormWrapper from '../Form/FormWrapper';
 
@@ -36,8 +38,8 @@ const FilterBox = ({
     const formattedParams = Object.entries(formValues).reduce(
       (prevVal, currentVal) => {
         const [key, value] = currentVal;
-        if (value)
-          prevVal[key] = typeof value === 'string' ? value?.trim() : value;
+        if (key.includes('createdDate'))
+          prevVal[key] = value ? formatDateToBE(value as Dayjs) : value;
 
         return prevVal;
       },
@@ -59,7 +61,11 @@ const FilterBox = ({
     const formattedObject = Object.entries(searchParams).reduce(
       (prevVal, currentVal) => {
         const [key, value] = currentVal;
-        if (value) prevVal[key] = value;
+        if (value) {
+          if (key.includes('createdDate') && typeof value === 'string')
+            prevVal[key] = value ? dayjs(value) : '';
+          else prevVal[key] = value;
+        }
 
         return prevVal;
       },
