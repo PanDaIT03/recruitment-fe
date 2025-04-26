@@ -1,17 +1,19 @@
 import { Col, FormInstance, Row } from 'antd';
 import FormItem from 'antd/es/form/FormItem';
 import { memo, useCallback, useEffect } from 'react';
+import { DatePicker } from '~/components/DatePicker/DatePicker';
 
 import FilterBox from '~/components/FilterBox/FilterBox';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionals } from '~/store/thunk/functional';
+import { IFilterForm } from './Role';
 
 interface IRoleFilterBoxProps {
   open: boolean;
-  form: FormInstance<any>;
-  onFinish(values: any): void;
+  form: FormInstance<IFilterForm>;
+  onFinish(values: IFilterForm): void;
   onCancel: () => void;
 }
 
@@ -26,7 +28,7 @@ const RoleFilter = ({
 
   useEffect(() => {
     if (!open) return;
-    dispatch(getAllFunctionals({}));
+    dispatch(getAllFunctionals({ type: 'combobox' }));
   }, [open]);
 
   const handleCancel = useCallback(() => {
@@ -34,17 +36,46 @@ const RoleFilter = ({
     onCancel();
   }, []);
 
+  const handleSetFormValues = useCallback(
+    (_: FormInstance<any>, filterParams: IFilterForm) => {
+      const fieldsValue = Object.entries(filterParams).reduce(
+        (prevVal, currentVal) => {
+          const [key, value] = currentVal;
+          if (value) {
+            if (key.includes('functionalIds'))
+              prevVal[key] = Array.isArray(value)
+                ? value?.map((item) => Number(item))
+                : Number(value);
+            else prevVal[key] = value;
+          }
+
+          return prevVal;
+        },
+        {} as Record<string, any>
+      );
+
+      form.setFieldsValue(fieldsValue);
+    },
+    []
+  );
+
   return (
     <FilterBox
       open={open}
       form={form}
       onFinish={onFinish}
       onCancel={handleCancel}
+      onSetFormValues={handleSetFormValues}
     >
-      <Row gutter={{ xs: 8, sm: 14 }}>
+      <Row gutter={[8, 16]}>
         <Col span={12}>
           <FormItem label="Tên chức vụ" name="title">
             <Input allowClear placeholder="Ví dụ: admin" />
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem label="Ngày tạo" name="createdDate">
+            <DatePicker allowClear format="DD/MM/YYYY" />
           </FormItem>
         </Col>
         <Col span={12}>
