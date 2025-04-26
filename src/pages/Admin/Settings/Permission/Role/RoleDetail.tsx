@@ -93,7 +93,7 @@ const RoleDetail = () => {
   );
 
   const refetchFunctionalGroup = useCallback(() => {
-    dispatch(getAllFunctionalGroups({}));
+    dispatch(getAllFunctionalGroups({ type: 'all' }));
   }, []);
 
   const handleNavigate = useCallback(() => {
