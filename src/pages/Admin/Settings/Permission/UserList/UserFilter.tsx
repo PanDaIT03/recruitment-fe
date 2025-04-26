@@ -44,17 +44,21 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
     <FilterBox open={open} form={form} onFinish={onFinish} onCancel={onCancel}>
       <Row gutter={[8, 16]} align="top">
         <Col span={16}>
-          <FormItem name="email" label="Email">
+          <FormItem labelBold={false} name="email" label="Email">
             <Input allowClear placeholder="Ví dụ: abc@gmail.com" />
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem name="createdDate" label="Ngày tạo">
+          <FormItem labelBold={false} name="createdDate" label="Ngày tạo">
             <DatePicker allowClear format="DD/MM/YYYY" />
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem name="jobFieldsId" label="Lĩnh vực công việc">
+          <FormItem
+            labelBold={false}
+            name="jobFieldsId"
+            label="Lĩnh vực công việc"
+          >
             <Select
               allowClear
               mode="multiple"
@@ -68,7 +72,7 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem name="roleId" label="Quyền">
+          <FormItem labelBold={false} name="roleId" label="Quyền">
             <Select
               allowClear
               loading={loading}
@@ -81,7 +85,7 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem name="statusId" label="Trạng thái">
+          <FormItem labelBold={false} name="statusId" label="Trạng thái">
             <Select
               allowClear
               placeholder="Chọn trạng thái"

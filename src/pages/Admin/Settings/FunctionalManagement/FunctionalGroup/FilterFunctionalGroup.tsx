@@ -1,9 +1,9 @@
 import { Col, Row } from 'antd';
 import { FormInstance } from 'antd/es/form/Form';
-import FormItem from 'antd/es/form/FormItem';
 import { memo, useCallback } from 'react';
 
 import FilterBox from '~/components/FilterBox/FilterBox';
+import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
 import { useAppSelector } from '~/hooks/useStore';
@@ -59,12 +59,12 @@ const FilterFunctionalGroup = ({
     >
       <Row gutter={[8, 16]} align="top">
         <Col span={12}>
-          <FormItem name="title" label="Tên nhóm chức năng">
+          <FormItem labelBold={false} name="title" label="Tên nhóm chức năng">
             <Input allowClear placeholder="Ví dụ: Chỉnh sửa công việc..." />
           </FormItem>
         </Col>
         <Col span={12}>
-          <FormItem name="functionalIds" label="Chức năng">
+          <FormItem labelBold={false} name="functionalIds" label="Chức năng">
             <Select
               allowClear
               mode="multiple"

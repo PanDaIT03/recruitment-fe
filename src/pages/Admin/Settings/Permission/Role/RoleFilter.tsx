@@ -1,9 +1,9 @@
 import { Col, FormInstance, Row } from 'antd';
-import FormItem from 'antd/es/form/FormItem';
 import { memo, useCallback, useEffect } from 'react';
 import { DatePicker } from '~/components/DatePicker/DatePicker';
 
 import FilterBox from '~/components/FilterBox/FilterBox';
+import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
@@ -69,17 +69,17 @@ const RoleFilter = ({
     >
       <Row gutter={[8, 16]}>
         <Col span={12}>
-          <FormItem label="Tên chức vụ" name="title">
+          <FormItem labelBold={false} label="Tên chức vụ" name="title">
             <Input allowClear placeholder="Ví dụ: admin" />
           </FormItem>
         </Col>
         <Col span={12}>
-          <FormItem label="Ngày tạo" name="createdDate">
+          <FormItem labelBold={false} label="Ngày tạo" name="createdDate">
             <DatePicker allowClear format="DD/MM/YYYY" />
           </FormItem>
         </Col>
         <Col span={12}>
-          <FormItem label="Chức năng" name="functionalIds">
+          <FormItem labelBold={false} label="Chức năng" name="functionalIds">
             <Select
               allowClear
               mode="multiple"
