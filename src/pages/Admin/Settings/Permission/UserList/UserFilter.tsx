@@ -1,8 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { Col, FormInstance, message, Row } from 'antd';
-import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react';
+import { Dispatch, memo, SetStateAction, useEffect } from 'react';
 
 import { JobsAPI } from '~/apis/job';
+import { DatePicker } from '~/components/DatePicker/DatePicker';
 import FilterBox from '~/components/FilterBox/FilterBox';
 import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
@@ -39,38 +40,17 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
     getAllJobFields();
   }, []);
 
-  const handleSetFormValues = useCallback(
-    (form: FormInstance<IFormFilter>, filterParams: any) => {
-      const params = Object.entries(filterParams).reduce(
-        (prevVal, currentVal) => {
-          const [key, value] = currentVal;
-          if (value)
-            key.includes('email')
-              ? (prevVal[key] = value)
-              : (prevVal[key] = Number(value));
-
-          return prevVal;
-        },
-        {} as Record<string, any>
-      );
-
-      form.setFieldsValue(params);
-    },
-    []
-  );
-
   return (
-    <FilterBox
-      open={open}
-      form={form}
-      onFinish={onFinish}
-      onCancel={onCancel}
-      onSetFormValues={handleSetFormValues}
-    >
+    <FilterBox open={open} form={form} onFinish={onFinish} onCancel={onCancel}>
       <Row gutter={[8, 16]} align="top">
-        <Col span={24}>
+        <Col span={16}>
           <FormItem name="email" label="Email">
             <Input allowClear placeholder="Ví dụ: abc@gmail.com" />
+          </FormItem>
+        </Col>
+        <Col span={8}>
+          <FormItem name="createdDate" label="Ngày tạo">
+            <DatePicker allowClear format="DD/MM/YYYY" />
           </FormItem>
         </Col>
         <Col span={8}>

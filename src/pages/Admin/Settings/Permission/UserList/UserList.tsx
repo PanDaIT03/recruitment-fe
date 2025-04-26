@@ -45,6 +45,7 @@ export type IFormFilter = Partial<{
   email: string;
   roleId: number;
   statusId: number;
+  createdDate: string;
   jobFieldsId: number[];
 }>;
 
@@ -97,10 +98,13 @@ const UserList = () => {
     dispatch(getAllStatus({ type: 'account' }));
   }, []);
 
-  const refetchUserAdmin = useCallback((params?: IGetAllUserAdmin) => {
-    const formattedParams = params || {};
-    dispatch(getAllUserAdmin(formattedParams));
-  }, []);
+  const refetchUserAdmin = useCallback(() => {
+    const params: IGetAllUserAdmin = {
+      ...filterParams,
+    };
+
+    dispatch(getAllUserAdmin(params));
+  }, [filterParams]);
 
   const handleEdit = useCallback((record: IUserAdminItem) => {
     formUserAdmin.setFieldsValue({
@@ -133,7 +137,7 @@ const UserList = () => {
     [formUserAdmin]
   );
 
-  const handleFilter = useCallback((values: any) => {
+  const handleFilter = useCallback((values: IFormFilter) => {
     setFilterParams(values);
   }, []);
 
