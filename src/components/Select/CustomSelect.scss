@@ -14,7 +14,7 @@
 
 .custom-select .ant-select-selector {
   border: none !important;
-  padding-left: 4px !important;
+  padding-left: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
 
@@ -22,8 +22,24 @@
     inset-inline-start: 4px !important;
   }
 
-  &>.ant-select-selection-overflow{
+  & > .ant-select-selection-overflow {
     min-height: 2.5rem;
+  }
+}
+
+.custom-select > .ant-select:not(.ant-select-multiple) {
+  .ant-select-selection-wrap {
+    padding-left: 4px !important;
+  }
+}
+
+.custom-select > .ant-select-multiple {
+  .ant-select-selection-search {
+    margin-left: 1px !important;
+  }
+
+  .ant-select-selection-placeholder {
+    margin-left: -3px !important;
   }
 }
 
