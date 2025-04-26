@@ -83,7 +83,8 @@ const ModalDesiredJob = ({
       refetch();
       setIsOpen(false);
     },
-    onError: (error: any) => message.error(error?.response?.data?.message),
+    onError: (error: any) =>
+      message.error(error?.response?.data?.message || 'Có lỗi xảy ra!'),
   });
 
   const handleSalaryChange = useCallback(

@@ -9,8 +9,10 @@ import { NetWorking } from '~/assets/img';
 import { Work } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
+import { PERMISSION } from '~/enums/permissions';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useFetch } from '~/hooks/useFetch';
+import { usePermission } from '~/hooks/usePermission';
 import { formatSalary } from '~/utils/functions';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -27,6 +29,7 @@ const { PlusOutlined, EditOutlined } = icons;
 const DesiredJob = () => {
   const navigate = useNavigate();
   const { setDocTitle } = useDocumentTitle();
+  const { hasPermissions } = usePermission(PERMISSION.EDIT_DESIRED_JOB);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -91,7 +94,7 @@ const DesiredJob = () => {
           <Work />
           <h2 className="text-base font-bold">Công việc mong muốn</h2>
         </Flex>
-        {isHasDesiredJob && (
+        {hasPermissions && isHasDesiredJob && (
           <ButtonAction
             tooltipTitle="Cập nhật"
             title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
