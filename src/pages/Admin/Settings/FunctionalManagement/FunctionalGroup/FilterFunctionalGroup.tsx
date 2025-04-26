@@ -1,13 +1,12 @@
 import { Col, Row } from 'antd';
 import { FormInstance } from 'antd/es/form/Form';
 import FormItem from 'antd/es/form/FormItem';
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback } from 'react';
 
 import FilterBox from '~/components/FilterBox/FilterBox';
 import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { getAllFunctionals } from '~/store/thunk/functional';
+import { useAppSelector } from '~/hooks/useStore';
 import { IFilterFunctionalGroupForm } from './FunctionalGroup';
 
 interface IProps {
@@ -23,12 +22,7 @@ const FilterFunctionalGroup = ({
   onCancel,
   onFinish,
 }: IProps) => {
-  const dispatch = useAppDispatch();
   const { functionals, loading } = useAppSelector((state) => state.functional);
-
-  useEffect(() => {
-    if (!functionals?.items?.length) dispatch(getAllFunctionals({}));
-  }, []);
 
   const handleCancel = useCallback(() => {
     form.resetFields();
@@ -36,7 +30,7 @@ const FilterFunctionalGroup = ({
   }, []);
 
   const handleSetFormValues = (_: FormInstance<any>, filterParams: any) => {
-    const fieldVallues = Object.entries(filterParams).reduce(
+    const fieldsValue = Object.entries(filterParams).reduce(
       (prevVal, currentVal) => {
         const [key, value] = currentVal;
         if (value) {
@@ -52,7 +46,7 @@ const FilterFunctionalGroup = ({
       {} as Record<string, any>
     );
 
-    form.setFieldsValue(fieldVallues);
+    form.setFieldsValue(fieldsValue);
   };
 
   return (

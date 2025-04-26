@@ -6,7 +6,6 @@ import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { FunctionalAPI, IGetAllFunctionalParams } from '~/apis/functional';
 import {
   FunctionalGroupAPI,
   ICreateFuncGroupParams,
@@ -25,6 +24,7 @@ import Table from '~/components/Table/Table';
 import { FUNCTIONAL_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getAllFunctionals } from '~/store/thunk/functional';
 import { getAllFunctionalGroups } from '~/store/thunk/functionalGroup';
 import { IFunctionalItem } from '~/types/Functional';
 import { IFunctionalGroupItem } from '~/types/FunctionalGroup';
@@ -62,8 +62,11 @@ const FunctionalGroup = () => {
   const [editIndex, setEditIndex] = useState<number>();
   const [filter, setFilter] = useState<Partial<IFilterFunctionalGroupForm>>();
 
-  const { functionalGroups, loading } = useAppSelector(
+  const { functionalGroups, loading: functionalGroupLoading } = useAppSelector(
     (state) => state.functionalGroup
+  );
+  const { functionals, loading: functionalLoading } = useAppSelector(
+    (state) => state.functional
   );
 
   const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
@@ -73,18 +76,6 @@ const FunctionalGroup = () => {
       fetchAction: getAllFunctionalGroups,
       setFilterParams: setFilter,
     });
-
-  const {
-    data: functionals,
-    mutate: getAllFunctionals,
-    isPending: isGetAllFunctionalsPending,
-  } = useMutation({
-    mutationFn: (params: IGetAllFunctionalParams) =>
-      FunctionalAPI.getAllFunctionals(params),
-    onError: (error: any) => {
-      message.error(error?.response?.data?.message);
-    },
-  });
 
   const {
     mutate: createFunctionalGroup,
@@ -138,7 +129,7 @@ const FunctionalGroup = () => {
   });
 
   useEffect(() => {
-    getAllFunctionals({ type: 'combobox' });
+    dispatch(getAllFunctionals({ type: 'combobox' }));
   }, []);
 
   const columns = useMemo(() => {
@@ -308,8 +299,8 @@ const FunctionalGroup = () => {
       <Content>
         <Table
           columns={columns}
-          loading={loading || isDeleteFunctionalGroupPending}
           dataSource={functionalGroups.items}
+          loading={functionalGroupLoading || isDeleteFunctionalGroupPending}
           pagination={{
             current: pageInfo.page,
             pageSize: pageInfo.pageSize,
@@ -363,7 +354,7 @@ const FunctionalGroup = () => {
               allowClear
               mode="multiple"
               placeholder="Chọn chức năng"
-              loading={isGetAllFunctionalsPending}
+              loading={functionalLoading}
               options={functionals?.items?.map((item: any) => ({
                 label: item?.title,
                 value: item?.id,

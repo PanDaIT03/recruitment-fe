@@ -38,8 +38,10 @@ const FilterBox = ({
     const formattedParams = Object.entries(formValues).reduce(
       (prevVal, currentVal) => {
         const [key, value] = currentVal;
+
         if (key.includes('createdDate'))
           prevVal[key] = value ? formatDateToBE(value as Dayjs) : value;
+        else prevVal[key] = value;
 
         return prevVal;
       },
