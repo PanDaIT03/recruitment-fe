@@ -44,7 +44,7 @@ const MenuManagement = () => {
   useEffect(() => {
     if (!firstRender.current) return;
 
-    navigate(`?tab=${activedTab || MENU_MANAGEMENT_TAB_ITEM_KEY.MENU}`);
+    navigate(`?tab=${activedTab || MENU_MANAGEMENT_TAB_ITEM_KEY.MENU_GROUP}`);
     firstRender.current = false;
   }, [activedTab]);
 

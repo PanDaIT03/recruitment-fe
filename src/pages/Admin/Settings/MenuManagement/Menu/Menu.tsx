@@ -189,13 +189,7 @@ const Menu = () => {
   };
 
   const handleFinishFilter = useCallback((values: IFilterMenuView) => {
-    const { createdDate, ...rest } = values;
-    const formattedParams: IFilterMenuView = {
-      ...rest,
-      createdDate: formatDateToBE(createdDate),
-    };
-
-    setFilterParams(formattedParams);
+    setFilterParams(values);
   }, []);
 
   const handleCancelModal = useCallback(() => {
