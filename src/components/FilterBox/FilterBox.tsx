@@ -16,6 +16,7 @@ interface IFilterBoxProps {
   submitTitle?: string;
   onCancel: () => void;
   onFinish(values: any): void;
+  onPageChange: (page: number, pageSize?: number) => void;
   onSetFormValues?: (form: FormInstance<any>, filterParams: any) => void;
 }
 
@@ -28,6 +29,7 @@ const FilterBox = ({
   submitTitle = 'Tìm kiếm',
   onFinish,
   onCancel,
+  onPageChange,
   onSetFormValues,
 }: IFilterBoxProps) => {
   const firstRender = useRef(true);
@@ -48,13 +50,16 @@ const FilterBox = ({
       {} as Record<string, any>
     );
 
+    onPageChange(1, 10);
     onFinish(formattedParams);
-  }, [onFinish]);
+  }, [form, onFinish, onPageChange]);
 
   const handleCancel = useCallback(() => {
     form.resetFields();
+
+    onPageChange(1, 10);
     onCancel();
-  }, [onCancel]);
+  }, [form, onCancel, onPageChange]);
 
   useEffect(() => {
     if (!firstRender.current) return;
