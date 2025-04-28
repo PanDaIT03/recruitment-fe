@@ -2,6 +2,7 @@ import { Col, Row } from 'antd';
 import { FormInstance } from 'antd/es/form/Form';
 import { memo, useCallback } from 'react';
 
+import { DatePicker } from '~/components/DatePicker/DatePicker';
 import FilterBox from '~/components/FilterBox/FilterBox';
 import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
@@ -31,7 +32,7 @@ const FilterFunctionalGroup = ({
     onCancel();
   }, []);
 
-  const handleSetFormValues = (_: FormInstance<any>, filterParams: any) => {
+  const handleSetFormValues = useCallback((_: any, filterParams: any) => {
     const fieldsValue = Object.entries(filterParams).reduce(
       (prevVal, currentVal) => {
         const [key, value] = currentVal;
@@ -49,7 +50,7 @@ const FilterFunctionalGroup = ({
     );
 
     form.setFieldsValue(fieldsValue);
-  };
+  }, []);
 
   return (
     <FilterBox
@@ -78,6 +79,11 @@ const FilterFunctionalGroup = ({
                 value: item?.id,
               }))}
             />
+          </FormItem>
+        </Col>
+        <Col span={12}>
+          <FormItem labelBold={false} name="createdDate" label="Ngày tạo">
+            <DatePicker allowClear format="DD/MM/YYYY" />
           </FormItem>
         </Col>
       </Row>

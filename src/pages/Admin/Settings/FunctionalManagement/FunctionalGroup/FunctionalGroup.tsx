@@ -34,6 +34,7 @@ import FilterFunctionalGroup from './FilterFunctionalGroup';
 interface IFunctionalGroupForm {
   title: string;
   description: string;
+  createdDate: string;
   functionalIds: number[];
 }
 

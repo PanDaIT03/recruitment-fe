@@ -40,6 +40,7 @@ export interface IFunctionalForm {
 export interface IFilterFunctionalForm {
   code: string;
   title: string;
+  createdDate: string;
 }
 
 const {
