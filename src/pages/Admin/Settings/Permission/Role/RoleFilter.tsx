@@ -8,6 +8,7 @@ import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionals } from '~/store/thunk/functional';
+import { colSpan } from '~/utils/constant';
 import { IFilterForm } from './Role';
 
 interface IRoleFilterBoxProps {
@@ -71,17 +72,12 @@ const RoleFilter = ({
       onSetFormValues={handleSetFormValues}
     >
       <Row gutter={[8, 16]}>
-        <Col span={12}>
+        <Col span={colSpan}>
           <FormItem labelBold={false} label="Tên chức vụ" name="title">
             <Input allowClear placeholder="Ví dụ: admin" />
           </FormItem>
         </Col>
-        <Col span={12}>
-          <FormItem labelBold={false} label="Ngày tạo" name="createdDate">
-            <DatePicker allowClear format="DD/MM/YYYY" />
-          </FormItem>
-        </Col>
-        <Col span={12}>
+        <Col span={colSpan}>
           <FormItem labelBold={false} label="Chức năng" name="functionalIds">
             <Select
               allowClear
@@ -93,6 +89,11 @@ const RoleFilter = ({
                 value: item?.id,
               }))}
             />
+          </FormItem>
+        </Col>
+        <Col span={colSpan}>
+          <FormItem labelBold={false} label="Ngày tạo" name="createdDate">
+            <DatePicker allowClear format="DD/MM/YYYY" />
           </FormItem>
         </Col>
       </Row>

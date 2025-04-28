@@ -6,6 +6,7 @@ import { DatePicker } from '~/components/DatePicker/DatePicker';
 import FilterBox from '~/components/FilterBox/FilterBox';
 import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
+import { colSpan } from '~/utils/constant';
 import { IFilterFunctionalForm } from './Functional';
 
 interface IProps {
@@ -37,17 +38,17 @@ const FilterFunctional = ({
       onPageChange={onPageChange}
     >
       <Row gutter={[8, 16]} align="middle">
-        <Col span={12}>
+        <Col span={colSpan}>
           <FormItem labelBold={false} name="title" label="Tên chức năng">
             <Input allowClear placeholder="Ví dụ: Chỉnh sửa công việc..." />
           </FormItem>
         </Col>
-        <Col span={12}>
+        <Col span={colSpan}>
           <FormItem labelBold={false} name="code" label="Mã">
             <Input allowClear placeholder="Ví dụ: VIEW_EXAMPLE" />
           </FormItem>
         </Col>
-        <Col span={12}>
+        <Col span={colSpan}>
           <FormItem labelBold={false} name="createdDate" label="Ngày tạo">
             <DatePicker allowClear format="DD/MM/YYYY" />
           </FormItem>
