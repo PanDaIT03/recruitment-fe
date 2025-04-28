@@ -12,9 +12,16 @@ interface IProps {
   form: FormInstance<IFilterFunctionalForm>;
   onCancel: () => void;
   onFinish: (values: IFilterFunctionalForm) => void;
+  onPageChange: (page: number, pageSize?: number) => void;
 }
 
-const FilterFunctional = ({ isOpen, form, onCancel, onFinish }: IProps) => {
+const FilterFunctional = ({
+  isOpen,
+  form,
+  onCancel,
+  onFinish,
+  onPageChange,
+}: IProps) => {
   const handleCancel = useCallback(() => {
     form.resetFields();
     onCancel();
@@ -26,6 +33,7 @@ const FilterFunctional = ({ isOpen, form, onCancel, onFinish }: IProps) => {
       open={isOpen}
       onFinish={onFinish}
       onCancel={handleCancel}
+      onPageChange={onPageChange}
     >
       <Row gutter={[8, 16]} align="middle">
         <Col span={12}>

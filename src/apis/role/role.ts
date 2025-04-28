@@ -3,6 +3,7 @@ import axiosApi from '~/services/axios';
 export interface IGetAllRoles {
   page?: number;
   pageSize?: number;
+  id?: number;
   title?: string;
   createdDate?: string;
   functionalIds?: number[];

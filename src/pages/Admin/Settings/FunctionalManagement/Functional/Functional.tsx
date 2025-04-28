@@ -203,6 +203,10 @@ const Functional = () => {
     });
   }, []);
 
+  const handleFinishFilter = useCallback((values: IFilterFunctionalForm) => {
+    setFilters(values);
+  }, []);
+
   const handleEdit = useCallback(
     (record: IFunctionalItem) => {
       const { id, ...others } = record;
@@ -266,7 +270,8 @@ const Functional = () => {
         form={filterForm}
         isOpen={isOpenFilter}
         onCancel={handleCancelFilter}
-        onFinish={(values) => setFilters({ ...values })}
+        onFinish={handleFinishFilter}
+        onPageChange={handlePageChange}
       />
       <Content>
         <Table<IFunctionalItem>

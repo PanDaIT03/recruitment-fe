@@ -13,8 +13,9 @@ import { IFilterForm } from './Role';
 interface IRoleFilterBoxProps {
   open: boolean;
   form: FormInstance<IFilterForm>;
-  onFinish(values: IFilterForm): void;
   onCancel: () => void;
+  onFinish(values: IFilterForm): void;
+  onPageChange: (page: number, pageSize?: number) => void;
 }
 
 const RoleFilter = ({
@@ -22,6 +23,7 @@ const RoleFilter = ({
   open,
   onCancel,
   onFinish,
+  onPageChange,
 }: IRoleFilterBoxProps) => {
   const dispatch = useAppDispatch();
   const { functionals, loading } = useAppSelector((state) => state.functional);
@@ -65,6 +67,7 @@ const RoleFilter = ({
       form={form}
       onFinish={onFinish}
       onCancel={handleCancel}
+      onPageChange={onPageChange}
       onSetFormValues={handleSetFormValues}
     >
       <Row gutter={[8, 16]}>

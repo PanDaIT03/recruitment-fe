@@ -163,6 +163,7 @@ const Role = () => {
         open={isOpenFilter}
         onCancel={handleCancelFilter}
         onFinish={handleFinishFilter}
+        onPageChange={handlePageChange}
       />
       <Content>
         <Table

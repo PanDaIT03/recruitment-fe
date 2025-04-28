@@ -15,9 +15,16 @@ interface IProps {
   form: FormInstance<IFilterMenuView>;
   onCancel: () => void;
   onFinish: (value: IFilterMenuView) => void;
+  onPageChange: (page: number, pageSize?: number) => void;
 }
 
-const FilterMenu = ({ isOpen, form, onCancel, onFinish }: IProps) => {
+const FilterMenu = ({
+  isOpen,
+  form,
+  onCancel,
+  onFinish,
+  onPageChange,
+}: IProps) => {
   const handleCancel = useCallback(() => {
     form.resetFields();
     onCancel();
@@ -42,6 +49,7 @@ const FilterMenu = ({ isOpen, form, onCancel, onFinish }: IProps) => {
       form={form}
       onFinish={onFinish}
       onCancel={handleCancel}
+      onPageChange={onPageChange}
       onSetFormValues={hanldeSetFormValues}
     >
       <Row gutter={[8, 16]} align={'middle'}>

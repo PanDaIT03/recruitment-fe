@@ -14,6 +14,7 @@ interface IProps {
   form: FormInstance<IFilterFunctionalGroupForm>;
   onCancel: () => void;
   onFinish: (values: IFilterFunctionalGroupForm) => void;
+  onPageChange: (page: number, pageSize?: number) => void;
 }
 
 const FilterFunctionalGroup = ({
@@ -21,6 +22,7 @@ const FilterFunctionalGroup = ({
   isOpen,
   onCancel,
   onFinish,
+  onPageChange,
 }: IProps) => {
   const { functionals, loading } = useAppSelector((state) => state.functional);
 
@@ -55,6 +57,7 @@ const FilterFunctionalGroup = ({
       open={isOpen}
       onFinish={onFinish}
       onCancel={handleCancel}
+      onPageChange={onPageChange}
       onSetFormValues={handleSetFormValues}
     >
       <Row gutter={[8, 16]} align="top">

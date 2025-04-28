@@ -265,6 +265,7 @@ const UserList = () => {
         onFinish={handleFilter}
         onCancel={handleCancelFilter}
         setFilterParams={setFilterParams}
+        onPageChange={handlePageChange}
       />
       <Content>
         <Table<IUserAdminItem>

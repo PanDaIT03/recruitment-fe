@@ -17,9 +17,16 @@ interface IProps {
   onCancel: () => void;
   onFinish: (values: any) => void;
   setFilterParams: Dispatch<SetStateAction<any>>;
+  onPageChange: (page: number, pageSize?: number) => void;
 }
 
-const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
+const UserFilter = ({
+  open,
+  form,
+  onCancel,
+  onFinish,
+  onPageChange,
+}: IProps) => {
   const { roles, loading } = useAppSelector((state) => state.role);
   const { status, loading: statusLoading } = useAppSelector(
     (state) => state.status
@@ -41,7 +48,13 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
   }, []);
 
   return (
-    <FilterBox open={open} form={form} onFinish={onFinish} onCancel={onCancel}>
+    <FilterBox
+      open={open}
+      form={form}
+      onCancel={onCancel}
+      onFinish={onFinish}
+      onPageChange={onPageChange}
+    >
       <Row gutter={[8, 16]} align="top">
         <Col span={16}>
           <FormItem labelBold={false} name="email" label="Email">

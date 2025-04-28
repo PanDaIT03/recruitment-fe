@@ -70,7 +70,7 @@ const Menu = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
 
-  const [filterParams, setFilterParams] = useState<IFilterMenuView>();
+  const [filterParams, setFilterParams] = useState<IGetAllMenuView>();
   const { menuViews, loading } = useAppSelector((state) => state.menuView);
 
   const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
@@ -182,6 +182,7 @@ const Menu = () => {
   const handleCancelFilter = () => {
     setIsOpenFilter(false);
     setFilterParams({});
+
     hanldeClearURLSearchParams({
       tab: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU,
     });
@@ -383,6 +384,7 @@ const Menu = () => {
         isOpen={isOpenFilter}
         onFinish={handleFinishFilter}
         onCancel={handleCancelFilter}
+        onPageChange={handlePageChange}
       />
       <Content>
         <Table<IMenuViewItem>
