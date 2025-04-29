@@ -1,8 +1,8 @@
-import { Col, Form, FormProps, FormInstance, Row } from 'antd';
-import { memo, ReactNode } from 'react';
-
+import { Col, Form, FormInstance, FormProps, Row } from 'antd';
 import { InternalNamePath } from 'antd/es/form/interface';
 import classNames from 'classnames';
+import { memo, ReactNode } from 'react';
+
 import { useAppSelector } from '~/hooks/useStore';
 import Button from '../Button/Button';
 
@@ -52,7 +52,20 @@ const FormWrapper = ({
 
   const handleFinish = async (values: any) => {
     if (!(await checkFormValidate())) return;
-    onFinish(values);
+
+    const formattedValues = Object.entries(values).reduce(
+      (prevVal, currentVal) => {
+        const [key, value] = currentVal;
+
+        prevVal[key] =
+          value && typeof value === 'string' ? value?.trim() : value;
+
+        return prevVal;
+      },
+      {} as Record<string, any>
+    );
+
+    onFinish(formattedValues);
   };
 
   const handleFinishFailed = (errorFields: IErrorFields[]) => {
