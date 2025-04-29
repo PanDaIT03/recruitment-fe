@@ -41,7 +41,7 @@ export interface IMenuForm {
   title: string;
   path: string;
   orderIndex: number;
-  iconType?: string;
+  iconType: string;
   iconPath?: string;
   iconFile?: any;
   functionalIds: number[];
@@ -274,7 +274,7 @@ const Menu = () => {
         const createParams: ICreateMenuView = {
           ...rest,
           icon: iconURL,
-          iconType: iconType || ICON_TYPE.BUILT_IN,
+          iconType: iconType,
           orderIndex: Number(orderIndex),
         };
 

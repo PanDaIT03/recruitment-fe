@@ -1,9 +1,16 @@
-import { Col, Flex, Popconfirm, Row } from 'antd';
+import { useMutation } from '@tanstack/react-query';
+import { Col, Flex, message, Popconfirm, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import {
+  ICreateMenuViewGroupParams,
+  IGetAllMenuViewGroupParams,
+  IUpdateMenuViewGroupParams,
+  MenuViewGroupAPI,
+} from '~/apis/menuViewGroup';
 import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -17,12 +24,20 @@ import { getAllMenuViewGroups } from '~/store/thunk/menuViewGroup';
 import { IMenuViewGroupItem } from '~/types/MenuViewGroup';
 import icons from '~/utils/icons';
 import FilterMenuGroup from './FilterMenuGroup';
+import ModalMenuGroup from './ModalMenuGroup';
 
-export interface IMenuGroupForm {
+export interface IMenuGroupFilterForm {
   title?: string;
   orderIndex?: number;
   createdDate?: string;
   menuViewIds?: number[];
+}
+
+export interface IMenuGroupModalForm {
+  title: string;
+  orderIndex: number;
+  description: string;
+  menuViewIds: number[];
 }
 
 const { EditOutlined, CloseOutlined, PlusOutlined, QuestionCircleOutlined } =
@@ -30,10 +45,16 @@ const { EditOutlined, CloseOutlined, PlusOutlined, QuestionCircleOutlined } =
 
 const MenuGroup = () => {
   const dispatch = useAppDispatch();
-  const [form] = useForm<IMenuGroupForm>();
 
-  const [isOpenFilter, setIsOpenFilter] = useState(true);
-  const [filterParams, setFilterParams] = useState<IMenuGroupForm>();
+  const [filterForm] = useForm<IMenuGroupFilterForm>();
+  const [menuGroupForm] = useForm<IMenuGroupModalForm>();
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+
+  const [editIndex, setEditIndex] = useState(-1);
+  const [filterParams, setFilterParams] =
+    useState<IGetAllMenuViewGroupParams>();
 
   const { menuViewGroup, loading } = useAppSelector(
     (state) => state.menuViewGroup
@@ -47,29 +68,121 @@ const MenuGroup = () => {
       setFilterParams: setFilterParams,
     });
 
+  const {
+    mutate: createMenuViewGroup,
+    isPending: isCreateMenuViewGroupPending,
+  } = useMutation({
+    mutationFn: (params: ICreateMenuViewGroupParams) =>
+      MenuViewGroupAPI.createMenuViewGroup(params),
+    onSuccess: (res) => {
+      message.success(res?.message || 'Tạo mới thành công');
+
+      handleCancelModal();
+      handleCancelFilter();
+    },
+    onError: (error: any) => {
+      message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
+    },
+  });
+
+  const {
+    mutate: updateMenuViewGroup,
+    isPending: isUpdateMenuViewGroupPending,
+  } = useMutation({
+    mutationFn: (params: IUpdateMenuViewGroupParams) =>
+      MenuViewGroupAPI.updateMenuViewGroup(params),
+    onSuccess: (res) => {
+      message.success(res?.message || 'Chỉnh sửa thành công');
+
+      handleCancelModal();
+      setFilterParams({
+        page: 1,
+        pageSize: 10,
+        ...filterParams,
+      });
+    },
+    onError: (error: any) => {
+      message.error(`Chỉnh sửa thất bại: ${error?.response?.data?.message}`);
+    },
+  });
+
+  const {
+    mutate: deleteMenuViewGroup,
+    isPending: isDeleteMenuViewGroupPending,
+  } = useMutation({
+    mutationFn: (id: number) => MenuViewGroupAPI.deleteMenuViewGroup(id),
+    onSuccess: (res) => {
+      message.success(res?.message || 'Xóa thành công');
+
+      handleCancelModal();
+      setFilterParams({
+        page: 1,
+        pageSize: 10,
+        ...filterParams,
+      });
+    },
+    onError: (error: any) => {
+      message.error(`Xóa thất bại: ${error?.response?.data?.message}`);
+    },
+  });
+
   useEffect(() => {
     dispatch(getAllMenuViews({ type: 'combobox' }));
   }, []);
 
   const handleEdit = useCallback((record: IMenuViewGroupItem) => {
-    console.log(record);
+    const { menuViews, ...rest } = record;
+    const fieldsValue: IMenuGroupModalForm = {
+      ...rest,
+      menuViewIds: menuViews?.map((menuView) => menuView?.id),
+    };
+
+    setIsOpenModal(true);
+    setEditIndex(record.id);
+    menuGroupForm.setFieldsValue(fieldsValue);
   }, []);
 
   const handleDelete = useCallback((id: number) => {
-    console.log(id);
+    deleteMenuViewGroup(id);
   }, []);
 
   const handleCancelFilter = () => {
     setIsOpenFilter(false);
     setFilterParams({});
 
+    filterForm.resetFields();
     hanldeClearURLSearchParams({
       tab: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU_GROUP,
     });
   };
 
-  const handleFinishFilter = useCallback((values: IMenuGroupForm) => {
+  const handleFinishFilter = useCallback((values: IMenuGroupFilterForm) => {
     setFilterParams(values);
+  }, []);
+
+  const handleFinishModal = useCallback(
+    (values: IMenuGroupModalForm) => {
+      const { orderIndex, ...rest } = values;
+      const params: ICreateMenuViewGroupParams = {
+        ...rest,
+        orderIndex: Number(orderIndex),
+      };
+
+      if (editIndex === -1) {
+        createMenuViewGroup(params);
+        return;
+      }
+
+      updateMenuViewGroup({ ...params, id: editIndex });
+    },
+    [editIndex]
+  );
+
+  const handleCancelModal = useCallback(() => {
+    menuGroupForm.resetFields();
+
+    setEditIndex(-1);
+    setIsOpenModal(false);
   }, []);
 
   const columns: ColumnType<IMenuViewGroupItem>[] = useMemo(
@@ -84,7 +197,7 @@ const MenuGroup = () => {
       {
         width: 150,
         dataIndex: 'title',
-        title: 'Tên menu',
+        title: 'Tên nhóm menu',
       },
       {
         width: 250,
@@ -178,12 +291,12 @@ const MenuGroup = () => {
             fill
             title="Tạo"
             iconBefore={<PlusOutlined />}
-            // onClick={() => setIsOpenModal(true)}
+            onClick={() => setIsOpenModal(true)}
           />
         </Col>
       </Row>
       <FilterMenuGroup
-        form={form}
+        form={filterForm}
         isOpen={isOpenFilter}
         onCancel={handleCancelFilter}
         onFinish={handleFinishFilter}
@@ -192,8 +305,8 @@ const MenuGroup = () => {
       <Content>
         <Table<IMenuViewGroupItem>
           columns={columns}
-          loading={loading}
           dataSource={menuViewGroup.items}
+          loading={loading || isDeleteMenuViewGroupPending}
           pagination={{
             current: pageInfo.page,
             pageSize: pageInfo.pageSize,
@@ -202,6 +315,14 @@ const MenuGroup = () => {
           }}
         />
       </Content>
+      <ModalMenuGroup
+        isOpen={isOpenModal}
+        form={menuGroupForm}
+        title={editIndex !== -1 ? 'Chỉnh sửa nhóm menu' : 'Tạo mới nhóm menu'}
+        loading={isUpdateMenuViewGroupPending || isCreateMenuViewGroupPending}
+        onFinish={handleFinishModal}
+        onCancel={handleCancelModal}
+      />
     </>
   );
 };

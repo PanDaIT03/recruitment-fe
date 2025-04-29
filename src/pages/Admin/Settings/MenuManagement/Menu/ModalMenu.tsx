@@ -33,11 +33,12 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
 
   useEffect(() => {
     if (!isOpen) return;
-
     if (uploadFile?.length) setUploadFile([]);
 
-    const activeKey = form.getFieldValue('iconType');
+    const activeKey = form.getFieldValue('iconType') || ICON_TYPE.BUILT_IN;
+
     setActiveKey(activeKey);
+    form.setFieldValue('iconType', activeKey);
   }, [isOpen]);
 
   const draggerProps: IUploadProps = useMemo(
@@ -101,8 +102,8 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
   );
 
   const handleChangeTab = useCallback((activeKey: string) => {
-    form.setFieldValue('iconType', activeKey);
     setActiveKey(activeKey as ICON_TYPE);
+    form.setFieldValue('iconType', activeKey);
   }, []);
 
   return (

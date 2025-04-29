@@ -8,13 +8,13 @@ import Input from '~/components/Input/Input';
 import Select from '~/components/Select/Select';
 import { useAppSelector } from '~/hooks/useStore';
 import { colSpan } from '~/utils/constant';
-import { IMenuGroupForm } from './MenuGroup';
+import { IMenuGroupFilterForm } from './MenuGroup';
 
 interface IProps {
   isOpen: boolean;
-  form: FormInstance<IMenuGroupForm>;
+  form: FormInstance<IMenuGroupFilterForm>;
   onCancel: () => void;
-  onFinish: (value: IMenuGroupForm) => void;
+  onFinish: (value: IMenuGroupFilterForm) => void;
   onPageChange: (page: number, pageSize?: number) => void;
 }
 
@@ -33,7 +33,7 @@ const FilterMenuGroup = ({
   }, []);
 
   const handleSetFormValues = useCallback(
-    (_: any, filterParams: IMenuGroupForm) => {
+    (_: any, filterParams: IMenuGroupFilterForm) => {
       const { menuViewIds } = filterParams;
       const fieldsValue = {
         ...filterParams,
