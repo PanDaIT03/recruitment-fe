@@ -16,6 +16,7 @@ interface IJobFilterBoxProps {
   form: FormInstance<any>;
   onCancel: () => void;
   onFinish(values: any): void;
+  onPageChange: (page: number, pageSize?: number) => void;
 }
 
 const initialOptions = [] as DefaultOptionType[];
@@ -25,6 +26,7 @@ const JobFilterBox = ({
   open,
   onFinish,
   onCancel,
+  onPageChange,
 }: IJobFilterBoxProps) => {
   const [jobOptions, setJobOptions] = useState(initialOptions);
   const [statusOptions, setStatusOptions] = useState(initialOptions);
@@ -160,6 +162,7 @@ const JobFilterBox = ({
       form={form}
       onFinish={onFinish}
       onCancel={onCancel}
+      onPageChange={onPageChange}
       onSetFormValues={handleSetFieldValues}
     >
       <Row gutter={{ xs: 8, sm: 14 }}>
