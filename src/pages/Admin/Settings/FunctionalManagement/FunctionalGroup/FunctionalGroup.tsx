@@ -6,10 +6,10 @@ import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { FunctionalAPI, IGetAllFunctionalParams } from '~/apis/functional';
 import {
   FunctionalGroupAPI,
   ICreateFuncGroupParams,
+  IGetFuncGroupParams,
   IUpdateFuncGroupParams,
 } from '~/apis/functionalGroup';
 import { FilterAdmin } from '~/assets/svg';
@@ -25,6 +25,7 @@ import Table from '~/components/Table/Table';
 import { FUNCTIONAL_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { getAllFunctionals } from '~/store/thunk/functional';
 import { getAllFunctionalGroups } from '~/store/thunk/functionalGroup';
 import { IFunctionalItem } from '~/types/Functional';
 import { IFunctionalGroupItem } from '~/types/FunctionalGroup';
@@ -34,11 +35,13 @@ import FilterFunctionalGroup from './FilterFunctionalGroup';
 interface IFunctionalGroupForm {
   title: string;
   description: string;
+  createdDate: string;
   functionalIds: number[];
 }
 
 export interface IFilterFunctionalGroupForm {
   title: string;
+  createdDate?: string;
   functionalIds: number[];
 }
 
@@ -60,10 +63,13 @@ const FunctionalGroup = () => {
   const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const [editIndex, setEditIndex] = useState<number>();
-  const [filter, setFilter] = useState<Partial<IFilterFunctionalGroupForm>>();
+  const [filter, setFilter] = useState<Partial<IGetFuncGroupParams>>();
 
-  const { functionalGroups, loading } = useAppSelector(
+  const { functionalGroups, loading: functionalGroupLoading } = useAppSelector(
     (state) => state.functionalGroup
+  );
+  const { functionals, loading: functionalLoading } = useAppSelector(
+    (state) => state.functional
   );
 
   const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
@@ -75,18 +81,6 @@ const FunctionalGroup = () => {
     });
 
   const {
-    data: functionals,
-    mutate: getAllFunctionals,
-    isPending: isGetAllFunctionalsPending,
-  } = useMutation({
-    mutationFn: (params: IGetAllFunctionalParams) =>
-      FunctionalAPI.getAllFunctionals(params),
-    onError: (error: any) => {
-      message.error(error?.response?.data?.message);
-    },
-  });
-
-  const {
     mutate: createFunctionalGroup,
     isPending: isCreateFunctionalGroupPending,
   } = useMutation({
@@ -95,8 +89,8 @@ const FunctionalGroup = () => {
     onSuccess: (res) => {
       message.success(res?.message);
 
-      refetchFunctionalGroup();
       handleCancelModal();
+      handleCancelFilter();
     },
     onError: (error: any) => {
       message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
@@ -113,7 +107,12 @@ const FunctionalGroup = () => {
       message.success(res?.message);
 
       setEditIndex(undefined);
-      refetchFunctionalGroup();
+      setFilter({
+        page: 1,
+        pageSize: 10,
+        ...filter,
+      });
+
       handleCancelModal();
     },
     onError: (error: any) => {
@@ -129,7 +128,11 @@ const FunctionalGroup = () => {
     onSuccess: (res) => {
       message.success(res?.message);
 
-      refetchFunctionalGroup();
+      setFilter({
+        page: 1,
+        pageSize: 10,
+        ...filter,
+      });
       handleCancelModal();
     },
     onError: (error: any) => {
@@ -138,7 +141,7 @@ const FunctionalGroup = () => {
   });
 
   useEffect(() => {
-    getAllFunctionals({ type: 'combobox' });
+    dispatch(getAllFunctionals({ type: 'combobox' }));
   }, []);
 
   const columns = useMemo(() => {
@@ -227,10 +230,6 @@ const FunctionalGroup = () => {
     ] as ColumnsType<IFunctionalGroupItem>;
   }, [pageInfo]);
 
-  const refetchFunctionalGroup = useCallback(() => {
-    dispatch(getAllFunctionalGroups({}));
-  }, []);
-
   const handleEdit = useCallback((record: IFunctionalGroupItem) => {
     setIsOpenModal(true);
     setEditIndex(record?.id);
@@ -245,6 +244,8 @@ const FunctionalGroup = () => {
   const handleCancelFilter = useCallback(() => {
     setFilter({});
     setIsOpenFilter(false);
+
+    filterForm.resetFields();
     hanldeClearURLSearchParams({
       tab: FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP,
     });
@@ -304,12 +305,13 @@ const FunctionalGroup = () => {
         isOpen={isOpenFilter}
         onCancel={handleCancelFilter}
         onFinish={handleFinishFilter}
+        onPageChange={handlePageChange}
       />
       <Content>
         <Table
           columns={columns}
-          loading={loading || isDeleteFunctionalGroupPending}
           dataSource={functionalGroups.items}
+          loading={functionalGroupLoading || isDeleteFunctionalGroupPending}
           pagination={{
             current: pageInfo.page,
             pageSize: pageInfo.pageSize,
@@ -363,7 +365,7 @@ const FunctionalGroup = () => {
               allowClear
               mode="multiple"
               placeholder="Chọn chức năng"
-              loading={isGetAllFunctionalsPending}
+              loading={functionalLoading}
               options={functionals?.items?.map((item: any) => ({
                 label: item?.title,
                 value: item?.id,

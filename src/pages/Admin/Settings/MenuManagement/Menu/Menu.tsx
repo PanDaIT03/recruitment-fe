@@ -4,7 +4,7 @@ import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   ICreateMenuView,
@@ -21,9 +21,9 @@ import { ICON_TYPE, MENU_MANAGEMENT_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import HeaderMenuIcon from '~/layouts/Header/menu/HeaderMenuIcon';
+import { getAllFunctionals } from '~/store/thunk/functional';
 import { getAllMenuViews } from '~/store/thunk/menuView';
 import { IMenuViewItem } from '~/types/MenuVIews';
-import { formatDateToBE } from '~/utils/functions';
 import toast from '~/utils/functions/toast';
 import icons from '~/utils/icons';
 import FilterMenu from './FilterMenu';
@@ -41,6 +41,7 @@ export interface IMenuForm {
   title: string;
   path: string;
   orderIndex: number;
+  iconType: string;
   iconPath?: string;
   iconFile?: any;
   functionalIds: number[];
@@ -70,7 +71,7 @@ const Menu = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
 
-  const [filterParams, setFilterParams] = useState<IFilterMenuView>();
+  const [filterParams, setFilterParams] = useState<IGetAllMenuView>();
   const { menuViews, loading } = useAppSelector((state) => state.menuView);
 
   const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
@@ -91,9 +92,21 @@ const Menu = () => {
       }
 
       const iconPath = res?.items?.[0]?.url;
-      const fieldsValue = menuForm.getFieldsValue();
+      const fieldsValue = menuForm.getFieldsValue(true);
 
-      handleSaveMenuView(fieldsValue, iconPath);
+      const formattedValues = Object.entries(fieldsValue).reduce(
+        (prevVal, currentVal) => {
+          const [key, value] = currentVal;
+
+          prevVal[key as keyof IMenuForm] =
+            value && typeof value === 'string' ? value?.trim() : value;
+
+          return prevVal;
+        },
+        {} as Record<keyof IMenuForm, any>
+      );
+
+      handleSaveMenuView(formattedValues, iconPath);
     },
     onError: (error: any) => {
       message.error(`Upload icon thất bại: ${error?.response?.data?.message}`);
@@ -108,7 +121,7 @@ const Menu = () => {
         message.success(res?.message || 'Tạo mới thành công');
 
         handleCancelModal();
-        refetchMenuViews({});
+        handleCancelFilter();
       },
       onError: (error: any) => {
         message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
@@ -123,7 +136,11 @@ const Menu = () => {
         message.success(res?.message || 'Cập nhật thành công');
 
         handleCancelModal();
-        refetchMenuViews({});
+        setFilterParams({
+          page: 1,
+          pageSize: 10,
+          ...filterParams,
+        });
       },
       onError: (error: any) => {
         message.error(`Cập nhật thất bại: ${error?.response?.data?.message}`);
@@ -135,7 +152,12 @@ const Menu = () => {
       mutationFn: (id: number) => MenuViewAPI.deleteMenuView(id),
       onSuccess: (res) => {
         message.success(res?.message || 'Xóa menu thành công');
-        refetchMenuViews({});
+
+        setFilterParams({
+          page: 1,
+          pageSize: 10,
+          ...filterParams,
+        });
       },
       onError: (error: any) => {
         message.error(`Xóa thất bại: ${error?.response?.data?.message}`);
@@ -156,17 +178,26 @@ const Menu = () => {
     ]
   );
 
-  const refetchMenuViews = useCallback((params: IGetAllMenuView) => {
-    dispatch(getAllMenuViews(params));
+  useEffect(() => {
+    dispatch(getAllFunctionals({ type: 'combobox' }));
   }, []);
 
   const handleEdit = useCallback((record: IMenuViewItem) => {
-    const { orderIndex, title, path, icon, functionals } = record;
+    const {
+      icon,
+      iconType,
+      functionals,
+      createAt,
+      creator,
+      updateAt,
+      updater,
+      ...rest
+    } = record;
+
     const fieldsValue: IMenuForm = {
-      path: path,
-      title: title,
-      iconPath: icon,
-      orderIndex: orderIndex,
+      ...rest,
+      ...(iconType === ICON_TYPE.BUILT_IN && { iconPath: icon }),
+      iconType,
       functionalIds: functionals?.map((functional) => functional.id),
     };
 
@@ -182,19 +213,15 @@ const Menu = () => {
   const handleCancelFilter = () => {
     setIsOpenFilter(false);
     setFilterParams({});
+
+    filterForm.resetFields();
     hanldeClearURLSearchParams({
       tab: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU,
     });
   };
 
   const handleFinishFilter = useCallback((values: IFilterMenuView) => {
-    const { createdDate, ...rest } = values;
-    const formattedParams: IFilterMenuView = {
-      ...rest,
-      createdDate: formatDateToBE(createdDate),
-    };
-
-    setFilterParams(formattedParams);
+    setFilterParams(values);
   }, []);
 
   const handleCancelModal = useCallback(() => {
@@ -205,9 +232,23 @@ const Menu = () => {
   }, []);
 
   const handleFinishModal = useCallback(
-    (values: IMenuForm) => {
+    (_: IMenuForm) => {
       const formData = new FormData();
-      const { iconFile, iconPath } = values;
+      const fieldsValue = menuForm.getFieldsValue(true);
+
+      const formattedValues = Object.entries(fieldsValue).reduce(
+        (prevVal, currentVal) => {
+          const [key, value] = currentVal;
+
+          prevVal[key as keyof IMenuForm] =
+            value && typeof value === 'string' ? value?.trim() : value;
+
+          return prevVal;
+        },
+        {} as Record<keyof IMenuForm, any>
+      );
+
+      const { iconFile, iconPath, ...rest } = formattedValues;
 
       if (iconFile && iconFile?.fileList?.length) {
         iconFile?.fileList.forEach((item: any) => {
@@ -220,21 +261,20 @@ const Menu = () => {
         return;
       }
 
-      handleSaveMenuView(values, iconPath);
+      handleSaveMenuView(rest, iconPath);
     },
-    [editIndex]
+    [menuForm, editIndex]
   );
 
   const handleSaveMenuView = useCallback(
     (values: IMenuForm, iconURL?: string) => {
-      const { iconPath, iconFile, orderIndex, ...rest } = values;
-      const iconType = iconFile ? ICON_TYPE.IMAGE : ICON_TYPE.BUILT_IN;
+      const { iconPath, iconType, iconFile, orderIndex, ...rest } = values;
 
       if (editIndex === -1) {
         const createParams: ICreateMenuView = {
           ...rest,
-          iconType,
           icon: iconURL,
+          iconType: iconType,
           orderIndex: Number(orderIndex),
         };
 
@@ -383,6 +423,7 @@ const Menu = () => {
         isOpen={isOpenFilter}
         onFinish={handleFinishFilter}
         onCancel={handleCancelFilter}
+        onPageChange={handlePageChange}
       />
       <Content>
         <Table<IMenuViewItem>
@@ -401,7 +442,7 @@ const Menu = () => {
         form={menuForm}
         isOpen={isOpenModal}
         cancelText="Hủy"
-        title="Chỉnh sửa menu"
+        title={editIndex !== -1 ? 'Chỉnh sửa menu' : 'Tạo mới menu'}
         loading={isModalLoading}
         onFinish={handleFinishModal}
         onCancel={handleCancelModal}

@@ -6,6 +6,7 @@ export interface IGetAllFunctionalParams {
   title?: string;
   code?: string;
   type?: string;
+  createdDate?: string;
 }
 
 export interface ICreateFunctionalParams {

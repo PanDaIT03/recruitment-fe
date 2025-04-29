@@ -1,8 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 import { Col, FormInstance, message, Row } from 'antd';
-import { Dispatch, memo, SetStateAction, useCallback, useEffect } from 'react';
+import { Dispatch, memo, SetStateAction, useEffect } from 'react';
 
 import { JobsAPI } from '~/apis/job';
+import { DatePicker } from '~/components/DatePicker/DatePicker';
 import FilterBox from '~/components/FilterBox/FilterBox';
 import FormItem from '~/components/Form/FormItem';
 import Input from '~/components/Input/Input';
@@ -16,9 +17,16 @@ interface IProps {
   onCancel: () => void;
   onFinish: (values: any) => void;
   setFilterParams: Dispatch<SetStateAction<any>>;
+  onPageChange: (page: number, pageSize?: number) => void;
 }
 
-const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
+const UserFilter = ({
+  open,
+  form,
+  onCancel,
+  onFinish,
+  onPageChange,
+}: IProps) => {
   const { roles, loading } = useAppSelector((state) => state.role);
   const { status, loading: statusLoading } = useAppSelector(
     (state) => state.status
@@ -39,42 +47,31 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
     getAllJobFields();
   }, []);
 
-  const handleSetFormValues = useCallback(
-    (form: FormInstance<IFormFilter>, filterParams: any) => {
-      const params = Object.entries(filterParams).reduce(
-        (prevVal, currentVal) => {
-          const [key, value] = currentVal;
-          if (value)
-            key.includes('email')
-              ? (prevVal[key] = value)
-              : (prevVal[key] = Number(value));
-
-          return prevVal;
-        },
-        {} as Record<string, any>
-      );
-
-      form.setFieldsValue(params);
-    },
-    []
-  );
-
   return (
     <FilterBox
       open={open}
       form={form}
-      onFinish={onFinish}
       onCancel={onCancel}
-      onSetFormValues={handleSetFormValues}
+      onFinish={onFinish}
+      onPageChange={onPageChange}
     >
       <Row gutter={[8, 16]} align="top">
-        <Col span={24}>
-          <FormItem name="email" label="Email">
+        <Col span={16}>
+          <FormItem labelBold={false} name="email" label="Email">
             <Input allowClear placeholder="Ví dụ: abc@gmail.com" />
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem name="jobFieldsId" label="Lĩnh vực công việc">
+          <FormItem labelBold={false} name="createdDate" label="Ngày tạo">
+            <DatePicker allowClear format="DD/MM/YYYY" />
+          </FormItem>
+        </Col>
+        <Col span={8}>
+          <FormItem
+            labelBold={false}
+            name="jobFieldsId"
+            label="Lĩnh vực công việc"
+          >
             <Select
               allowClear
               mode="multiple"
@@ -88,7 +85,7 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem name="roleId" label="Quyền">
+          <FormItem labelBold={false} name="roleId" label="Quyền">
             <Select
               allowClear
               loading={loading}
@@ -101,7 +98,7 @@ const UserFilter = ({ open, form, onCancel, onFinish }: IProps) => {
           </FormItem>
         </Col>
         <Col span={8}>
-          <FormItem name="statusId" label="Trạng thái">
+          <FormItem labelBold={false} name="statusId" label="Trạng thái">
             <Select
               allowClear
               placeholder="Chọn trạng thái"
