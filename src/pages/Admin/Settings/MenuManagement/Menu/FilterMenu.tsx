@@ -1,5 +1,5 @@
 import { Col, FormInstance, Row } from 'antd';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 
 import { DatePicker } from '~/components/DatePicker/DatePicker';
 import FilterBox from '~/components/FilterBox/FilterBox';
@@ -17,26 +17,9 @@ interface IProps {
   onPageChange: (page: number, pageSize?: number) => void;
 }
 
-const FilterMenu = ({
-  isOpen,
-  form,
-  onCancel,
-  onFinish,
-  onPageChange,
-}: IProps) => {
-  const handleCancel = useCallback(() => {
-    form.resetFields();
-    onCancel();
-  }, []);
-
+const FilterMenu = ({ isOpen, ...props }: IProps) => {
   return (
-    <FilterBox
-      open={isOpen}
-      form={form}
-      onFinish={onFinish}
-      onCancel={handleCancel}
-      onPageChange={onPageChange}
-    >
+    <FilterBox open={isOpen} {...props}>
       <Row gutter={[8, 16]} align={'middle'}>
         <Col span={12}>
           <FormItem labelBold={false} label="Tên menu" name="title">

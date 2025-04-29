@@ -19,7 +19,7 @@ import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
 import { ICON_TYPE, MENU_MANAGEMENT_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { useAppSelector } from '~/hooks/useStore';
 import HeaderMenuIcon from '~/layouts/Header/menu/HeaderMenuIcon';
 import { getAllMenuViews } from '~/store/thunk/menuView';
 import { IMenuViewItem } from '~/types/MenuVIews';
@@ -61,8 +61,6 @@ const { PlusOutlined, EditOutlined, QuestionCircleOutlined, CloseOutlined } =
   icons;
 
 const Menu = () => {
-  const dispatch = useAppDispatch();
-
   const [menuForm] = useForm<IMenuForm>();
   const [filterForm] = useForm<IFilterMenuView>();
 
@@ -120,7 +118,7 @@ const Menu = () => {
         message.success(res?.message || 'Tạo mới thành công');
 
         handleCancelModal();
-        refetchMenuViews({});
+        handleCancelFilter();
       },
       onError: (error: any) => {
         message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
@@ -135,7 +133,11 @@ const Menu = () => {
         message.success(res?.message || 'Cập nhật thành công');
 
         handleCancelModal();
-        refetchMenuViews({});
+        setFilterParams({
+          page: 1,
+          pageSize: 10,
+          ...filterParams,
+        });
       },
       onError: (error: any) => {
         message.error(`Cập nhật thất bại: ${error?.response?.data?.message}`);
@@ -147,7 +149,8 @@ const Menu = () => {
       mutationFn: (id: number) => MenuViewAPI.deleteMenuView(id),
       onSuccess: (res) => {
         message.success(res?.message || 'Xóa menu thành công');
-        refetchMenuViews({});
+
+        handleCancelFilter();
       },
       onError: (error: any) => {
         message.error(`Xóa thất bại: ${error?.response?.data?.message}`);
@@ -167,10 +170,6 @@ const Menu = () => {
       isDeleteMenuViewPending,
     ]
   );
-
-  const refetchMenuViews = useCallback((params: IGetAllMenuView) => {
-    dispatch(getAllMenuViews(params));
-  }, []);
 
   const handleEdit = useCallback((record: IMenuViewItem) => {
     const {
@@ -204,6 +203,7 @@ const Menu = () => {
     setIsOpenFilter(false);
     setFilterParams({});
 
+    filterForm.resetFields();
     hanldeClearURLSearchParams({
       tab: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU,
     });
