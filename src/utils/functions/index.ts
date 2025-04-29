@@ -1,5 +1,5 @@
 import { TokenResponse } from '@react-oauth/google';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { IGoogleUserInfo } from '~/types/Auth';
 
 interface IGoogleUserInfoResponse {
@@ -59,9 +59,9 @@ export const formatSalary = (
   return 'Thương lượng';
 };
 
-export const formatDateToBE = (date: string) => {
+export const formatDateToBE = (date: string | Dayjs) => {
   if (!date) return '';
 
   const dayjsDate = dayjs(date);
-  return dayjsDate.format('YYYY-MM-DD HH:mm:ss.SSS') + '000';
+  return dayjsDate.format('YYYY-MM-DD HH:mm:ss');
 };

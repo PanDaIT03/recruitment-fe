@@ -3,8 +3,7 @@ import classNames from 'classnames';
 import { memo } from 'react';
 import './Input.scss';
 
-const Input = ({ className, ...props }: InputProps) => {
-  const { allowClear = false } = props;
+const Input = ({ className, allowClear = false, ...props }: InputProps) => {
   const customClass = classNames('w-full h-10', className);
 
   return (

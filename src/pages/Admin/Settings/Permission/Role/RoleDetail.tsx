@@ -63,7 +63,7 @@ const RoleDetail = () => {
         title: item?.title,
         description: item?.description,
         functionalIds: item?.rolesFunctionals?.map(
-          (item) => item?.functionalsId
+          (item: any) => item?.functionalsId
         ),
       });
     },

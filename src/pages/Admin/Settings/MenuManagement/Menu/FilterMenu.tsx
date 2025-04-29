@@ -1,6 +1,5 @@
 import { Col, FormInstance, Row } from 'antd';
-import dayjs from 'dayjs';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 
 import { DatePicker } from '~/components/DatePicker/DatePicker';
 import FilterBox from '~/components/FilterBox/FilterBox';
@@ -15,59 +14,36 @@ interface IProps {
   form: FormInstance<IFilterMenuView>;
   onCancel: () => void;
   onFinish: (value: IFilterMenuView) => void;
+  onPageChange: (page: number, pageSize?: number) => void;
 }
 
-const FilterMenu = ({ isOpen, form, onCancel, onFinish }: IProps) => {
-  const handleCancel = useCallback(() => {
-    form.resetFields();
-    onCancel();
-  }, []);
-
-  const hanldeSetFormValues = (
-    _: FormInstance<any>,
-    filterParams: IFilterMenuView
-  ) => {
-    const { createdDate, ...rest } = filterParams;
-    const fieldValues: IFilterMenuView = {
-      ...rest,
-      createdDate: createdDate ? dayjs(createdDate) : '',
-    };
-
-    form.setFieldsValue(fieldValues);
-  };
-
+const FilterMenu = ({ isOpen, ...props }: IProps) => {
   return (
-    <FilterBox
-      open={isOpen}
-      form={form}
-      onFinish={onFinish}
-      onCancel={handleCancel}
-      onSetFormValues={hanldeSetFormValues}
-    >
+    <FilterBox open={isOpen} {...props}>
       <Row gutter={[8, 16]} align={'middle'}>
         <Col span={12}>
-          <FormItem label="Tên menu" name="title">
-            <Input allowClear />
+          <FormItem labelBold={false} label="Tên menu" name="title">
+            <Input allowClear placeholder="Ví dụ: Cá nhân" />
           </FormItem>
         </Col>
         <Col span={12}>
-          <FormItem label="Path" name="path">
-            <Input allowClear />
+          <FormItem labelBold={false} label="Path" name="path">
+            <Input allowClear placeholder="Ví dụ: /user/profile" />
           </FormItem>
         </Col>
         <Col span={colSpan}>
-          <FormItem label="Order" name="orderIndex">
-            <Input type="number" />
+          <FormItem labelBold={false} label="Order" name="orderIndex">
+            <Input type="number" placeholder="Ví dụ: 1" />
           </FormItem>
         </Col>
         <Col span={colSpan}>
-          <FormItem label="Icon type" name="iconType">
-            <Select options={iconTypeOptions} />
+          <FormItem labelBold={false} label="Icon type" name="iconType">
+            <Select options={iconTypeOptions} placeholder="Chọn loại icon" />
           </FormItem>
         </Col>
         <Col span={colSpan}>
-          <FormItem label="Ngày tạo" name="createdDate">
-            <DatePicker placement="bottomRight" format="DD/MM/YYYY" />
+          <FormItem labelBold={false} label="Ngày tạo" name="createdDate">
+            <DatePicker allowClear format="DD/MM/YYYY" />
           </FormItem>
         </Col>
       </Row>

@@ -1,7 +1,9 @@
 import { FormInstance } from 'antd';
+import dayjs, { Dayjs } from 'dayjs';
 import { memo, ReactNode, useCallback, useEffect, useRef } from 'react';
 
 import useQueryParams from '~/hooks/useQueryParams';
+import { formatDateToBE } from '~/utils/functions';
 import Content from '../Content/Content';
 import FormWrapper from '../Form/FormWrapper';
 
@@ -14,6 +16,7 @@ interface IFilterBoxProps {
   submitTitle?: string;
   onCancel: () => void;
   onFinish(values: any): void;
+  onPageChange: (page: number, pageSize?: number) => void;
   onSetFormValues?: (form: FormInstance<any>, filterParams: any) => void;
 }
 
@@ -26,6 +29,7 @@ const FilterBox = ({
   submitTitle = 'Tìm kiếm',
   onFinish,
   onCancel,
+  onPageChange,
   onSetFormValues,
 }: IFilterBoxProps) => {
   const firstRender = useRef(true);
@@ -36,21 +40,26 @@ const FilterBox = ({
     const formattedParams = Object.entries(formValues).reduce(
       (prevVal, currentVal) => {
         const [key, value] = currentVal;
-        if (value)
-          prevVal[key] = typeof value === 'string' ? value?.trim() : value;
+
+        if (key.includes('createdDate'))
+          prevVal[key] = value ? formatDateToBE(value as Dayjs) : value;
+        else prevVal[key] = value;
 
         return prevVal;
       },
       {} as Record<string, any>
     );
 
+    onPageChange(1, 10);
     onFinish(formattedParams);
-  }, [onFinish]);
+  }, [form, onFinish, onPageChange]);
 
   const handleCancel = useCallback(() => {
     form.resetFields();
+
+    onPageChange(1, 10);
     onCancel();
-  }, [onCancel]);
+  }, [form, onCancel, onPageChange]);
 
   useEffect(() => {
     if (!firstRender.current) return;
@@ -59,7 +68,11 @@ const FilterBox = ({
     const formattedObject = Object.entries(searchParams).reduce(
       (prevVal, currentVal) => {
         const [key, value] = currentVal;
-        if (value) prevVal[key] = value;
+        if (value) {
+          if (key.includes('createdDate') && typeof value === 'string')
+            prevVal[key] = value ? dayjs(value) : '';
+          else prevVal[key] = value;
+        }
 
         return prevVal;
       },

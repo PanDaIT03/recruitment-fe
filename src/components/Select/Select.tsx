@@ -2,9 +2,11 @@ import { ConfigProvider, Select as SelectAntd, SelectProps } from 'antd';
 import classNames from 'classnames';
 import { memo } from 'react';
 
+import './Select.scss';
+
 const Select = ({ className, ...props }: SelectProps) => {
   const customClass = classNames(
-    'min-h-10 [&>.ant-select-selector]:min-h-10',
+    // 'min-h-10 [&>.ant-select-selector]:min-h-10',
     className
   );
 

@@ -5,6 +5,7 @@ export interface IGetAllMenuView {
   pageSize?: number;
   title?: string;
   path?: string;
+  type?: string;
   orderIndex?: number;
   iconType?: string;
   createdDate?: string;

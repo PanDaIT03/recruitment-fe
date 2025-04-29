@@ -3,15 +3,17 @@ import classNames from 'classnames';
 import { ReactElement, ReactNode } from 'react';
 
 type IProps = {
-  children: ReactElement | ReactNode;
+  labelBold?: boolean;
   labelClassName?: string;
   childrenSelected?: boolean;
+  children: ReactElement | ReactNode;
 } & FormItemProps;
 
 const FormItem = ({
   children,
   className,
   labelClassName,
+  labelBold = true,
   childrenSelected = false,
   ...props
 }: IProps) => {
@@ -24,7 +26,9 @@ const FormItem = ({
       labelCol={{ span: props.label ? 24 : 0 }}
       initialValue={childrenSelected ? 'all' : undefined}
       label={
-        <span className={classNames('font-medium', labelClassName)}>
+        <span
+          className={classNames(labelBold ? 'font-medium' : '', labelClassName)}
+        >
           {props.label}
         </span>
       }
