@@ -4,7 +4,7 @@ import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   ICreateMenuView,
@@ -19,8 +19,9 @@ import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
 import { ICON_TYPE, MENU_MANAGEMENT_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import HeaderMenuIcon from '~/layouts/Header/menu/HeaderMenuIcon';
+import { getAllFunctionals } from '~/store/thunk/functional';
 import { getAllMenuViews } from '~/store/thunk/menuView';
 import { IMenuViewItem } from '~/types/MenuVIews';
 import toast from '~/utils/functions/toast';
@@ -61,6 +62,8 @@ const { PlusOutlined, EditOutlined, QuestionCircleOutlined, CloseOutlined } =
   icons;
 
 const Menu = () => {
+  const dispatch = useAppDispatch();
+
   const [menuForm] = useForm<IMenuForm>();
   const [filterForm] = useForm<IFilterMenuView>();
 
@@ -150,7 +153,11 @@ const Menu = () => {
       onSuccess: (res) => {
         message.success(res?.message || 'Xóa menu thành công');
 
-        handleCancelFilter();
+        setFilterParams({
+          page: 1,
+          pageSize: 10,
+          ...filterParams,
+        });
       },
       onError: (error: any) => {
         message.error(`Xóa thất bại: ${error?.response?.data?.message}`);
@@ -170,6 +177,10 @@ const Menu = () => {
       isDeleteMenuViewPending,
     ]
   );
+
+  useEffect(() => {
+    dispatch(getAllFunctionals({ type: 'combobox' }));
+  }, []);
 
   const handleEdit = useCallback((record: IMenuViewItem) => {
     const {

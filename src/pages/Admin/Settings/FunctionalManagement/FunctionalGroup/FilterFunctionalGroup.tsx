@@ -19,19 +19,8 @@ interface IProps {
   onPageChange: (page: number, pageSize?: number) => void;
 }
 
-const FilterFunctionalGroup = ({
-  form,
-  isOpen,
-  onCancel,
-  onFinish,
-  onPageChange,
-}: IProps) => {
+const FilterFunctionalGroup = ({ isOpen, form, ...props }: IProps) => {
   const { functionals, loading } = useAppSelector((state) => state.functional);
-
-  const handleCancel = useCallback(() => {
-    form.resetFields();
-    onCancel();
-  }, []);
 
   const handleSetFormValues = useCallback((_: any, filterParams: any) => {
     const fieldsValue = Object.entries(filterParams).reduce(
@@ -57,10 +46,8 @@ const FilterFunctionalGroup = ({
     <FilterBox
       form={form}
       open={isOpen}
-      onFinish={onFinish}
-      onCancel={handleCancel}
-      onPageChange={onPageChange}
       onSetFormValues={handleSetFormValues}
+      {...props}
     >
       <Row gutter={[8, 16]} align="top">
         <Col span={colSpan}>

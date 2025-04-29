@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd';
 import { FormInstance } from 'antd/es/form/Form';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 
 import { DatePicker } from '~/components/DatePicker/DatePicker';
 import FilterBox from '~/components/FilterBox/FilterBox';
@@ -17,26 +17,9 @@ interface IProps {
   onPageChange: (page: number, pageSize?: number) => void;
 }
 
-const FilterFunctional = ({
-  isOpen,
-  form,
-  onCancel,
-  onFinish,
-  onPageChange,
-}: IProps) => {
-  const handleCancel = useCallback(() => {
-    form.resetFields();
-    onCancel();
-  }, []);
-
+const FilterFunctional = ({ isOpen, ...props }: IProps) => {
   return (
-    <FilterBox
-      form={form}
-      open={isOpen}
-      onFinish={onFinish}
-      onCancel={handleCancel}
-      onPageChange={onPageChange}
-    >
+    <FilterBox open={isOpen} {...props}>
       <Row gutter={[8, 16]} align="middle">
         <Col span={colSpan}>
           <FormItem labelBold={false} name="title" label="Tên chức năng">

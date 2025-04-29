@@ -9,6 +9,7 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   FunctionalGroupAPI,
   ICreateFuncGroupParams,
+  IGetFuncGroupParams,
   IUpdateFuncGroupParams,
 } from '~/apis/functionalGroup';
 import { FilterAdmin } from '~/assets/svg';
@@ -40,6 +41,7 @@ interface IFunctionalGroupForm {
 
 export interface IFilterFunctionalGroupForm {
   title: string;
+  createdDate?: string;
   functionalIds: number[];
 }
 
@@ -61,7 +63,7 @@ const FunctionalGroup = () => {
   const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const [editIndex, setEditIndex] = useState<number>();
-  const [filter, setFilter] = useState<Partial<IFilterFunctionalGroupForm>>();
+  const [filter, setFilter] = useState<Partial<IGetFuncGroupParams>>();
 
   const { functionalGroups, loading: functionalGroupLoading } = useAppSelector(
     (state) => state.functionalGroup
@@ -87,8 +89,8 @@ const FunctionalGroup = () => {
     onSuccess: (res) => {
       message.success(res?.message);
 
-      refetchFunctionalGroup();
       handleCancelModal();
+      handleCancelFilter();
     },
     onError: (error: any) => {
       message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
@@ -105,7 +107,12 @@ const FunctionalGroup = () => {
       message.success(res?.message);
 
       setEditIndex(undefined);
-      refetchFunctionalGroup();
+      setFilter({
+        page: 1,
+        pageSize: 10,
+        ...filter,
+      });
+
       handleCancelModal();
     },
     onError: (error: any) => {
@@ -121,7 +128,11 @@ const FunctionalGroup = () => {
     onSuccess: (res) => {
       message.success(res?.message);
 
-      refetchFunctionalGroup();
+      setFilter({
+        page: 1,
+        pageSize: 10,
+        ...filter,
+      });
       handleCancelModal();
     },
     onError: (error: any) => {
@@ -219,10 +230,6 @@ const FunctionalGroup = () => {
     ] as ColumnsType<IFunctionalGroupItem>;
   }, [pageInfo]);
 
-  const refetchFunctionalGroup = useCallback(() => {
-    dispatch(getAllFunctionalGroups({}));
-  }, []);
-
   const handleEdit = useCallback((record: IFunctionalGroupItem) => {
     setIsOpenModal(true);
     setEditIndex(record?.id);
@@ -237,6 +244,8 @@ const FunctionalGroup = () => {
   const handleCancelFilter = useCallback(() => {
     setFilter({});
     setIsOpenFilter(false);
+
+    filterForm.resetFields();
     hanldeClearURLSearchParams({
       tab: FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP,
     });

@@ -17,8 +17,7 @@ import Input from '~/components/Input/Input';
 import Modal, { IModalProps } from '~/components/Modal/Modal';
 import Select from '~/components/Select/Select';
 import { ICON_TYPE } from '~/enums';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { getAllFunctionals } from '~/store/thunk/functional';
+import { useAppSelector } from '~/hooks/useStore';
 import { IMenuForm } from './Menu';
 
 interface IProps extends IModalProps {
@@ -27,17 +26,10 @@ interface IProps extends IModalProps {
 }
 
 const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
-  const dispatch = useAppDispatch();
-
   const [activeKey, setActiveKey] = useState(ICON_TYPE.BUILT_IN);
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
 
   const { functionals, loading } = useAppSelector((state) => state.functional);
-
-  useEffect(() => {
-    if (!!functionals?.items?.length) return;
-    dispatch(getAllFunctionals({ type: 'combobox' }));
-  }, [functionals]);
 
   useEffect(() => {
     if (!isOpen) return;
