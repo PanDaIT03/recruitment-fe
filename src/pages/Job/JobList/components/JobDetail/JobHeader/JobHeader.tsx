@@ -1,13 +1,11 @@
 import { Flex, Space } from 'antd';
 import { Dispatch, memo, SetStateAction } from 'react';
 
-import { Lightning, Salary, Telephone } from '~/assets/svg';
+import { Calendar, Lightning, Salary, Telephone } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import { JobItem } from '~/types/Job';
 import icons from '~/utils/icons';
-
-const { EnvironmentOutlined, ClockCircleOutlined, ShareAltOutlined } = icons;
 
 type IProps = Pick<JobItem, 'user' | 'title' | 'applicationDeadline'> & {
   salary: string;
@@ -16,6 +14,8 @@ type IProps = Pick<JobItem, 'user' | 'title' | 'applicationDeadline'> & {
   setIsOpenContactModal: Dispatch<SetStateAction<boolean>>;
   setIsOpenJobApplyModal: Dispatch<SetStateAction<boolean>>;
 };
+
+const { EnvironmentOutlined, ShareAltOutlined } = icons;
 
 const JobHeader = ({
   user,
@@ -42,7 +42,7 @@ const JobHeader = ({
           </div>
           <Flex gap={8} className="pr-2 border-r border-neutral-400">
             <EnvironmentOutlined />
-            <span>{placements}</span>
+            <span className="text-start">{placements}</span>
           </Flex>
           <Flex
             gap={8}
@@ -52,7 +52,7 @@ const JobHeader = ({
             <span>{salary}</span>
           </Flex>
           <Flex gap={8}>
-            <ClockCircleOutlined />
+            <Calendar />
             <span>{applicationDeadline}</span>
           </Flex>
         </Flex>

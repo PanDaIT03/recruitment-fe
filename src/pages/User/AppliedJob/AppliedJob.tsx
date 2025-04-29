@@ -46,7 +46,7 @@ const AppliedJob = () => {
             <Flex gap={12}>
               <Avatar
                 shape="square"
-                className="w-16 h-16"
+                className="w-16 h-16 min-w-16"
                 src={item.job.user.avatarUrl || defaultImgUrl}
               />
               <Space direction="vertical" size="small">

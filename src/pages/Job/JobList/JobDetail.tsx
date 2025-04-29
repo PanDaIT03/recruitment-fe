@@ -48,7 +48,7 @@ const JobDetail = () => {
   const applicationDeadline = useMemo(
     () =>
       currentJob.applicationDeadline
-        ? `${dayjs(currentJob.applicationDeadline).format('HH:mm - DD/MM/YYYY')}`
+        ? `${dayjs(currentJob.applicationDeadline).format('DD/MM/YYYY')}`
         : '',
     [currentJob]
   );
