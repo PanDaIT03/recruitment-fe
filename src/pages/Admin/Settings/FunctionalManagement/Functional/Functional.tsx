@@ -22,7 +22,7 @@ import Modal from '~/components/Modal/Modal';
 import Table from '~/components/Table/Table';
 import { FUNCTIONAL_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
-import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
+import { useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionals } from '~/store/thunk/functional';
 import { IFunctionalItem } from '~/types/Functional';
 import icons from '~/utils/icons';
@@ -52,8 +52,6 @@ const {
 } = icons;
 
 const Functional = () => {
-  const dispatch = useAppDispatch();
-
   const [form] = useForm<IFunctionalForm>();
   const [filterForm] = useForm<IFilterFunctionalForm>();
 
