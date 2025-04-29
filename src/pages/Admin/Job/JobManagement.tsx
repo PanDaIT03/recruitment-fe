@@ -181,6 +181,7 @@ const JobManagement = () => {
         open={isOpenFilter}
         onFinish={handleFinish}
         onCancel={handleCancel}
+        onPageChange={handlePageChange}
       />
       <Content>
         <Table
