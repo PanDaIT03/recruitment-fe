@@ -10,6 +10,7 @@ import { functionalReducer } from './reducer/functional';
 import { functionalGroupReducer } from './reducer/functionalGroup';
 import { jobReducer } from './reducer/job';
 import { menuViewsReducer } from './reducer/menuView';
+import { menuViewGroupReducer } from './reducer/menuViewGroup';
 import { roleReducer } from './reducer/role';
 import { statusReducer } from './reducer/status';
 import { userAdminReducer } from './reducer/userAdmin';
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   functional: functionalReducer,
   functionalGroup: functionalGroupReducer,
   menuView: menuViewsReducer,
+  menuViewGroup: menuViewGroupReducer,
 });
 
 export const store = configureStore({

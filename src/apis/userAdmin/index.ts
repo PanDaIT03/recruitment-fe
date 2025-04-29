@@ -13,6 +13,7 @@ export type IGetAllUserAdmin = Partial<{
   email: string;
   role: number;
   isActive: boolean;
+  createdDate: string;
   jobField: number[];
 }>;
 

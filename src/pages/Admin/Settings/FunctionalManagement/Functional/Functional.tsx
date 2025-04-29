@@ -40,6 +40,7 @@ export interface IFunctionalForm {
 export interface IFilterFunctionalForm {
   code: string;
   title: string;
+  createdDate: string;
 }
 
 const {
@@ -80,7 +81,7 @@ const Functional = () => {
         message.success(res?.message || 'Tạo mới thành công');
 
         handleModalCancel();
-        refetchFunctionals();
+        handleCancelFilter();
       },
       onError: (error: any) => {
         message.error(`Tạo mới thất bại: ${error?.response?.data?.message}`);
@@ -94,8 +95,12 @@ const Functional = () => {
       onSuccess: (res) => {
         message.success(res?.message || 'Cập nhật thành công');
 
+        setFilters({
+          page: 1,
+          pageSize: 10,
+          ...filters,
+        });
         handleModalCancel();
-        refetchFunctionals();
       },
       onError: (error: any) => {
         message.error(
@@ -109,7 +114,12 @@ const Functional = () => {
       mutationFn: (id: number) => FunctionalAPI.deleteFunctional(id),
       onSuccess: (res) => {
         message.success(res?.message || 'Xóa thành công');
-        refetchFunctionals();
+
+        setFilters({
+          page: 1,
+          pageSize: 10,
+          ...filters,
+        });
       },
       onError: (error: any) => {
         message.error(`Có lỗi xảy ra: ${error?.response?.data?.message}`);
@@ -190,17 +200,18 @@ const Functional = () => {
     ] as ColumnsType<IFunctionalItem>;
   }, [pageInfo]);
 
-  const refetchFunctionals = useCallback(() => {
-    const params: IGetAllFunctionalParams = { ...pageInfo, ...filters };
-    dispatch(getAllFunctionals(params));
-  }, [filters, pageInfo]);
-
   const handleCancelFilter = useCallback(() => {
     setFilters({});
     setIsOpenFilter(false);
+
+    filterForm.resetFields();
     hanldeClearURLSearchParams({
       tab: FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL,
     });
+  }, []);
+
+  const handleFinishFilter = useCallback((values: IFilterFunctionalForm) => {
+    setFilters(values);
   }, []);
 
   const handleEdit = useCallback(
@@ -266,7 +277,8 @@ const Functional = () => {
         form={filterForm}
         isOpen={isOpenFilter}
         onCancel={handleCancelFilter}
-        onFinish={(values) => setFilters({ ...values })}
+        onFinish={handleFinishFilter}
+        onPageChange={handlePageChange}
       />
       <Content>
         <Table<IFunctionalItem>
@@ -283,7 +295,7 @@ const Functional = () => {
       </Content>
       <Modal
         isOpen={isOpenModal}
-        title={editIndex ? 'Chỉnh sửa chức năng' : 'Thêm chức năng'}
+        title={editIndex !== -1 ? 'Chỉnh sửa chức năng' : 'Thêm chức năng'}
         footer={
           <Flex justify="end" gap={16}>
             <Button

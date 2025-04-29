@@ -16,7 +16,7 @@ import MenuGroup from './MenuGroup/MenuGroup';
 const tabItems: ITabItems[] = [
   {
     key: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU_GROUP,
-    label: 'Danh sách menu group',
+    label: 'Danh sách nhóm menu',
   },
   {
     key: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU,
@@ -44,7 +44,7 @@ const MenuManagement = () => {
   useEffect(() => {
     if (!firstRender.current) return;
 
-    navigate(`?tab=${activedTab || MENU_MANAGEMENT_TAB_ITEM_KEY.MENU}`);
+    navigate(`?tab=${activedTab || MENU_MANAGEMENT_TAB_ITEM_KEY.MENU_GROUP}`);
     firstRender.current = false;
   }, [activedTab]);
 

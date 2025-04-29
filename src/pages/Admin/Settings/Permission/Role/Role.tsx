@@ -16,18 +16,25 @@ import { getAllRoles } from '~/store/thunk/role';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import RoleFilter from './RoleFilter';
+import { IGetAllRoles } from '~/apis/role/role';
+
+export interface IFilterForm {
+  title?: string;
+  createdDate?: string;
+  functionalIds?: number[];
+}
 
 const { Text } = Typography;
 const { PlusOutlined, EditOutlined } = icons;
 
 const Role = () => {
-  const [form] = Form.useForm();
   const navigate = useNavigate();
-
-  const { roles, loading } = useAppSelector((state) => state.role);
+  const [form] = Form.useForm<IFilterForm>();
 
   const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const [filterParams, setFilterParams] = useState({} as any);
+  const [filterParams, setFilterParams] = useState<IGetAllRoles>();
+
+  const { roles, loading } = useAppSelector((state) => state.role);
 
   const { items, pageInfo, handlePageChange, hanldeClearURLSearchParams } =
     usePagination({
@@ -128,11 +135,8 @@ const Role = () => {
     });
   }, []);
 
-  const handleFinishFilter = useCallback((params: any) => {
-    setFilterParams({
-      title: params?.title,
-      functionalIds: params?.functionalIds,
-    });
+  const handleFinishFilter = useCallback((values: IFilterForm) => {
+    setFilterParams(values);
   }, []);
 
   return (
@@ -159,6 +163,7 @@ const Role = () => {
         open={isOpenFilter}
         onCancel={handleCancelFilter}
         onFinish={handleFinishFilter}
+        onPageChange={handlePageChange}
       />
       <Content>
         <Table

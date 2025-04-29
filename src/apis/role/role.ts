@@ -1,6 +1,13 @@
 import axiosApi from '~/services/axios';
-import { IRole } from '~/types/Role';
-import { IPaginationParams } from '../job';
+
+export interface IGetAllRoles {
+  page?: number;
+  pageSize?: number;
+  id?: number;
+  title?: string;
+  createdDate?: string;
+  functionalIds?: number[];
+}
 
 export interface ICreateRoleParam {
   title: string;
@@ -13,9 +20,7 @@ export interface IUpdateRoleParam extends ICreateRoleParam {
 }
 
 export const RoleApi = {
-  getAllRoles: async (
-    params: IPaginationParams & Partial<IRole>
-  ): Promise<IPaginatedData<IRole[]>> => {
+  getAllRoles: async (params: IGetAllRoles) => {
     return axiosApi.get('/roles/all', { params });
   },
   createRole: async (params: ICreateRoleParam) => {
