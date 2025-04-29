@@ -8,14 +8,15 @@ import {
   Upload,
   UploadFile,
 } from 'antd';
-import { memo, useEffect, useMemo, useState } from 'react';
-import Dragger, { IUploadProps } from '~/components/Dragger/Dragger';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
+import Dragger, { IUploadProps } from '~/components/Dragger/Dragger';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
 import Modal, { IModalProps } from '~/components/Modal/Modal';
 import Select from '~/components/Select/Select';
+import { ICON_TYPE } from '~/enums';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionals } from '~/store/thunk/functional';
 import { IMenuForm } from './Menu';
@@ -25,16 +26,13 @@ interface IProps extends IModalProps {
   onFinish: (values: any) => void;
 }
 
-enum TAB_KEY {
-  TEXT = 'text',
-  FILE = 'file',
-}
-
 const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
   const dispatch = useAppDispatch();
 
+  const [activeKey, setActiveKey] = useState(ICON_TYPE.BUILT_IN);
   const [uploadFile, setUploadFile] = useState<UploadFile[]>([]);
-  const { functionals } = useAppSelector((state) => state.functional);
+
+  const { functionals, loading } = useAppSelector((state) => state.functional);
 
   useEffect(() => {
     if (!!functionals?.items?.length) return;
@@ -42,7 +40,12 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
   }, [functionals]);
 
   useEffect(() => {
-    if (isOpen && uploadFile?.length) setUploadFile([]);
+    if (!isOpen) return;
+
+    if (uploadFile?.length) setUploadFile([]);
+
+    const activeKey = form.getFieldValue('iconType');
+    setActiveKey(activeKey);
   }, [isOpen]);
 
   const draggerProps: IUploadProps = useMemo(
@@ -80,7 +83,7 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
   const tabItems: TabsProps['items'] = useMemo(
     () => [
       {
-        key: TAB_KEY.TEXT,
+        key: ICON_TYPE.BUILT_IN,
         label: 'Text/Link',
         children: (
           <FormItem
@@ -93,7 +96,7 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
         ),
       },
       {
-        key: TAB_KEY.FILE,
+        key: ICON_TYPE.IMAGE,
         label: 'File',
         children: (
           <FormItem label="Icon path" name="iconFile">
@@ -105,6 +108,11 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
     [draggerProps]
   );
 
+  const handleChangeTab = useCallback((activeKey: string) => {
+    form.setFieldValue('iconType', activeKey);
+    setActiveKey(activeKey as ICON_TYPE);
+  }, []);
+
   return (
     <Modal {...props} isOpen={isOpen} onOk={() => form.submit()}>
       <FormWrapper form={form} onFinish={onFinish}>
@@ -115,7 +123,7 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
               name="orderIndex"
               rules={[{ required: true, message: 'Vui lòng nhập thứ tự' }]}
             >
-              <Input type="number" />
+              <Input type="number" placeholder="Ví dụ: 1" />
             </FormItem>
           </Col>
           <Col span={15}>
@@ -124,7 +132,7 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
               name="title"
               rules={[{ required: true, message: 'Vui lòng nhập tên menu' }]}
             >
-              <Input />
+              <Input allowClear placeholder="Ví dụ: Tài khoản" />
             </FormItem>
           </Col>
         </Row>
@@ -134,7 +142,10 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
           rules={[{ required: true, message: 'Vui lòng chọn chức năng' }]}
         >
           <Select
+            allowClear
             mode="multiple"
+            loading={loading}
+            placeholder="Chọn chức năng"
             options={functionals?.items?.map((functional) => ({
               label: functional?.title,
               value: functional?.id,
@@ -146,9 +157,14 @@ const ModalMenu = ({ isOpen, form, onFinish, ...props }: IProps) => {
           name="path"
           rules={[{ required: true, message: 'Vui lòng nhập đường dẫn' }]}
         >
-          <Input />
+          <Input allowClear placeholder="Ví dụ: /user-account" />
         </FormItem>
-        <Tabs defaultActiveKey={TAB_KEY.TEXT} items={tabItems} />
+        <Tabs
+          items={tabItems}
+          activeKey={activeKey}
+          defaultActiveKey={ICON_TYPE.BUILT_IN}
+          onChange={handleChangeTab}
+        />
       </FormWrapper>
     </Modal>
   );
