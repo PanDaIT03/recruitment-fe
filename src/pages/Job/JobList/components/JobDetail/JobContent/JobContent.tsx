@@ -1,5 +1,12 @@
 import { Alert, Avatar, Divider, Flex, Skeleton, Space } from 'antd';
-import { cloneElement, Dispatch, memo, ReactNode, SetStateAction } from 'react';
+import {
+  cloneElement,
+  Dispatch,
+  memo,
+  ReactNode,
+  SetStateAction,
+  useMemo,
+} from 'react';
 
 import {
   Box,
@@ -32,6 +39,11 @@ type IProps = Pick<
 interface IJobContentItem {
   title: string;
   val: ReactNode;
+}
+
+interface ICompanyInfo {
+  title: string;
+  value: ReactNode;
 }
 
 const { EnvironmentOutlined } = icons;
@@ -104,7 +116,36 @@ const JobContent = ({
   setIsOpenModal,
   ...props
 }: IProps) => {
-  console.log(user);
+  const companyInfo = useMemo(
+    () =>
+      [
+        {
+          title: 'Tên công ty',
+          value: user?.companyName,
+        },
+        {
+          title: 'Lĩnh vực',
+          value: props?.jobField,
+        },
+        {
+          title: 'Website',
+          value: (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`https://${user?.companyUrl}`}
+              className="text-[#3B82F6] hover:text-[#60A5FA]"
+            >
+              <Flex align="center">
+                {user?.companyUrl}
+                <ExternalLink />
+              </Flex>
+            </a>
+          ),
+        },
+      ] as ICompanyInfo[],
+    [user, props]
+  );
 
   return (
     <Flex gap={16} justify="space-between" className="max-lg:flex-col">
@@ -120,7 +161,11 @@ const JobContent = ({
             paragraph={{ rows: 14 }}
           />
         ) : (
-          <Space direction="vertical" size="middle" className="px-6 py-4">
+          <Space
+            size="middle"
+            direction="vertical"
+            className="w-full px-6 py-4"
+          >
             <Alert
               showIcon
               type="info"
@@ -170,7 +215,7 @@ const JobContent = ({
           {loading ? (
             <Skeleton avatar active paragraph={{ rows: 1 }} />
           ) : (
-            <Flex gap={16} align="center">
+            <Flex gap={16} className="items-center max-sm:flex-col">
               {user?.avatarUrl ? (
                 <Avatar
                   shape="square"
@@ -191,28 +236,16 @@ const JobContent = ({
             <Skeleton title={false} active paragraph={{ rows: 3 }} />
           ) : (
             <Space direction="vertical" className="w-full text-xsm">
-              <Flex gap={16}>
-                <p className="w-[120px] text-sub font-medium">Tên công ty</p>
-                <p className="font-semibold">{user?.companyName}</p>
-              </Flex>
-              <Flex gap={16}>
-                <p className="w-[120px] text-sub font-medium">Lĩnh vực</p>
-                <p className="font-semibold">{props.jobField}</p>
-              </Flex>
-              <Flex gap={16}>
-                <p className="w-[120px] text-sub font-medium">Website</p>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={`https://${user?.companyUrl}`}
-                  className="text-[#3B82F6] hover:text-[#60A5FA]"
-                >
-                  <Flex align="center">
-                    {user?.companyUrl}
-                    <ExternalLink />
-                  </Flex>
-                </a>
-              </Flex>
+              {companyInfo?.map(({ title, value }) => (
+                <Flex className="gap-4 max-sm:flex-col max-sm:gap-1 sm:justify-between">
+                  <p className="w-[120px] text-sub font-medium">{title}</p>
+                  {typeof value === 'string' ? (
+                    <p className="font-semibold">{value}</p>
+                  ) : (
+                    value
+                  )}
+                </Flex>
+              ))}
               <Button
                 className="w-full"
                 iconBefore={<Telephone />}
