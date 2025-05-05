@@ -13,6 +13,7 @@ export { ReactComponent as CalendarOutline } from './calendar-outline.svg';
 export { ReactComponent as Calendar } from './calendar.svg';
 export { ReactComponent as Card } from './card.svg';
 export { ReactComponent as Community } from './community.svg';
+export { ReactComponent as CompanyLogo } from './company-logo.svg';
 export { ReactComponent as Copy } from './copy.svg';
 export { ReactComponent as CreditCard } from './credit-card.svg';
 export { ReactComponent as Dashboard } from './dashboard.svg';
