@@ -220,11 +220,7 @@ const JobList = () => {
         onSetFormValues={handleSetFormValues}
         placeHolder="Vị trí công việc/tên công ty"
       >
-        <FormItem
-          childrenSelected
-          name="workTypesId"
-          className="w-full max-w-52 mb-0"
-        >
+        <FormItem childrenSelected name="workTypesId" className="w-max mb-0">
           <CustomSelect
             showSearch={false}
             displayedType="text"
