@@ -240,7 +240,7 @@ const routesConfig: CustomRouteObject[] = [
   createRoute('/user', undefined, UserLayout, [
     createProtectedRoute('', ['user'], <UserProfile />),
     createProtectedRoute(PATH.USER_PROFILE, ['user'], <UserProfile />, [
-      PERMISSION.VIEW_PROFILE,
+      PERMISSION.VIEW_USER_PROFILE,
     ]),
     createProtectedRoute(PATH.USER_RESUME, ['user'], <UserResume />, [
       PERMISSION.VIEW_RESUME,

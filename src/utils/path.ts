@@ -12,7 +12,6 @@ const PATH = {
   EMPLOYER_SIGN_IN: '/employer/sign-in',
   EMPLOYER_SIGN_UP: '/employer/sign-up',
   UPDATE_JOB: '/employer/update-job',
-  EMPLOYER_PERSONAL: '/employer/employer-personal',
   // Admin
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_JOB_MANAGEMENT: '/admin/job-management',
@@ -22,6 +21,7 @@ const PATH = {
   ADMIN_FUNCTIONAL_MANAGEMENT: '/admin/settings/functional-management',
   ADMIN_MENU_MANAGEMENT: '/admin/settings/menu-management',
   // Employer
+  EMPLOYER_PERSONAL: '/employer/employer-personal',
   EMPLOYER_DASHBOARD: '/employer/dashboard',
   EMPLOYER_POSTING: '/employer/posting-job',
   EMPLOYER_CANDICATES_DASHBOARD: '/employer/manage-candicates',
