@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { Space } from 'antd';
+import { Skeleton, Space } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -22,7 +22,7 @@ const JobDetail = () => {
   const dispatch = useAppDispatch();
 
   const { id } = useParams<{ id: string }>();
-  const { currentJob } = useAppSelector((state) => state.jobs);
+  const { currentJob, loading } = useAppSelector((state) => state.jobs);
 
   const [isOpenShareModal, setIsOpenShareModal] = useState(false);
   const [isOpenContactModal, setIsOpenContactModal] = useState(false);
@@ -75,8 +75,13 @@ const JobDetail = () => {
     <div className="px-4 lg:px-8 w-full py-8">
       <div className="mx-auto max-w-7xl">
         <Space direction="vertical" size="large" className="w-full">
-          {breadcrumb}
+          {loading ? (
+            <Skeleton active title paragraph={{ rows: 0 }} />
+          ) : (
+            breadcrumb
+          )}
           <JobHeader
+            loading={loading}
             salary={jobSalary}
             user={currentJob.user}
             title={currentJob.title}
@@ -87,6 +92,7 @@ const JobDetail = () => {
             setIsOpenJobApplyModal={setIsOpenJobApplyModal}
           />
           <JobContent
+            loading={loading}
             salary={jobSalary}
             user={currentJob.user}
             placements={placements}
