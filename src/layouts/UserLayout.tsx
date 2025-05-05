@@ -102,12 +102,16 @@ const Sider = ({
             <div className="relative w-fit rounded-full border-[3px] border-white">
               <div className="rounded-full bg-white w-[108px] h-[108px]">
                 <div className="inline-block aspect-square h-full w-full rounded-full border border-gray-200 overflow-hidden">
-                  <ImageAntd
-                    width={108}
-                    height={108}
-                    preview={false}
-                    src={data.avatarUrl || defaultCoverImage}
-                  />
+                  {data?.avatarUrl ? (
+                    <ImageAntd
+                      width={108}
+                      height={108}
+                      preview={false}
+                      src={data.avatarUrl}
+                    />
+                  ) : (
+                    <AvatarPlaceHolder width={108} height={108} />
+                  )}
                 </div>
               </div>
               {hasPermissions && (
