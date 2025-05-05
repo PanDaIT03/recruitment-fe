@@ -6,7 +6,7 @@ import { memo, ReactNode } from 'react';
 import { useAppSelector } from '~/hooks/useStore';
 import Button from '../Button/Button';
 
-type IProps = {
+export type IFormWrapper = {
   loading?: boolean;
   children: ReactNode;
   className?: string;
@@ -38,7 +38,7 @@ const FormWrapper = ({
   onCancel,
   onFinish,
   ...passProps
-}: IProps) => {
+}: IFormWrapper) => {
   const { loading: isLoadingSignIn } = useAppSelector((state) => state.auth);
 
   const checkFormValidate = async () => {

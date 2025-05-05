@@ -5,35 +5,44 @@ import { memo, ReactNode, useCallback, useEffect, useRef } from 'react';
 import useQueryParams from '~/hooks/useQueryParams';
 import { formatDateToBE } from '~/utils/functions';
 import Content from '../Content/Content';
-import FormWrapper from '../Form/FormWrapper';
+import FormWrapper, { IFormWrapper } from '../Form/FormWrapper';
 
-interface IFilterBoxProps {
-  open: boolean;
-  form: FormInstance<any>;
-  children: ReactNode;
+interface IFilterBoxProps extends IFormWrapper {
+  open?: boolean;
+  wrapper?: boolean;
+  className?: string;
   defaultFilter?: any;
-  cancelTitle?: string;
-  submitTitle?: string;
   onCancel: () => void;
-  onFinish(values: any): void;
   onPageChange: (page: number, pageSize?: number) => void;
   onSetFormValues?: (form: FormInstance<any>, filterParams: any) => void;
 }
 
+interface IWapperCompProps {
+  children: ReactNode;
+}
+
 const FilterBox = ({
-  open,
   form,
   children,
   defaultFilter,
+  open = true,
+  wrapper = true,
   cancelTitle = 'Hủy',
   submitTitle = 'Tìm kiếm',
   onFinish,
   onCancel,
   onPageChange,
   onSetFormValues,
+  ...props
 }: IFilterBoxProps) => {
   const firstRender = useRef(true);
   const { searchParams } = useQueryParams();
+
+  const WrapperComp = useCallback(
+    ({ children }: IWapperCompProps) =>
+      wrapper ? <Content isOpen={open}>{children}</Content> : children,
+    [wrapper, open]
+  );
 
   const handleFinish = useCallback(() => {
     const formValues = form.getFieldsValue();
@@ -88,17 +97,18 @@ const FilterBox = ({
   }, [form, searchParams, defaultFilter, onSetFormValues]);
 
   return (
-    <Content isOpen={open}>
+    <WrapperComp>
       <FormWrapper
         form={form}
         cancelTitle={cancelTitle}
         submitTitle={submitTitle}
         onFinish={handleFinish}
         onCancel={handleCancel}
+        {...props}
       >
         {children}
       </FormWrapper>
-    </Content>
+    </WrapperComp>
   );
 };
 
