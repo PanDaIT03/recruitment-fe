@@ -1,24 +1,27 @@
 import { Drawer, DrawerProps, Flex } from 'antd';
 import { FormInstance } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
-import { Dispatch, SetStateAction, useMemo } from 'react';
+import { Dispatch, memo, SetStateAction, useMemo } from 'react';
 
 import { JobsAPI } from '~/apis/job';
+import { Filter } from '~/assets/svg';
 import { useFetch } from '~/hooks/useFetch';
 import { JobPlacement } from '~/types/Job';
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
+import FilterBox from '../FilterBox/FilterBox';
 import FormItem from '../Form/FormItem';
-import FormWrapper from '../Form/FormWrapper';
 import Select from '../Select/Select';
 import { defaultLocation } from './TopSearchBar';
 
-const { CloseOutlined, FilterOutlined } = icons;
+const { CloseOutlined } = icons;
 
 interface IProps extends DrawerProps {
   form: FormInstance;
   onCancel: () => void;
   onFilter: (values: any) => void;
+  onPageChange: (page: number, pageSize?: number) => void;
+  onSetFormValues: (form: FormInstance<any>, filterParams: any) => void;
   setIsOpenDrawer: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -29,6 +32,8 @@ const DrawerSearch: React.FC<IProps> = ({
   onFilter,
   onCancel,
   onClose,
+  onPageChange,
+  onSetFormValues,
   setIsOpenDrawer,
   ...props
 }) => {
@@ -55,11 +60,6 @@ const DrawerSearch: React.FC<IProps> = ({
     onClose && onClose(e);
   };
 
-  const handleFinish = (values: any) => {
-    onFilter(values);
-    setIsOpenDrawer(false);
-  };
-
   const handleCancel = () => {
     setIsOpenDrawer(false);
     onCancel && onCancel();
@@ -67,8 +67,6 @@ const DrawerSearch: React.FC<IProps> = ({
 
   return (
     <Drawer
-      {...props}
-      onClose={handleClose}
       classNames={{ wrapper: '!w-[55%] max-md:!w-[80%]' }}
       footer={
         <Flex gap={24} align="center" className="py-4 px-6">
@@ -83,13 +81,23 @@ const DrawerSearch: React.FC<IProps> = ({
             fill
             title="Áp dụng"
             className="w-full"
-            iconBefore={<FilterOutlined />}
+            iconBefore={<Filter />}
             onClick={() => form.submit()}
           />
         </Flex>
       }
+      onClose={handleClose}
+      {...props}
     >
-      <FormWrapper form={form} onFinish={handleFinish}>
+      <FilterBox
+        form={form}
+        footer={<></>}
+        wrapper={false}
+        onFinish={onFilter}
+        onCancel={handleCancel}
+        onPageChange={onPageChange}
+        onSetFormValues={onSetFormValues}
+      >
         <FormItem childrenSelected label="Địa điểm" name="placementIds">
           <Select
             allowClear
@@ -99,9 +107,9 @@ const DrawerSearch: React.FC<IProps> = ({
           />
         </FormItem>
         {children}
-      </FormWrapper>
+      </FilterBox>
     </Drawer>
   );
 };
 
-export default DrawerSearch;
+export default memo(DrawerSearch);
