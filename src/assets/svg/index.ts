@@ -8,6 +8,7 @@ export { ReactComponent as Bag } from './bag.svg';
 export { ReactComponent as BlockChain } from './block-chain.svg';
 export { ReactComponent as Blogs } from './blogs.svg';
 export { ReactComponent as Box } from './box.svg';
+export { ReactComponent as BriefCase } from './briefcase.svg';
 export { ReactComponent as BusinessCard } from './business-card.svg';
 export { ReactComponent as CalendarOutline } from './calendar-outline.svg';
 export { ReactComponent as Calendar } from './calendar.svg';
