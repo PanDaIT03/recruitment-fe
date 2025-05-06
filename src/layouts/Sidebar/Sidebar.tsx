@@ -4,10 +4,10 @@ import { Dispatch, memo, SetStateAction } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import {
+  BriefCase,
   Dashboard,
   EditStreamline,
   HeaderLogoPrimary,
-  List,
 } from '~/assets/svg';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -34,13 +34,17 @@ const MENU_ITEMS = [
     ],
   },
   {
-    key: 'management',
-    label: 'Quản lý',
-    icon: <List />,
+    key: 'recruitment',
+    label: 'Tuyển dụng',
+    icon: <BriefCase />,
     children: [
       {
         key: PATH.ADMIN_JOB_MANAGEMENT,
         label: 'Công việc',
+      },
+      {
+        key: PATH.ADMIN_DESIRED_JOB_MANAGEMENT,
+        label: 'Hồ sơ ứng viên',
       },
     ],
   },
@@ -56,8 +60,8 @@ const MENU_ITEMS = [
     ],
   },
   {
-    key: 'setting',
-    label: 'Cài đặt',
+    key: 'system',
+    label: 'Hệ thống',
     icon: <SettingOutlined />,
     children: [
       {
