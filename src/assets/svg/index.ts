@@ -60,6 +60,7 @@ export { ReactComponent as SunRise } from './sunrise.svg';
 export { ReactComponent as Tag } from './tag.svg';
 export { ReactComponent as Telephone } from './telephone.svg';
 export { ReactComponent as Television } from './television.svg';
+export { ReactComponent as Trash } from './trash.svg';
 export { ReactComponent as UserAccount } from './user-account.svg';
 export { ReactComponent as User } from './user.svg';
 export { ReactComponent as UserAvatar } from './user_avatar.svg';
