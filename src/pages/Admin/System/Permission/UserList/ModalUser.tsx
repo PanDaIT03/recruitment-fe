@@ -163,18 +163,18 @@ const ModalUser = ({ form, loading, onCancel, onFinish, ...props }: IProps) => {
       onCancel={onCancel}
       {...props}
     >
-      <div className="h-20 bg-[#f6f6f6] p-4 relative">
+      <div className="h-20 p-4 bg-[url('assets/img/profile_cover_image.jpg')] bg-cover bg-center bg-no-repeat relative">
         <div className="w-max absolute bottom-0 translate-y-[50%]">
           <Flex
             align="center"
             justify="center"
-            className="p-1 bg-white rounded-full border"
+            className="p-1 bg-white rounded-full border shadow-sm"
           >
             {avatarUrl && avatarUrl !== '-' ? (
               <Image
                 src={avatarUrl}
                 preview={false}
-                className="max-w-20 max-h-20 rounded-full"
+                className="max-w-20 max-h-20 rounded-full border"
               />
             ) : (
               <AvatarPlaceHolder width={80} height={80} />

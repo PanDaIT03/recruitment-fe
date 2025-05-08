@@ -51,7 +51,6 @@ import { PERMISSION } from '~/enums/permissions';
 import { useFetch } from '~/hooks/useFetch';
 import { usePermission } from '~/hooks/usePermission';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { defaultCoverImage } from '~/mocks/data';
 import { getMe } from '~/store/thunk/auth';
 import { IUser } from '~/types/User';
 import icons from '~/utils/icons';
