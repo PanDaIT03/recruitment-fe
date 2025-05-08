@@ -189,9 +189,10 @@ const ModalUser = ({ form, loading, onCancel, onFinish, ...props }: IProps) => {
       >
         <Flex justify="end">
           <CopyButton
-            shape="default"
             title="Sao chép"
+            shape="default"
             value={companyUrl}
+            displayType="primary"
             iconBefore={<Link />}
           />
         </Flex>

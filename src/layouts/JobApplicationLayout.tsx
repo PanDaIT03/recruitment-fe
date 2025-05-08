@@ -49,7 +49,7 @@ const JobApplicationLayout = () => {
               displayType="text"
               title="Quay lại trang cá nhân"
               iconBefore={<ArrowLeftOutlined />}
-              className="text-base text-[#F15224] hover:underline"
+              className="text-base hover:underline"
               onClick={() => navigate(PATH.USER_PROFILE)}
             />
             <h1 className="text-3xl font-semibold">Tạo hồ sơ tìm việc</h1>

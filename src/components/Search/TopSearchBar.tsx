@@ -147,7 +147,7 @@ const TopSearchBar: React.FC<IProps> = ({
             {children}
             {!!filledFormFields?.length && (
               <Button
-                title={<p className="text-[#F15224]">Bỏ lọc</p>}
+                title="Bỏ lọc"
                 displayType="text"
                 iconBefore={
                   <CloseCircleOutlined className="[&>svg]:fill-[#F15224]" />

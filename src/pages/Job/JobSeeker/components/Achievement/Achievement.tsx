@@ -32,7 +32,7 @@ const Achievement = ({ value }: IProps) => {
       <Button
         displayType="text"
         title={isVisible ? 'Thu gọn' : 'Xem thêm'}
-        className="text-accent font-medium hover:text-[#CC3E02] hover:underline"
+        className="font-medium hover:text-[#CC3E02] hover:underline"
         onClick={() => setIsVisible(!isVisible)}
       />
     </div>
