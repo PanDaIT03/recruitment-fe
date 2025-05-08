@@ -20,10 +20,17 @@ interface JobField {
 }
 
 interface User {
+  id: number;
   fullName: string;
-  curriculumVitae: CurriculumVitae[];
+  phoneNumber: string;
+  email: string;
+  avatarUrl: string;
+  companyName: string;
+  companyUrl: string;
+  placement: JobField;
   achivement: Achivement;
   userLanguages: UserLanguage[];
+  curriculumVitae: CurriculumVitae[];
 }
 
 interface Achivement {
@@ -48,17 +55,35 @@ interface ForeignLanguage {
   title: string;
 }
 
+// export interface IDesiredJob {
+//   statusCode: number;
+//   id: number;
+//   createAt: Date;
+//   salarayExpectation: number;
+//   startAfterOffer: string;
+//   totalYearExperience: number;
+//   yearOfBirth: string;
+//   user: User;
+//   desiredJobsPlacement: DesiredJobsPlacement[];
+//   desiredJobsPosition: DesiredJobsPosition[];
+//   jobField: JobField;
+// }
+
+//------------
+
 export interface IDesiredJob {
-  statusCode: number;
   id: number;
-  createAt: Date;
-  salarayExpectation: number;
-  startAfterOffer: string;
-  totalYearExperience: number;
-  yearOfBirth: string;
   user: User;
+  createAt: string;
+  yearOfBirth: string;
+  jobField: JobField;
+  startAfterOffer: string;
+  salarayExpectation: number;
+  totalYearExperience: number;
   desiredJobsPlacement: DesiredJobsPlacement[];
   desiredJobsPosition: DesiredJobsPosition[];
-  jobField: JobField;
 }
 
+//------------
+
+export type IPaginationDesiredJob = IPaginatedData<IDesiredJob[]>;

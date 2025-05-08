@@ -1,5 +1,5 @@
 import { Flex, Image, Popconfirm } from 'antd';
-import { memo, ReactElement } from 'react';
+import { memo, ReactElement, ReactNode } from 'react';
 
 import ButtonAction from '~/components/Button/ButtonAction';
 import { PERMISSION } from '~/enums/permissions';
@@ -7,7 +7,7 @@ import { usePermission } from '~/hooks/usePermission';
 import icons from '~/utils/icons';
 
 interface IProps {
-  imgUrl?: string;
+  imgUrl?: ReactNode;
   content: ReactElement;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -16,11 +16,11 @@ interface IProps {
 const { EditOutlined, CloseOutlined, QuestionCircleOutlined } = icons;
 
 const ProfileCard = ({ imgUrl, content, onEdit, onDelete }: IProps) => {
-  const { hasPermissions } = usePermission(PERMISSION.EDIT_PROFILE);
+  const { hasPermissions } = usePermission(PERMISSION.EDIT_USER_PROFILE);
 
   return (
     <Flex className="gap-x-4 gap-y-2 max-md:flex-col">
-      {imgUrl && (
+      {imgUrl && typeof imgUrl === 'string' ? (
         <Image
           width={64}
           height={64}
@@ -28,6 +28,8 @@ const ProfileCard = ({ imgUrl, content, onEdit, onDelete }: IProps) => {
           preview={false}
           className="rounded-lg"
         />
+      ) : (
+        imgUrl
       )}
       <Flex justify="space-between" className="flex-1">
         {content}

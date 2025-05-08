@@ -1,9 +1,9 @@
 import classNames from 'classnames';
-import React, { memo } from 'react';
+import { memo, ReactNode } from 'react';
 
 interface IContentProps {
   isOpen?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 

@@ -4,10 +4,10 @@ import dayjs from 'dayjs';
 import { memo } from 'react';
 
 import UserAPI from '~/apis/user';
+import { CompanyLogo } from '~/assets/svg';
 import { useMessage } from '~/contexts/MessageProvider';
 import { PROFILE_SECTION_TYPE } from '~/enums';
 import { IWorkExperience } from '~/types/User/profile';
-import { defaultImgUrl } from '~/utils/constant';
 import ProfileCard from './ProfileCard';
 
 interface IProps {
@@ -36,7 +36,7 @@ const ExperienceCard = ({ data, refetch, onEdit }: IProps) => {
       {data?.map((item, index) => (
         <div key={index}>
           <ProfileCard
-            imgUrl={defaultImgUrl}
+            imgUrl={<CompanyLogo />}
             onDelete={() => deleteWorkExperience(item.id)}
             onEdit={() => onEdit(index, PROFILE_SECTION_TYPE.EXPERIENCE)}
             content={

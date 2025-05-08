@@ -36,7 +36,7 @@ const ProfileSection = ({
   buttonActionTitle,
   onClick,
 }: IProfileSection) => {
-  const { hasPermissions } = usePermission(PERMISSION.EDIT_PROFILE);
+  const { hasPermissions } = usePermission(PERMISSION.EDIT_USER_PROFILE);
 
   return (
     <>
