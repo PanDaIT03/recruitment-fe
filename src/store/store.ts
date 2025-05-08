@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import { authReducer } from './reducer/auth';
+import { desiredJobReducer } from './reducer/desiredJob';
 import { functionalReducer } from './reducer/functional';
 import { functionalGroupReducer } from './reducer/functionalGroup';
 import { jobReducer } from './reducer/job';
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   functionalGroup: functionalGroupReducer,
   menuView: menuViewsReducer,
   menuViewGroup: menuViewGroupReducer,
+  desiredJob: desiredJobReducer,
 });
 
 export const store = configureStore({
