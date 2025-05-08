@@ -19,6 +19,12 @@ interface JobField {
   title: string;
 }
 
+interface Status {
+  id: number;
+  title: string;
+  code: string;
+}
+
 interface User {
   id: number;
   fullName: string;
@@ -75,13 +81,27 @@ export interface IDesiredJob {
   id: number;
   user: User;
   createAt: string;
+  approveAt: string;
   yearOfBirth: string;
   jobField: JobField;
+  status: Status;
   startAfterOffer: string;
   salarayExpectation: number;
   totalYearExperience: number;
   desiredJobsPlacement: DesiredJobsPlacement[];
   desiredJobsPosition: DesiredJobsPosition[];
+  creator: {
+    id: number;
+    fullName: string;
+  };
+  updater: {
+    id: number;
+    fullName: string;
+  };
+  approver: {
+    id: number;
+    fullName: string;
+  };
 }
 
 //------------
