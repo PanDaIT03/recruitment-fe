@@ -30,7 +30,7 @@ const JobDescription = (props: IProps) => {
   };
 
   return (
-    <Space direction="vertical" size="large">
+    <Space direction="vertical" size="large" className="w-full">
       {orderedKeys.map((key, index) => (
         <div key={index}>
           <h2 className="text-2xl font-bold">{handleRenderTitle(key)}</h2>

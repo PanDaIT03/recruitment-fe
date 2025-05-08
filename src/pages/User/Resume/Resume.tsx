@@ -155,15 +155,12 @@ const Resume = () => {
       </Flex>
       <Divider className="!my-3" />
       <List
-        itemLayout="horizontal"
         pagination={false}
         dataSource={myCVs?.items}
         loading={isPending || isDelCVPending}
-        skeletonRender={() => (
-          <List.Item className="!border-0">
-            <Skeleton avatar active title={false} paragraph={{ rows: 2 }} />
-          </List.Item>
-        )}
+        customSkeleton={
+          <Skeleton avatar active title={false} paragraph={{ rows: 2 }} />
+        }
         renderItem={(item) => (
           <List.Item
             className="!border-0"

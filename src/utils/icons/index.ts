@@ -30,6 +30,7 @@ import {
   EyeTwoTone,
   FilePdfOutlined,
   FilterOutlined,
+  HighlightOutlined,
   HomeOutlined,
   IdcardOutlined,
   InboxOutlined,
@@ -69,6 +70,7 @@ import {
   UsergroupAddOutlined,
   UserOutlined,
   WalletOutlined,
+  CheckOutlined,
 } from '@ant-design/icons';
 
 const icons = {
@@ -142,6 +144,8 @@ const icons = {
   UploadOutlined,
   ReloadOutlined,
   AuditOutlined,
+  HighlightOutlined,
+  CheckOutlined,
 };
 
 export default icons;

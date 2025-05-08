@@ -25,7 +25,7 @@ import Modal, { IModalProps } from '~/components/Modal/Modal';
 import CustomSelect from '~/components/Select/CustomSelect';
 import Select from '~/components/Select/Select';
 import { useFetch } from '~/hooks/useFetch';
-import { IDesiredJob } from '~/types/DesiredJob/DesiredJob';
+import { IDesiredJob } from '~/types/DesiredJob';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import { startTimeOptions } from '../JobApplication/JobApplication';

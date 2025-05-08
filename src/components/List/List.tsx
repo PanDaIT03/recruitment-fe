@@ -1,20 +1,21 @@
 import { List as AntdList, ListProps, Skeleton } from 'antd';
-import { ReactNode } from 'react';
+import { ReactElement } from 'react';
 
 import './List.scss';
 
 interface IProps<T> extends ListProps<T> {
   skeletonCount?: number;
-  skeletonRender?: () => ReactNode;
+  customSkeleton?: ReactElement;
 }
 
 const List = <T,>({
   loading,
   dataSource,
   pagination,
+  customSkeleton,
   skeletonCount = 2,
+  itemLayout = 'vertical',
   renderItem,
-  skeletonRender,
   ...props
 }: IProps<T>): JSX.Element => {
   const skeletonCountArr = Array.from({ length: skeletonCount }, () =>
@@ -23,6 +24,7 @@ const List = <T,>({
 
   return (
     <AntdList
+      itemLayout={itemLayout}
       dataSource={loading ? (skeletonCountArr as unknown as T[]) : dataSource}
       pagination={
         dataSource?.length && typeof pagination !== 'boolean'
@@ -31,8 +33,8 @@ const List = <T,>({
       }
       renderItem={(item, index) =>
         loading ? (
-          skeletonRender ? (
-            skeletonRender()
+          customSkeleton ? (
+            <List.Item className="!border-0">{customSkeleton}</List.Item>
           ) : (
             <AntdList.Item
               style={{ borderBlockEnd: 0, padding: '24px' }}

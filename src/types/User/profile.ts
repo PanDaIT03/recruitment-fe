@@ -21,7 +21,7 @@ interface JobCategory {
 
 interface ForeignLanguage {
   id: number;
-  imageUrl: null;
+  imageUrl: string;
   title: string;
 }
 
