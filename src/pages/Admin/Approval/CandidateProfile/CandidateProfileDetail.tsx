@@ -1,20 +1,22 @@
 import { useMutation } from '@tanstack/react-query';
 import {
-  Card,
   Col,
   Divider,
+  Empty,
   Flex,
   Image,
   message,
   Row,
   Space,
+  Tag,
   Typography,
 } from 'antd';
 import dayjs from 'dayjs';
 import { ReactElement, ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { DesiredJobAPI, IGetAllDesiredJob } from '~/apis/desiredJob/desiredJob';
+import { DesiredJobAPI, IGetAllDesiredJob } from '~/apis/desiredJob';
 import UserAPI from '~/apis/user';
+import { PDF_Icon } from '~/assets/img';
 import {
   AvatarPlaceHolder,
   BackPack,
@@ -22,15 +24,14 @@ import {
   Box,
   Calendar,
   CompanyLogo,
-  File,
   Link,
   Location,
   Salary,
   SmartPhone,
 } from '~/assets/svg';
 import Button from '~/components/Button/Button';
-import ButtonAction from '~/components/Button/ButtonAction';
 import CopyButton from '~/components/Button/CopyButton';
+import DownloadButton from '~/components/Button/DownloadButton';
 import Content from '~/components/Content/Content';
 import List from '~/components/List/List';
 import Spin from '~/components/Loading/Spin';
@@ -65,7 +66,7 @@ interface IWorkInformation {
 }
 
 const { Title } = Typography;
-const { MailOutlined, DownloadOutlined } = icons;
+const { MailOutlined, DownloadOutlined, CheckOutlined, CloseOutlined } = icons;
 
 const initSkill = [] as IUserSkill[];
 const initialDesiredJob = {} as IDesiredJob;
@@ -123,6 +124,19 @@ const CandidateProfileDetail = () => {
       },
     });
 
+  const isLoading = useMemo(
+    () =>
+      isGetAllDesiredJobPending ||
+      isWorkExperiencePending ||
+      isLanguagePending ||
+      isUserSkillPending,
+    [
+      isGetAllDesiredJobPending,
+      isWorkExperiencePending,
+      isLanguagePending,
+      isUserSkillPending,
+    ]
+  );
   const personalInfomations: IPersonalInformation[] = useMemo(
     () => [
       {
@@ -231,11 +245,11 @@ const CandidateProfileDetail = () => {
                     <p className="text-sub">{item?.jobPosition?.title}</p>
                     <p className="text-sub before:content-['•'] before:mx-2 before:text-sm">
                       {`${dayjs(item?.startDate).format('DD/MM/YYYY')} - 
-                ${
-                  item?.endDate
-                    ? dayjs(item?.endDate).format('DD/MM/YYYY')
-                    : 'Hiện tại'
-                }`}
+                      ${
+                        item?.endDate
+                          ? dayjs(item?.endDate).format('DD/MM/YYYY')
+                          : 'Hiện tại'
+                      }`}
                     </p>
                   </Flex>
                 </Flex>
@@ -249,45 +263,61 @@ const CandidateProfileDetail = () => {
     {
       title: 'Ngoại ngữ',
       children: (
-        <List
-          pagination={false}
-          dataSource={foreignLanguages}
-          renderItem={({ foreignLanguage, level }, index) => (
-            <>
-              <Flex key={index} gap={12}>
-                <Image
-                  width={60}
-                  height={60}
-                  className="rounded-xl"
-                  src={foreignLanguage?.imageUrl}
-                />
-                <Flex vertical justify="center">
-                  <p className="font-semibold">{foreignLanguage?.title}</p>
-                  <p className="text-sub">
-                    {
-                      advanceOptions.find(
-                        (option) => option.value === level.toString()
-                      )?.label
-                    }
-                  </p>
+        <>
+          {foreignLanguages?.length ? (
+            <Space>
+              {foreignLanguages?.map(({ foreignLanguage, level }, index) => (
+                <Flex
+                  gap={12}
+                  key={index}
+                  align="center"
+                  className="w-full bg-[#fbfbfb] border px-3 py-2 rounded-xl shadow-sm"
+                >
+                  <Image
+                    width={40}
+                    height={40}
+                    preview={false}
+                    src={foreignLanguage.imageUrl}
+                    className="rounded-full object-cover"
+                  />
+                  <Flex vertical>
+                    <p className="font-semibold">{foreignLanguage.title}</p>
+                    <p>
+                      {
+                        advanceOptions.find(
+                          (option) => option.value === level.toString()
+                        )?.label
+                      }
+                    </p>
+                  </Flex>
                 </Flex>
-              </Flex>
-              {index < foreignLanguages?.length - 1 && <Divider />}
-            </>
+              ))}
+            </Space>
+          ) : (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
           )}
-        />
+        </>
       ),
     },
     {
       title: 'Kỹ năng',
       children: (
-        <Flex wrap gap={6}>
-          {userSkills?.map(({ skill }, index) => (
-            <p key={index} className="px-2 py-1 border rounded-md">
-              {skill?.title}
-            </p>
-          ))}
-        </Flex>
+        <>
+          {userSkills?.length ? (
+            <Flex wrap gap={12}>
+              {userSkills?.map(({ skill }, index) => (
+                <p
+                  key={index}
+                  className="px-2 py-1 border rounded-md shadow-sm"
+                >
+                  {skill?.title}
+                </p>
+              ))}
+            </Flex>
+          ) : (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          )}
+        </>
       ),
     },
   ];
@@ -315,105 +345,145 @@ const CandidateProfileDetail = () => {
   }, [searchParams]);
 
   return (
-    <Spin spinning={isGetAllDesiredJobPending}>
-      <Flex className="w-full px-5 grid grid-cols-10" gap={16}>
-        <Space className="col-span-6" classNames={{ item: 'w-full' }}>
-          <Space direction="vertical" className="w-full">
-            <Content>
-              <Space size="middle" direction="vertical" className="w-full">
-                <Flex justify="space-between">
-                  <Space size="middle" align="start">
-                    <AvatarPlaceHolder width={60} height={60} />
-                    <Flex vertical>
-                      <p className="font-bold text-xl">Dương Đại</p>
-                      <p className="text-[#6b6b6b]">
-                        daiphucduongvinh203@gmail.com
-                      </p>
-                    </Flex>
-                  </Space>
-                  <CopyButton
-                    shape="default"
-                    title="Sao chép"
-                    value=""
-                    iconBefore={<Link />}
-                  />
-                </Flex>
-                <Divider className="m-0" />
-                <Space
-                  size="middle"
-                  direction="vertical"
-                  className="w-full"
-                  classNames={{ item: 'w-full' }}
-                >
-                  <Title level={3}>Thông tin cá nhân</Title>
-                  {personalInfomations.map(({ items, type }) => (
-                    <>
-                      {type && <Divider className="m-0" />}
-                      <Row gutter={[8, 8]} className="px-2" align={'middle'}>
-                        {items?.map(({ label, value, icon, colSpan = 12 }) => (
-                          <Col span={colSpan}>
-                            <Flex gap={8} align="center">
-                              <Flex
-                                align="center"
-                                justify="center"
-                                className="p-3 bg-[#f6f6f6] rounded-full"
-                              >
-                                {icon}
-                              </Flex>
-                              <Flex vertical>
-                                <p className="text-[#6b6b6b]">{label}</p>
-                                <p className="font-medium">{value || '-'}</p>
-                              </Flex>
-                            </Flex>
-                          </Col>
-                        ))}
-                      </Row>
-                    </>
-                  ))}
-                </Space>
-              </Space>
-            </Content>
-            {workInformations?.map(({ title, children }) => (
-              <Content>
-                <Title level={4}>{title}</Title>
-                {children}
-              </Content>
-            ))}
+    <Spin spinning={isLoading}>
+      <Space direction="vertical" className="w-full px-5">
+        <Flex align="center" justify="space-between">
+          <Tag color="blue">
+            <p className="text-sm">Trạng thái: Đang chờ</p>
+          </Tag>
+          <Space>
+            <Button
+              title="Từ chối"
+              displayType="error"
+              iconBefore={<CloseOutlined />}
+            />
+            <Button
+              title="Duyệt"
+              displayType="approve"
+              iconBefore={<CheckOutlined />}
+            />
           </Space>
-        </Space>
-        <Space direction="vertical" className="col-span-4 h-max">
-          <Content>
-            <Title level={4}>Resume</Title>
+        </Flex>
+        <Flex className="w-full grid grid-cols-10" gap={16}>
+          <Space className="col-span-6" classNames={{ item: 'w-full' }}>
             <Space direction="vertical" className="w-full">
-              {desiredJob?.user?.curriculumVitae?.map(
-                ({ fileName, url }, index) => (
-                  <Flex
-                    gap={8}
-                    key={index}
-                    align="center"
-                    justify="space-between"
-                  >
-                    <Space>
-                      <Flex
-                        align="center"
-                        justify="center"
-                        className="p-3 bg-[#f6f6f6] rounded-full"
-                      >
-                        <File />
+              <Content>
+                <Space size="middle" direction="vertical" className="w-full">
+                  <Flex justify="space-between">
+                    <Space size="middle" align="start">
+                      {desiredJob?.user?.avatarUrl ? (
+                        <Image
+                          width={60}
+                          height={60}
+                          preview={false}
+                          src={desiredJob?.user?.avatarUrl}
+                          className="rounded-full"
+                        />
+                      ) : (
+                        <AvatarPlaceHolder width={60} height={60} />
+                      )}
+                      <Flex vertical>
+                        <p className="font-bold text-xl">
+                          {desiredJob?.user?.fullName}
+                        </p>
+                        <p className="text-[#6b6b6b]">
+                          {desiredJob?.user?.email}
+                        </p>
                       </Flex>
-                      <p className="font-semibold truncate w-72">{fileName}</p>
                     </Space>
-                    <ButtonAction
-                      tooltipTitle="Tải xuống"
-                      title={<DownloadOutlined />}
+                    <CopyButton
+                      shape="default"
+                      title="Sao chép"
+                      value=""
+                      iconBefore={<Link />}
                     />
                   </Flex>
-                )
-              )}
+                  <Divider className="m-0" />
+                  <Space
+                    size="middle"
+                    direction="vertical"
+                    className="w-full"
+                    classNames={{ item: 'w-full' }}
+                  >
+                    <Title level={3}>Thông tin cá nhân</Title>
+                    {personalInfomations.map(({ items, type }) => (
+                      <>
+                        {type && <Divider className="m-0" />}
+                        <Row gutter={[8, 8]} className="px-2" align={'middle'}>
+                          {items?.map(
+                            ({ label, value, icon, colSpan = 12 }) => (
+                              <Col span={colSpan}>
+                                <Flex gap={8} align="center">
+                                  <Flex
+                                    align="center"
+                                    justify="center"
+                                    className="p-3 bg-[#f6f6f6] rounded-full"
+                                  >
+                                    {icon}
+                                  </Flex>
+                                  <Flex vertical>
+                                    <p className="text-[#6b6b6b]">{label}</p>
+                                    <p className="font-medium">
+                                      {value || '-'}
+                                    </p>
+                                  </Flex>
+                                </Flex>
+                              </Col>
+                            )
+                          )}
+                        </Row>
+                      </>
+                    ))}
+                  </Space>
+                </Space>
+              </Content>
+              {workInformations?.map(({ title, children }) => (
+                <Content>
+                  <Title level={4}>{title}</Title>
+                  {children}
+                </Content>
+              ))}
             </Space>
-          </Content>
-        </Space>
-      </Flex>
+          </Space>
+          <Space direction="vertical" className="col-span-4 h-max">
+            <Content>
+              <Title level={4}>Resume</Title>
+              <Space direction="vertical" className="w-full">
+                {desiredJob?.user?.curriculumVitae?.map(
+                  ({ fileName, url }, index) => (
+                    <Flex
+                      gap={8}
+                      key={index}
+                      align="center"
+                      justify="space-between"
+                    >
+                      <Space
+                        className="cursor-pointer hover:text-[#F15224] transition-all"
+                        onClick={() => window.open(url, '_blank')}
+                      >
+                        <Image
+                          width={24}
+                          height={24}
+                          preview={false}
+                          src={PDF_Icon}
+                        />
+                        <p className="font-semibold truncate w-72">
+                          {fileName}
+                        </p>
+                      </Space>
+                      <DownloadButton
+                        url={url}
+                        fileName={fileName}
+                        title={<DownloadOutlined />}
+                      />
+                    </Flex>
+                  )
+                )}
+              </Space>
+            </Content>
+          </Space>
+        </Flex>
+      </Space>
     </Spin>
   );
 };
