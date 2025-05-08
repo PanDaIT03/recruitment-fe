@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { DesiredJobAPI } from '~/apis/desiredJob/desiredJob';
+import { DesiredJobAPI } from '~/apis/desiredJob';
 import { NetWorking } from '~/assets/img';
 import { Work } from '~/assets/svg';
 import Button from '~/components/Button/Button';

@@ -14,7 +14,7 @@ import {
 import {
   DesiredJobAPI,
   IUpdateDesiredJobParams,
-} from '~/apis/desiredJob/desiredJob';
+} from '~/apis/desiredJob';
 import { JobsAPI } from '~/apis/job';
 import { BackPack, Box, Salary } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';

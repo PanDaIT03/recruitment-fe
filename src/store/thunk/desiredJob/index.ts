@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { DesiredJobAPI, IGetAllDesiredJob } from '~/apis/desiredJob/desiredJob';
+import { DesiredJobAPI, IGetAllDesiredJob } from '~/apis/desiredJob';
 import toast from '~/utils/functions/toast';
 
 export const getAllDesiredJob = createAsyncThunk(
