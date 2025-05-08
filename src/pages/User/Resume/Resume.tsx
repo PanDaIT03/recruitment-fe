@@ -162,9 +162,26 @@ const Resume = () => {
           <Skeleton avatar active title={false} paragraph={{ rows: 2 }} />
         }
         renderItem={(item) => (
-          <List.Item
-            className="!border-0"
-            actions={[
+          <List.Item>
+            <Flex justify="space-between">
+              <Space>
+                <Space>
+                  <Image
+                    width={40}
+                    height={40}
+                    preview={false}
+                    src={PDF_Icon}
+                  />
+                  <Flex vertical>
+                    <p className="min-w-[109px] max-w-80 font-medium overflow-hidden whitespace-nowrap text-ellipsis truncate max-sm:max-w-32">
+                      {item?.fileName}
+                    </p>
+                    <p className="text-sub">
+                      Tải lên {dayjs(item?.createAt).format('HH:ss DD/MM/YYYY')}
+                    </p>
+                  </Flex>
+                </Space>
+              </Space>
               <Space>
                 <DownloadButton
                   url={item.url}
@@ -186,24 +203,8 @@ const Resume = () => {
                     />
                   </Popconfirm>
                 )}
-              </Space>,
-            ]}
-          >
-            <List.Item.Meta
-              avatar={
-                <Image width={40} height={40} preview={false} src={PDF_Icon} />
-              }
-              title={
-                <p className="min-w-[109px] font-medium overflow-hidden whitespace-nowrap text-ellipsis">
-                  {item?.fileName}
-                </p>
-              }
-              description={
-                <p className="text-sub">
-                  Tải lên {dayjs(item?.createAt).format('HH:ss DD/MM/YYYY')}
-                </p>
-              }
-            />
+              </Space>
+            </Flex>
           </List.Item>
         )}
       />
