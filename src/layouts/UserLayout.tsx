@@ -87,7 +87,7 @@ const Sider = ({
   setIsOpenAvatarModal,
 }: ISiderProps) => {
   const menuItems = createUserMenu();
-  const { hasPermissions } = usePermission(PERMISSION.EDIT_PROFILE);
+  const { hasPermissions } = usePermission(PERMISSION.EDIT_USER_PROFILE);
 
   return (
     <div className="w-full h-max overflow-hidden rounded-xl bg-white shadow-card p-0 shadow lg:col-span-3">
