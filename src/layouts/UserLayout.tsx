@@ -51,7 +51,6 @@ import { PERMISSION } from '~/enums/permissions';
 import { useFetch } from '~/hooks/useFetch';
 import { usePermission } from '~/hooks/usePermission';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { defaultCoverImage } from '~/mocks/data';
 import { getMe } from '~/store/thunk/auth';
 import { IUser } from '~/types/User';
 import icons from '~/utils/icons';
@@ -87,7 +86,7 @@ const Sider = ({
   setIsOpenAvatarModal,
 }: ISiderProps) => {
   const menuItems = createUserMenu();
-  const { hasPermissions } = usePermission(PERMISSION.EDIT_PROFILE);
+  const { hasPermissions } = usePermission(PERMISSION.EDIT_USER_PROFILE);
 
   return (
     <div className="w-full h-max overflow-hidden rounded-xl bg-white shadow-card p-0 shadow lg:col-span-3">
@@ -102,12 +101,16 @@ const Sider = ({
             <div className="relative w-fit rounded-full border-[3px] border-white">
               <div className="rounded-full bg-white w-[108px] h-[108px]">
                 <div className="inline-block aspect-square h-full w-full rounded-full border border-gray-200 overflow-hidden">
-                  <ImageAntd
-                    width={108}
-                    height={108}
-                    preview={false}
-                    src={data.avatarUrl || defaultCoverImage}
-                  />
+                  {data?.avatarUrl ? (
+                    <ImageAntd
+                      width={108}
+                      height={108}
+                      preview={false}
+                      src={data.avatarUrl}
+                    />
+                  ) : (
+                    <AvatarPlaceHolder width={108} height={108} />
+                  )}
                 </div>
               </div>
               {hasPermissions && (

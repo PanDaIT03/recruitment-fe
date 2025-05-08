@@ -74,17 +74,18 @@ const JobManagement = () => {
       },
       {
         title: 'Vị trí',
-        width: 150,
+        width: 100,
         dataIndex: ['jobPosition', 'title'],
       },
       {
-        title: 'Số lượng ứng tuyển',
-        width: 150,
+        title: 'Số lượng',
+        width: 100,
+        align: 'center',
         dataIndex: 'quantity',
       },
       {
         title: 'Hình thức làm việc',
-        width: 150,
+        width: 200,
         dataIndex: ['workType', 'title'],
       },
       {

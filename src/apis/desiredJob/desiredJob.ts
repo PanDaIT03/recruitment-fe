@@ -1,5 +1,11 @@
 import axiosApi from '~/services/axios';
-import { IDesiredJob } from '~/types/DesiredJob/DesiredJob';
+import { IDesiredJob } from '~/types/DesiredJob';
+
+export interface IGetAllDesiredJob {
+  id?: number;
+  page?: number;
+  pageSize?: number;
+}
 
 export interface IUpdateDesiredJobParams {
   id: number;
@@ -14,6 +20,9 @@ export const DesiredJobAPI = {
   // GET
   getDesiredJob: async (): Promise<IDesiredJob> => {
     return await axiosApi.get('/desired-jobs');
+  },
+  getAllDesiredJob: async (params: IGetAllDesiredJob) => {
+    return await axiosApi.get('/desired-jobs/all', { params });
   },
 
   // POST

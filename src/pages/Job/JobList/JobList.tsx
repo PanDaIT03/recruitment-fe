@@ -1,6 +1,6 @@
-import { Form, Space } from 'antd';
+import { Form, FormInstance, Space } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { Box, File, Salary, Television } from '~/assets/svg';
@@ -17,7 +17,6 @@ import usePagination from '~/hooks/usePagination';
 import { useAppSelector } from '~/hooks/useStore';
 import { getAllJobs } from '~/store/thunk/job';
 import {
-  JobItem,
   PaginatedJobCategories,
   PaginatedJobFields,
   PaginatedWorkTypes,
@@ -31,7 +30,6 @@ export interface IJobList {
   salaryMax?: number;
   categoriesId?: number;
   jobFieldsId?: number;
-  placementsId?: number; // delete prop
   placementIds?: number | string;
   workTypesId?: number;
   title?: string;
@@ -42,6 +40,13 @@ export interface IJobList {
 }
 
 type IFilter = Omit<IJobList, 'page' | 'pageSize'>;
+
+const paramsKeyId = [
+  'categoriesId',
+  'jobFieldsId',
+  'placementIds',
+  'workTypesId',
+];
 
 const salaryOptions: DefaultOptionType[] = [
   {
@@ -94,12 +99,13 @@ const JobList = () => {
     JobsAPI.getAllJobFields
   );
 
-  const { pageInfo, handlePageChange } = usePagination<JobItem, IJobList>({
-    items: allJobs?.items,
-    extraParams: filters,
-    fetchAction: getAllJobs,
-    setFilterParams: setFilters,
-  });
+  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+    usePagination({
+      items: allJobs?.items,
+      extraParams: filters,
+      fetchAction: getAllJobs,
+      setFilterParams: setFilters,
+    });
 
   const jobCategoriesOptions = useMemo(
     () => [
@@ -138,11 +144,11 @@ const JobList = () => {
     setDocTitle('Tin tuyển dụng | Đúng người đúng việc');
   }, []);
 
-  const handleSearch = (values: IJobList) => {
+  const handleSearch = useCallback((values: IJobList) => {
     let salaryMin: number | undefined;
     let salaryMax: number | undefined;
 
-    switch (values.salaryRange) {
+    switch (values?.salaryRange) {
       case 'below10':
         salaryMin = 1000000;
         salaryMax = 10000000;
@@ -172,35 +178,49 @@ const JobList = () => {
       }).filter(([_, value]) => value && value !== 'all')
     ) as Partial<IJobList>;
 
-    handlePageChange(1);
+    setIsOpenDrawer(false);
     setFilters({ ...cleanedFilters, ...defaultFilter });
-  };
+  }, []);
 
-  const resetFilters = () => {
+  const handleResetFilters = useCallback(() => {
     form.resetFields();
-    handlePageChange(1);
-    setFilters({ ...defaultFilter });
-  };
+    form.setFieldValue('placementIds', 'all');
 
-  const handleFilterSubmit = () => {
-    form.validateFields().then((values) => {
-      handleSearch(values);
-    });
-  };
+    handlePageChange(1);
+    hanldeClearURLSearchParams();
+    setFilters({ ...defaultFilter });
+  }, []);
+
+  const handleSetFormValues = useCallback(
+    (_: FormInstance, filterParams: any) => {
+      const formattedValues = Object.entries(filterParams).reduce(
+        (prevVal, currentVal) => {
+          const [key, value] = currentVal;
+          if (value)
+            prevVal[key] = paramsKeyId.includes(key) ? Number(value) : value;
+
+          return prevVal;
+        },
+        {} as Record<string, any>
+      );
+
+      form.setFieldsValue(formattedValues);
+    },
+    []
+  );
 
   return (
     <div className="min-h-[100vh]">
       <TopSearchBar
         form={form}
+        onClear={handleResetFilters}
+        onPageChange={handlePageChange}
         setIsDrawerSearchOpen={setIsOpenDrawer}
         onSearch={(values) => handleSearch(values)}
+        onSetFormValues={handleSetFormValues}
         placeHolder="Vị trí công việc/tên công ty"
       >
-        <FormItem
-          childrenSelected
-          name="workTypesId"
-          className="w-full h-10 max-w-44 mb-0"
-        >
+        <FormItem childrenSelected name="workTypesId" className="w-max mb-0">
           <CustomSelect
             showSearch={false}
             displayedType="text"
@@ -209,11 +229,7 @@ const JobList = () => {
             prefixIcon={<Television />}
           />
         </FormItem>
-        <FormItem
-          childrenSelected
-          name="categoriesId"
-          className="w-full max-w-44 mb-0"
-        >
+        <FormItem childrenSelected name="categoriesId" className="w-max mb-0">
           <CustomSelect
             showSearch={false}
             displayedType="text"
@@ -222,11 +238,7 @@ const JobList = () => {
             prefixIcon={<File />}
           />
         </FormItem>
-        <FormItem
-          childrenSelected
-          name="salaryRange"
-          className="w-full max-w-44 mb-0"
-        >
+        <FormItem childrenSelected name="salaryRange" className="w-max mb-0">
           <CustomSelect
             showSearch={false}
             displayedType="text"
@@ -235,11 +247,7 @@ const JobList = () => {
             className="w-full h-full font-semibold"
           />
         </FormItem>
-        <FormItem
-          childrenSelected
-          name="jobFieldsId"
-          className="w-full max-w-44 mb-0"
-        >
+        <FormItem childrenSelected name="jobFieldsId" className="w-max mb-0">
           <CustomSelect
             showSearch={false}
             displayedType="text"
@@ -254,8 +262,10 @@ const JobList = () => {
         form={form}
         title="Lọc tin"
         open={isOpenDrawer}
-        onCancel={resetFilters}
-        onFilter={handleFilterSubmit}
+        onCancel={handleResetFilters}
+        onFilter={() => form.submit()}
+        onPageChange={handlePageChange}
+        onSetFormValues={handleSetFormValues}
         setIsOpenDrawer={setIsOpenDrawer}
       >
         <FormItem label="Lĩnh vực" name="jobFieldsId">
@@ -263,27 +273,27 @@ const JobList = () => {
         </FormItem>
         <FormItem name="workTypesId" label="Hình thức làm việc">
           <RadioGroup className="flex flex-col gap-4">
-            {workTypes?.data?.items.map?.((type) => (
-              <Radio value={type.id} key={type.id}>
-                {type.title}
+            {workTypeOptions?.map(({ label, value }) => (
+              <Radio value={value} key={value}>
+                {label}
               </Radio>
             ))}
           </RadioGroup>
         </FormItem>
         <FormItem name="categoriesId" label="Loại công việc">
           <RadioGroup className="flex flex-col gap-4">
-            {jobCategories?.data?.items.map?.((category) => (
-              <Radio value={category.id} key={category.id}>
-                {category.name}
+            {jobCategoriesOptions?.map(({ label, value }) => (
+              <Radio value={value} key={value}>
+                {label}
               </Radio>
             ))}
           </RadioGroup>
         </FormItem>
         <FormItem name="salaryRange" label="Tất cả mức lương">
           <RadioGroup className="flex flex-col gap-4">
-            {salaryOptions.map((option) => (
-              <Radio key={option.value} value={option.value}>
-                {option.label}
+            {salaryOptions.map(({ label, value }) => (
+              <Radio key={value} value={value}>
+                {label}
               </Radio>
             ))}
           </RadioGroup>

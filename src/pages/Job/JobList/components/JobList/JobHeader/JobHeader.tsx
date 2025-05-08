@@ -1,18 +1,20 @@
 import { Avatar, Flex, Typography } from 'antd';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
+import { CompanyLogo } from '~/assets/svg';
 import { JobItem } from '~/types/Job';
-import icons from '~/utils/icons';
 
 type IProps = Pick<JobItem, 'id' | 'title' | 'user' | 'jobsPlacements'>;
 
-const { HomeOutlined } = icons;
-
 const JobHeader = ({ id, title, user, jobsPlacements }: IProps) => {
-  const placements = jobsPlacements
-    ?.map((jobPlacement) => jobPlacement?.placement?.title)
-    .join(', ');
+  const placements = useMemo(
+    () =>
+      jobsPlacements
+        ?.map((jobPlacement) => jobPlacement?.placement?.title)
+        .join(', '),
+    [jobsPlacements]
+  );
 
   return (
     <Flex wrap gap={16}>
@@ -25,7 +27,7 @@ const JobHeader = ({ id, title, user, jobsPlacements }: IProps) => {
           className="w-[72px] h-[72px] rounded-md object-contain"
         />
       ) : (
-        <HomeOutlined className="text-5xl" />
+        <CompanyLogo />
       )}
       <div>
         <Link

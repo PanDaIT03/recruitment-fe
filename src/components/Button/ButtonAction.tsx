@@ -3,13 +3,24 @@ import classNames from 'classnames';
 import { memo } from 'react';
 import Button, { IButtonProps } from './Button';
 
+export type ButtonShape = 'circle' | 'default';
+
 interface IProps extends IButtonProps {
+  shape?: ButtonShape;
   tooltipTitle?: string;
 }
 
-const ButtonAction = ({ title, tooltipTitle, className, ...props }: IProps) => {
+const ButtonAction = ({
+  title,
+  className,
+  tooltipTitle,
+  shape = 'circle',
+  ...props
+}: IProps) => {
   const customClasses = classNames(
-    'px-3 py-2 border-none !rounded-[50%] hover:bg-button-color hover:opacity-100',
+    shape === 'circle'
+      ? 'px-3 py-2 border-none !rounded-[50%] hover:bg-button-color hover:opacity-100'
+      : '',
     className
   );
 

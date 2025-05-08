@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 16 16" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" id="Edit--Streamline-Tabler" height="16" width="16"><desc>Edit Streamline Icon: https://streamlinehq.com</desc><path d="M4.375 4.375H3.75a1.25 1.25 0 0 0 -1.25 1.25v5.625a1.25 1.25 0 0 0 1.25 1.25h5.625a1.25 1.25 0 0 0 1.25 -1.25v-0.625" stroke-width="1"></path><path d="M12.740625000000001 4.115625a1.3125 1.3125 0 0 0 -1.8562500000000002 -1.8562500000000002L5.625 7.5v1.875h1.875l5.240625 -5.2593749999999995z" stroke-width="1"></path><path d="m10 3.125 1.875 1.875" stroke-width="1"></path></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 16 16" fill="none" stroke="#000000"
+    stroke-linecap="round" stroke-linejoin="round" id="Edit--Streamline-Tabler" height="16"
+    width="16">
+    <desc>Edit Streamline Icon: https://streamlinehq.com</desc>
+    <path
+        d="M4.375 4.375H3.75a1.25 1.25 0 0 0 -1.25 1.25v5.625a1.25 1.25 0 0 0 1.25 1.25h5.625a1.25 1.25 0 0 0 1.25 -1.25v-0.625"
+        stroke-width="1"></path>
+    <path
+        d="M12.740625000000001 4.115625a1.3125 1.3125 0 0 0 -1.8562500000000002 -1.8562500000000002L5.625 7.5v1.875h1.875l5.240625 -5.2593749999999995z"
+        stroke-width="1"></path>
+    <path d="m10 3.125 1.875 1.875" stroke-width="1"></path>
+</svg>

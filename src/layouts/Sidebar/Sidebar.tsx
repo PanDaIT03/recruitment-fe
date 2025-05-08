@@ -3,12 +3,7 @@ import classNames from 'classnames';
 import { Dispatch, memo, SetStateAction } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import {
-  Dashboard,
-  EditStreamline,
-  HeaderLogoPrimary,
-  List,
-} from '~/assets/svg';
+import { BriefCase, Dashboard, HeaderLogoPrimary } from '~/assets/svg';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import './index.scss';
@@ -19,7 +14,7 @@ interface IProps {
 }
 
 const { Sider } = Layout;
-const { SettingOutlined } = icons;
+const { SettingOutlined, HighlightOutlined } = icons;
 
 const MENU_ITEMS = [
   {
@@ -34,9 +29,9 @@ const MENU_ITEMS = [
     ],
   },
   {
-    key: 'management',
-    label: 'Quản lý',
-    icon: <List />,
+    key: 'recruitment',
+    label: 'Tuyển dụng',
+    icon: <BriefCase />,
     children: [
       {
         key: PATH.ADMIN_JOB_MANAGEMENT,
@@ -47,17 +42,17 @@ const MENU_ITEMS = [
   {
     key: 'approve',
     label: 'Phê duyệt',
-    icon: <EditStreamline />,
+    icon: <HighlightOutlined />,
     children: [
       {
-        key: '',
+        key: PATH.ADMIN_CANDIDATE_PROFILE_MANAGEMENT,
         label: 'Phê duyệt hồ sơ',
       },
     ],
   },
   {
-    key: 'setting',
-    label: 'Cài đặt',
+    key: 'system',
+    label: 'Hệ thống',
     icon: <SettingOutlined />,
     children: [
       {
@@ -81,10 +76,10 @@ const selectedKeys = [
   [PATH.ADMIN_JOB_MANAGEMENT],
   [PATH.ADMIN_FUNCTIONAL_MANAGEMENT],
   [
-    PATH.ADMIN_PERMISSION,
-    PATH.ADMIN_PERMISSION_USER_DETAIL,
-    PATH.ADMIN_PERMISSION_ROLE_DETAIL,
+    PATH.ADMIN_CANDIDATE_PROFILE_MANAGEMENT,
+    PATH.ADMIN_CANDIDATE_PROFILE_DETAIL_MANAGEMENT,
   ],
+  [PATH.ADMIN_PERMISSION, PATH.ADMIN_PERMISSION_ROLE_DETAIL],
 ];
 
 const Sidebar = ({ collapsed, setCollapsed }: IProps) => {

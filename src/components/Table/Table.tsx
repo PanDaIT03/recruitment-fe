@@ -55,7 +55,7 @@ const Table = <T extends IBaseTWithID>({
           pageSizeOptions: [1, 10, 20],
           showSizeChanger: true,
           className: classNames(
-            '!mb-0 !mt-5 [&>li]:!mr-[8px]',
+            'items-center !mb-0 !mt-5 [&>li]:!mr-[8px]',
             paginationParams?.className
           ),
           ...paginationParams,
