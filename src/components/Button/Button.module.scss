@@ -33,11 +33,23 @@
 }
 
 .error {
+  color: white;
   background-color: #dc362e;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 .approve {
+  color: white;
   background-color: #038f00;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
 }
 
 .outline {
