@@ -545,6 +545,7 @@ const JobApplication = () => {
             title="Để sau"
             displayType="outline"
             iconBefore={<CloseOutlined />}
+            loading={isUploadCVPending || isCreateDesiredJobPending}
             onClick={() => navigate(PATH.USER_PROFILE)}
           />
           <Button
