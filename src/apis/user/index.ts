@@ -33,6 +33,10 @@ export interface IDesiredJobParams {
   }[];
 }
 
+export interface IGetAchievementParams {
+  id?: number;
+}
+
 export type IGetForeignLanguage = IPaginatedData<IForeignLanguage[]>;
 export type IGetWorkExperience = IPaginatedData<IWorkExperience[]>;
 export type IGetUserSkill = IPaginatedData<IUserSkill[]>;
@@ -81,8 +85,8 @@ const UserAPI = {
   getAllSkill: async (): Promise<IPaginatedSkill> => {
     return await axiosApi.get('/skills/all');
   },
-  getAchievementByUser: async () => {
-    return await axiosApi.get('/achivements');
+  getAchievementByUser: async (params?: IGetAchievementParams) => {
+    return await axiosApi.get('/achivements', { params });
   },
   getLanguageByUserId: async (id: number): Promise<IGetForeignLanguage> => {
     return await axiosApi.get(`/users-foreign-languages/all?usersId=${id}`);
