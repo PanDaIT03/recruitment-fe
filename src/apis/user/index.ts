@@ -56,6 +56,7 @@ export type IUpdateAccountInfo = Partial<{
 }>;
 export type IUpdatePersonalInfo = {
   fullName: string;
+  phoneNumber: string;
   placementsId: string;
   jobPositionsId: string;
   totalYearExperience?: string;

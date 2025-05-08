@@ -4,8 +4,9 @@ import { AliasToken } from 'antd/es/theme/internal';
 import { ISelectConfigProvider } from '~/components/Select/CustomSelect';
 import { mockFileList } from '~/mocks/data';
 
-export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const passwordRegex = /^.{8,}$/;
+export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const phoneNumberRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-s./0-9]*$/;
 
 export const colSpan = 8;
 export const defaultImgUrl = mockFileList[0].url;

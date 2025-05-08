@@ -53,6 +53,7 @@ import { usePermission } from '~/hooks/usePermission';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getMe } from '~/store/thunk/auth';
 import { IUser } from '~/types/User';
+import { phoneNumberRegex } from '~/utils/constant';
 import icons from '~/utils/icons';
 import Header from './Header/Header';
 import { createUserMenu } from './Header/menu/headerMenuItem';
@@ -65,6 +66,7 @@ type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 interface IUserInfoForm {
   fullName: string;
+  phoneNumber: string;
   positionId: number;
   placementId: number;
   totalYearExperience: number;
@@ -77,7 +79,7 @@ interface ISiderProps {
   setIsOpenAvatarModal: Dispatch<SetStateAction<boolean>>;
 }
 
-const { EditOutlined, EnvironmentOutlined } = icons;
+const { EditOutlined, EnvironmentOutlined, PhoneOutlined } = icons;
 
 const Sider = ({
   data,
@@ -354,6 +356,7 @@ const UserLayout = () => {
   const handleInfoModalFinish = useCallback((values: IUserInfoForm) => {
     const params: IUpdatePersonalInfo = {
       fullName: values.fullName,
+      phoneNumber: values.phoneNumber,
       jobPositionsId: values.positionId.toString(),
       placementsId: values.placementId.toString(),
       totalYearExperience: values?.totalYearExperience?.toString(),
@@ -367,7 +370,7 @@ const UserLayout = () => {
       {
         name: 'fullName',
         label: 'Họ và tên',
-        rules: [{ required: true, message: 'Vui lòng nhập Họ và tên' }],
+        rules: [{ required: true, message: 'Vui lòng nhập họ và tên' }],
         item: (
           <Input
             placeholder="Nhập họ và tên"
@@ -376,9 +379,24 @@ const UserLayout = () => {
         ),
       },
       {
+        name: 'phoneNumber',
+        label: 'Số điện thoại',
+        rules: [
+          { required: true, message: 'Vui lòng nhập số điện thoại' },
+          { len: 10, message: 'Số điện thoại bao gồm 10 chữ số' },
+          {
+            pattern: phoneNumberRegex,
+            message: 'Số điện thoại không đúng định dạng',
+          },
+        ],
+        item: (
+          <Input placeholder="Nhập số điện thoại" prefix={<PhoneOutlined />} />
+        ),
+      },
+      {
         name: 'positionId',
         label: 'Chức vụ hiện tại',
-        rules: [{ required: true, message: 'Vui lòng chọn Chức vụ' }],
+        rules: [{ required: true, message: 'Vui lòng chọn chức vụ' }],
         item: (
           <CustomSelect
             allowClear
@@ -415,9 +433,7 @@ const UserLayout = () => {
         name: 'placementId',
         label: 'Nơi sống hiện tại',
         className: 'mb-0',
-        rules: [
-          { required: true, message: 'Vui lòng nhập số năm kinh nghiệm' },
-        ],
+        rules: [{ required: true, message: 'Vui lòng chọn nơi sống hiện tại' }],
         item: (
           <CustomSelect
             allowClear
