@@ -291,10 +291,11 @@ const UserLayout = () => {
     if (!Object.keys(currentUser).length) return;
 
     form.setFieldsValue({
-      fullName: currentUser.fullName,
-      placementId: currentUser.placement?.id,
-      positionId: currentUser.jobPosition?.id,
-      totalYearExperience: currentUser.desiredJob?.totalYearExperience,
+      fullName: currentUser?.fullName,
+      phoneNumber: currentUser?.phoneNumber,
+      placementId: currentUser?.placement?.id,
+      positionId: currentUser?.jobPosition?.id,
+      totalYearExperience: currentUser?.desiredJob?.totalYearExperience,
     });
   }, [currentUser]);
 
@@ -333,9 +334,10 @@ const UserLayout = () => {
   const handleEditUserInfo = useCallback((data: IUser) => {
     setIsOpenInfoModal(true);
 
-    const { fullName, placement, jobPosition, desiredJob } = data;
+    const { fullName, placement, jobPosition, desiredJob, phoneNumber } = data;
     form.setFieldsValue({
       fullName,
+      phoneNumber,
       placementId: placement?.id,
       positionId: jobPosition?.id,
       totalYearExperience: desiredJob?.totalYearExperience,
