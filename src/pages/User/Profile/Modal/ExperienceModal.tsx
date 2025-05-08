@@ -58,7 +58,9 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
         UserAPI.createWorkExperience(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
+
         refetch();
+        handleCancel();
       },
       onError: (error: any) =>
         messageApi.error(
@@ -72,7 +74,9 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
         UserAPI.updateWorkExperience(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
+
         refetch();
+        handleCancel();
       },
       onError: (error: any) =>
         messageApi.error(
@@ -107,8 +111,6 @@ const ExperienceModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
     isEdit
       ? updateWorkExperience({ id: data.id, ...params })
       : createWorkExperience(params);
-
-    handleCancel();
   };
 
   useEffect(() => {

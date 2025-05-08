@@ -28,7 +28,9 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
         UserAPI.createAchievement(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
+
         refetch();
+        handleCancel();
       },
       onError: (error: any) =>
         messageApi.error(
@@ -41,7 +43,9 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
       mutationFn: (params: IAchievement) => UserAPI.updateAchievement(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
+
         refetch();
+        handleCancel();
       },
       onError: (error: any) =>
         messageApi.error(
@@ -54,7 +58,9 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
       mutationFn: (id: number) => UserAPI.deleteAchievement(id),
       onSuccess: (res) => {
         messageApi.success(res?.message);
+
         refetch();
+        handleCancel();
       },
       onError: (error: any) =>
         messageApi.error(
@@ -92,8 +98,6 @@ const AchievementModal = ({ data, isOpen, refetch, onCancel }: IProps) => {
             id: data.id,
             description: achievement,
           });
-
-    handleCancel();
   };
 
   return (

@@ -46,7 +46,9 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
         UserAPI.createForeignLanguage(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
+
         refetch();
+        handleCancel();
       },
       onError: (error: any) =>
         messageApi.error(
@@ -60,7 +62,9 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
         UserAPI.updateForeignLanguage(params),
       onSuccess: (res) => {
         messageApi.success(res?.message);
+
         refetch();
+        handleCancel();
       },
       onError: (error: any) =>
         messageApi.error(
@@ -80,7 +84,6 @@ const LanguageModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
     };
 
     isEdit ? updateUserLanguage(params) : createUserLanguage(params);
-    handleCancel();
   };
 
   useEffect(() => {

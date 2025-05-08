@@ -37,7 +37,9 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
     mutationFn: (params: ISkillParams) => UserAPI.createUserSkill(params),
     onSuccess: (res) => {
       messageApi.success(res?.message);
+
       refetch();
+      handleCancel();
     },
     onError: (error: any) =>
       messageApi.error(
@@ -49,7 +51,9 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
     mutationFn: (params: ISkillParams) => UserAPI.updateUserSkill(params),
     onSuccess: (res) => {
       messageApi.success(res?.message);
+
       refetch();
+      handleCancel();
     },
     onError: (error: any) =>
       messageApi.error(
@@ -70,8 +74,6 @@ const SkillModal = ({ isOpen, data, refetch, onCancel }: IProps) => {
 
     if (isEdit) updateUserSkill(params);
     else createUserSkill(params);
-
-    handleCancel();
   };
 
   useEffect(() => {
