@@ -1,18 +1,10 @@
-import {
-  Col,
-  Divider,
-  Flex,
-  Image,
-  message,
-  Row,
-  Space,
-  Typography,
-} from 'antd';
+import { Col, Divider, Flex, Image, Row, Space, Typography } from 'antd';
 import { FormInstance } from 'antd/lib';
-import { memo, ReactNode, useEffect, useMemo, useState } from 'react';
+import { memo, ReactNode, useMemo } from 'react';
 
 import { AvatarPlaceHolder, Link } from '~/assets/svg';
 import Button from '~/components/Button/Button';
+import CopyButton from '~/components/Button/CopyButton';
 import FormItem from '~/components/Form/FormItem';
 import FormWrapper from '~/components/Form/FormWrapper';
 import Input from '~/components/Input/Input';
@@ -22,9 +14,6 @@ import Select from '~/components/Select/Select';
 import { useAppSelector } from '~/hooks/useStore';
 import icons from '~/utils/icons';
 import { IUserAdminForm } from './UserList';
-import { IUserAdminItem } from '~/types/User/userAdmin';
-import { useMutation } from '@tanstack/react-query';
-import { UserAdminApi } from '~/apis/userAdmin';
 
 interface IProps extends IModalProps {
   form: FormInstance<IUserAdminForm>;
@@ -199,15 +188,11 @@ const ModalUser = ({ form, loading, onCancel, onFinish, ...props }: IProps) => {
         classNames={{ item: 'w-full' }}
       >
         <Flex justify="end">
-          <Button
+          <CopyButton
+            shape="default"
             title="Sao chép"
+            value={companyUrl}
             iconBefore={<Link />}
-            className="px-2 py-1"
-            onClick={() =>
-              navigator.clipboard.writeText(
-                companyUrl !== '-' ? companyUrl : ''
-              )
-            }
           />
         </Flex>
         <Flex vertical>
