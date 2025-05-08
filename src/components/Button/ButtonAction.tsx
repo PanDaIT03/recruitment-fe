@@ -26,7 +26,12 @@ const ButtonAction = ({
 
   return (
     <Tooltip title={tooltipTitle}>
-      <Button title={title} className={customClasses} {...props} />
+      <Button
+        title={title}
+        displayType="text"
+        className={customClasses}
+        {...props}
+      />
     </Tooltip>
   );
 };

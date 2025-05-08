@@ -77,8 +77,18 @@
 
 .text {
   padding: 0;
-  color: white;
+  color: var(--button-primary-color);
   background-color: transparent;
+}
+
+.text:disabled {
+  svg {
+    fill: #c2c2c2;
+  }
+
+  &:hover {
+    background-color: transparent;
+  }
 }
 
 .fill {
