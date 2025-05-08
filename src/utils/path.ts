@@ -15,9 +15,9 @@ const PATH = {
   // Admin
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_JOB_MANAGEMENT: '/admin/recruitment/job-management',
-  ADMIN_DESIRED_JOB_MANAGEMENT: '/admin/recruitment/desired-job',
+  ADMIN_CANDIDATE_PROFILE_MANAGEMENT: '/admin/approval/candidate-profile',
+  ADMIN_CANDIDATE_PROFILE_DETAIL_MANAGEMENT: '/admin/approval/candidate-profile-detail',
   ADMIN_PERMISSION: '/admin/system/permission',
-  ADMIN_PERMISSION_USER_DETAIL: '/admin/system/permission/user-detail',
   ADMIN_PERMISSION_ROLE_DETAIL: '/admin/system/permission/role-detail',
   ADMIN_FUNCTIONAL_MANAGEMENT: '/admin/system/functional-management',
   ADMIN_MENU_MANAGEMENT: '/admin/system/menu-management',

@@ -79,16 +79,16 @@ const JobManagement = lazy(
   () => import('~/pages/Admin/Recruitment/Job/JobManagement')
 );
 const CandidateProfile = lazy(
-  () => import('~/pages/Admin/Recruitment/CandidateProfile/CandidateProfile')
+  () => import('~/pages/Admin/Approval/CandidateProfile/CandidateProfile')
+);
+const CandidateProfileDetail = lazy(
+  () => import('~/pages/Admin/Approval/CandidateProfile/CandidateProfileDetail')
 );
 const AdminPermission = lazy(
   () => import('~/pages/Admin/System/Permission/Permission')
 );
 const RoleDetailManagement = lazy(
   () => import('~/pages/Admin/System/Permission/Role/RoleDetail')
-);
-const UserDetail = lazy(
-  () => import('~/pages/Admin/System/Permission/UserList/UserDetail')
 );
 const AdminFunctionalManagement = lazy(
   () => import('~/pages/Admin/System/FunctionalManagement/FunctionalManagement')
@@ -166,11 +166,6 @@ const routesConfig: CustomRouteObject[] = [
     createProtectedRoute(PATH.ADMIN_DASHBOARD, ['admin'], <AdminDashboard />),
     createProtectedRoute(PATH.ADMIN_PERMISSION, ['admin'], <AdminPermission />),
     createProtectedRoute(
-      PATH.ADMIN_PERMISSION_USER_DETAIL,
-      ['admin'],
-      <UserDetail />
-    ),
-    createProtectedRoute(
       PATH.ADMIN_PERMISSION_ROLE_DETAIL,
       ['admin'],
       <RoleDetailManagement />
@@ -191,9 +186,14 @@ const routesConfig: CustomRouteObject[] = [
       <JobManagement />
     ),
     createProtectedRoute(
-      PATH.ADMIN_DESIRED_JOB_MANAGEMENT,
+      PATH.ADMIN_CANDIDATE_PROFILE_MANAGEMENT,
       ['admin'],
       <CandidateProfile />
+    ),
+    createProtectedRoute(
+      PATH.ADMIN_CANDIDATE_PROFILE_DETAIL_MANAGEMENT,
+      ['admin'],
+      <CandidateProfileDetail />
     ),
   ]),
 
