@@ -1,4 +1,5 @@
 import { Space } from 'antd';
+import { memo } from 'react';
 
 import Confetti_Icon from '~/assets/animations/confetti.json';
 import LordIcon from '../Icon/LordIcon';
@@ -33,4 +34,4 @@ const CongratulationModal = ({
   );
 };
 
-export default CongratulationModal;
+export default memo(CongratulationModal);

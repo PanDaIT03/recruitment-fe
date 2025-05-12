@@ -1,4 +1,5 @@
 import { Flex, Modal as ModalAntd, ModalProps } from 'antd';
+import { memo } from 'react';
 
 import icons from '~/utils/icons';
 import Button from '../Button/Button';
@@ -90,4 +91,4 @@ const Modal = ({
   );
 };
 
-export default Modal;
+export default memo(Modal);

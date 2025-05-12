@@ -4,6 +4,7 @@ import { useForm } from 'antd/es/form/Form';
 import {
   ChangeEvent,
   Dispatch,
+  memo,
   ReactElement,
   SetStateAction,
   useCallback,
@@ -290,4 +291,4 @@ const ModalDesiredJob = ({
   );
 };
 
-export default ModalDesiredJob;
+export default memo(ModalDesiredJob);
