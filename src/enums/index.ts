@@ -6,6 +6,7 @@ export enum ICON_TYPE {
 export enum PING_STATUS {
   PENDING = 'pending',
   SUCCESS = 'success',
+  ERROR = 'error',
 }
 
 export enum LEFT_PANEL_TYPE {
