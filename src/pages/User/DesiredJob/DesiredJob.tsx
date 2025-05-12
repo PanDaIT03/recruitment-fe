@@ -168,7 +168,7 @@ const DesiredJob = () => {
             </p>
             <Flex gap={8} align="center" className="sm:justify-center">
               {profile.isRejected ? (
-                <Space direction="vertical" align="end">
+                <Space direction="vertical" className="sm:items-end">
                   <Flex gap={8} align="center" className="sm:justify-center">
                     <PingIcon status="error" />
                     <p className="text-sm text-red-500 font-medium">
@@ -234,7 +234,10 @@ const DesiredJob = () => {
         onCancel={handleCloseReasonModal}
       >
         <FormWrapper form={reasonForm} onFinish={handleCloseReasonModal}>
-          <FormItem name="reason">
+          <FormItem
+            name="reason"
+            extra="Rất tiếc, hồ sơ công việc của bạn đã bị từ chối. Vui lòng kiểm tra lại hoặc liên hệ hỗ trợ"
+          >
             <TextArea readOnly />
           </FormItem>
         </FormWrapper>

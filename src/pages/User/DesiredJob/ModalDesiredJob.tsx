@@ -11,10 +11,7 @@ import {
   useMemo,
 } from 'react';
 
-import {
-  DesiredJobAPI,
-  IUpdateDesiredJobParams,
-} from '~/apis/desiredJob';
+import { DesiredJobAPI, IUpdateDesiredJobParams } from '~/apis/desiredJob';
 import { JobsAPI } from '~/apis/job';
 import { BackPack, Box, Salary } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
@@ -132,7 +129,6 @@ const ModalDesiredJob = ({
           buttonTitle: 'Thêm vị trí muốn ứng tuyển',
           render: (params) => {
             const { fields, func } = params;
-            if (fields.length === 0) func.add();
 
             return fields.map((field) => (
               <FormItem
