@@ -167,7 +167,8 @@ const CandidateProfile = () => {
           align: 'center',
           title: 'Thao tác',
           render: (_, record) => {
-            const isApproved = !!Object.keys(record?.status)?.length;
+            const { id, user, status } = record;
+            const isApproved = status ? !!Object?.keys(status)?.length : false;
 
             return (
               <Space>
@@ -175,24 +176,20 @@ const CandidateProfile = () => {
                   disabled={isApproved}
                   tooltipTitle="Phê duyệt"
                   title={<CheckOutlined className="[&>svg]:fill-green-500" />}
-                  onClick={() =>
-                    handleApprove({ id: record?.id, type: 'approve' })
-                  }
+                  onClick={() => handleApprove({ id, type: 'approve' })}
                 />
                 <ButtonAction
                   disabled={isApproved}
                   tooltipTitle="Từ chối"
                   title={<CloseOutlined className="[&>svg]:fill-red-500" />}
-                  onClick={() =>
-                    handleApprove({ id: record?.id, type: 'reject' })
-                  }
+                  onClick={() => handleApprove({ id, type: 'reject' })}
                 />
                 <ButtonAction
                   title={<EyeOutlined />}
                   tooltipTitle="Xem chi tiết"
                   onClick={() =>
                     navigate(
-                      `${PATH.ADMIN_CANDIDATE_PROFILE_DETAIL_MANAGEMENT}?id=${record?.id}&userId=${record?.user?.id}`
+                      `${PATH.ADMIN_CANDIDATE_PROFILE_DETAIL_MANAGEMENT}?id=${id}&userId=${user?.id}`
                     )
                   }
                 />
