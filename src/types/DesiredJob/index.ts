@@ -85,6 +85,7 @@ export interface IDesiredJob {
   yearOfBirth: string;
   jobField: JobField;
   status: Status;
+  rejectReason: string;
   startAfterOffer: string;
   salarayExpectation: number;
   totalYearExperience: number;

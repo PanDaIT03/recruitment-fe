@@ -8,13 +8,25 @@ import {
   message,
   Row,
   Space,
-  Tag,
   Typography,
 } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import classNames from 'classnames';
 import dayjs from 'dayjs';
-import { ReactElement, ReactNode, useEffect, useMemo, useState } from 'react';
+import {
+  ReactElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
-import { DesiredJobAPI, IGetAllDesiredJob } from '~/apis/desiredJob';
+import {
+  DesiredJobAPI,
+  IApproveProfileParams,
+  IGetAllDesiredJob,
+} from '~/apis/desiredJob';
 import UserAPI from '~/apis/user';
 import { PDF_Icon } from '~/assets/img';
 import {
@@ -37,6 +49,7 @@ import List from '~/components/List/List';
 import Spin from '~/components/Loading/Spin';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
+import { STATUS_CODE } from '~/enums';
 import useQueryParams from '~/hooks/useQueryParams';
 import { advanceOptions } from '~/pages/User/Profile/Modal/LanguageModal';
 import { IDesiredJob } from '~/types/DesiredJob';
@@ -47,6 +60,8 @@ import {
 } from '~/types/User/profile';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
+import { IRejectedForm } from './CandidateProfile';
+import ModalRejectProfile from './ModalRejectProfile';
 
 interface InformationItem {
   label: string;
@@ -76,15 +91,18 @@ const initExperience = [] as IWorkExperience[];
 const CandidateProfileDetail = () => {
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
+
   const { searchParams } = useQueryParams();
+  const [rejectedForm] = useForm<IRejectedForm>();
 
   const [desiredJob, setDesiredJob] = useState(initialDesiredJob);
+  const [isOpenReasonModal, setIsOpenReasonModal] = useState(false);
 
   const [userSkills, setUserSkills] = useState(initSkill);
   const [workExperiences, setWorkExperiences] = useState(initExperience);
   const [foreignLanguages, setForeignLanguages] = useState(initLanguage);
 
-  const { mutate: getAllDesiredJob, isPending: isGetAllDesiredJobPending } =
+  const { mutate: getDesiredJob, isPending: isGetAllDesiredJobPending } =
     useMutation({
       mutationFn: (params: IGetAllDesiredJob) =>
         DesiredJobAPI.getAllDesiredJob(params),
@@ -124,6 +142,21 @@ const CandidateProfileDetail = () => {
       },
     });
 
+  const { mutate: approveProfile, isPending: isApproveProfilePending } =
+    useMutation({
+      mutationFn: (params: IApproveProfileParams) =>
+        DesiredJobAPI.approveProfile(params),
+      onSuccess: (res) => {
+        message.success(res?.message);
+
+        refetchProfile();
+        handleCancelRejected();
+      },
+      onError: (error: any) => {
+        message.error(error?.response?.data?.message);
+      },
+    });
+
   const isLoading = useMemo(
     () =>
       isGetAllDesiredJobPending ||
@@ -137,6 +170,12 @@ const CandidateProfileDetail = () => {
       isUserSkillPending,
     ]
   );
+
+  const isProfileApprove = useMemo(
+    () => desiredJob?.status?.code !== STATUS_CODE.APPROVAL_PENDING,
+    [desiredJob]
+  );
+
   const personalInfomations: IPersonalInformation[] = useMemo(
     () => [
       {
@@ -322,6 +361,16 @@ const CandidateProfileDetail = () => {
     },
   ];
 
+  const refetchProfile = useCallback(() => {
+    const profileId = Number(searchParams?.id);
+    const userId = Number(searchParams?.userId);
+
+    getDesiredJob({ id: profileId });
+    getWorkExperienceByUserId(userId);
+    getUserSkillByUserId(userId);
+    getLanguageByUserId(userId);
+  }, [searchParams]);
+
   useEffect(() => {
     setTitle('Chi tiết hồ sơ ứng viên');
     setBreadcrumb([
@@ -335,32 +384,66 @@ const CandidateProfileDetail = () => {
   }, []);
 
   useEffect(() => {
-    const profileId = Number(searchParams?.id);
-    const userId = Number(searchParams?.userId);
+    refetchProfile();
+  }, [refetchProfile]);
 
-    getAllDesiredJob({ id: profileId });
-    getWorkExperienceByUserId(userId);
-    getUserSkillByUserId(userId);
-    getLanguageByUserId(userId);
-  }, [searchParams]);
+  console.log(desiredJob);
+
+  const handleApprove = useCallback(
+    (params: IApproveProfileParams) => approveProfile(params),
+    []
+  );
+
+  const handleFinishRejected = useCallback(
+    (values: IRejectedForm) =>
+      handleApprove({
+        id: desiredJob?.id,
+        type: 'reject',
+        rejectReason: values?.reason,
+      }),
+    [desiredJob]
+  );
+
+  const handleCancelRejected = useCallback(() => {
+    rejectedForm.resetFields();
+    setIsOpenReasonModal(false);
+  }, []);
 
   return (
     <Spin spinning={isLoading}>
       <Space direction="vertical" className="w-full px-5">
-        <Flex align="center" justify="space-between">
-          <Tag color="blue">
-            <p className="text-sm">Trạng thái: Đang chờ</p>
-          </Tag>
+        <Flex justify="space-between">
+          <Flex gap={4} align="center">
+            <p className="text-sub">Trạng thái:</p>
+            <p
+              className={classNames(
+                'font-medium',
+                desiredJob?.status?.code === STATUS_CODE.APPROVAL_APPROVED
+                  ? 'text-green-500'
+                  : desiredJob?.status?.code === STATUS_CODE.APPROVAL_REJECTED
+                    ? 'text-red-500'
+                    : 'text-blue'
+              )}
+            >
+              {desiredJob?.status?.title || 'Đang chờ'}
+            </p>
+          </Flex>
           <Space>
             <Button
               title="Từ chối"
               displayType="error"
+              disabled={isProfileApprove}
               iconBefore={<CloseOutlined />}
+              onClick={() => setIsOpenReasonModal(true)}
             />
             <Button
               title="Duyệt"
               displayType="approve"
+              disabled={isProfileApprove}
               iconBefore={<CheckOutlined />}
+              onClick={() =>
+                handleApprove({ id: desiredJob?.id, type: 'approve' })
+              }
             />
           </Space>
         </Flex>
@@ -484,6 +567,13 @@ const CandidateProfileDetail = () => {
           </Space>
         </Flex>
       </Space>
+      <ModalRejectProfile
+        form={rejectedForm}
+        isOpen={isOpenReasonModal}
+        loading={isApproveProfilePending}
+        onCancel={handleCancelRejected}
+        onFinish={handleFinishRejected}
+      />
     </Spin>
   );
 };

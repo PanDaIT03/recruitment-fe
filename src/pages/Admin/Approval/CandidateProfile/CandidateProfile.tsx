@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { message, Space, Tag } from 'antd';
+import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -23,6 +24,11 @@ import { IDesiredJob } from '~/types/DesiredJob';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
+import ModalRejectProfile from './ModalRejectProfile';
+
+export interface IRejectedForm {
+  reason: string;
+}
 
 const { EyeOutlined, CheckOutlined, CloseOutlined } = icons;
 
@@ -31,6 +37,10 @@ const CandidateProfile = () => {
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
 
+  const [rejectedForm] = useForm<IRejectedForm>();
+
+  const [editIndex, setEditIndex] = useState(-1);
+  const [isOpenReasonModal, setIsOpenReasonModal] = useState(false);
   const [filterParams, setFilterParams] = useState<IGetAllDesiredJob>();
 
   const { desiredJob, loading } = useAppSelector((state) => state.desiredJob);
@@ -50,6 +60,7 @@ const CandidateProfile = () => {
         message.success(res?.message);
 
         setFilterParams({});
+        handleCancelRejected();
       },
       onError: (error: any) => {
         message.error(error?.response?.data?.message);
@@ -61,8 +72,24 @@ const CandidateProfile = () => {
     setBreadcrumb([{ title: 'Tuyển dụng' }, { title: 'Hồ sơ ứng viên' }]);
   }, []);
 
-  const handleApprove = useCallback((params: IApproveProfileParams) => {
-    approveProfile(params);
+  const handleApprove = useCallback(
+    (params: IApproveProfileParams) => approveProfile(params),
+    []
+  );
+
+  const handleFinishRejected = useCallback(
+    (values: IRejectedForm) =>
+      handleApprove({
+        id: editIndex,
+        type: 'reject',
+        rejectReason: values?.reason,
+      }),
+    [editIndex]
+  );
+
+  const handleCancelRejected = useCallback(() => {
+    rejectedForm.resetFields();
+    setIsOpenReasonModal(false);
   }, []);
 
   const columns = useMemo(
@@ -168,7 +195,7 @@ const CandidateProfile = () => {
           title: 'Thao tác',
           render: (_, record) => {
             const { id, user, status } = record;
-            const isApproved = status ? !!Object?.keys(status)?.length : false;
+            const isApproved = status?.code !== STATUS_CODE.APPROVAL_PENDING;
 
             return (
               <Space>
@@ -182,7 +209,10 @@ const CandidateProfile = () => {
                   disabled={isApproved}
                   tooltipTitle="Từ chối"
                   title={<CloseOutlined className="[&>svg]:fill-red-500" />}
-                  onClick={() => handleApprove({ id, type: 'reject' })}
+                  onClick={() => {
+                    setEditIndex(id);
+                    setIsOpenReasonModal(true);
+                  }}
                 />
                 <ButtonAction
                   title={<EyeOutlined />}
@@ -202,19 +232,28 @@ const CandidateProfile = () => {
   );
 
   return (
-    <Content>
-      <Table<IDesiredJob>
-        columns={columns}
-        dataSource={desiredJob?.items}
-        loading={loading || isApproveProfilePending}
-        pagination={{
-          current: pageInfo.page,
-          pageSize: pageInfo.pageSize,
-          total: desiredJob?.pageInfo?.totalItems,
-          onChange: handlePageChange,
-        }}
+    <>
+      <Content>
+        <Table<IDesiredJob>
+          columns={columns}
+          dataSource={desiredJob?.items}
+          loading={loading || isApproveProfilePending}
+          pagination={{
+            current: pageInfo.page,
+            pageSize: pageInfo.pageSize,
+            total: desiredJob?.pageInfo?.totalItems,
+            onChange: handlePageChange,
+          }}
+        />
+      </Content>
+      <ModalRejectProfile
+        form={rejectedForm}
+        isOpen={isOpenReasonModal}
+        loading={isApproveProfilePending}
+        onCancel={handleCancelRejected}
+        onFinish={handleFinishRejected}
       />
-    </Content>
+    </>
   );
 };
 

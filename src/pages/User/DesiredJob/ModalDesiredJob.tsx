@@ -265,9 +265,9 @@ const ModalDesiredJob = ({
       centered
       isOpen={isOpen}
       loading={isPending}
+      title="Cập nhật công việc mong muốn"
       onCancel={handleCancel}
       onOk={() => form.submit()}
-      title="Cập nhật công việc mong muốn"
       {...props}
     >
       <FormWrapper form={form} onFinish={handleFinish}>
