@@ -150,9 +150,11 @@ export const createBaseMenu = ({ currentUser, token }: IBaseMenu) =>
                   )
                 }
               />
-              <div className="w-[calc(100%-24px-56px)] leading-6">
+              <div className="leading-6">
                 <p className="text-lg font-bold">{currentUser.fullName}</p>
-                <p className="text-sub text-md truncate">{currentUser.email}</p>
+                <p className="max-w-56 text-sub text-md truncate">
+                  {currentUser.email}
+                </p>
               </div>
             </Flex>
           ),
