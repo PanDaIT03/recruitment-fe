@@ -226,7 +226,7 @@ const CandidateProfileDetail = () => {
           {
             label: 'Vị trí',
             value: desiredJob?.desiredJobsPosition
-              ?.map((item) => item.jobPosition.title)
+              ?.map((item) => item?.jobPosition?.title)
               ?.join(', '),
             icon: <BackPack />,
           },
@@ -365,10 +365,10 @@ const CandidateProfileDetail = () => {
     const profileId = Number(searchParams?.id);
     const userId = Number(searchParams?.userId);
 
-    getDesiredJob({ id: profileId });
-    getWorkExperienceByUserId(userId);
-    getUserSkillByUserId(userId);
     getLanguageByUserId(userId);
+    getUserSkillByUserId(userId);
+    getWorkExperienceByUserId(userId);
+    getDesiredJob({ id: profileId, type: 'more' });
   }, [searchParams]);
 
   useEffect(() => {

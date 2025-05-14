@@ -5,6 +5,13 @@ export interface IGetAllDesiredJob {
   id?: number;
   page?: number;
   pageSize?: number;
+  fullName?: string;
+  statusId?: number;
+  createDate?: string;
+  jobFieldId?: number;
+  startAfterOffer?: string;
+  totalYearExperience?: number;
+  type?: 'more' | 'default';
 }
 
 export interface IUpdateDesiredJobParams {

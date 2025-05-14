@@ -12,7 +12,7 @@ export interface IStatusType {
 }
 
 export interface IGetAllStatusParams {
-  type: 'interview' | 'job' | 'schedule' | 'account';
+  type: 'interview' | 'job' | 'schedule' | 'account' | 'candidate_profile';
 }
 
 export type IStatus = IPaginatedData<IStatusItem[]>;

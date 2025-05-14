@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { message, Space, Tag } from 'antd';
+import { Col, message, Row, Space, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -11,6 +11,8 @@ import {
   IApproveProfileParams,
   IGetAllDesiredJob,
 } from '~/apis/desiredJob';
+import { FilterAdmin } from '~/assets/svg';
+import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
 import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
@@ -24,10 +26,20 @@ import { IDesiredJob } from '~/types/DesiredJob';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
+import FilterCandidateProfile from './FilterCandidateProfile';
 import ModalRejectProfile from './ModalRejectProfile';
 
 export interface IRejectedForm {
   reason: string;
+}
+
+export interface IFilterCandidateForm {
+  fullName: string;
+  statusId: number;
+  createdDate: string;
+  jobFieldId: number;
+  startAfterOffer: string;
+  totalYearExperience: number;
 }
 
 const { EyeOutlined, CheckOutlined, CloseOutlined } = icons;
@@ -38,19 +50,23 @@ const CandidateProfile = () => {
   const { setBreadcrumb } = useBreadcrumb();
 
   const [rejectedForm] = useForm<IRejectedForm>();
+  const [filterForm] = useForm<IFilterCandidateForm>();
 
   const [editIndex, setEditIndex] = useState(-1);
+  const [filterParams, setFilterParams] = useState<IGetAllDesiredJob>({});
+
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [isOpenReasonModal, setIsOpenReasonModal] = useState(false);
-  const [filterParams, setFilterParams] = useState<IGetAllDesiredJob>();
 
   const { desiredJob, loading } = useAppSelector((state) => state.desiredJob);
 
-  const { pageInfo, handlePageChange } = usePagination({
-    items: desiredJob?.items,
-    extraParams: filterParams,
-    fetchAction: getAllDesiredJob,
-    setFilterParams: setFilterParams,
-  });
+  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+    usePagination({
+      items: desiredJob?.items,
+      extraParams: filterParams,
+      fetchAction: getAllDesiredJob,
+      setFilterParams: setFilterParams,
+    });
 
   const { mutate: approveProfile, isPending: isApproveProfilePending } =
     useMutation({
@@ -91,6 +107,19 @@ const CandidateProfile = () => {
     rejectedForm.resetFields();
     setIsOpenReasonModal(false);
   }, []);
+
+  const handleCancelFilter = useCallback(() => {
+    setFilterParams({});
+    setIsOpenFilter(false);
+
+    filterForm.resetFields();
+    hanldeClearURLSearchParams();
+  }, []);
+
+  const handleFinishFilter = useCallback(
+    (values: IFilterCandidateForm) => setFilterParams(values),
+    []
+  );
 
   const columns = useMemo(
     () =>
@@ -233,6 +262,22 @@ const CandidateProfile = () => {
 
   return (
     <>
+      <Row gutter={[8, 16]} align="middle" justify="end">
+        <Col>
+          <Button
+            className="bg-white"
+            title={<FilterAdmin />}
+            onClick={() => setIsOpenFilter(!isOpenFilter)}
+          />
+        </Col>
+      </Row>
+      <FilterCandidateProfile
+        form={filterForm}
+        isOpen={isOpenFilter}
+        onCancel={handleCancelFilter}
+        onFinish={handleFinishFilter}
+        onPageChange={handlePageChange}
+      />
       <Content>
         <Table<IDesiredJob>
           columns={columns}
