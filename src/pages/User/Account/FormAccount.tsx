@@ -87,7 +87,7 @@ const FormAccount = ({
       >
         <Input
           name="fullName"
-          disabled={!isChangeName}
+          readOnly={!isChangeName}
           prefix={<UserOutlined />}
           suffix={
             hasPermissions && (
@@ -100,7 +100,7 @@ const FormAccount = ({
         />
       </FormItem>
       <FormItem name="email" label="Email">
-        <Input disabled prefix={<MailOutlined />} name="email" />
+        <Input readOnly prefix={<MailOutlined />} name="email" />
       </FormItem>
       <FormItem hidden={isChangePassword}>
         {hasPermissions && (

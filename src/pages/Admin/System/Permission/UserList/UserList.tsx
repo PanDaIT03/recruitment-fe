@@ -69,12 +69,12 @@ const UserList = () => {
     [loading, statusLoading]
   );
 
-  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+  const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       items: userAdmin.items,
       extraParams: filterParams,
-      fetchAction: getAllUserAdmin,
       setFilterParams: setFilterParams,
+      fetchFn: (params: IGetAllUserAdmin) => dispatch(getAllUserAdmin(params)),
     });
 
   const { mutate: updateUser, isPending: isUpdateUserPending } = useMutation({
@@ -154,7 +154,7 @@ const UserList = () => {
   const handleCancelFilter = useCallback(() => {
     setFilterParams({});
     setIsOpenFilter(false);
-    hanldeClearURLSearchParams({
+    handleClearURLSearchParams({
       tab: PERMISSION_TAB_ITEM_KEY.USER,
     });
   }, []);
@@ -172,20 +172,23 @@ const UserList = () => {
       {
         width: 70,
         align: 'center',
-        title: 'Ảnh',
+        title: 'Avatar',
         dataIndex: 'avatarUrl',
-        render: (value) =>
-          value ? (
-            <Image
-              width={40}
-              height={40}
-              src={value}
-              preview={false}
-              className="rounded-full"
-            />
-          ) : (
-            <AvatarPlaceHolder width={40} height={40} />
-          ),
+        render: (value) => (
+          <div className="flex items-center justify-center">
+            {value ? (
+              <Image
+                width={40}
+                height={40}
+                src={value}
+                preview={false}
+                className="rounded-full"
+              />
+            ) : (
+              <AvatarPlaceHolder />
+            )}
+          </div>
+        ),
       },
       {
         width: 180,

@@ -22,7 +22,7 @@ import Modal from '~/components/Modal/Modal';
 import Table from '~/components/Table/Table';
 import { FUNCTIONAL_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllFunctionals } from '~/store/thunk/functional';
 import { IFunctionalItem } from '~/types/Functional';
 import icons from '~/utils/icons';
@@ -52,6 +52,8 @@ const {
 } = icons;
 
 const Functional = () => {
+  const dispatch = useAppDispatch();
+
   const [form] = useForm<IFunctionalForm>();
   const [filterForm] = useForm<IFilterFunctionalForm>();
 
@@ -63,12 +65,13 @@ const Functional = () => {
 
   const { functionals, loading } = useAppSelector((state) => state.functional);
 
-  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+  const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       extraParams: filters,
       items: functionals?.items,
-      fetchAction: getAllFunctionals,
       setFilterParams: setFilters,
+      fetchFn: (params: IGetAllFunctionalParams) =>
+        dispatch(getAllFunctionals(params)),
     });
 
   const { mutate: createFunctional, isPending: isCreateFunctionalPending } =
@@ -203,7 +206,7 @@ const Functional = () => {
     setIsOpenFilter(false);
 
     filterForm.resetFields();
-    hanldeClearURLSearchParams({
+    handleClearURLSearchParams({
       tab: FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL,
     });
   }, []);

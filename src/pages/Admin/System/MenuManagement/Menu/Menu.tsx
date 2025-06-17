@@ -74,12 +74,12 @@ const Menu = () => {
   const [filterParams, setFilterParams] = useState<IGetAllMenuView>();
   const { menuViews, loading } = useAppSelector((state) => state.menuView);
 
-  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+  const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       setFilterParams,
       items: menuViews?.items,
       extraParams: filterParams,
-      fetchAction: getAllMenuViews,
+      fetchFn: (params: IGetAllMenuView) => dispatch(getAllMenuViews(params)),
     });
 
   const { mutate: uploadIcon, isPending: isUploadIconPending } = useMutation({
@@ -215,7 +215,7 @@ const Menu = () => {
     setFilterParams({});
 
     filterForm.resetFields();
-    hanldeClearURLSearchParams({
+    handleClearURLSearchParams({
       tab: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU,
     });
   };

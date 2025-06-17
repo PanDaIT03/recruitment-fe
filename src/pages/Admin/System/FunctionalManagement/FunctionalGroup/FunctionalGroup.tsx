@@ -72,12 +72,13 @@ const FunctionalGroup = () => {
     (state) => state.functional
   );
 
-  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+  const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       extraParams: filter,
       items: functionalGroups?.items,
-      fetchAction: getAllFunctionalGroups,
       setFilterParams: setFilter,
+      fetchFn: (params: IGetFuncGroupParams) =>
+        dispatch(getAllFunctionalGroups(params)),
     });
 
   const {
@@ -246,7 +247,7 @@ const FunctionalGroup = () => {
     setIsOpenFilter(false);
 
     filterForm.resetFields();
-    hanldeClearURLSearchParams({
+    handleClearURLSearchParams({
       tab: FUNCTIONAL_TAB_ITEM_KEY.FUNCTIONAL_GROUP,
     });
   }, []);

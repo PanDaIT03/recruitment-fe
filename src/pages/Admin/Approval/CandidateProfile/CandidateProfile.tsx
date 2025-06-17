@@ -63,7 +63,7 @@ const CandidateProfile = () => {
 
   const { desiredJob, loading } = useAppSelector((state) => state.desiredJob);
 
-  const { data, pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+  const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       items: desiredJob?.items,
       extraParams: filterParams,
@@ -116,7 +116,7 @@ const CandidateProfile = () => {
     setIsOpenFilter(false);
 
     filterForm.resetFields();
-    hanldeClearURLSearchParams();
+    handleClearURLSearchParams();
   }, []);
 
   const handleFinishFilter = useCallback(

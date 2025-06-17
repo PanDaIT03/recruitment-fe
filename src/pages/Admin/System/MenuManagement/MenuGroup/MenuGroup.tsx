@@ -60,12 +60,13 @@ const MenuGroup = () => {
     (state) => state.menuViewGroup
   );
 
-  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+  const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       items: menuViewGroup.items,
       extraParams: filterParams,
-      fetchAction: getAllMenuViewGroups,
       setFilterParams: setFilterParams,
+      fetchFn: (params: IGetAllMenuViewGroupParams) =>
+        dispatch(getAllMenuViewGroups(params)),
     });
 
   const {
@@ -151,7 +152,7 @@ const MenuGroup = () => {
     setFilterParams({});
 
     filterForm.resetFields();
-    hanldeClearURLSearchParams({
+    handleClearURLSearchParams({
       tab: MENU_MANAGEMENT_TAB_ITEM_KEY.MENU_GROUP,
     });
   };

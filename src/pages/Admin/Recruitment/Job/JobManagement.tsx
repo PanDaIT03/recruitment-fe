@@ -47,10 +47,9 @@ const JobManagement = () => {
     pageInfo,
     items: jobItems,
     handlePageChange,
-    hanldeClearURLSearchParams,
+    handleClearURLSearchParams,
   } = usePagination({
     items: allJobs?.items,
-    // fetchAction: getAllJobs,
     extraParams: filterParams,
     setFilterParams: setFilterParams,
     fetchFn: (params) => dispatch(getAllJobs(params)),
@@ -165,7 +164,7 @@ const JobManagement = () => {
   const handleCancel = useCallback(() => {
     setIsOpenFilter(false);
     setFilterParams({ ...defaultFilter });
-    hanldeClearURLSearchParams(defaultFilter);
+    handleClearURLSearchParams(defaultFilter);
   }, [defaultFilter]);
 
   return (

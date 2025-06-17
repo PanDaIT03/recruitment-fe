@@ -100,12 +100,12 @@ const JobList = () => {
     JobsAPI.getAllJobFields
   );
 
-  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+  const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       items: allJobs?.items,
       extraParams: filters,
-      fetchFn: (params) => dispatch(getAllJobs(params)),
       setFilterParams: setFilters,
+      fetchFn: (params) => dispatch(getAllJobs(params)),
     });
 
   const jobCategoriesOptions = useMemo(
@@ -188,7 +188,7 @@ const JobList = () => {
     form.setFieldValue('placementIds', 'all');
 
     handlePageChange(1);
-    hanldeClearURLSearchParams();
+    handleClearURLSearchParams();
     setFilters({ ...defaultFilter });
   }, []);
 

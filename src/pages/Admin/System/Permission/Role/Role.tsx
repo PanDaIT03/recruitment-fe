@@ -11,7 +11,7 @@ import Content from '~/components/Content/Content';
 import Table from '~/components/Table/Table';
 import { PERMISSION_TAB_ITEM_KEY } from '~/enums';
 import usePagination from '~/hooks/usePagination';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllRoles } from '~/store/thunk/role';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
@@ -29,6 +29,7 @@ const { PlusOutlined, EditOutlined } = icons;
 
 const Role = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [form] = Form.useForm<IFilterForm>();
 
   const [isOpenFilter, setIsOpenFilter] = useState(false);
@@ -36,12 +37,12 @@ const Role = () => {
 
   const { roles, loading } = useAppSelector((state) => state.role);
 
-  const { items, pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+  const { items, pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       items: roles.items,
-      fetchAction: getAllRoles,
       extraParams: filterParams,
       setFilterParams: setFilterParams,
+      fetchFn: (params) => dispatch(getAllRoles(params)),
     });
 
   const columns = useMemo(() => {
@@ -130,7 +131,7 @@ const Role = () => {
   const handleCancelFilter = useCallback(() => {
     setFilterParams({});
     setIsOpenFilter(false);
-    hanldeClearURLSearchParams({
+    handleClearURLSearchParams({
       tab: PERMISSION_TAB_ITEM_KEY.ROLE,
     });
   }, []);
