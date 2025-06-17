@@ -13,7 +13,6 @@ import useQueryParams from './useQueryParams';
 
 interface UsePaginationProps<T, P extends { page: number; pageSize: number }> {
   items?: T[];
-  // extraParams?: Partial<Omit<P, 'page' | 'pageSize'>> | undefined;
   extraParams?: Partial<Omit<P, 'page' | 'pageSize'>>;
   fetchFn: (params: P) => Promise<T> | any;
   setFilterParams: Dispatch<SetStateAction<any>>;
@@ -51,7 +50,7 @@ const usePagination = <T, P extends { page: number; pageSize: number }>({
     window.scrollTo(0, 0);
   }, []);
 
-  const hanldeClearURLSearchParams = useCallback((defaultParams?: any) => {
+  const handleClearURLSearchParams = useCallback((defaultParams?: any) => {
     const urlParams = { ...defaultParams, page: 1, pageSize: 10 };
 
     navigate(
@@ -101,7 +100,7 @@ const usePagination = <T, P extends { page: number; pageSize: number }>({
       },
       { replace: true }
     );
-    // dispatch(fetchAction(queryParams as P));
+
     fetchFn(queryParams as P).then((res: T) => setData(res));
   }, [currentPage, itemsPerPage, extraParams]);
 
@@ -126,7 +125,7 @@ const usePagination = <T, P extends { page: number; pageSize: number }>({
     items,
     pageInfo,
     handlePageChange,
-    hanldeClearURLSearchParams,
+    handleClearURLSearchParams,
   };
 };
 
