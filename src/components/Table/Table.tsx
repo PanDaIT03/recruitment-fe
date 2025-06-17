@@ -23,9 +23,7 @@ const Table = <T extends IBaseTWithID>({
       const valueIsNotValid = value === undefined || value === null;
 
       return col.render
-        ? valueIsNotValid
-          ? '-'
-          : col.render(value, record, index)
+        ? col.render(value, record, index)
         : valueIsNotValid
           ? '-'
           : value;
