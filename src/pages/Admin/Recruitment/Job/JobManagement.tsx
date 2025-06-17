@@ -11,7 +11,7 @@ import Table from '~/components/Table/Table';
 import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import usePagination from '~/hooks/usePagination';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { IJobList } from '~/pages/Job/JobList/JobList';
 import { getAllJobs } from '~/store/thunk/job';
 import JobFilterBox from './JobFilterBox';
@@ -28,6 +28,7 @@ const initialFilterParams = {
 } as any;
 
 const JobManagement = () => {
+  const dispatch = useAppDispatch();
   const [formFilter] = Form.useForm<IFilterForm>();
 
   const { setTitle } = useTitle();
@@ -49,9 +50,10 @@ const JobManagement = () => {
     hanldeClearURLSearchParams,
   } = usePagination({
     items: allJobs?.items,
-    fetchAction: getAllJobs,
+    // fetchAction: getAllJobs,
     extraParams: filterParams,
     setFilterParams: setFilterParams,
+    fetchFn: (params) => dispatch(getAllJobs(params)),
   });
 
   const columns = useMemo(() => {

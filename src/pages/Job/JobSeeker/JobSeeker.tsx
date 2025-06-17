@@ -2,7 +2,7 @@ import { Flex, Radio, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { DefaultOptionType } from 'antd/es/select';
 import { ColumnsType } from 'antd/es/table';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { JobsAPI } from '~/apis/job';
 import { BackPack, Box } from '~/assets/svg';
@@ -21,6 +21,8 @@ import CandidateInfo from './components/CandidateInfo/CandidateInfo';
 import Experience from './components/Experience/Experience';
 import SectionJobSeeker from './SectionJobSeeker';
 import TableJobSeeker from './TableJobSeeker/TableJobSeeker';
+import usePagination from '~/hooks/usePagination';
+import { getAllDesiredJob } from '~/store/thunk/desiredJob';
 
 const optionsExperience: DefaultOptionType[] = [
   {
@@ -89,8 +91,15 @@ const JobSeeker = () => {
   const { setDocTitle } = useDocumentTitle();
 
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+  const [filterParams, setFilterParams] = useState();
+  
   const { role } = useAppSelector((state) => state.auth.currentUser);
 
+  const {} = usePagination({
+    fetchAction: getAllDesiredJob,
+    setFilterParams
+  });
+  
   const { data: jobFields } = useFetch(
     ['allJobsFields'],
     JobsAPI.getAllJobFields
@@ -109,6 +118,11 @@ const JobSeeker = () => {
     return [...jobFieldItems, ...defaultFieldOptions];
   }, [jobFields]);
 
+  useEffect(() => {
+    handleInitForm();
+    setDocTitle('Danh sách ứng viên | Đúng người đúng việc');
+  }, []);
+
   const handleInitForm = () => {
     form.setFieldsValue({ experience: 'all', field: 'all' });
   };
@@ -124,6 +138,14 @@ const JobSeeker = () => {
           'Bạn cần phải là nhà tuyển dụng mới được tải hồ sơ ứng viên'
         );
   };
+
+  const handleResetFilters = useCallback(() => {
+    // form.resetFields();
+    // form.setFieldValue('placementIds', 'all');
+    // handlePageChange(1);
+    // hanldeClearURLSearchParams();
+    // setFilters({ ...defaultFilter });
+  }, []);
 
   const columns: ColumnsType<IJobSeeker> = [
     {
@@ -155,17 +177,15 @@ const JobSeeker = () => {
     },
   ];
 
-  useEffect(() => {
-    handleInitForm();
-    setDocTitle('Danh sách ứng viên | Đúng người đúng việc');
-  }, []);
-
   return (
     <div className="min-h-[100vh]">
       <TopSearchBar
         form={form}
         placeHolder="Tìm kiếm theo vị trí ứng tuyển"
         onSearch={handleSearch}
+        onClear={handleResetFilters}
+        onPageChange={() => {}}
+        onSetFormValues={() => {}}
         setIsDrawerSearchOpen={setIsOpenDrawer}
       >
         <FormItem name="experience" className="w-full h-10 max-w-48 mb-0">
@@ -180,10 +200,10 @@ const JobSeeker = () => {
         <FormItem name="field" className="w-full h-10 max-w-44 mb-0">
           <CustomSelect
             showSearch={false}
+            prefixIcon={<Box />}
             displayedType="text"
             className="w-full h-full"
             options={jobFieldOptions}
-            prefixIcon={<Box />}
           />
         </FormItem>
       </TopSearchBar>
@@ -194,6 +214,8 @@ const JobSeeker = () => {
         title="Lọc ứng viên"
         onFilter={handleSearch}
         onCancel={handleInitForm}
+        onPageChange={() => {}}
+        onSetFormValues={() => {}}
         setIsOpenDrawer={setIsOpenDrawer}
       >
         <FormItem name="field" label="Lĩnh vực">

@@ -14,7 +14,7 @@ import Select from '~/components/Select/Select';
 import useDocumentTitle from '~/hooks/useDocumentTitle';
 import { useFetch } from '~/hooks/useFetch';
 import usePagination from '~/hooks/usePagination';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllJobs } from '~/store/thunk/job';
 import {
   PaginatedJobCategories,
@@ -77,6 +77,7 @@ const defaultFilter: IFilter = {
 
 const JobList = () => {
   const [form] = Form.useForm();
+  const dispatch = useAppDispatch();
   const { setDocTitle } = useDocumentTitle();
 
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
@@ -103,7 +104,7 @@ const JobList = () => {
     usePagination({
       items: allJobs?.items,
       extraParams: filters,
-      fetchAction: getAllJobs,
+      fetchFn: (params) => dispatch(getAllJobs(params)),
       setFilterParams: setFilters,
     });
 

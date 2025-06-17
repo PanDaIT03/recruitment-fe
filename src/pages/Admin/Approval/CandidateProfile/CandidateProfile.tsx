@@ -20,7 +20,7 @@ import { useBreadcrumb } from '~/contexts/BreadcrumProvider';
 import { useTitle } from '~/contexts/TitleProvider';
 import { STATUS_CODE } from '~/enums';
 import usePagination from '~/hooks/usePagination';
-import { useAppSelector } from '~/hooks/useStore';
+import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllDesiredJob } from '~/store/thunk/desiredJob';
 import { IDesiredJob } from '~/types/DesiredJob';
 import { formatCurrencyVN } from '~/utils/functions';
@@ -28,6 +28,7 @@ import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import FilterCandidateProfile from './FilterCandidateProfile';
 import ModalRejectProfile from './ModalRejectProfile';
+import { ApprovalAPI } from '~/apis/approval';
 
 export interface IRejectedForm {
   reason: string;
@@ -46,6 +47,8 @@ const { EyeOutlined, CheckOutlined, CloseOutlined } = icons;
 
 const CandidateProfile = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const { setTitle } = useTitle();
   const { setBreadcrumb } = useBreadcrumb();
 
@@ -60,12 +63,12 @@ const CandidateProfile = () => {
 
   const { desiredJob, loading } = useAppSelector((state) => state.desiredJob);
 
-  const { pageInfo, handlePageChange, hanldeClearURLSearchParams } =
+  const { data, pageInfo, handlePageChange, hanldeClearURLSearchParams } =
     usePagination({
       items: desiredJob?.items,
       extraParams: filterParams,
-      fetchAction: getAllDesiredJob,
-      setFilterParams: setFilterParams,
+      setFilterParams,
+      fetchFn: (params) => dispatch(getAllDesiredJob(params)),
     });
 
   const { mutate: approveProfile, isPending: isApproveProfilePending } =
