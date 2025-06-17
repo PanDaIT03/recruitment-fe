@@ -9,25 +9,23 @@ import {
   useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
-import { useAppDispatch } from '~/hooks/useStore';
 import useQueryParams from './useQueryParams';
 
 interface UsePaginationProps<T, P extends { page: number; pageSize: number }> {
   items?: T[];
-  extraParams?: Partial<Omit<P, 'page' | 'pageSize'>> | undefined;
-  fetchAction: (params: P) => any;
+  // extraParams?: Partial<Omit<P, 'page' | 'pageSize'>> | undefined;
+  extraParams?: Partial<Omit<P, 'page' | 'pageSize'>>;
+  fetchFn: (params: P) => Promise<T> | any;
   setFilterParams: Dispatch<SetStateAction<any>>;
 }
 
-function usePagination<T, P extends { page: number; pageSize: number }>({
+const usePagination = <T, P extends { page: number; pageSize: number }>({
   items,
   extraParams,
-  fetchAction,
+  fetchFn,
   setFilterParams,
-}: UsePaginationProps<T, P>) {
+}: UsePaginationProps<T, P>) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
   const location = useLocation();
   const { searchParams, queryParams } = useQueryParams();
@@ -43,6 +41,7 @@ function usePagination<T, P extends { page: number; pageSize: number }>({
     [queryParams]
   );
 
+  const [data, setData] = useState<T>();
   const [currentPage, setCurrentPage] = useState(pageInfo.page);
   const [itemsPerPage, setItemsPerPage] = useState(pageInfo.pageSize);
 
@@ -102,7 +101,8 @@ function usePagination<T, P extends { page: number; pageSize: number }>({
       },
       { replace: true }
     );
-    dispatch(fetchAction(queryParams as P));
+    // dispatch(fetchAction(queryParams as P));
+    fetchFn(queryParams as P).then((res: T) => setData(res));
   }, [currentPage, itemsPerPage, extraParams]);
 
   useEffect(() => {
@@ -122,11 +122,12 @@ function usePagination<T, P extends { page: number; pageSize: number }>({
   }, [fetchData]);
 
   return {
+    data,
     items,
     pageInfo,
     handlePageChange,
     hanldeClearURLSearchParams,
   };
-}
+};
 
 export default usePagination;
