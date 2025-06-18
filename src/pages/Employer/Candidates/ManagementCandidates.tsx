@@ -12,11 +12,11 @@ import { Application, StatusJob } from '~/types/Job';
 import { IGetAllStatusParams } from '~/types/Status';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
-const { EditOutlined } = icons;
 
+const { EditOutlined } = icons;
 const { Text, Paragraph } = Typography;
 
-const ManagementCandicates = () => {
+const ManagementCandidates = () => {
   const [form] = useForm();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -26,11 +26,11 @@ const ManagementCandicates = () => {
   >(null);
   const customBreadcrumbItems = [
     {
-      path: PATH.EMPLOYER_CANDICATES_DASHBOARD,
+      path: PATH.EMPLOYER_CANDIDATES_DASHBOARD,
       label: 'Ứng viên',
     },
     {
-      path: PATH.EMPLOYER_CANDICATES_MANAGEMENT,
+      path: PATH.EMPLOYER_CANDIDATES_MANAGEMENT,
       label: 'Quản lý',
     },
   ];
@@ -221,4 +221,4 @@ const ManagementCandicates = () => {
   );
 };
 
-export default ManagementCandicates;
+export default ManagementCandidates;

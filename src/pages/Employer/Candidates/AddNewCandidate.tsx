@@ -8,16 +8,16 @@ import PATH from '~/utils/path';
 
 const { CloudUploadOutlined } = icons;
 
-const AddNewCandicate = () => {
+const AddNewCandidate = () => {
   const [form] = Form.useForm();
 
   const customBreadcrumbItems = [
     {
-      path: PATH.EMPLOYER_CANDICATES_DASHBOARD,
+      path: PATH.EMPLOYER_CANDIDATES_DASHBOARD,
       label: 'Ứng viên',
     },
     {
-      path: PATH.EMPLOYER_CANDICATES_ADDNEW,
+      path: PATH.EMPLOYER_CANDIDATES_ADD_NEW,
       label: 'Thêm ứng viên',
     },
   ];
@@ -27,6 +27,7 @@ const AddNewCandicate = () => {
   const onFinish = (values: any) => {
     console.log('Form values:', values);
   };
+
   return (
     <>
       <div className="bg-secondary border-t border-[#561d59]">
@@ -124,4 +125,4 @@ const AddNewCandicate = () => {
   );
 };
 
-export default AddNewCandicate;
+export default AddNewCandidate;

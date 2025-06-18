@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { JobsAPI } from '~/apis/job';
 import { useFetch } from '~/hooks/useFetch';
-import ModalIntervew from './ModalInterview';
+import ModalInterview from './ModalInterview';
 import ModalStatusJob from '~/components/Modal/ModalStatusJob';
 import toast from '~/utils/functions/toast';
 import { Modal } from 'antd';
@@ -13,7 +13,7 @@ import CVViewer from './components/CVViewer';
 import PATH from '~/utils/path';
 import useBreadcrumb from '~/hooks/useBreadcrumb';
 
-const RecruimentDetail = () => {
+const RecruitmentDetail = () => {
   const location = useLocation();
   const data = location.state;
 
@@ -111,7 +111,7 @@ const RecruimentDetail = () => {
           <CVViewer applicationJobs={applicationJobs} />
         </div>
       </div>
-      <ModalIntervew
+      <ModalInterview
         isOpen={isOpenModal}
         onClose={handleCloseModal}
         data={applicationJobs}
@@ -129,4 +129,4 @@ const RecruimentDetail = () => {
   );
 };
 
-export default RecruimentDetail;
+export default RecruitmentDetail;

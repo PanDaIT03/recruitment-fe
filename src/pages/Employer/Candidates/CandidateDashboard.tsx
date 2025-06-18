@@ -20,7 +20,7 @@ const { EditOutlined } = icons;
 
 const { Title, Text, Paragraph } = Typography;
 
-const CandicateDashboard: React.FC = () => {
+const CandidateDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -30,11 +30,11 @@ const CandicateDashboard: React.FC = () => {
   >(null);
   const customBreadcrumbItems = [
     {
-      path: PATH.EMPLOYER_CANDICATES_DASHBOARD,
+      path: PATH.EMPLOYER_CANDIDATES_DASHBOARD,
       label: 'Ứng viên',
     },
     {
-      path: PATH.EMPLOYER_CANDICATES_DASHBOARD,
+      path: PATH.EMPLOYER_CANDIDATES_DASHBOARD,
       label: 'Tổng quan',
     },
   ];
@@ -207,4 +207,4 @@ const CandicateDashboard: React.FC = () => {
   );
 };
 
-export default CandicateDashboard;
+export default CandidateDashboard;

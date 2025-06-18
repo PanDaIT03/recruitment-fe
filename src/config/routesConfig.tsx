@@ -12,7 +12,7 @@ import EmployerLayout from '~/pages/Employer/EmployerLayout';
 import ProtectedRoute from '~/routes/ProtectedRoute';
 import PATH from '~/utils/path';
 
-// NOTFOUNT ROUTE
+// NOTFOUND ROUTE
 const NotFound = lazy(() => import('~/pages/NotFound/NotFound'));
 
 // COMMON ROUTES
@@ -57,20 +57,20 @@ const EmployerAccountPage = lazy(
 const EmployerDashboard = lazy(
   () => import('~/pages/Employer/Dashboard/EmployerDashboard')
 );
-const CandicateDashboard = lazy(
-  () => import('~/pages/Employer/Candicates/CandicateDashboard')
+const CandidateDashboard = lazy(
+  () => import('~/pages/Employer/Candidates/CandidateDashboard')
 );
-const ManagementCandicates = lazy(
-  () => import('~/pages/Employer/Candicates/ManagementCandicates')
+const ManagementCandidates = lazy(
+  () => import('~/pages/Employer/Candidates/ManagementCandidates')
 );
-const AddNewCandicate = lazy(
-  () => import('~/pages/Employer/Candicates/AddNewCandicate')
+const AddNewCandidate = lazy(
+  () => import('~/pages/Employer/Candidates/AddNewCandidate')
 );
 const Recruitment = lazy(
   () => import('~/pages/Employer/RecruitmentList/Recruitment')
 );
 const RecruitmentDetail = lazy(
-  () => import('~/pages/Employer/RecruitmentList/RecruimentDetail')
+  () => import('~/pages/Employer/RecruitmentList/RecruitmentDetail')
 );
 
 // ADMIN ROUTES
@@ -212,19 +212,19 @@ const routesConfig: CustomRouteObject[] = [
     ),
     createProtectedRoute(PATH.EMPLOYER_POSTING, ['employer'], <PostingJob />),
     createProtectedRoute(
-      PATH.EMPLOYER_CANDICATES_ADDNEW,
+      PATH.EMPLOYER_CANDIDATES_ADD_NEW,
       ['employer'],
-      <AddNewCandicate />
+      <AddNewCandidate />
     ),
     createProtectedRoute(
-      PATH.EMPLOYER_CANDICATES_DASHBOARD,
+      PATH.EMPLOYER_CANDIDATES_DASHBOARD,
       ['employer'],
-      <CandicateDashboard />
+      <CandidateDashboard />
     ),
     createProtectedRoute(
-      PATH.EMPLOYER_CANDICATES_MANAGEMENT,
+      PATH.EMPLOYER_CANDIDATES_MANAGEMENT,
       ['employer'],
-      <ManagementCandicates />
+      <ManagementCandidates />
     ),
     createProtectedRoute(
       PATH.EMPLOYER_RECRUITMENT_LIST,
