@@ -7,10 +7,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  DesiredJobAPI,
-  IApproveProfileParams,
-  IGetAllDesiredJob,
-} from '~/apis/desiredJob';
+  ApprovalAPI,
+  IApprovalProfile,
+  IGetAllCandidateProfile,
+} from '~/apis/approval';
 import { FilterAdmin } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import ButtonAction from '~/components/Button/ButtonAction';
@@ -21,14 +21,13 @@ import { useTitle } from '~/contexts/TitleProvider';
 import { STATUS_CODE } from '~/enums';
 import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
-import { getAllDesiredJob } from '~/store/thunk/desiredJob';
-import { IDesiredJob } from '~/types/DesiredJob';
+import { getAllCandidateProfile } from '~/store/thunk/approval';
+import { IApproval } from '~/types/Approval';
 import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import FilterCandidateProfile from './FilterCandidateProfile';
 import ModalRejectProfile from './ModalRejectProfile';
-import { ApprovalAPI } from '~/apis/approval';
 
 export interface IRejectedForm {
   reason: string;
@@ -56,25 +55,25 @@ const CandidateProfile = () => {
   const [filterForm] = useForm<IFilterCandidateForm>();
 
   const [editIndex, setEditIndex] = useState(-1);
-  const [filterParams, setFilterParams] = useState<IGetAllDesiredJob>({});
+  const [filterParams, setFilterParams] = useState<IGetAllCandidateProfile>({});
 
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [isOpenReasonModal, setIsOpenReasonModal] = useState(false);
 
-  const { desiredJob, loading } = useAppSelector((state) => state.desiredJob);
+  const { approvals, loading } = useAppSelector((state) => state.approval);
 
   const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
-      items: desiredJob?.items,
+      items: approvals?.items,
       extraParams: filterParams,
       setFilterParams,
-      fetchFn: (params) => dispatch(getAllDesiredJob(params)),
+      fetchFn: (params) => dispatch(getAllCandidateProfile(params)),
     });
 
   const { mutate: approveProfile, isPending: isApproveProfilePending } =
     useMutation({
-      mutationFn: (params: IApproveProfileParams) =>
-        DesiredJobAPI.approveProfile(params),
+      mutationFn: (params: IApprovalProfile) =>
+        ApprovalAPI.approveProfile(params),
       onSuccess: (res) => {
         message.success(res?.message);
 
@@ -92,7 +91,7 @@ const CandidateProfile = () => {
   }, []);
 
   const handleApprove = useCallback(
-    (params: IApproveProfileParams) => approveProfile(params),
+    (params: IApprovalProfile) => approveProfile(params),
     []
   );
 
@@ -100,7 +99,7 @@ const CandidateProfile = () => {
     (values: IRejectedForm) =>
       handleApprove({
         id: editIndex,
-        type: 'reject',
+        code: STATUS_CODE.APPROVAL_REJECTED,
         rejectReason: values?.reason,
       }),
     [editIndex]
@@ -120,7 +119,7 @@ const CandidateProfile = () => {
   }, []);
 
   const handleFinishFilter = useCallback(
-    (values: IFilterCandidateForm) => setFilterParams(values),
+    (values: IGetAllCandidateProfile) => setFilterParams(values),
     []
   );
 
@@ -137,30 +136,30 @@ const CandidateProfile = () => {
         {
           width: 150,
           title: 'Tên',
-          dataIndex: ['user', 'fullName'],
+          dataIndex: ['desiredJobSnapshot', 'user', 'fullName'],
         },
         {
-          width: 150,
+          width: 200,
           title: 'Lĩnh vực',
-          dataIndex: ['jobField', 'title'],
+          dataIndex: ['desiredJobSnapshot', 'jobField', 'title'],
         },
         {
           width: 150,
           align: 'center',
           title: 'Năm kinh nghiệm',
-          dataIndex: 'totalYearExperience',
+          dataIndex: ['desiredJobSnapshot', 'totalYearExperience'],
         },
         {
           width: 150,
           align: 'center',
           title: 'Mức lương kỳ vọng',
-          dataIndex: 'salarayExpectation',
+          dataIndex: ['desiredJobSnapshot', 'salarayExpectation'],
           render: (value) => <span>{formatCurrencyVN(value)} VNĐ</span>,
         },
         {
           width: 180,
           title: 'Thời gian bắt đầu',
-          dataIndex: 'startAfterOffer',
+          dataIndex: ['desiredJobSnapshot', 'startAfterOffer'],
         },
         {
           width: 150,
@@ -185,11 +184,6 @@ const CandidateProfile = () => {
           },
         },
         {
-          width: 180,
-          title: 'Người tạo',
-          dataIndex: ['creator', 'fullName'],
-        },
-        {
           width: 200,
           title: 'Ngày tạo',
           dataIndex: 'createAt',
@@ -199,7 +193,7 @@ const CandidateProfile = () => {
         {
           width: 180,
           title: 'Người chỉnh sửa',
-          dataIndex: ['updater', 'fullName'],
+          dataIndex: ['desiredJobSnapshot', 'updater', 'fullName'],
         },
         {
           width: 200,
@@ -226,7 +220,7 @@ const CandidateProfile = () => {
           align: 'center',
           title: 'Thao tác',
           render: (_, record) => {
-            const { id, user, status } = record;
+            const { id, status, desiredJobSnapshot } = record;
             const isApproved = status?.code !== STATUS_CODE.APPROVAL_PENDING;
 
             return (
@@ -235,7 +229,9 @@ const CandidateProfile = () => {
                   disabled={isApproved}
                   tooltipTitle="Phê duyệt"
                   title={<CheckOutlined className="[&>svg]:fill-green-500" />}
-                  onClick={() => handleApprove({ id, type: 'approve' })}
+                  onClick={() =>
+                    handleApprove({ id, code: STATUS_CODE.APPROVAL_APPROVED })
+                  }
                 />
                 <ButtonAction
                   disabled={isApproved}
@@ -251,7 +247,7 @@ const CandidateProfile = () => {
                   tooltipTitle="Xem chi tiết"
                   onClick={() =>
                     navigate(
-                      `${PATH.ADMIN_CANDIDATE_PROFILE_DETAIL_MANAGEMENT}?id=${id}&userId=${user?.id}`
+                      `${PATH.ADMIN_CANDIDATE_PROFILE_DETAIL_MANAGEMENT}?id=${id}&userId=${desiredJobSnapshot.user?.id}`
                     )
                   }
                 />
@@ -259,7 +255,7 @@ const CandidateProfile = () => {
             );
           },
         },
-      ] as ColumnsType<IDesiredJob>,
+      ] as ColumnsType<IApproval>,
     [pageInfo]
   );
 
@@ -282,14 +278,14 @@ const CandidateProfile = () => {
         onPageChange={handlePageChange}
       />
       <Content>
-        <Table<IDesiredJob>
+        <Table<IApproval>
           columns={columns}
-          dataSource={desiredJob?.items}
+          dataSource={approvals?.items}
           loading={loading || isApproveProfilePending}
           pagination={{
             current: pageInfo.page,
             pageSize: pageInfo.pageSize,
-            total: desiredJob?.pageInfo?.totalItems,
+            total: approvals?.pageInfo?.totalItems,
             onChange: handlePageChange,
           }}
         />

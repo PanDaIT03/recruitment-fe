@@ -14,6 +14,7 @@ import {
 
 import { DesiredJobAPI, IUpdateDesiredJobParams } from '~/apis/desiredJob';
 import { JobsAPI } from '~/apis/job';
+import UserAPI from '~/apis/user';
 import { BackPack, Box, Salary } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import FormList, { IFormListProps } from '~/components/Form/FormList';
@@ -22,6 +23,7 @@ import Input from '~/components/Input/Input';
 import Modal, { IModalProps } from '~/components/Modal/Modal';
 import CustomSelect from '~/components/Select/CustomSelect';
 import Select from '~/components/Select/Select';
+import TextArea from '~/components/TextArea/TextArea';
 import { useFetch } from '~/hooks/useFetch';
 import { IDesiredJob } from '~/types/DesiredJob';
 import { formatCurrencyVN } from '~/utils/functions';
@@ -72,6 +74,11 @@ const ModalDesiredJob = ({
     JobsAPI.getAllPlacements
   );
 
+  const { data: achievement } = useFetch(
+    ['achievement'],
+    UserAPI.getAchievementByUser
+  );
+
   const { mutate: updateDesiredJob, isPending } = useMutation({
     mutationFn: (params: IUpdateDesiredJobParams) =>
       DesiredJobAPI.updateDesiredJob(params),
@@ -84,6 +91,24 @@ const ModalDesiredJob = ({
     onError: (error: any) =>
       message.error(error?.response?.data?.message || 'Có lỗi xảy ra!'),
   });
+
+  useEffect(() => {
+    if (!data || !isOpen) return;
+
+    const fieldsValue: IForm = {
+      jobFieldsId: data.jobField.id,
+      startAfterOffer: data.startAfterOffer,
+      achivements: achievement?.result?.description || '',
+      salaryExpectation: formatCurrencyVN(data.salarayExpectation),
+      jobPlacementIds: data.desiredJobsPlacement.map(
+        (jobPlacement) => jobPlacement.placementsId
+      ),
+      jobPositionIds: data.desiredJobsPosition.map(
+        (jobPosition) => jobPosition.jobPositionsId
+      ),
+    };
+    form.setFieldsValue(fieldsValue);
+  }, [data, isOpen, achievement]);
 
   const handleSalaryChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -198,7 +223,6 @@ const ModalDesiredJob = ({
       {
         name: 'startAfterOffer',
         label: 'Thời gian có thể bắt đầu làm việc kể từ khi nhận offer?',
-        className: 'mb-0',
         item: (
           <Select placeholder="Chọn thời gian" options={startTimeOptions} />
         ),
@@ -206,6 +230,24 @@ const ModalDesiredJob = ({
           {
             required: true,
             message: 'Vui lòng chọn thời gian bắt đầu làm việc',
+          },
+        ],
+      },
+      {
+        name: 'achivements',
+        label: 'Thành tích nổi bật',
+        className: 'mb-0',
+        extra: 'Mô tả ngắn gọn về thành tích nổi bật của bạn',
+        item: (
+          <TextArea
+            className="p-3 !min-h-32 bg-light-gray"
+            placeholder={`Ví dụ:\n- Tốt nghiệp loại giỏi chuyên ngành Quản trị Nhân lực với GPA 3.53/4.00\n- Đạt 100% KPI trong thời gian thử việc, vượt 119% KPI chung trong Quý 2.2022\n- Mang về mỗi tháng lên tới 30 khách hàng tương đương 40% doanh thu năm 2023`}
+          />
+        ),
+        rules: [
+          {
+            required: true,
+            message: 'Vui lòng mô tả thành tích nổi bật của bạn',
           },
         ],
       },
@@ -240,26 +282,10 @@ const ModalDesiredJob = ({
     [form]
   );
 
-  useEffect(() => {
-    if (!data || !isOpen) return;
-
-    const fieldsValue: IForm = {
-      jobFieldsId: data.jobField.id,
-      startAfterOffer: data.startAfterOffer,
-      salaryExpectation: formatCurrencyVN(data.salarayExpectation),
-      jobPlacementIds: data.desiredJobsPlacement.map(
-        (jobPlacement) => jobPlacement.placementsId
-      ),
-      jobPositionIds: data.desiredJobsPosition.map(
-        (jobPosition) => jobPosition.jobPositionsId
-      ),
-    };
-    form.setFieldsValue(fieldsValue);
-  }, [data, isOpen]);
-
   return (
     <Modal
       centered
+      width={800}
       isOpen={isOpen}
       loading={isPending}
       title="Cập nhật công việc mong muốn"

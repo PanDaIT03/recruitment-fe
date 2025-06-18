@@ -19,12 +19,6 @@ interface JobField {
   title: string;
 }
 
-interface Status {
-  id: number;
-  title: string;
-  code: string;
-}
-
 interface User {
   id: number;
   fullName: string;
@@ -61,31 +55,22 @@ interface ForeignLanguage {
   title: string;
 }
 
-// export interface IDesiredJob {
-//   statusCode: number;
-//   id: number;
-//   createAt: Date;
-//   salarayExpectation: number;
-//   startAfterOffer: string;
-//   totalYearExperience: number;
-//   yearOfBirth: string;
-//   user: User;
-//   desiredJobsPlacement: DesiredJobsPlacement[];
-//   desiredJobsPosition: DesiredJobsPosition[];
-//   jobField: JobField;
-// }
-
-//------------
-
+interface Approval {
+  id: number;
+  rejectReason: string;
+  status: {
+    id: number;
+    title: string;
+    code: string;
+  };
+}
 export interface IDesiredJob {
   id: number;
-  user: User;
+  user: Pick<User, 'id' | 'fullName' | 'phoneNumber' | 'email'>;
   createAt: string;
   approveAt: string;
   yearOfBirth: string;
   jobField: JobField;
-  status: Status;
-  rejectReason: string;
   startAfterOffer: string;
   salarayExpectation: number;
   totalYearExperience: number;
@@ -99,12 +84,7 @@ export interface IDesiredJob {
     id: number;
     fullName: string;
   };
-  approver: {
-    id: number;
-    fullName: string;
-  };
+  approvals: Approval;
 }
-
-//------------
 
 export type IPaginationDesiredJob = IPaginatedData<IDesiredJob[]>;

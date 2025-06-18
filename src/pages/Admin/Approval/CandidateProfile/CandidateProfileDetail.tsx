@@ -22,11 +22,7 @@ import {
   useState,
 } from 'react';
 
-import {
-  DesiredJobAPI,
-  IApproveProfileParams,
-  IGetAllDesiredJob,
-} from '~/apis/desiredJob';
+import { ApprovalAPI, IApprovalProfile } from '~/apis/approval';
 import UserAPI from '~/apis/user';
 import { PDF_Icon } from '~/assets/img';
 import {
@@ -40,6 +36,7 @@ import {
   Location,
   Salary,
   SmartPhone,
+  SunRise,
 } from '~/assets/svg';
 import Button from '~/components/Button/Button';
 import CopyButton from '~/components/Button/CopyButton';
@@ -52,7 +49,7 @@ import { useTitle } from '~/contexts/TitleProvider';
 import { STATUS_CODE } from '~/enums';
 import useQueryParams from '~/hooks/useQueryParams';
 import { advanceOptions } from '~/pages/User/Profile/Modal/LanguageModal';
-import { IDesiredJob } from '~/types/DesiredJob';
+import { IApproval } from '~/types/Approval';
 import {
   IForeignLanguage,
   IUserSkill,
@@ -84,9 +81,9 @@ const { Title } = Typography;
 const { MailOutlined, DownloadOutlined, CheckOutlined, CloseOutlined } = icons;
 
 const initSkill = [] as IUserSkill[];
-const initialDesiredJob = {} as IDesiredJob;
 const initLanguage = [] as IForeignLanguage[];
 const initExperience = [] as IWorkExperience[];
+const initialCandidateProfile = {} as IApproval;
 
 const CandidateProfileDetail = () => {
   const { setTitle } = useTitle();
@@ -95,23 +92,24 @@ const CandidateProfileDetail = () => {
   const { searchParams } = useQueryParams();
   const [rejectedForm] = useForm<IRejectedForm>();
 
-  const [desiredJob, setDesiredJob] = useState(initialDesiredJob);
   const [isOpenReasonModal, setIsOpenReasonModal] = useState(false);
 
   const [userSkills, setUserSkills] = useState(initSkill);
   const [workExperiences, setWorkExperiences] = useState(initExperience);
   const [foreignLanguages, setForeignLanguages] = useState(initLanguage);
+  const [candidateProfile, setCandidateProfile] = useState(
+    initialCandidateProfile
+  );
 
-  const { mutate: getDesiredJob, isPending: isGetAllDesiredJobPending } =
-    useMutation({
-      mutationFn: (params: IGetAllDesiredJob) =>
-        DesiredJobAPI.getAllDesiredJob(params),
-      onSuccess: (res) => {
-        setDesiredJob(res?.items?.[0]);
-      },
-      onError: (error: any) =>
-        message.error(error?.response?.data?.message || 'Có lỗi xảy ra'),
-    });
+  const {
+    mutate: getCandidateProfile,
+    isPending: isGetCandidateProfilePending,
+  } = useMutation({
+    mutationFn: (id: number) => ApprovalAPI.getCandidateProfileById(id),
+    onSuccess: (res) => setCandidateProfile(res),
+    onError: (error: any) =>
+      message.error(error?.response?.data?.message || 'Có lỗi xảy ra'),
+  });
 
   const {
     mutate: getWorkExperienceByUserId,
@@ -144,8 +142,8 @@ const CandidateProfileDetail = () => {
 
   const { mutate: approveProfile, isPending: isApproveProfilePending } =
     useMutation({
-      mutationFn: (params: IApproveProfileParams) =>
-        DesiredJobAPI.approveProfile(params),
+      mutationFn: (params: IApprovalProfile) =>
+        ApprovalAPI.approveProfile(params),
       onSuccess: (res) => {
         message.success(res?.message);
 
@@ -159,12 +157,12 @@ const CandidateProfileDetail = () => {
 
   const isLoading = useMemo(
     () =>
-      isGetAllDesiredJobPending ||
+      isGetCandidateProfilePending ||
       isWorkExperiencePending ||
       isLanguagePending ||
       isUserSkillPending,
     [
-      isGetAllDesiredJobPending,
+      isGetCandidateProfilePending,
       isWorkExperiencePending,
       isLanguagePending,
       isUserSkillPending,
@@ -172,22 +170,22 @@ const CandidateProfileDetail = () => {
   );
 
   const isProfileApprove = useMemo(
-    () => desiredJob?.status?.code !== STATUS_CODE.APPROVAL_PENDING,
-    [desiredJob]
+    () => candidateProfile?.status?.code !== STATUS_CODE.APPROVAL_PENDING,
+    [candidateProfile]
   );
 
-  const personalInfomations: IPersonalInformation[] = useMemo(
+  const personalInformation: IPersonalInformation[] = useMemo(
     () => [
       {
         items: [
           {
             label: 'Email',
-            value: desiredJob?.user?.email,
+            value: candidateProfile?.desiredJobSnapshot?.user?.email,
             icon: <MailOutlined />,
           },
           {
             label: 'SĐT',
-            value: desiredJob?.user?.phoneNumber,
+            value: candidateProfile?.desiredJobSnapshot?.user?.phoneNumber,
             icon: <SmartPhone />,
           },
         ],
@@ -196,12 +194,12 @@ const CandidateProfileDetail = () => {
         items: [
           {
             label: 'Năm sinh',
-            value: desiredJob?.yearOfBirth,
+            value: candidateProfile?.desiredJobSnapshot?.yearOfBirth,
             icon: <BirthDayCalendar />,
           },
           {
             label: 'Mức lương kỳ vọng',
-            value: desiredJob?.salarayExpectation,
+            value: `${candidateProfile?.desiredJobSnapshot?.salarayExpectation.toLocaleString()} VNĐ`,
             icon: <Salary />,
           },
         ],
@@ -209,14 +207,40 @@ const CandidateProfileDetail = () => {
       {
         items: [
           {
+            label: 'Năm kinh nghiệm',
+            value: candidateProfile?.desiredJobSnapshot?.totalYearExperience,
+            icon: <SunRise />,
+          },
+          {
             label: 'Thời gian bắt đầu',
-            value: desiredJob?.startAfterOffer,
+            value: candidateProfile?.desiredJobSnapshot?.startAfterOffer,
             icon: <Calendar />,
+          },
+        ],
+      },
+      {
+        items: [
+          {
+            label: 'Chức vụ hiện tại',
+            value:
+              candidateProfile?.desiredJobSnapshot?.user?.jobPosition?.title,
+            icon: <BackPack />,
           },
           {
             label: 'Lĩnh vực',
-            value: desiredJob?.jobField?.title,
+            value: candidateProfile?.desiredJobSnapshot?.jobField?.title,
             icon: <Box />,
+          },
+        ],
+      },
+      {
+        items: [
+          {
+            label: 'Vị trí ứng tuyển',
+            value: candidateProfile?.desiredJobSnapshot?.desiredJobsPosition
+              ?.map((item) => item?.jobPosition?.title)
+              ?.join(', '),
+            icon: <BackPack />,
           },
         ],
       },
@@ -224,19 +248,8 @@ const CandidateProfileDetail = () => {
       {
         items: [
           {
-            label: 'Vị trí',
-            value: desiredJob?.desiredJobsPosition
-              ?.map((item) => item?.jobPosition?.title)
-              ?.join(', '),
-            icon: <BackPack />,
-          },
-        ],
-      },
-      {
-        items: [
-          {
             label: 'Nơi sống hiện tại',
-            value: desiredJob?.user?.placement?.title,
+            value: candidateProfile?.desiredJobSnapshot?.user?.placement?.title,
             icon: <Location />,
           },
         ],
@@ -245,7 +258,7 @@ const CandidateProfileDetail = () => {
         items: [
           {
             label: 'Địa điểm làm việc',
-            value: desiredJob?.desiredJobsPlacement
+            value: candidateProfile?.desiredJobSnapshot?.desiredJobsPlacement
               ?.map((item) => item?.placement?.title)
               ?.join(', '),
             icon: <Location />,
@@ -254,16 +267,18 @@ const CandidateProfileDetail = () => {
         ],
       },
     ],
-    [desiredJob]
+    [candidateProfile]
   );
 
-  const workInformations: IWorkInformation[] = [
+  const workInformation: IWorkInformation[] = [
     {
       title: 'Thành tích nổi bật',
       children: (
         <div
           dangerouslySetInnerHTML={{
-            __html: desiredJob?.user?.achivement?.description,
+            __html:
+              candidateProfile?.desiredJobSnapshot?.user?.achivement
+                ?.description,
           }}
         />
       ),
@@ -304,7 +319,7 @@ const CandidateProfileDetail = () => {
       children: (
         <>
           {foreignLanguages?.length ? (
-            <Space>
+            <Space className="flex-wrap">
               {foreignLanguages?.map(({ foreignLanguage, level }, index) => (
                 <Flex
                   gap={12}
@@ -368,7 +383,7 @@ const CandidateProfileDetail = () => {
     getLanguageByUserId(userId);
     getUserSkillByUserId(userId);
     getWorkExperienceByUserId(userId);
-    getDesiredJob({ id: profileId, type: 'more' });
+    getCandidateProfile(profileId);
   }, [searchParams]);
 
   useEffect(() => {
@@ -387,21 +402,19 @@ const CandidateProfileDetail = () => {
     refetchProfile();
   }, [refetchProfile]);
 
-  console.log(desiredJob);
-
   const handleApprove = useCallback(
-    (params: IApproveProfileParams) => approveProfile(params),
+    (params: IApprovalProfile) => approveProfile(params),
     []
   );
 
   const handleFinishRejected = useCallback(
     (values: IRejectedForm) =>
       handleApprove({
-        id: desiredJob?.id,
-        type: 'reject',
+        id: candidateProfile?.id,
         rejectReason: values?.reason,
+        code: STATUS_CODE.APPROVAL_REJECTED,
       }),
-    [desiredJob]
+    [candidateProfile]
   );
 
   const handleCancelRejected = useCallback(() => {
@@ -418,14 +431,15 @@ const CandidateProfileDetail = () => {
             <p
               className={classNames(
                 'font-medium',
-                desiredJob?.status?.code === STATUS_CODE.APPROVAL_APPROVED
+                candidateProfile?.status?.code === STATUS_CODE.APPROVAL_APPROVED
                   ? 'text-green-500'
-                  : desiredJob?.status?.code === STATUS_CODE.APPROVAL_REJECTED
+                  : candidateProfile?.status?.code ===
+                      STATUS_CODE.APPROVAL_REJECTED
                     ? 'text-red-500'
                     : 'text-blue'
               )}
             >
-              {desiredJob?.status?.title || 'Đang chờ'}
+              {candidateProfile?.status?.title || 'Đang chờ'}
             </p>
           </Flex>
           <Space>
@@ -442,7 +456,10 @@ const CandidateProfileDetail = () => {
               disabled={isProfileApprove}
               iconBefore={<CheckOutlined />}
               onClick={() =>
-                handleApprove({ id: desiredJob?.id, type: 'approve' })
+                handleApprove({
+                  id: candidateProfile?.id,
+                  code: STATUS_CODE.APPROVAL_APPROVED,
+                })
               }
             />
           </Space>
@@ -454,30 +471,33 @@ const CandidateProfileDetail = () => {
                 <Space size="middle" direction="vertical" className="w-full">
                   <Flex justify="space-between">
                     <Space size="middle" align="start">
-                      {desiredJob?.user?.avatarUrl ? (
+                      {candidateProfile?.desiredJobSnapshot?.user?.avatarUrl ? (
                         <Image
                           width={60}
                           height={60}
                           preview={false}
-                          src={desiredJob?.user?.avatarUrl}
                           className="rounded-full"
+                          src={
+                            candidateProfile?.desiredJobSnapshot?.user
+                              ?.avatarUrl
+                          }
                         />
                       ) : (
                         <AvatarPlaceHolder width={60} height={60} />
                       )}
                       <Flex vertical>
                         <p className="font-bold text-xl">
-                          {desiredJob?.user?.fullName}
+                          {candidateProfile?.desiredJobSnapshot?.user?.fullName}
                         </p>
                         <p className="text-[#6b6b6b]">
-                          {desiredJob?.user?.email}
+                          {candidateProfile?.desiredJobSnapshot?.user?.email}
                         </p>
                       </Flex>
                     </Space>
                     <CopyButton
+                      value=""
                       shape="default"
                       title="Sao chép"
-                      value=""
                       iconBefore={<Link />}
                     />
                   </Flex>
@@ -489,7 +509,7 @@ const CandidateProfileDetail = () => {
                     classNames={{ item: 'w-full' }}
                   >
                     <Title level={3}>Thông tin cá nhân</Title>
-                    {personalInfomations.map(({ items, type }) => (
+                    {personalInformation.map(({ items, type }) => (
                       <>
                         {type && <Divider className="m-0" />}
                         <Row gutter={[8, 8]} className="px-2" align={'middle'}>
@@ -520,7 +540,7 @@ const CandidateProfileDetail = () => {
                   </Space>
                 </Space>
               </Content>
-              {workInformations?.map(({ title, children }) => (
+              {workInformation?.map(({ title, children }) => (
                 <Content>
                   <Title level={4}>{title}</Title>
                   {children}
@@ -532,7 +552,7 @@ const CandidateProfileDetail = () => {
             <Content>
               <Title level={4}>Resume</Title>
               <Space direction="vertical" className="w-full">
-                {desiredJob?.user?.curriculumVitae?.map(
+                {candidateProfile?.desiredJobSnapshot?.user?.curriculumVitae?.map(
                   ({ fileName, url }, index) => (
                     <Flex
                       gap={8}

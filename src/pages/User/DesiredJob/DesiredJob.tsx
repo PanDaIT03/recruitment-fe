@@ -53,11 +53,13 @@ const DesiredJob = () => {
     data: desiredJob,
   } = useFetch(['getDesiredJob'], DesiredJobAPI.getDesiredJob);
 
-  const profile = useMemo(
+  const profileState = useMemo(
     () => ({
       isHasDesiredJob: desiredJob && Object.keys(desiredJob).length > 1,
-      isRejected: desiredJob?.status?.code === STATUS_CODE.APPROVAL_REJECTED,
-      isApproved: desiredJob?.status?.code === STATUS_CODE.APPROVAL_APPROVED,
+      isRejected:
+        desiredJob?.approvals?.status?.code === STATUS_CODE.APPROVAL_REJECTED,
+      isApproved:
+        desiredJob?.approvals?.status?.code === STATUS_CODE.APPROVAL_APPROVED,
     }),
     [desiredJob]
   );
@@ -111,7 +113,7 @@ const DesiredJob = () => {
   }, []);
 
   const handleOpenReasonModal = useCallback(() => {
-    reasonForm.setFieldValue('reason', desiredJob?.rejectReason);
+    reasonForm.setFieldValue('reason', desiredJob?.approvals?.rejectReason);
     setIsOpenReasonModal(true);
   }, [desiredJob]);
 
@@ -127,7 +129,7 @@ const DesiredJob = () => {
           <Work />
           <h2 className="text-base font-bold">Công việc mong muốn</h2>
         </Flex>
-        {hasPermissions && profile.isHasDesiredJob && (
+        {hasPermissions && profileState.isHasDesiredJob && (
           <ButtonAction
             tooltipTitle="Cập nhật"
             title={<EditOutlined className="text-[#691f74] cursor-pointer" />}
@@ -142,7 +144,7 @@ const DesiredJob = () => {
           <Divider dashed className="!m-3" />
           <Skeleton active title={false} paragraph={{ rows: 1 }} />
         </>
-      ) : profile.isHasDesiredJob ? (
+      ) : profileState.isHasDesiredJob ? (
         <>
           <Space direction="vertical" className="w-full p-2" size="middle">
             {desiredJobInfo.map((item, index) => (
@@ -167,7 +169,7 @@ const DesiredJob = () => {
               Trạng thái chia sẻ
             </p>
             <Flex gap={8} align="center" className="sm:justify-center">
-              {profile.isRejected ? (
+              {profileState?.isRejected ? (
                 <Space direction="vertical" className="sm:items-end">
                   <Flex gap={8} align="center" className="sm:justify-center">
                     <PingIcon status="error" />
@@ -185,15 +187,15 @@ const DesiredJob = () => {
               ) : (
                 <Flex gap={8} align="center" className="sm:justify-center">
                   <PingIcon
-                    status={profile.isApproved ? 'success' : 'pending'}
+                    status={profileState.isApproved ? 'success' : 'pending'}
                   />
                   <p
                     className={classNames(
                       'text-sm font-medium',
-                      profile.isApproved ? 'text-lime-500' : 'text-blue'
+                      profileState.isApproved ? 'text-lime-500' : 'text-blue'
                     )}
                   >
-                    {profile.isApproved
+                    {profileState.isApproved
                       ? `Chia sẻ vào ${dayjs(desiredJob?.approveAt).format('HH:mm DD/MM/YYYY')}`
                       : 'Đang chờ phê duyệt'}
                   </p>

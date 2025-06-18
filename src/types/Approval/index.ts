@@ -1,3 +1,4 @@
+import { IStatusType } from '../Status';
 import { IUser } from '../User';
 
 export interface IApproval {
@@ -6,13 +7,14 @@ export interface IApproval {
   createAt: string;
   updateBy: string;
   updateAt: string;
-  approveBy: string;
   approveAt: string;
   rejectReason: string;
-  desiredJob: IApprovalDesiredJob;
+  status: IStatusType;
+  desiredJobSnapshot: IApprovalDesiredJob;
+  approver: IApprover;
 }
 
-export type IPaginatedApproval = IPaginatedData<IApproval>;
+export type IPaginatedApproval = IPaginatedData<IApproval[]>;
 
 interface IApprovalDesiredJob {
   id: number;
@@ -26,6 +28,8 @@ interface IApprovalDesiredJob {
   startAfterOffer: string;
   salarayExpectation: number;
   totalYearExperience: number;
+  desiredJobsPosition: JobPosition[];
+  desiredJobsPlacement: JobPlacement[];
 }
 
 interface JobField {
@@ -42,6 +46,7 @@ interface User extends Omit<IUser, 'viewGroups' | 'standaloneViews'> {
   userLanguages: UserLanguage[];
   curriculumVitae: CurriculumVitae[];
   workExperiences: WorkExperience[];
+  jobPosition: Pick<JobField, 'id' | 'title'>;
   achivement: {
     id: number;
     description: string;
@@ -78,6 +83,11 @@ interface ForeignLanguage {
   imageUrl: string;
 }
 
+interface IApprover {
+  id: number;
+  fullName: string;
+}
+
 interface WorkExperience {
   id: number;
   endDate: null;
@@ -92,4 +102,22 @@ interface WorkExperience {
   };
   placement: { id: string; title: string };
   jobPosition: { id: string; title: string };
+}
+
+interface JobPosition {
+  desiredJobsId: number;
+  jobPositionsId: number;
+  jobPosition: {
+    id: number;
+    title: string;
+  };
+}
+
+interface JobPlacement {
+  desiredJobsId: number;
+  placementsId: number;
+  placement: {
+    id: number;
+    title: string;
+  };
 }

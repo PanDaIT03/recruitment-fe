@@ -5,6 +5,7 @@ import {
   ThunkAction,
 } from '@reduxjs/toolkit';
 
+import { approvalReducer } from './reducer/approval';
 import { authReducer } from './reducer/auth';
 import { desiredJobReducer } from './reducer/desiredJob';
 import { functionalReducer } from './reducer/functional';
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   menuView: menuViewsReducer,
   menuViewGroup: menuViewGroupReducer,
   desiredJob: desiredJobReducer,
+  approval: approvalReducer,
 });
 
 export const store = configureStore({

@@ -14,13 +14,12 @@ import { useFetch } from '~/hooks/useFetch';
 import { startTimeOptions } from '~/pages/User/JobApplication/JobApplication';
 import { IGetAllStatusParams } from '~/types/Status';
 import { colSpan } from '~/utils/constant';
-import { IFilterCandidateForm } from './CandidateProfile';
 
 interface IProps {
   isOpen: boolean;
-  form: FormInstance<IFilterCandidateForm>;
+  form: FormInstance<any>;
   onCancel: () => void;
-  onFinish: (values: IFilterCandidateForm) => void;
+  onFinish: (values: any) => void;
   onPageChange: (page: number, pageSize?: number) => void;
 }
 

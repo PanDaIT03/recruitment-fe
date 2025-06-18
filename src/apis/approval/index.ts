@@ -1,15 +1,26 @@
+import { STATUS_CODE } from '~/enums';
 import axiosApi from '~/services/axios';
-import { IPaginatedApproval } from '~/types/Approval';
 
 export interface IGetAllCandidateProfile {
   page?: number;
   pageSize?: number;
 }
 
+export interface IApprovalProfile {
+  id: number;
+  code: STATUS_CODE;
+  rejectReason?: string;
+}
+
 export const ApprovalAPI = {
-  getAllCandidateProfile: async (
-    params: IGetAllCandidateProfile
-  ): Promise<IPaginatedApproval> => {
+  getCandidateProfileById: async (id: number) => {
+    return await axiosApi.get(`/approvals/${id}`);
+  },
+  getAllCandidateProfile: async (params: IGetAllCandidateProfile) => {
     return await axiosApi.get('/approvals/all', { params });
+  },
+  approveProfile: async (params: IApprovalProfile) => {
+    const { id, ...others } = params;
+    return await axiosApi.patch(`/approvals/approve/${id}`, others);
   },
 };

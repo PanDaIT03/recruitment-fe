@@ -17,16 +17,11 @@ export interface IGetAllDesiredJob {
 export interface IUpdateDesiredJobParams {
   id: number;
   jobFieldsId: number;
+  achivements?: string
   startAfterOffer: string;
   salaryExpectation: number;
   jobPositionIds: number[];
   jobPlacementIds: number[];
-}
-
-export interface IApproveProfileParams {
-  id: number;
-  rejectReason?: string;
-  type: 'approve' | 'reject';
 }
 
 export const DesiredJobAPI = {
@@ -51,9 +46,5 @@ export const DesiredJobAPI = {
   updateDesiredJob: async (params: IUpdateDesiredJobParams) => {
     const { id, ...others } = params;
     return await axiosApi.patch(`/desired-jobs/${id}`, others);
-  },
-  approveProfile: async (params: IApproveProfileParams) => {
-    const { id, ...rest } = params;
-    return await axiosApi.patch(`/desired-jobs/approve/${id}`, rest);
   },
 };
