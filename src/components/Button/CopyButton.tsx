@@ -1,4 +1,6 @@
-import { memo, ReactNode, useCallback, useState } from 'react';
+import { message } from 'antd';
+import { memo, ReactNode, useCallback } from 'react';
+
 import { Copy } from '~/assets/svg';
 import { IButtonProps } from './Button';
 import ButtonAction, { ButtonShape } from './ButtonAction';
@@ -8,20 +10,20 @@ type ButtonProps = Omit<IButtonProps, 'title'>;
 interface IProps extends ButtonProps {
   value: string;
   title?: ReactNode;
+  tooltipTitle?: string;
   shape?: ButtonShape;
 }
 
-const initState = 'Sao chép';
-
-const CopyButton = ({ value, title, ...props }: IProps) => {
-  const [tooltipTitle, setToolTipTitle] = useState(initState);
-
+const CopyButton = ({
+  value,
+  title,
+  tooltipTitle = 'Sao chép',
+  ...props
+}: IProps) => {
   const handleClick = useCallback(() => {
-    setToolTipTitle('Đã sao chép');
+    message.success('Đã sao chép');
     navigator.clipboard.writeText(value);
-
-    setTimeout(() => setToolTipTitle(initState), 2000);
-  }, [value]);
+  }, []);
 
   return (
     <ButtonAction
