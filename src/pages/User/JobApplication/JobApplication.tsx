@@ -80,7 +80,7 @@ type IForm = Omit<IDesiredJobParams, 'salaryExpectation'> & {
 export const startTimeOptions: DefaultOptionType[] = [
   { label: 'Bắt đầu ngay', value: 'Bắt đầu ngay' },
   { label: '1-2 tuần', value: '1-2 tuần' },
-  { label: '30 ngày', value: '30 ngày' },
+  { label: 'Sau 30 ngày', value: 'Sau 30 ngày' },
   { label: 'Sẽ thông báo khi có offer', value: 'Sẽ thông báo khi có offer' },
 ];
 
