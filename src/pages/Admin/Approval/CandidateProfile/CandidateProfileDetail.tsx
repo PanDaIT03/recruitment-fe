@@ -59,6 +59,7 @@ import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import { IRejectedForm } from './CandidateProfile';
 import ModalRejectProfile from './ModalRejectProfile';
+import { formatCurrencyVN } from '~/utils/functions';
 
 interface InformationItem {
   label: string;
@@ -199,7 +200,7 @@ const CandidateProfileDetail = () => {
           },
           {
             label: 'Mức lương kỳ vọng',
-            value: `${candidateProfile?.desiredJobSnapshot?.salarayExpectation.toLocaleString()} VNĐ`,
+            value: `${formatCurrencyVN(candidateProfile?.desiredJobSnapshot?.salarayExpectation)} VNĐ`,
             icon: <Salary />,
           },
         ],
@@ -475,7 +476,6 @@ const CandidateProfileDetail = () => {
                         <Image
                           width={60}
                           height={60}
-                          preview={false}
                           className="rounded-full"
                           src={
                             candidateProfile?.desiredJobSnapshot?.user
