@@ -21,9 +21,9 @@ const CopyButton = ({
   ...props
 }: IProps) => {
   const handleClick = useCallback(() => {
-    message.success('Đã sao chép');
     navigator.clipboard.writeText(value);
-  }, []);
+    message.success('Đã sao chép');
+  }, [value]);
 
   return (
     <ButtonAction
