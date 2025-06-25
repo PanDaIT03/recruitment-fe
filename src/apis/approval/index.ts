@@ -4,6 +4,12 @@ import axiosApi from '~/services/axios';
 export interface IGetAllCandidateProfile {
   page?: number;
   pageSize?: number;
+  fullName?: string;
+  statusId?: number;
+  jobFieldId?: number;
+  createdDate?: string;
+  startAfterOffer?: string;
+  totalYearExperience?: number;
 }
 
 export interface IApprovalProfile {

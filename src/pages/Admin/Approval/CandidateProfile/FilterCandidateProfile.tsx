@@ -45,16 +45,15 @@ const FilterCandidateProfile = ({ isOpen, form, ...props }: IProps) => {
     });
 
   useEffect(() => {
-    if (!isOpen) return;
     getAllStatus({ type: 'candidate_profile' });
-  }, [isOpen]);
+  }, []);
 
   return (
     <FilterBox form={form} open={isOpen} {...props}>
       <Row gutter={[8, 16]}>
         <Col span={colSpan}>
           <FormItem name="fullName" label="Tên">
-            <Input placeholder="Ví dụ: Nguyễn Văn A" />
+            <Input allowClear placeholder="Ví dụ: Nguyễn Văn A" />
           </FormItem>
         </Col>
         <Col span={colSpan}>

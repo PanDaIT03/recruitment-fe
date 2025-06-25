@@ -198,7 +198,7 @@ const CandidateProfile = () => {
         {
           width: 200,
           title: 'Ngày chỉnh sửa',
-          dataIndex: 'updateAt',
+          dataIndex: ['desiredJobSnapshot', 'updateAt'],
           render: (value: string) =>
             value ? dayjs(value).format('DD/MM/YYYY HH:MM') : '-',
         },
