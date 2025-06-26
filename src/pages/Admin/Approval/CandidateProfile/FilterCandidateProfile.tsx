@@ -62,8 +62,8 @@ const FilterCandidateProfile = ({ isOpen, form, ...props }: IProps) => {
           </FormItem>
         </Col>
         <Col span={colSpan}>
-          <FormItem name="createdDate" label="Ngày tạo">
-            <DatePicker allowClear format="DD/MM/YYYY" />
+          <FormItem name="approver" label="Người phê duyệt">
+            <Input placeholder="Nhập tên hoặc email" />
           </FormItem>
         </Col>
         <Col span={colSpan}>
@@ -86,6 +86,11 @@ const FilterCandidateProfile = ({ isOpen, form, ...props }: IProps) => {
               options={startTimeOptions}
               placeholder="Chọn thời gian bắt đầu"
             />
+          </FormItem>
+        </Col>
+        <Col span={colSpan}>
+          <FormItem name="createdDate" label="Ngày tạo">
+            <DatePicker allowClear format="DD/MM/YYYY" />
           </FormItem>
         </Col>
         <Col span={colSpan}>

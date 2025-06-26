@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import {
+  Alert,
   Col,
   Divider,
   Empty,
@@ -55,11 +56,11 @@ import {
   IUserSkill,
   IWorkExperience,
 } from '~/types/User/profile';
+import { formatCurrencyVN } from '~/utils/functions';
 import icons from '~/utils/icons';
 import PATH from '~/utils/path';
 import { IRejectedForm } from './CandidateProfile';
 import ModalRejectProfile from './ModalRejectProfile';
-import { formatCurrencyVN } from '~/utils/functions';
 
 interface InformationItem {
   label: string;
@@ -465,6 +466,40 @@ const CandidateProfileDetail = () => {
             />
           </Space>
         </Flex>
+        {candidateProfile?.status?.code === STATUS_CODE.APPROVAL_REJECTED && (
+          <Alert
+            showIcon
+            type="error"
+            className="bg-[#fffafa]"
+            message={
+              <p className="text-sm font-bold text-red-500">
+                Hồ sơ đã bị từ chối
+              </p>
+            }
+            description={
+              <>
+                <p>
+                  Ngày phê duyệt:{' '}
+                  <span className="font-semibold">
+                    {candidateProfile?.approveAt
+                      ? dayjs(candidateProfile?.approveAt).format(
+                          'HH:MM DD/MM/YYYY'
+                        )
+                      : '-'}
+                  </span>
+                </p>
+                <p>
+                  Lý do:{' '}
+                  <span className="font-semibold">
+                    {candidateProfile?.rejectReason
+                      ? candidateProfile?.rejectReason
+                      : '-'}
+                  </span>
+                </p>
+              </>
+            }
+          />
+        )}
         <Flex className="w-full grid grid-cols-10" gap={16}>
           <Space className="col-span-6" classNames={{ item: 'w-full' }}>
             <Space direction="vertical" className="w-full">
@@ -583,6 +618,10 @@ const CandidateProfileDetail = () => {
                   )
                 )}
               </Space>
+            </Content>
+            <Content>
+              <Title level={4}>Lịch sử phê duyệt</Title>
+              <Space direction="vertical" className="w-full"></Space>
             </Content>
           </Space>
         </Flex>
