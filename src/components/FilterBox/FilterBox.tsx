@@ -17,7 +17,7 @@ interface IFilterBoxProps extends IFormWrapper {
   onSetFormValues?: (form: FormInstance<any>, filterParams: any) => void;
 }
 
-interface IWapperCompProps {
+interface IWrapperCompProps {
   children: ReactNode;
 }
 
@@ -39,7 +39,7 @@ const FilterBox = ({
   const { searchParams } = useQueryParams();
 
   const WrapperComp = useCallback(
-    ({ children }: IWapperCompProps) =>
+    ({ children }: IWrapperCompProps) =>
       wrapper ? <Content isOpen={open}>{children}</Content> : children,
     [wrapper, open]
   );
@@ -74,26 +74,35 @@ const FilterBox = ({
     if (!firstRender.current) return;
     firstRender.current = false;
 
-    const formattedObject = Object.entries(searchParams).reduce(
+    const initialFormValues = Object.entries(searchParams).reduce(
       (prevVal, currentVal) => {
         const [key, value] = currentVal;
+
+        const isNumberField = key.includes('Id');
+        const isNumberArrayField = Array.isArray(value) && key.includes('Id');
+
+        let formattedValue;
         if (value) {
           if (key.includes('createdDate') && typeof value === 'string')
-            prevVal[key] = value ? dayjs(value) : '';
-          else prevVal[key] = value;
+            formattedValue = value ? dayjs(value) : '';
+          else if (isNumberArrayField)
+            formattedValue = value?.map((item) => Number(item));
+          else if (isNumberField) formattedValue = Number(value);
+          else formattedValue = value;
         }
 
+        prevVal[key] = formattedValue;
         return prevVal;
       },
       {} as Record<string, any>
     );
 
     if (onSetFormValues) {
-      onSetFormValues(form, formattedObject);
+      onSetFormValues(form, initialFormValues);
       return;
     }
 
-    form.setFieldsValue(formattedObject);
+    form.setFieldsValue(initialFormValues);
   }, [form, searchParams, defaultFilter, onSetFormValues]);
 
   return (
