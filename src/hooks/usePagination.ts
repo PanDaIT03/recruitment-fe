@@ -11,15 +11,30 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import useQueryParams from './useQueryParams';
 
-interface UsePaginationProps<T, P extends { page: number; pageSize: number }> {
-  items?: T[];
+type ClientPageInfo = Omit<PageInfo, 'currentPage' | 'itemsPerPage'> & {
+  page: number;
+  pageSize: number;
+};
+
+type PaginationParams = Partial<{
+  page: number;
+  pageSize: number;
+}>;
+
+type PaginationResponse<T> = {
+  items: T[];
+  pageInfo: ClientPageInfo;
+};
+
+interface UsePaginationProps<T, P extends PaginationParams> {
+  initialData?: PaginationResponse<T>;
   extraParams?: Partial<Omit<P, 'page' | 'pageSize'>>;
   fetchFn: (params: P) => Promise<T> | any;
   setFilterParams: Dispatch<SetStateAction<any>>;
 }
 
-const usePagination = <T, P extends { page: number; pageSize: number }>({
-  items,
+const usePagination = <T, P extends PaginationParams>({
+  initialData,
   extraParams,
   fetchFn,
   setFilterParams,
@@ -40,9 +55,17 @@ const usePagination = <T, P extends { page: number; pageSize: number }>({
     [queryParams]
   );
 
-  const [data, setData] = useState<T>();
+  const [isPending, setIsPending] = useState(false);
   const [currentPage, setCurrentPage] = useState(pageInfo.page);
   const [itemsPerPage, setItemsPerPage] = useState(pageInfo.pageSize);
+
+  const [data, setData] = useState<PaginationResponse<T>>(
+    () =>
+      initialData ?? {
+        items: [],
+        pageInfo: {} as ClientPageInfo,
+      }
+  );
 
   const handlePageChange = useCallback((page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -63,6 +86,8 @@ const usePagination = <T, P extends { page: number; pageSize: number }>({
   }, []);
 
   const fetchData = useCallback(() => {
+    setIsPending(true);
+
     const urlParams = queryString.parseUrl(location.search);
     const params = {
       ...urlParams.query,
@@ -101,7 +126,18 @@ const usePagination = <T, P extends { page: number; pageSize: number }>({
       { replace: true }
     );
 
-    fetchFn(queryParams as P).then((res: T) => setData(res));
+    fetchFn(queryParams as P)
+      .then((res: any) =>
+        setData({
+          items: res?.payload?.items,
+          pageInfo: {
+            ...res?.payload?.pageInfo,
+            page: res?.payload?.pageInfo?.currentPage,
+            pageSize: res?.payload?.pageInfo?.itemsPerPage,
+          },
+        })
+      )
+      .finally(() => setIsPending(false));
   }, [currentPage, itemsPerPage, extraParams]);
 
   useEffect(() => {
@@ -121,9 +157,9 @@ const usePagination = <T, P extends { page: number; pageSize: number }>({
   }, [fetchData]);
 
   return {
-    data,
-    items,
-    pageInfo,
+    isPending,
+    data: data.items,
+    pageInfo: data.pageInfo,
     handlePageChange,
     handleClearURLSearchParams,
   };
