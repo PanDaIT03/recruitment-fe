@@ -62,7 +62,6 @@ const MenuGroup = () => {
 
   const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
-      items: menuViewGroup.items,
       extraParams: filterParams,
       setFilterParams: setFilterParams,
       fetchFn: (params: IGetAllMenuViewGroupParams) =>

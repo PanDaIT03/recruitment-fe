@@ -1,16 +1,21 @@
 import { STATUS_CODE } from '~/enums';
 import axiosApi from '~/services/axios';
 
-export interface IGetAllCandidateProfile {
-  page?: number;
-  pageSize?: number;
-  fullName?: string;
-  statusId?: number;
-  jobFieldId?: number;
-  createdDate?: string;
-  startAfterOffer?: string;
-  totalYearExperience?: number;
-}
+export type IGetAllCandidateProfile = Partial<{
+  page: number;
+  pageSize: number;
+  fullName: string;
+  statusId: number;
+  jobFieldId: number;
+  createdDate: string;
+  startAfterOffer: string;
+  totalYearExperience: number;
+}>;
+
+export type IGetSharedCandidateProfile = {
+  page: number;
+  pageSize: number;
+};
 
 export interface IApprovalProfile {
   id: number;
@@ -24,6 +29,9 @@ export const ApprovalAPI = {
   },
   getAllCandidateProfile: async (params: IGetAllCandidateProfile) => {
     return await axiosApi.get('/approvals/all', { params });
+  },
+  getSharedCandidateProfile: async (params: IGetSharedCandidateProfile) => {
+    return await axiosApi.get('/approvals/shared-candidates', { params });
   },
   approveProfile: async (params: IApprovalProfile) => {
     const { id, ...others } = params;

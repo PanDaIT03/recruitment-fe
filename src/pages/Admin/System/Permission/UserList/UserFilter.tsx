@@ -47,6 +47,8 @@ const UserFilter = ({
     getAllJobFields();
   }, []);
 
+  console.log(form.getFieldsValue());
+
   return (
     <FilterBox
       open={open}

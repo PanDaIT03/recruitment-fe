@@ -21,7 +21,7 @@ interface IProps extends DrawerProps {
   onCancel: () => void;
   onFilter: (values: any) => void;
   onPageChange: (page: number, pageSize?: number) => void;
-  onSetFormValues: (form: FormInstance<any>, filterParams: any) => void;
+  // onSetFormValues: (form: FormInstance<any>, filterParams: any) => void;
   setIsOpenDrawer: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -33,7 +33,7 @@ const DrawerSearch: React.FC<IProps> = ({
   onCancel,
   onClose,
   onPageChange,
-  onSetFormValues,
+  // onSetFormValues,
   setIsOpenDrawer,
   ...props
 }) => {
@@ -96,7 +96,7 @@ const DrawerSearch: React.FC<IProps> = ({
         onFinish={onFilter}
         onCancel={handleCancel}
         onPageChange={onPageChange}
-        onSetFormValues={onSetFormValues}
+        // onSetFormValues={onSetFormValues}
       >
         <FormItem childrenSelected label="Địa điểm" name="placementIds">
           <Select

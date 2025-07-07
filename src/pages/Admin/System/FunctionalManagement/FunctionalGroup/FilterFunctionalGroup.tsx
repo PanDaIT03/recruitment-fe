@@ -1,6 +1,6 @@
 import { Col, Row } from 'antd';
 import { FormInstance } from 'antd/es/form/Form';
-import { memo, useCallback } from 'react';
+import { memo } from 'react';
 
 import { DatePicker } from '~/components/DatePicker/DatePicker';
 import FilterBox from '~/components/FilterBox/FilterBox';
@@ -22,33 +22,8 @@ interface IProps {
 const FilterFunctionalGroup = ({ isOpen, form, ...props }: IProps) => {
   const { functionals, loading } = useAppSelector((state) => state.functional);
 
-  const handleSetFormValues = useCallback((_: any, filterParams: any) => {
-    const fieldsValue = Object.entries(filterParams).reduce(
-      (prevVal, currentVal) => {
-        const [key, value] = currentVal;
-        if (value) {
-          if (key.includes('functionalIds'))
-            prevVal[key] = Array.isArray(value)
-              ? value?.map((item) => Number(item))
-              : Number(value);
-          else prevVal[key] = value;
-        }
-
-        return prevVal;
-      },
-      {} as Record<string, any>
-    );
-
-    form.setFieldsValue(fieldsValue);
-  }, []);
-
   return (
-    <FilterBox
-      form={form}
-      open={isOpen}
-      onSetFormValues={handleSetFormValues}
-      {...props}
-    >
+    <FilterBox form={form} open={isOpen} {...props}>
       <Row gutter={[8, 16]} align="top">
         <Col span={colSpan}>
           <FormItem labelBold={false} name="title" label="Tên nhóm chức năng">

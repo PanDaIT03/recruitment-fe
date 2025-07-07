@@ -3,14 +3,14 @@ import classNames from 'classnames';
 import { memo } from 'react';
 
 import Button from '~/components/Button/Button';
-import { IJobSeeker } from '~/types/JobSeeker/JobSeeker';
+import { IApproval } from '~/types/Approval';
 import icons from '~/utils/icons';
 import Achievement from './components/Achievement/Achievement';
 import CandidateInfo from './components/CandidateInfo/CandidateInfo';
 import Experience from './components/Experience/Experience';
 
 interface IProps {
-  data: IJobSeeker[];
+  data: IApproval[];
   className?: string;
   onDownLoadProfile: () => void;
 }

@@ -71,7 +71,6 @@ const UserList = () => {
 
   const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
-      items: userAdmin.items,
       extraParams: filterParams,
       setFilterParams: setFilterParams,
       fetchFn: (params: IGetAllUserAdmin) => dispatch(getAllUserAdmin(params)),

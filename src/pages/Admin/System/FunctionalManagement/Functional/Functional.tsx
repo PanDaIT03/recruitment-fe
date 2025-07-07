@@ -68,7 +68,6 @@ const Functional = () => {
   const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       extraParams: filters,
-      items: functionals?.items,
       setFilterParams: setFilters,
       fetchFn: (params: IGetAllFunctionalParams) =>
         dispatch(getAllFunctionals(params)),

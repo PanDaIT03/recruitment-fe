@@ -75,7 +75,6 @@ const FunctionalGroup = () => {
   const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
       extraParams: filter,
-      items: functionalGroups?.items,
       setFilterParams: setFilter,
       fetchFn: (params: IGetFuncGroupParams) =>
         dispatch(getAllFunctionalGroups(params)),

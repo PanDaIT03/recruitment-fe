@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { IJobList } from '~/pages/Job/JobList/JobList';
 import { getAllJobs } from '~/store/thunk/job';
 import JobFilterBox from './JobFilterBox';
+import { JobItem } from '~/types/Job';
 
 interface IFilterForm {
   workTypesId: number;
@@ -45,11 +46,10 @@ const JobManagement = () => {
 
   const {
     pageInfo,
-    items: jobItems,
+    data: jobItems,
     handlePageChange,
     handleClearURLSearchParams,
-  } = usePagination({
-    items: allJobs?.items,
+  } = usePagination<JobItem, IPaginationParams & IJobList>({
     extraParams: filterParams,
     setFilterParams: setFilterParams,
     fetchFn: (params) => dispatch(getAllJobs(params)),

@@ -76,9 +76,8 @@ const Menu = () => {
 
   const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
-      setFilterParams,
-      items: menuViews?.items,
       extraParams: filterParams,
+      setFilterParams,
       fetchFn: (params: IGetAllMenuView) => dispatch(getAllMenuViews(params)),
     });
 

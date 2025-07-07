@@ -37,9 +37,8 @@ const Role = () => {
 
   const { roles, loading } = useAppSelector((state) => state.role);
 
-  const { items, pageInfo, handlePageChange, handleClearURLSearchParams } =
+  const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
-      items: roles.items,
       extraParams: filterParams,
       setFilterParams: setFilterParams,
       fetchFn: (params) => dispatch(getAllRoles(params)),
@@ -169,8 +168,8 @@ const Role = () => {
       <Content>
         <Table
           columns={columns}
-          dataSource={items}
           loading={loading}
+          dataSource={roles.items}
           scroll={{ x: 1000 }}
           pagination={{
             current: pageInfo.page,

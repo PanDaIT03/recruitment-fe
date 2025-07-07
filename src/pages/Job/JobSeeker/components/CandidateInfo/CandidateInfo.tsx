@@ -3,11 +3,11 @@ import classNames from 'classnames';
 import { memo } from 'react';
 
 import Button from '~/components/Button/Button';
-import { IJobSeeker } from '~/types/JobSeeker/JobSeeker';
+import { IApproval } from '~/types/Approval';
 import icons from '~/utils/icons';
 
 interface IProps {
-  data: IJobSeeker;
+  data: IApproval;
   className?: string;
   onDownLoadProfile?: () => void;
 }
@@ -20,25 +20,25 @@ const CandidateInfo = ({ data, className, onDownLoadProfile }: IProps) => {
   return (
     <Space direction="vertical" size="large" className={customClass}>
       <div className="font-medium">
-        <p>{data.name}</p>
+        <p>{data?.desiredJobSnapshot?.user?.fullName}</p>
         <div className="text-gray-500 text-sm">
-          Được chia sẻ vào {data.timePosted}
+          Được chia sẻ vào {data?.approveAt}
         </div>
       </div>
       <Flex wrap vertical className="text-gray-500" gap={8}>
         <div>
           <EnvironmentOutlined className="mr-1" />
-          <span>{data.location}</span>
+          <span>{data?.desiredJobSnapshot?.user?.placement?.title}</span>
         </div>
         <div>
           <ClockCircleOutlined className="mr-1" />
-          <span>{data.age} tuổi</span>
+          <span>{data?.desiredJobSnapshot?.yearOfBirth} tuổi</span>
         </div>
       </Flex>
       {onDownLoadProfile && (
         <Button
-          fill
           title="Tải hồ sơ"
+          borderType="dashed"
           className="w-full"
           iconBefore={<DownloadOutlined width={16} height={16} />}
           onClick={onDownLoadProfile}

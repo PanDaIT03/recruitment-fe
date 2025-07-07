@@ -64,7 +64,6 @@ const CandidateProfile = () => {
 
   const { pageInfo, handlePageChange, handleClearURLSearchParams } =
     usePagination({
-      items: approvals?.items,
       extraParams: filterParams,
       setFilterParams,
       fetchFn: (params) => dispatch(getAllCandidateProfile(params)),

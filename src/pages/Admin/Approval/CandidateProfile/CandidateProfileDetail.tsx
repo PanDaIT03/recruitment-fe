@@ -544,13 +544,16 @@ const CandidateProfileDetail = () => {
                     classNames={{ item: 'w-full' }}
                   >
                     <Title level={3}>Thông tin cá nhân</Title>
-                    {personalInformation.map(({ items, type }) => (
-                      <>
+                    {personalInformation.map(({ items, type }, index) => (
+                      <div key={index}>
                         {type && <Divider className="m-0" />}
                         <Row gutter={[8, 8]} className="px-2" align={'middle'}>
                           {items?.map(
-                            ({ label, value, icon, colSpan = 12 }) => (
-                              <Col span={colSpan}>
+                            (
+                              { label, value, icon, colSpan = 12 },
+                              childIndex
+                            ) => (
+                              <Col span={colSpan} key={childIndex}>
                                 <Flex gap={8} align="center">
                                   <Flex
                                     align="center"
@@ -570,13 +573,13 @@ const CandidateProfileDetail = () => {
                             )
                           )}
                         </Row>
-                      </>
+                      </div>
                     ))}
                   </Space>
                 </Space>
               </Content>
-              {workInformation?.map(({ title, children }) => (
-                <Content>
+              {workInformation?.map(({ title, children }, index) => (
+                <Content key={index}>
                   <Title level={4}>{title}</Title>
                   {children}
                 </Content>

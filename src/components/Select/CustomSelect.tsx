@@ -24,16 +24,6 @@ type TProps = {
   configTokenProvider?: Partial<AliasToken>;
 } & SelectProps;
 
-// const CustomerEmptyData = () => {
-//   return (
-//     <Empty
-//       description={<span className="text-admin-primary">Không có dữ liệu</span>}
-//       image={<NoData />}
-//       imageStyle={{ height: '70px' }}
-//     />
-//   );
-// };
-
 const CustomSelect = ({
   className,
   prefixIcon,
@@ -90,7 +80,6 @@ const CustomSelect = ({
           },
           token: configTokenProvider,
         }}
-        // renderEmpty={CustomerEmptyData}
       >
         <Select
           popupMatchSelectWidth={false}

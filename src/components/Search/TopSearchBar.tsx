@@ -7,7 +7,6 @@ import React, {
   ReactNode,
   SetStateAction,
   useCallback,
-  useEffect,
   useMemo,
 } from 'react';
 
@@ -36,7 +35,6 @@ interface IProps {
   onClear: () => void;
   onSearch: (values: any) => void;
   onPageChange: (page: number, pageSize?: number) => void;
-  onSetFormValues: (form: FormInstance<any>, filterParams: any) => void;
   setIsDrawerSearchOpen?: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -49,7 +47,6 @@ const TopSearchBar: React.FC<IProps> = ({
   onClear,
   onSearch,
   onPageChange,
-  onSetFormValues,
   setIsDrawerSearchOpen,
 }) => {
   const formValues = Form.useWatch([], form);
@@ -86,10 +83,6 @@ const TopSearchBar: React.FC<IProps> = ({
     return [...placementItems, ...defaultLocation];
   }, [jobPlacements]);
 
-  useEffect(() => {
-    form.setFieldValue('placementIds', 'all');
-  }, []);
-
   const handleFinish = useCallback((values: any) => {
     onSearch(values);
   }, []);
@@ -103,7 +96,6 @@ const TopSearchBar: React.FC<IProps> = ({
         onCancel={onClear}
         onFinish={handleFinish}
         onPageChange={onPageChange}
-        onSetFormValues={onSetFormValues}
         className="w-full bg-white py-3 px-8"
       >
         <div className="mx-auto max-w-7xl">
@@ -124,6 +116,7 @@ const TopSearchBar: React.FC<IProps> = ({
               <CustomSelect
                 allowClear
                 className="h-10"
+                defaultValue={'all'}
                 placeholder="Chọn khu vực"
                 options={placementOptions}
                 prefixIcon={<EnvironmentOutlined />}

@@ -127,16 +127,18 @@ const usePagination = <T, P extends PaginationParams>({
     );
 
     fetchFn(queryParams as P)
-      .then((res: any) =>
+      .then((res: any) => {
+        const data = res?.payload ?? res;
+
         setData({
-          items: res?.payload?.items,
+          items: data?.items,
           pageInfo: {
-            ...res?.payload?.pageInfo,
-            page: res?.payload?.pageInfo?.currentPage,
-            pageSize: res?.payload?.pageInfo?.itemsPerPage,
+            ...data?.pageInfo,
+            page: data?.pageInfo?.currentPage,
+            pageSize: data?.pageInfo?.itemsPerPage,
           },
-        })
-      )
+        });
+      })
       .finally(() => setIsPending(false));
   }, [currentPage, itemsPerPage, extraParams]);
 

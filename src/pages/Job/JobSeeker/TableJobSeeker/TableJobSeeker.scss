@@ -14,8 +14,18 @@
   }
 }
 
-.table-job-seeker .ant-pagination {
-  margin: 0 !important;
-  padding: 8px 0 !important;
-  background-color: #fafafa;
+.table-job-seeker {
+  .ant-table-content .ant-table-thead th {
+    background-color: #f5f5f4 !important;
+  }
+
+  .ant-table-row > .ant-table-cell-row-hover {
+    background-color: white !important;
+  }
+
+  .ant-pagination {
+    margin: 0 !important;
+    padding: 8px 0 !important;
+    background-color: #fafafa;
+  }
 }

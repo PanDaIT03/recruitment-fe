@@ -1,8 +1,8 @@
-import { Form, FormInstance, Space } from 'antd';
+import { Form, Space } from 'antd';
 import { DefaultOptionType } from 'antd/es/select';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { JobsAPI } from '~/apis/job';
+import { IPaginationParams, JobsAPI } from '~/apis/job';
 import { Box, File, Salary, Television } from '~/assets/svg';
 import FormItem from '~/components/Form/FormItem';
 import List from '~/components/List/List';
@@ -17,6 +17,7 @@ import usePagination from '~/hooks/usePagination';
 import { useAppDispatch, useAppSelector } from '~/hooks/useStore';
 import { getAllJobs } from '~/store/thunk/job';
 import {
+  JobItem,
   PaginatedJobCategories,
   PaginatedJobFields,
   PaginatedWorkTypes,
@@ -101,8 +102,7 @@ const JobList = () => {
   );
 
   const { pageInfo, handlePageChange, handleClearURLSearchParams } =
-    usePagination({
-      items: allJobs?.items,
+    usePagination<JobItem, IPaginationParams & IJobList>({
       extraParams: filters,
       setFilterParams: setFilters,
       fetchFn: (params) => dispatch(getAllJobs(params)),
@@ -176,7 +176,7 @@ const JobList = () => {
         ...valuesWithoutSalaryRange,
         salaryMin,
         salaryMax,
-      }).filter(([_, value]) => value && value !== 'all')
+      }).filter(([_, value]) => value !== 'all')
     ) as Partial<IJobList>;
 
     setIsOpenDrawer(false);
@@ -192,24 +192,6 @@ const JobList = () => {
     setFilters({ ...defaultFilter });
   }, []);
 
-  const handleSetFormValues = useCallback(
-    (_: FormInstance, filterParams: any) => {
-      const formattedValues = Object.entries(filterParams).reduce(
-        (prevVal, currentVal) => {
-          const [key, value] = currentVal;
-          if (value)
-            prevVal[key] = paramsKeyId.includes(key) ? Number(value) : value;
-
-          return prevVal;
-        },
-        {} as Record<string, any>
-      );
-
-      form.setFieldsValue(formattedValues);
-    },
-    []
-  );
-
   return (
     <div className="min-h-[100vh]">
       <TopSearchBar
@@ -218,7 +200,6 @@ const JobList = () => {
         onPageChange={handlePageChange}
         setIsDrawerSearchOpen={setIsOpenDrawer}
         onSearch={(values) => handleSearch(values)}
-        onSetFormValues={handleSetFormValues}
         placeHolder="Vị trí công việc/tên công ty"
       >
         <FormItem childrenSelected name="workTypesId" className="w-max mb-0">
@@ -251,10 +232,10 @@ const JobList = () => {
         <FormItem childrenSelected name="jobFieldsId" className="w-max mb-0">
           <CustomSelect
             showSearch={false}
-            displayedType="text"
-            className="w-full h-full"
-            options={jobFieldsOptions}
             prefixIcon={<Box />}
+            displayedType="text"
+            options={jobFieldsOptions}
+            className="w-full h-full lg:min-w-48"
           />
         </FormItem>
       </TopSearchBar>
@@ -266,7 +247,6 @@ const JobList = () => {
         onCancel={handleResetFilters}
         onFilter={() => form.submit()}
         onPageChange={handlePageChange}
-        onSetFormValues={handleSetFormValues}
         setIsOpenDrawer={setIsOpenDrawer}
       >
         <FormItem label="Lĩnh vực" name="jobFieldsId">
